@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateOrderStatus;
+use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Interfaces\IOrderService;
 use Illuminate\Http\Request;
@@ -86,13 +86,13 @@ class OrderController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(UpdateOrderStatus $request, $id)
+    public function update(UpdateOrderStatusRequest $request, $id)
     {
         $this->orderService->updateOrder($request->except(['_token', '_method']), $id);
         return back()->with('success', 'Order updated successfully');
     }
 
-    public function updateItemDetails(UpdateOrderStatus $request, $id)
+    public function updateItemDetails(UpdateOrderStatusRequest $request, $id)
     {
         $this->orderService->updateOrderLine($request->except(['_token', '_method']), $id);
         return back()->with('success', 'Order Line updated successfully');

@@ -73,7 +73,7 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <div class="list-icon-function">
+                                    <div class="d-flex">
                                         <a href="{{route('admin.categories.edit', ['id' => $category->id])}}">
                                             <div class="item edit">
                                                 <i class="icon-edit-3"></i>

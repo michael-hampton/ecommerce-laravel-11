@@ -185,13 +185,13 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="inputEmail4" class="form-label">SKU</label>
-                                <input class="mb-10" type="text" placeholder="Enter SKU" name="SKU" tabindex="0"
+                                <input class="form-control" type="text" placeholder="Enter SKU" name="SKU" tabindex="0"
                                        value="{{$product->SKU}}" aria-required="true" required="">
                                 @error("SKU") <span class="invalid-feedback">{{$message}}</span> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="inputPassword4" class="form-label">Quantity</label>
-                                <input class="mb-10" type="text" placeholder="Enter quantity" name="quantity" tabindex="0"
+                                <input class="form-control" type="text" placeholder="Enter quantity" name="quantity" tabindex="0"
                                        value="{{$product->quantity}}" aria-required="true" required="">
                                 @error("quantity") <span class="invalid-feedback">{{$message}}</span> @enderror
                             </div>

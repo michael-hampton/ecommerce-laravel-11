@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ApplyCouponCode;
+use App\Http\Requests\ApplyCouponCodeRequest;
 use App\Models\ProductAttributeValue;
 use App\Models\Shipping;
 use App\Repositories\Interfaces\ICouponRepository;
@@ -102,7 +102,7 @@ class CartController extends Controller
         return redirect()->back();
     }
 
-    public function applyCoupon(ApplyCouponCode $request)
+    public function applyCoupon(ApplyCouponCodeRequest $request)
     {
         $couponCode = $request->get('coupon_code');
 

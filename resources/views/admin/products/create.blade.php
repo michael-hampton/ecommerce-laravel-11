@@ -142,7 +142,7 @@
                             </div>
                             @error("image") <span class="invalid-feedback">{{$message}}</span> @enderror
                             <div>
-                                <div class="body-title mb-10">Upload Gallery Images</div>
+                                <div class="body-title form-control">Upload Gallery Images</div>
                                 <div class="upload-image mb-16">
                                     <div id="galUpload" class="item up-load">
                                         <label class="uploadfile" for="gFile">
@@ -159,14 +159,14 @@
 
                             <div class="col-md-6">
                                 <label for="inputEmail4" class="form-label">Regular Price</label>
-                                <input class="mb-10" type="text" placeholder="Enter regular price" name="regular_price"
+                                <input class="form-control" type="text" placeholder="Enter regular price" name="regular_price"
                                        tabindex="0" value="{{old('regular_price')}}" aria-required="true">
                                 @error("regular_price") <span
                                     class="invalid-feedback">{{$message}}</span> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="inputPassword4" class="form-label">Sale Price</label>
-                                <input class="mb-10" type="text" placeholder="Enter sale price" name="sale_price"
+                                <input class="form-control" type="text" placeholder="Enter sale price" name="sale_price"
                                        tabindex="0" value="{{old('sale_price')}}" aria-required="true">
                                 @error("sale_price") <span class="invalid-feedback">{{$message}}</span> @enderror
                             </div>
@@ -178,7 +178,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="inputPassword4" class="form-label">Quantity</label>
-                                <input class="mb-10" type="text" placeholder="Enter quantity" name="quantity" tabindex="0"
+                                <input class="form-control" type="text" placeholder="Enter quantity" name="quantity" tabindex="0"
                                        value="{{old('quantity')}}" aria-required="true">
                                 @error("quantity") <span class="invalid-feedback">{{$message}}</span> @enderror
                             </div>

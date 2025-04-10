@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostCommentRequest;
 use App\Http\Requests\PostReplyRequest;
-use App\Http\Requests\StoreCustomerAddress;
+use App\Http\Requests\StoreCustomerAddressRequest;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Repositories\Interfaces\IAddressRepository;
@@ -55,7 +55,7 @@ class UserAccountController extends Controller
         return view('user.account-address-add');
     }
 
-    public function storeAddress(StoreCustomerAddress $request)
+    public function storeAddress(StoreCustomerAddressRequest $request)
     {
        $this->addressRepository->create([
            'customer_id' => auth()->id(),
@@ -79,7 +79,7 @@ class UserAccountController extends Controller
         return view('user.account-address-edit', compact('address'));
     }
 
-     public function updateAddress(StoreCustomerAddress $request, int $addressId)
+     public function updateAddress(StoreCustomerAddressRequest $request, int $addressId)
      {
          $this->addressRepository->update($addressId, [
              'customer_id' => auth()->id(),

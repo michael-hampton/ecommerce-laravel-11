@@ -12,8 +12,10 @@ use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Repositories\Interfaces\IProductRepository;
+use App\Repositories\Interfaces\IUserRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
+use App\Repositories\UserRepository;
 use App\Services\AddressService;
 use App\Services\BrandService;
 use App\Services\CategoryService;
@@ -24,8 +26,10 @@ use App\Services\Interfaces\ICategoryService;
 use App\Services\Interfaces\ICouponService;
 use App\Services\Interfaces\IOrderService;
 use App\Services\Interfaces\IProductService;
+use App\Services\Interfaces\IUserService;
 use App\Services\OrderService;
 use App\Services\ProductService;
+use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -40,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
         IBrandRepository::class => BrandRepository::class,
         ICategoryRepository::class => CategoryRepository::class,
         IAddressRepository::class => AddressRepository::class,
+        IUserRepository::class => UserRepository::class,
     ];
 
     /**
@@ -52,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
         IBrandService::class => BrandService::class,
         ICategoryService::class => CategoryService::class,
         IAddressService::class => AddressService::class,
+        IUserService::class => UserService::class,
     ];
 
     /**

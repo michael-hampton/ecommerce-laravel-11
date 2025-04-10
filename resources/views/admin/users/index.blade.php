@@ -3,7 +3,7 @@
 @section('content')
     <div class="p-4">
         <div class="py-4">
-            <h3>Brands</h3>
+            <h3>Users</h3>
         </div>
 
         <div class="card py-2 mb-3">
@@ -21,7 +21,7 @@
                 </span>
                         </div>
                     </div>
-                    <a href="{{route('admin.brands.create')}}" class="btn btn-primary">Add New Brand</a>
+                    <a href="{{route('admin.users.create')}}" class="btn btn-primary">Add New User</a>
                 </div>
             </div>
         </div>
@@ -37,34 +37,34 @@
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Slug</th>
-                            <th>Products</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($brands as $brand)
+                        @forelse($users as $user)
                             <tr>
-                                <td>{{$brand->id}}</td>
+                                <td>{{$user->id}}</td>
                                 <td class="d-flex">
                                     <div class="d-flex align-items-center justify-content-between me-3">
-                                        <img src="{{asset('images/brands')}}/{{$brand->image}}"
-                                             alt="{{$brand->name}}" class="image">
+                                        <img src="{{asset('images/users')}}/{{$user->image}}"
+                                             alt="{{$user->name}}" class="image">
                                     </div>
                                     <div class="">
-                                        <a href="#" class="fw-bold">{{$brand->name}}</a>
+                                        <a href="#" class="fw-bold">{{$user->name}}</a>
                                     </div>
                                 </td>
-                                <td>{{$brand->slug}}</td>
-                                <td><a href="#" target="_blank">{{$brand->products->count()}}</a></td>
+                                <td>{{$user->email}}</td>
+                                <td>{{$user->mobile}}</td>
                                 <td>
                                     <div class="d-flex">
-                                        <a href="{{route('admin.brands.edit', ['id' => $brand->id])}}">
+                                        <a href="{{route('admin.users.edit', ['id' => $user->id])}}">
                                             <div class="item edit">
                                                 <i class="icon-edit-3"></i>
                                             </div>
                                         </a>
-                                        <form action="{{route('admin.brands.destroy', ['id' => $brand->id])}}"
+                                        <form action="{{route('admin.users.destroy', ['id' => $user->id])}}"
                                               method="POST">
                                             @csrf
                                             @method('delete')
@@ -72,11 +72,18 @@
                                                 <i class="icon-trash-2"></i>
                                             </div>
                                         </form>
+
+                                        <form>
+                                            <div class="form-check form-switch" data-route="{{route('admin.users.updateActive', ['id' => $user->id])}}">
+                                                <input class="form-check-input" type="checkbox" role="switch" name="active" id="flexSwitchCheckDefault" @if($user->active === true) checked="checked" @endif>
+                                                <label class="form-check-label" for="flexSwitchCheckDefault">Active</label>
+                                            </div>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
                         @empty
-                            <p>No Brands</p>
+                            <p>No Users</p>
                         @endforelse
 
                         </tbody>
@@ -84,7 +91,7 @@
                 </div>
                 <div class="divider"></div>
                 <div class="d-flex align-items-center justify-content-between">
-                    {{$brands->links('pagination::bootstrap-5')}}
+                    {{$users->links('pagination::bootstrap-5')}}
                 </div>
             </div>
         </div>
@@ -94,6 +101,23 @@
 @push('scripts')
     <script>
         $(function () {
+            $('[name="active"]').on('change', function () {
+               var active = $(this).is(':checked')
+
+                $.ajax({
+                    url: $(this).parent().data('route'),
+                    type: "post",
+                    datatype: "json",
+                    data: {active: active, _method: 'put', _token: "{{csrf_token()}}"}
+                })
+                    .done(function (data) {
+                      alert('good')
+                    })
+                    .fail(function (jqXHR, ajaxOptions, thrownError) {
+                        alert('No response from server');
+                    });
+            });
+
             $(".delete").on('click', function (e) {
                 e.preventDefault();
                 var selectedForm = $(this).closest('form');

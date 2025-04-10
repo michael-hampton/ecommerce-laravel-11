@@ -21,7 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'mobile'
+        'mobile',
+        'image',
+        'utype',
+        'active'
     ];
 
     /**
@@ -41,6 +44,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'active' => 'boolean'
     ];
 
     public function reviews()

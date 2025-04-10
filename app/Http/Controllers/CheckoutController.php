@@ -261,14 +261,16 @@ class CheckoutController extends Controller
             return redirect()->route('login');
         }
 
-        $address = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id, 'is_default' => 1])->first();
-        return view('checkout', ['address' => $address, 'countries' => $this->countryArray, 'currency' => config('shop.currency')]);
+        $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
+        return view('checkout', ['addresses' => $addresses, 'countries' => $this->countryArray, 'currency' => config('shop.currency')]);
     }
 
     public function placeOrder(CreateOrderRequest $request)
     {
         $customerId = auth()->user()->id;
-        $address = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => $customerId, 'is_default' => 1])->first();
+        $addressId = $request->integer('address');
+        $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
+        $address = !empty($addressId) ? $addresses->where('id', $addressId)->first() : $addresses->first();
 
         $adrressData = $request->except(['_token']);
         $adrressData['customer_id'] = $customerId;
@@ -290,7 +292,7 @@ class CheckoutController extends Controller
             ;
         }
 
-        return view('checkout-card', ['addressId' => $address->id, 'address' => $address, 'currency' => config('shop.currency')]);
+        return view('checkout-card', ['addressId' => $addressId, 'addresses' => $addresses, 'currency' => config('shop.currency')]);
     }
 
     public function placeCardOrder(CreateOrderRequest $request)

@@ -43,7 +43,7 @@
                                         <td>{{$order->status}}</td>
                                         <td class="text-center">
                                             <a href="{{route('orders.orderDetailsCustomer', ['orderId' => $order->id])}}">
-                                                <div class="list-icon-function view-icon">
+                                                <div class="d-flex view-icon">
                                                     <div class="item eye">
                                                         <i class="fa fa-eye"></i>
                                                     </div>

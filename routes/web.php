@@ -116,6 +116,14 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::post('/admin/products/store', [App\Http\Controllers\ProductController::class, 'store'])->name('admin.products.store');
     Route::post('/admin/products/subcategories', [App\Http\Controllers\ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
 
+    // users
+    Route::get('/admin/users', [App\Http\Controllers\UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('admin.users.create');
+    Route::get('/admin/users/edit/{id}', [App\Http\Controllers\UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/admin/users/update/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/admin/users/{id}/delete', [App\Http\Controllers\UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/admin/users/store', [App\Http\Controllers\UserController::class, 'store'])->name('admin.users.store');
+    Route::put('/admin/users/updateActive/{id}', [App\Http\Controllers\UserController::class, 'updateActive'])->name('admin.users.updateActive');
 
     //orders
     Route::get('/admin/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('admin.orders');
@@ -157,4 +165,8 @@ Route::get('/checkout/card', [App\Http\Controllers\CheckoutController::class, 'i
 Route::post('/checkout/place-order', [App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
 Route::post('/checkout/place-card-order', [App\Http\Controllers\CheckoutController::class, 'placeCardOrder'])->name('checkout.placeCardOrder');
 Route::get('/checkout/order-confirmation', [App\Http\Controllers\CheckoutController::class, 'orderConfirmation'])->name('checkout.orderConfirmation');
+
+Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
+Route::post('/change-password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('update-password');
+
 

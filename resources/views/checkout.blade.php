@@ -41,24 +41,22 @@
                             </div>
                         </div>
 
-                        @if($address)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="my-account__address-list">
-                                        <div class="my-account__address-item">
-                                            <div class="my-account__address-item__detail">
-                                                <p>{{$address->name}}</p>
-                                                <p>{{$address->address1}}</p>
-                                                <p>{{$address->address2}}</p>
-                                                <p>{{$address->city}}, {{$address->state}}</p>
-                                                <p>{{$address->zip}}</p>
-                                                <br>
-                                                {{$address->phone}}
-                                            </div>
-                                        </div>
-                                    </div>
+                        @if($addresses)
+                            @foreach($addresses as $address)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="address"
+                                           id="address-{{$address->id}}" value="{{$address->id}}">
+                                    <label class="form-check-label" for="address-{{$address->id}}">
+                                        <span class="my-account__address-item__detail">
+                                            <p>{{$address->name}}</p>
+                                            <p>{{$address->address1}}</p>
+                                            <p>{{$address->address2}}</p>
+                                            <p>{{$address->city}}, {{$address->state}}</p>
+                                            <p>{{$address->zip}}</p>
+                                        </span>
+                                    </label>
                                 </div>
-                            </div>
+                            @endforeach
                         @else
                             <div class="row mt-5">
                                 <div class="col-md-6">
@@ -258,20 +256,20 @@
                                 @endif
                             </div>
                             <div class="checkout__payment-methods">
-{{--                                <div class="form-check">--}}
-{{--                                    <input class="form-check-input form-check-input_fill" type="radio"--}}
-{{--                                           name="mode"--}}
-{{--                                           id="mode1" value="bank_transfer">--}}
-{{--                                    <label class="form-check-label" for="checkout_payment_method_1">--}}
-{{--                                        Direct bank transfer--}}
-                                        {{--                                        <p class="option-detail">--}}
-                                        {{--                                            Make your payment directly into our bank account. Please use your Order ID--}}
-                                        {{--                                            as the payment--}}
-                                        {{--                                            reference.Your order will not be shipped until the funds have cleared in our--}}
-                                        {{--                                            account.--}}
-                                        {{--                                        </p>--}}
-{{--                                    </label>--}}
-{{--                                </div>--}}
+                                {{--                                <div class="form-check">--}}
+                                {{--                                    <input class="form-check-input form-check-input_fill" type="radio"--}}
+                                {{--                                           name="mode"--}}
+                                {{--                                           id="mode1" value="bank_transfer">--}}
+                                {{--                                    <label class="form-check-label" for="checkout_payment_method_1">--}}
+                                {{--                                        Direct bank transfer--}}
+                                {{--                                        <p class="option-detail">--}}
+                                {{--                                            Make your payment directly into our bank account. Please use your Order ID--}}
+                                {{--                                            as the payment--}}
+                                {{--                                            reference.Your order will not be shipped until the funds have cleared in our--}}
+                                {{--                                            account.--}}
+                                {{--                                        </p>--}}
+                                {{--                                    </label>--}}
+                                {{--                                </div>--}}
                                 <div class="form-check">
                                     <input class="form-check-input form-check-input_fill" type="radio"
                                            name="mode"

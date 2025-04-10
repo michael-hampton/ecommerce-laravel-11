@@ -43,24 +43,22 @@
                             </div>
                         </div>
 
-                        @if($address)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="my-account__address-list">
-                                        <div class="my-account__address-item">
-                                            <div class="my-account__address-item__detail">
-                                                <p>{{$address->name}}</p>
-                                                <p>{{$address->address1}}</p>
-                                                <p>{{$address->address2}}</p>
-                                                <p>{{$address->city}}, {{$address->state}}</p>
-                                                <p>{{$address->zip}}</p>
-                                                <br>
-                                                {{$address->phone}}
-                                            </div>
-                                        </div>
-                                    </div>
+                        @if($addresses)
+                            @foreach($addresses as $address)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="address"
+                                           id="address-{{$address->id}}" value="{{$address->id}}" @if(!empty($addressId) && $addressId === $address->id) checked="checked"@endif>
+                                    <label class="form-check-label" for="address-{{$address->id}}">
+                                        <span class="my-account__address-item__detail">
+                                            <p>{{$address->name}}</p>
+                                            <p>{{$address->address1}}</p>
+                                            <p>{{$address->address2}}</p>
+                                            <p>{{$address->city}}, {{$address->state}}</p>
+                                            <p>{{$address->zip}}</p>
+                                        </span>
+                                    </label>
                                 </div>
-                            </div>
+                            @endforeach
                         @else
                             <div class="row mt-5">
                                 <div class="col-md-6">
@@ -257,7 +255,8 @@
                                     </table>
                                 @endif
                             </div>
-                            <button type="submit" class="btn btn-primary btn-checkout" id="btn-checkout">PLACE ORDER</button>
+                            <button type="submit" class="btn btn-primary btn-checkout" id="btn-checkout">PLACE ORDER
+                            </button>
                         </div>
                     </div>
                 </div>
