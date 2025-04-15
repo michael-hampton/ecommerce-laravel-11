@@ -88,7 +88,7 @@
                                 </h6>
                                 <div class="accordion-collapse collapse d-sm-block" id="membersLinks" aria-labelledby="membersHeading" data-bs-parent="#footerLinks">
                                     <ul class="nav flex-column gap-2 pt-sm-3 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
-                                        @foreach(\App\Models\Category::all()->where('parent_id', 0) as $category)
+                                        @foreach(\App\Models\Category::all()->where('parent_id', 0)->where('menu_status', 1) as $category)
                                         <li class="d-flex w-100 pt-1">
                                             <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="{{route('shop.index', ['categoryId' => $category->id])}}">{{$category->name}}</a>
                                         </li>
