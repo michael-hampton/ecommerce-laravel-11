@@ -13,6 +13,7 @@ use App\Services\Interfaces\IBrandService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Psy\Util\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class BrandController extends Controller
 {
@@ -27,7 +28,24 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = $this->brandRepository->getPaginated(10, 'id', 'desc');
+        $brands = $this->brandRepository->getAll(null, 'id', 'desc');
+        $request = request();
+
+        if (\request()->ajax()) {
+            return DataTables::of($brands)->filter(function ($instance) use ($request) {
+                if (!empty($request->get('search'))) {
+                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+                        if (\Illuminate\Support\Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            return true;
+                        }
+                        return false;
+
+                    });
+
+                };
+            })->make(true);
+        }
+
         return view('admin.brands.index', compact('brands'));
     }
 

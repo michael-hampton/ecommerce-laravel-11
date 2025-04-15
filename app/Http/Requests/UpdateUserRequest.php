@@ -24,10 +24,10 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255:min:3|unique:users,name,'.request()->route('id'),
+            'name' => 'required|max:255|min:3|unique:users,name,'.request()->route('id'),
             'email' => 'required|email|unique:users,email,'.request()->route('id'),
             'mobile' => 'required|numeric|digits:12|unique:users,mobile,'.request()->route('id'),
-            'password' => 'required|min:6|confirmed',
+            //'password' => 'required|min:6|confirmed',
         ];
     }
 }

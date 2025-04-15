@@ -65,8 +65,6 @@ class ProductService implements IProductService
 
         $this->updateSellerBalance($data);
 
-        dd('here');
-
         $product = $this->repository->create($data);
 
         if (!empty($data['attribute_values'])) {

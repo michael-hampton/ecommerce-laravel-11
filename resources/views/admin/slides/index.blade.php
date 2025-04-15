@@ -21,7 +21,7 @@
                 </span>
                         </div>
                     </div>
-                    <a href="{{route('admin.slides.create')}}" class="btn btn-primary">Add New Slide</a>
+                    <a href="{{route('admin.slides.create')}}" class="btn btn-primary add">Add New Slide</a>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     @if(Session::has('status'))
                         <p class="alert alert-success">{{Session::get('status')}}</p>
                     @endif
-                    <table class="table table-striped table-bordered">
+                    <table id="admin-table" class="table table-striped table-bordered">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -44,49 +44,9 @@
                             <th>Action</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        @forelse($slides as $slide)
-                            <tr>
-                                <td>{{$slide->id}}</td>
-                                <td class="d-flex">
-                                    <div class="d-flex align-items-center justify-content-between me-3">
-                                        <img src="{{asset('images/slides')}}/{{$slide->image}}"
-                                             alt="{{$slide->title}}" class="image">
-                                    </div>
-                                </td>
-                                <td>{{$slide->tags}}</td>
-                                <td>{{$slide->title}}</td>
-                                <td>{{$slide->subtitle}}</td>
-                                <td><a href="{{$slide->link}}" target="_blank">{{$slide->link}}</a></td>
-                                <td>
-                                    <div class="d-flex">
-                                        <a href="{{route('admin.slides.edit', ['id' => $slide->id])}}">
-                                            <div class="item edit">
-                                                <i class="icon-edit-3"></i>
-                                            </div>
-                                        </a>
-                                        <form action="{{route('admin.slides.destroy', ['id' => $slide->id])}}"
-                                              method="POST">
-                                            @csrf
-                                            @method('delete')
-                                            <div class="item text-danger delete">
-                                                <i class="icon-trash-2"></i>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <p>No Slides</p>
-                        @endforelse
-
-                        </tbody>
                     </table>
                 </div>
                 <div class="divider"></div>
-                <div class="d-flex align-items-center justify-content-between">
-                    {{$slides->links('pagination::bootstrap-5')}}
-                </div>
             </div>
         </div>
     </div>
@@ -94,21 +54,45 @@
 
 @push('scripts')
     <script>
-        $(function () {
-            $(".delete").on('click', function (e) {
-                e.preventDefault();
-                var selectedForm = $(this).closest('form');
-                swal({
-                    title: "Are you sure?",
-                    text: "You want to delete this record?",
-                    type: "warning",
-                    buttons: ["No!", "Yes!"],
-                    confirmButtonColor: '#dc3545'
-                }).then(function (result) {
-                    if (result) {
-                        selectedForm.submit();
+        $(document).ready(function () {
+
+            $('#admin-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('admin.slides') }}",
+                    data: function (d) {
+                        d.search = $('input[type="search"]').val()
                     }
-                });
+                },
+                pageLength: 10,
+                columns: [
+                    {data: 'id', name: 'id'},
+                    {data: 'image', name: 'image', render: function (data, type, row) {
+                        return '<div class="d-flex align-items-center justify-content-between me-3">' +
+                            '<img src="{{asset('images/slides')}}/'+row.image+'" alt="'+row.title+'" class="image"></div>'
+                        }},
+                    {data: 'tags', name: 'tags'},
+                    {data: 'title', name: 'title'},
+                    {data: 'subtitle', name: 'subtitle'},
+                    {data: 'link', name: 'image', render: function (data, type, row) {
+                            return '<a href="'+row.link+'" target="_blank">'+row.link+'</a>'
+                        }},
+                    {
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return '<div class="d-flex align-items-center justify-content-between">' +
+                                '<a data-url="{{route('admin.slides.edit', ['id' => 'test'])}}" data-id=' + row.id + ' href="#" target="_blank" class="edit">' +
+                                '<i class="icon-eye"></i>' +
+                                '</a>' +
+                                '<a data-url="{{route('admin.slides.destroy', ['id' => 'test'])}}" data-id=' + row.id + ' href="#" target="_blank" class="delete">' +
+                                '<i class="fa fa-trash"></i>' +
+                                '</a>' +
+                                '</div>';
+                        }
+                    }
+                ]
             });
         });
     </script>

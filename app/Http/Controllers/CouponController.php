@@ -9,6 +9,8 @@ use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Services\Interfaces\ICouponService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class CouponController extends Controller
 {
@@ -29,7 +31,24 @@ class CouponController extends Controller
      */
     public function index()
     {
-        $coupons = $this->couponRepository->getPaginated(10, 'id', 'desc');
+        $coupons = $this->couponRepository->getAll(null, 'id', 'desc');
+        $request = request();
+
+        if (\request()->ajax()) {
+            return DataTables::of($coupons)->filter(function ($instance) use ($request) {
+                if (!empty($request->get('search'))) {
+                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+                        if (Str::contains(Str::lower($row['code']), Str::lower($request->get('search')))) {
+                            return true;
+                        }
+                        return false;
+
+                    });
+
+                };
+            })->make(true);
+        }
+
         return view('admin.coupons.index', compact('coupons'));
     }
 

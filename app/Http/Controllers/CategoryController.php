@@ -15,6 +15,7 @@ use App\Services\Interfaces\ICategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Psy\Util\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -29,7 +30,24 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = $this->categoryRepository->getPaginated(10, 'id', 'desc');
+        $categories = $this->categoryRepository->getAll(null, 'id', 'desc');
+        $request = request();
+
+        if (\request()->ajax()) {
+            return DataTables::of($categories)->filter(function ($instance) use ($request) {
+                if (!empty($request->get('search'))) {
+                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+                        if (\Illuminate\Support\Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            return true;
+                        }
+                        return false;
+
+                    });
+
+                };
+            })->make(true);
+        }
+
         return view('admin.categories.index', compact('categories'));
     }
 

@@ -20,7 +20,7 @@
                 </span>
                         </div>
                     </div>
-                    <a href="{{route('admin.products.create')}}" class="btn btn-primary">Add New Product</a>
+                    <a href="{{route('admin.products.create')}}" class="btn btn-primary add">Add New Product</a>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     @if(Session::has('status'))
                         <p class="alert alert-success">{{Session::get('status')}}</p>
                     @endif
-                    <table class="table table-striped table-bordered">
+                    <table id="admin-table" class="table table-striped table-bordered">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -48,67 +48,73 @@
                             <th>Action</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        @forelse($products as $product)
-                            <tr>
-                                <td>{{$product->id}}</td>
-                                <td class="d-flex">
-                                    <div class="d-flex align-items-center justify-content-between me-3">
-                                        <img src="{{asset('images/products')}}/{{$product->image}}"
-                                             alt="{{$product->name}}" class="image">
-                                    </div>
-                                    <div class="">
-                                        <a href="#" class="fw-bold">{{$product->name}}</a>
-                                        <div class="text-tiny mt-3">{{$product->sku}}</div>
-                                    </div>
-                                </td>
-                                <td>{{$product->regular_price}}</td>
-                                <td>{{$product->sale_price}}</td>
-                                <td>{{$product->sku}}</td>
-                                <td>{{$product->category->name}}</td>
-                                <td>{{$product->brand->name}}</td>
-                                <td>{{$product->featured}}</td>
-                                <td>{{$product->stock_status}}</td>
-                                <td>{{$product->quantity}}</td>
-                                <td>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <a href="#" target="_blank">
-                                            <div class="item eye">
-                                                <i class="icon-eye"></i>
-                                            </div>
-                                        </a>
-                                        <a href="{{route('admin.products.edit', ['id' => $product->id])}}">
-                                            <div class="item edit">
-                                                <i class="icon-edit-3"></i>
-                                            </div>
-                                        </a>
-                                        <form action="{{route('admin.products.destroy', ['id' => $product->id])}}"
-                                              method="POST">
-                                            @csrf
-                                            @method('delete')
-                                            <div class="item text-danger delete">
-                                                <i class="icon-trash-2"></i>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <p>No Products</p>
-                        @endforelse
 
-                        </tbody>
                     </table>
                 </div>
 
                 <div class="divider"></div>
-                <div class="d-flex align-items-center justify-content-between flex-wrap">
-                    {{$products->links('pagination::bootstrap-5')}}
-
-                </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function () {
+
+            $('#admin-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('admin.products') }}",
+                    data: function (d) {
+                            d.search = $('input[type="search"]').val()
+                    }
+                },
+                pageLength: 10,
+                columns: [
+                    {data: 'id', name: 'id'},
+                    {
+                        data: 'name', name: 'name', render: function (data, type, row) {
+                            return '<div class="d-flex align-items-center justify-content-between me-3"> ' +
+                                '<img src="{{asset('images/products')}}/' + row.image + '" alt="' + row.name + '" class="image"></div> ' +
+                                '<div class="><a href="#" class="fw-bold">' + row.name + '</a><div class="text-tiny mt-3">' + row.SKU + '</div> </div>';
+                        }
+                    },
+                    {data: 'regular_price', name: 'regular_price'},
+                    {data: 'sale_price', name: 'sale_price'},
+                    {data: 'SKU', name: 'SKU'},
+                    {data: 'category_id', name: 'category_id'},
+                    {data: 'brand_id', name: 'brand_id'},
+                    {
+                        data: 'featured', name: 'featured', render: function (data, type, row) {
+                            return row.featured === 1 ? 'Yes' : 'No';
+                        }
+                    },
+                    {
+                        data: 'stock_status', name: 'stock_status', render: function (data, type, row) {
+                            return row.stock_status === 'instock' ? 'Yes' : 'No';
+                        }
+                    },
+                    {data: 'quantity', name: 'quantity'},
+                    {
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row) {
+                            return '<div class="d-flex align-items-center justify-content-between">' +
+                                '<a data-url="{{route('admin.products.edit', ['id' => 'test'])}}" data-id=' + row.id + ' href="#" target="_blank" class="edit">' +
+                                '<i class="icon-eye"></i>' +
+                                '</a>' +
+                                '<a data-url="{{route('admin.products.destroy', ['id' => 'test'])}}" data-id=' + row.id + ' href="#" target="_blank" class="delete">' +
+                                '<i class="fa fa-trash"></i>' +
+                                '</a>' +
+                                '</div>';
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+@endpush
 
 

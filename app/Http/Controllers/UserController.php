@@ -7,6 +7,8 @@ use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IUserRepository;
 use App\Services\Interfaces\IUserService;
 use Illuminate\Http\Request;
+use Psy\Util\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
@@ -21,7 +23,24 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->userRepository->getPaginated(10, 'id', 'desc');
+        $users = $this->userRepository->getAll(null, 'id', 'desc');
+        $request = request();
+
+        if (\request()->ajax()) {
+            return DataTables::of($users)->filter(function ($instance) use ($request) {
+                if (!empty($request->get('search'))) {
+                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+                        if (\Illuminate\Support\Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            return true;
+                        }
+                        return false;
+
+                    });
+
+                };
+            })->make(true);
+        }
+
         return view('admin.users.index', compact('users'));
     }
 

@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateSlideRequest;
 use App\Repositories\Interfaces\ISlideRepository;
 use App\Services\Interfaces\ISlideService;
 use Illuminate\Http\Request;
+use Psy\Util\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class SlideController extends Controller
 {
@@ -22,7 +24,24 @@ class SlideController extends Controller
      */
     public function index()
     {
-        $slides = $this->slideRepository->getPaginated(10, 'id', 'desc');
+        $slides = $this->slideRepository->getAll(null, 'id', 'desc');
+
+        $request = request();
+        if (\request()->ajax()) {
+            return DataTables::of($slides)->filter(function ($instance) use ($request) {
+                if (!empty($request->get('search'))) {
+                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+                        if (\Illuminate\Support\Str::contains(Str::lower($row['title']), Str::lower($request->get('search')))) {
+                            return true;
+                        }
+                        return false;
+
+                    });
+
+                };
+            })->make(true);
+        }
+
         return view('admin.slides.index', compact('slides'));
     }
 

@@ -5,28 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\AttributeValue;
-use App\Models\ProductAttributeValue;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAttribute;
+use App\Models\ProductAttributeValue;
 use App\Repositories\BrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Interfaces\IProductService;
-use App\Services\ProductService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
     public function __construct(
-        private IProductService $productService,
-        private IProductRepository $productRepository,
+        private IProductService     $productService,
+        private IProductRepository  $productRepository,
         private ICategoryRepository $categoryRepository,
-        private BrandRepository $brandRepository
-    ) {
+        private BrandRepository     $brandRepository
+    )
+    {
 
     }
 
@@ -37,12 +38,30 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = $this->productRepository->getPaginated(
-            10,
-            'id',
+        $products = $this->productRepository->getAll(
+            null,
+            'created_at',
             'desc',
             ['seller_id' => auth()->user()->id]
         );
+
+        $request = request();
+
+        if (\request()->ajax()) {
+            return DataTables::of($products)->filter(function ($instance) use ($request) {
+                if (!empty($request->get('search'))) {
+                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+                        if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            return true;
+                        }
+                        return false;
+
+                    });
+
+                };
+            })->make(true);
+        }
+
         return view('admin.products.index', compact('products'));
     }
 
@@ -69,6 +88,10 @@ class ProductController extends Controller
     {
         $result = $this->productService->createProduct($request->all());
 
+        if($request->ajax()) {
+            return response()->json($result);
+        }
+
         return redirect()->route('admin.products')->with('success', 'Product created successfully.');
     }
 
@@ -94,8 +117,7 @@ class ProductController extends Controller
         $categories = $this->categoryRepository->getAll(null, 'name', 'asc', ['ignore_children' => true]);
         $brands = $this->brandRepository->getAll();
         $product = Product::find($id);
-
-           $subcategories = $product->category->parent ? $product->category->parent->subcategories : [];
+        $subcategories = $product->category->parent ? $product->category->parent->subcategories : [];
 
         $productAttributeValues = ProductAttributeValue::where('product_id', $product->id)->get();
         $productAttributes = ProductAttribute::all();
@@ -105,11 +127,11 @@ class ProductController extends Controller
     /**
      * @param UpdateProductRequest $request
      * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(UpdateProductRequest $request, $id)
     {
-        $result = $this->productService->updateProduct($request->except(['_token', '_method', 'attr']), $id);
+        $result = $this->productService->updateProduct($request->except(['_token', '_method', 'attr', 'charge_featured']), $id);
 
         return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
     }
@@ -125,13 +147,15 @@ class ProductController extends Controller
         return redirect()->route('admin.products')->with('success', 'Product deleted successfully.');
     }
 
-    public function getSubcategories(Request $request) {
+    public function getSubcategories(Request $request)
+    {
         $categories = Category::where('parent_id', $request->input('categoryId'))->get();
 
-       return response()->json($categories);
+        return response()->json($categories);
     }
 
-    public function productSearch(Request $request) {
+    public function productSearch(Request $request)
+    {
         $products = $this->productRepository->getAll(null, 'name', 'asc', ['name' => $request->input('query')]);
 
         return response()->json($products);
