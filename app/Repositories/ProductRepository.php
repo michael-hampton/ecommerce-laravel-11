@@ -15,15 +15,21 @@ class ProductRepository extends BaseRepository implements IProductRepository
     }
 
     public function getHotDeals() {
-        return $this->model->onSale()->whereRelation('seller', function (Builder $query) {
-            $query->where('approved', true);
-        })->where('quantity', '>', 0)->orderBy('name')->inRandomOrder()->get();
+        return $this->model->onSale()
+            ->whereRelation('seller', function (Builder $query) {
+                $query->where('approved', true);
+            })
+            ->where('quantity', '>', 0)
+            ->orderBy('name')
+            ->limit(4)
+            ->inRandomOrder()
+            ->get();
     }
 
     public function getFeaturedProducts() {
         return $this->model->featured()->whereRelation('seller', function (Builder $query) {
             $query->where('approved', true);
-        })->where('quantity', '>', 0)->orderBy('name')->inRandomOrder()->get();
+        })->where('quantity', '>', 0)->orderBy('name')->inRandomOrder()->limit(4)->get();
     }
 
     /**

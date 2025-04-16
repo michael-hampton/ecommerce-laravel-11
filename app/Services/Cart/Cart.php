@@ -471,13 +471,16 @@ class Cart
             return;
         }
 
-        $stored = $this->getStoredItems();
-
+        $stored = $this->getConnection()->table($this->getTableName())
+            ->where('instance', $this->currentInstance())->get()
+        ;
 
         $wishlistProducts = [];
 
         foreach ($stored as $cartItem) {
-            foreach ($cartItem['items'] as $cartItemRow) {
+            $storedContent = unserialize(data_get($cartItem, 'content'));
+
+            foreach ($storedContent as $cartItemRow) {
                 if (!isset($wishlistProducts[$cartItemRow->id])) {
                     $wishlistProducts[$cartItemRow->id] = 1;
                     continue;
@@ -488,8 +491,6 @@ class Cart
         }
 
         $this->session->put('wishlist_products', $wishlistProducts);
-
-        return $wishlistProducts;
     }
 
     public function getStoredItems()

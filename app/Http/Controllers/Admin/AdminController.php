@@ -11,6 +11,7 @@ use App\Repositories\Interfaces\IOrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -44,6 +45,8 @@ class AdminController extends Controller
                                 GROUP BY DATE_FORMAT(order_items.created_at, '%m')");
 
         $orders = $this->orderRepository->getPaginated(10, 'created_at', 'desc', ['seller_id' => \auth()->id()]);
+
+        $months = [];
 
         foreach ($data as $k => $item) {
             $months[$item->Month] = $item->total;
