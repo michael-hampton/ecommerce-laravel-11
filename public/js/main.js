@@ -316,15 +316,13 @@
             confirmButtonColor: '#dc3545'
         }).then(function (result) {
             if (result) {
-                alert(url)
                 const route = url.replace('test', id)
                 $.ajax({
                     url: route,
                     type: 'post',
-                    data: {"_token": "{{ csrf_token() }}", '_method': 'DELETE'},  // CSRF token for security
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'), '_method': 'DELETE'},  // CSRF token for security
                     success: function (response) {
-                        alert(response.success);
-                        location.reload(); // Reload to update the item list
+                        $('#admin-table').DataTable().draw();
                     }
                 });
             }

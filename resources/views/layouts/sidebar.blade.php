@@ -32,6 +32,16 @@
             </li>
 
             <li>
+                <a href="{{route('admin.attributes')}}" class="nav-link px-0 align-middle">
+                    <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Attributes</span> </a>
+            </li>
+
+            <li>
+                <a href="{{route('admin.attributeValues')}}" class="nav-link px-0 align-middle">
+                    <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Attribute Values</span> </a>
+            </li>
+
+            <li>
                 <a href="{{route('admin.slides')}}" class="nav-link px-0 align-middle">
                     <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Slides</span> </a>
             </li>

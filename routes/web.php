@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\AttributeValueController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PaymentProviders\PaypalController;
 use App\Http\Middleware\AuthAdmin;
@@ -147,10 +148,21 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
 
    //attributes
     Route::get('/admin/attributes', [AttributeController::class, 'index'])->name('admin.attributes');
-   Route::get('/admin/attribute/add',[AttributeController::class, 'create'])->name('admin.add_attribute');
-    Route::get('/admin/attribute/edit/{attribute_id}',[AttributeController::class, 'edit'])->name('admin.edit_attribute');
-    Route::post('/admin/attribute/store',[AttributeController::class, 'store'])->name('admin.create_attribute');
-    Route::delete('/admin/attribute/{id}/delete', [\App\Http\Controllers\Admin\AttributeController::class, 'destroy'])->name('admin.attributes.destroy');
+   Route::get('/admin/attribute/add',[AttributeController::class, 'create'])->name('admin.attributes.create');
+    Route::get('/admin/attribute/edit/{id}',[AttributeController::class, 'edit'])->name('admin.attributes.edit');
+    Route::post('/admin/attribute/store',[AttributeController::class, 'store'])->name('admin.attributes.store');
+    Route::delete('/admin/attribute/{id}/delete', [AttributeController::class, 'destroy'])->name('admin.attributes.destroy');
+    Route::put('/admin/attribute/update/{id}', [AttributeController::class, 'update'])->name('admin.attributes.update');
+
+
+    //attribute values
+    Route::get('/admin/attribute-values', [AttributeValueController::class, 'index'])->name('admin.attributeValues');
+    Route::get('/admin/attribute-values/add',[AttributeValueController::class, 'create'])->name('admin.attributeValues.create');
+    Route::get('/admin/attribute-values/edit/{id}',[AttributeValueController::class, 'edit'])->name('admin.attributeValues.edit');
+    Route::post('/admin/attribute-values/store',[AttributeValueController::class, 'store'])->name('admin.attributeValues.store');
+    Route::delete('/admin/attribute-values/{id}/delete', [AttributeValueController::class, 'destroy'])->name('admin.attributeValues.destroy');
+    Route::put('/admin/attribute=values/update/{id}', [AttributeValueController::class, 'update'])->name('admin.attributeValues.update');
+
 
     Route::get('/admin/ask-a-question', [\App\Http\Controllers\Admin\AdminController::class, 'askQuestion'])->name('admin.askQuestion');
     Route::get('/admin/ask-a-question/details/{questionId}', [\App\Http\Controllers\Admin\AdminController::class, 'askQuestionDetails'])->name('admin.askQuestionDetails');

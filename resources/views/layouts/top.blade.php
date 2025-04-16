@@ -4,6 +4,7 @@
 <head>
     <title>Shop Pinoy</title>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{csrf_token()}}">
     <meta name="author" content="themesflat.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/animate.min.css')}}">
