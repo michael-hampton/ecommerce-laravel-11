@@ -8,13 +8,13 @@
                 <label for="exampleInputEmail1" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Name"
                        value="{{$brand->name}}">
-                @error('name') <p class="invalid-feedback">{{$message}}</p> @enderror
+                 <p class="invalid-feedback"></p>
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Slug</label>
                 <input type="text" class="form-control" id="name" name="slug" placeholder="Slug"
                        value="{{$brand->slug}}">
-                @error('slug') <p class="invalid-feedback">{{$message}}</p> @enderror
+               <p class="invalid-feedback"></p>
             </div>
             <div>
                 <label for="exampleInputEmail1" class="form-label">Upload Image</label>

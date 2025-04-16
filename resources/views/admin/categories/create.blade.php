@@ -8,13 +8,13 @@
                 <label for="exampleInputEmail1" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Name"
                        value="{{old('name')}}">
-                @error('name') <p class="text-danger">{{$message}}</p> @enderror
+                <p class="text-danger"></p>
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Slug</label>
                 <input type="text" class="form-control" id="name" name="slug" placeholder="Slug"
                        value="{{old('slug')}}">
-                @error('slug') <p class="text-danger">{{$message}}</p> @enderror
+                <p class="text-danger"></p>
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Parent</label>
@@ -24,7 +24,7 @@
                         <option value="{{$category->id}}">{{$category->name}}</option>
                     @endforeach
                 </select>
-                @error('parent_id') <p class="text-danger">{{$message}}</p> @enderror
+                 <p class="text-danger"></p>
             </div>
             <div>
                 <label for="exampleInputEmail1" class="form-label">Upload Image</label>

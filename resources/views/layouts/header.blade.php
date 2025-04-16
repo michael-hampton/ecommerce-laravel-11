@@ -37,8 +37,12 @@
                 <i class="fa fa-search animate-target"></i>
             </button>
 
+            @if(Auth::check())
+            {{Auth::user()->utype}} {{Auth::user()->id}}
+            @endif
+
             <!-- Account button visible on screens > 768px wide (md breakpoint) -->
-            <a class="btn btn-icon btn-lg fs-lg border-0 rounded-circle animate-shake d-none d-md-inline-flex" href="{{ Auth::user()->utype === 'ADM' ? route('admin.index') : route('user.index') }}">
+            <a class="btn btn-icon btn-lg fs-lg border-0 rounded-circle animate-shake d-none d-md-inline-flex" href="{{\Illuminate\Support\Facades\Auth::check() && Auth::user()->utype === 'ADM' ? route('admin.index') : route('user.index') }}">
                 <i class="fa fa-user animate-target"></i>
                 <span class="visually-hidden">Account</span>
             </a>

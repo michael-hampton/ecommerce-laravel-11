@@ -7,31 +7,26 @@
                 <label for="exampleInputEmail1" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Title"
                        value="{{old('title')}}">
-                @error('title') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">SubTitle</label>
                 <input type="text" class="form-control" id="subtitle" name="subtitle" placeholder="Subtitle"
                        value="{{old('subtitle')}}">
-                @error('subtitle') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Tags</label>
                 <input type="text" class="form-control" id="tags" name="tags" placeholder="Tags"
                        value="{{old('tags')}}">
-                @error('tags') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Link</label>
                 <input type="text" class="form-control" id="link" name="link" placeholder="Link"
                        value="{{old('link')}}">
-                @error('link') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Link Text</label>
                 <input type="text" class="form-control" id="link_text" name="link_text" placeholder="Link Text"
                        value="{{old('link_text')}}">
-                @error('link_text') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <select class="form-control" id="active" name="active">
                 <option value="">Select</option>

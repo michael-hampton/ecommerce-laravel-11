@@ -9,7 +9,7 @@
     </style>
     <div class="container pt-90">
         <div class="mb-4 pb-4">
-            <form method="POST" action="{{route('login')}}" name="login-form" class="needs-validation" novalidate="">
+            <form method="POST" action="{{route('login.authenticate')}}" name="login-form" class="needs-validation" novalidate="">
                 @csrf
                 <!-- Email input -->
                 <div class="form-outline mb-4">

@@ -73,6 +73,7 @@
             $('#admin-table').DataTable({
                 processing: true,
                 serverSide: true,
+                bFilter: false,
                 ajax: {
                     url: "{{ route('admin.users') }}",
                     data: function (d) {

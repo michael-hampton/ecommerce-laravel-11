@@ -8,19 +8,16 @@
                 <label for="exampleInputEmail1" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Name"
                        value="{{$user->name}}">
-                @error('name') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Mobile</label>
                 <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile"
                        value="{{$user->mobile}}">
-                @error('mobile') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email</label>
                 <input type="email" class="form-control" id="name" name="email" placeholder="Email"
                        value="{{$user->email}}">
-                @error('email') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Role</label>
@@ -30,7 +27,6 @@
                     <option value="USR" @if($user->utype === 'USR') selected="selected" @endif>User</option>
                     <option value="SUPER" @if($user->utype === 'SUPER') selected="selected" @endif>SuperAdmin</option>
                 </select>
-                @error('utype') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div>
                 <label for="exampleInputEmail1" class="form-label">Upload Image</label>

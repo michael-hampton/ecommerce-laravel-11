@@ -56,6 +56,7 @@
 
             $('#admin-table').DataTable({
                 processing: true,
+                bFilter: false,
                 serverSide: true,
                 ajax: {
                     url: "{{ route('admin.brands') }}",
@@ -75,11 +76,7 @@
                         }
                     },
                     {data: 'slug', name: 'slug'},
-                    {
-                        render: function (data, type, row) {
-                            return 'TODO'
-                        }
-                    },
+                    {data: 'products', name: 'products'},
                     {
                         orderable: false,
                         searchable: false,

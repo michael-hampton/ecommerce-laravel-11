@@ -8,31 +8,26 @@
                 <label for="exampleInputEmail1" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Title"
                        value="{{$slide->title}}">
-                @error('title') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">SubTitle</label>
                 <input type="text" class="form-control" id="subtitle" name="subtitle" placeholder="Subtitle"
                        value="{{$slide->subtitle}}">
-                @error('subtitle') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Tags</label>
                 <input type="text" class="form-control" id="tags" name="tags" placeholder="Tags"
                        value="{{$slide->tags}}">
-                @error('tags') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Link</label>
                 <input type="text" class="form-control" id="link" name="link" placeholder="Link"
                        value="{{$slide->link}}">
-                @error('link') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Link Text</label>
                 <input type="text" class="form-control" id="link_text" name="link_text" placeholder="Link Text"
                        value="{{$slide->link_text}}">
-                @error('link_text') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
 
             <div class="mb-3">
@@ -42,7 +37,6 @@
                     <option value="1" @if($slide->active === 1) selected="selected" @endif>Active</option>
                     <option value="0" @if($slide->active === 0) selected="selected" @endif>Inactive</option>
                 </select>
-                @error('active') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div>
                 <label for="exampleInputEmail1" class="form-label">Upload Image</label>

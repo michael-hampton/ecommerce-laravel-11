@@ -16,14 +16,12 @@
                         <div id="emailHelp" class="form-text">Do not exceed 100 characters when entering the product
                             name.
                         </div>
-                        @error("name") <span class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-12">
                         <label for="inputAddress" class="form-label">Slug</label>
                         <input class="form-control" type="text" placeholder="Enter product slug" name="slug"
                                tabindex="0"
                                value="{{$product->slug}}" aria-required="true" required="">
-                        @error("slug") <span class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="inputEmail4" class="form-label">Category</label>
@@ -35,8 +33,6 @@
                                     @if($product->category_id === $category->id || (!empty($product->category->parent) && $product->category->parent->id === $category->id)) selected="selected" @endif>{{$category->name}}</option>
                             @endforeach
                         </select>
-                        @error("category_id") <span
-                            class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">Subcategory</label>
@@ -60,8 +56,6 @@
                                         @if($product->brand_id == $brand->id) selected="selected" @endif>{{$brand->name}}</option>
                             @endforeach
                         </select>
-                        @error("brand_id") <span
-                            class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
 
                     <div class="col-12">
@@ -72,8 +66,6 @@
                         <div id="emailHelp" class="form-text">Do not exceed 100 characters when entering the product
                             name.
                         </div>
-                        @error("short_description") <span
-                            class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
 
                     <div class="col-12">
@@ -82,8 +74,6 @@
                         <div id="emailHelp" class="form-text">Do not exceed 100 characters when entering the product
                             name.
                         </div>
-                        @error("description") <span
-                            class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
 
                     <div class="accordion" id="accordionExample">
@@ -165,33 +155,27 @@
                             </div>
                         </div>
                     </div>
-                    @error("images") <span class="invalid-feedback">{{$message}}</span> @enderror
 
                     <div class="col-md-6">
                         <label for="inputEmail4" class="form-label">Regular Price</label>
                         <input class="form-control" type="text" placeholder="Enter regular price" name="regular_price"
                                tabindex="0" value="{{$product->regular_price}}" aria-required="true" required="">
-                        @error("regular_price") <span
-                            class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">Sale Price</label>
                         <input class="form-control" type="text" placeholder="Enter sale price" name="sale_price"
                                tabindex="0" value="{{$product->sale_price}}" aria-required="true" required="">
-                        @error("sale_price") <span class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="inputEmail4" class="form-label">SKU</label>
                         <input class="form-control" type="text" placeholder="Enter SKU" name="SKU" tabindex="0"
                                value="{{$product->SKU}}" aria-required="true" required="">
-                        @error("SKU") <span class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">Quantity</label>
                         <input class="form-control" type="text" placeholder="Enter quantity" name="quantity"
                                tabindex="0"
                                value="{{$product->quantity}}" aria-required="true" required="">
-                        @error("quantity") <span class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="inputEmail4" class="form-label">Stock</label>
@@ -204,8 +188,6 @@
                                 Out of Stock
                             </option>
                         </select>
-                        @error("stock_status") <span
-                            class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                     <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">Featured</label>
@@ -213,7 +195,6 @@
                             <option value="0" {{$product->featured == "0" ? "Selected":"" }}>No</option>
                             <option value="1" {{$product->featured == "1" ? "Selected":"" }}>Yes</option>
                         </select>
-                        @error("featured") <span class="invalid-feedback">{{$message}}</span> @enderror
                     </div>
                 </div>
 

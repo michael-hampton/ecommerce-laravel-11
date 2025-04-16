@@ -65,6 +65,7 @@
             $('#admin-table').DataTable({
                 processing: true,
                 serverSide: true,
+                bFilter: false,
                 ajax: {
                     url: "{{ route('admin.products') }}",
                     data: function (d) {
@@ -75,7 +76,7 @@
                 columns: [
                     {data: 'id', name: 'id'},
                     {
-                        data: 'name', name: 'name', render: function (data, type, row) {
+                        data: 'name', name: 'name', className: 'd-flex', render: function (data, type, row) {
                             return '<div class="d-flex align-items-center justify-content-between me-3"> ' +
                                 '<img src="{{asset('images/products')}}/' + row.image + '" alt="' + row.name + '" class="image"></div> ' +
                                 '<div class="><a href="#" class="fw-bold">' + row.name + '</a><div class="text-tiny mt-3">' + row.SKU + '</div> </div>';
@@ -84,8 +85,8 @@
                     {data: 'regular_price', name: 'regular_price'},
                     {data: 'sale_price', name: 'sale_price'},
                     {data: 'SKU', name: 'SKU'},
-                    {data: 'category_id', name: 'category_id'},
-                    {data: 'brand_id', name: 'brand_id'},
+                    {data: 'category', name: 'category'},
+                    {data: 'brand', name: 'brand'},
                     {
                         data: 'featured', name: 'featured', render: function (data, type, row) {
                             return row.featured === 1 ? 'Yes' : 'No';
@@ -93,7 +94,7 @@
                     },
                     {
                         data: 'stock_status', name: 'stock_status', render: function (data, type, row) {
-                            return row.stock_status === 'instock' ? 'Yes' : 'No';
+                            return row.has_stock === true ? 'Yes' : 'No';
                         }
                     },
                     {data: 'quantity', name: 'quantity'},

@@ -38,6 +38,8 @@
                             <th>#</th>
                             <th>Code</th>
                             <th>Type</th>
+                            <th>Brands</th>
+                            <th>Categories</th>
                             <th>Value</th>
                             <th>Cart Value</th>
                             <th>Expiry Date</th>
@@ -59,6 +61,7 @@
             $('#admin-table').DataTable({
                 processing: true,
                 serverSide: true,
+                bFilter: false,
                 ajax: {
                     url: "{{ route('admin.coupons') }}",
                     data: function (d) {
@@ -70,6 +73,40 @@
                     {data: 'id', name: 'id'},
                     {data: 'code', name: 'code'},
                     {data: 'type', name: 'type'},
+                    {data: 'brands', name: 'brands', render: function (data, type, row) {
+                            var html = ''
+                            row.brands.forEach(item => {
+                                html += '<div class="d-flex align-items-center justify-content-between">' +
+                                    item.name +
+                                    '<a data-url="{{route('admin.brands.edit', ['id' => 'test'])}}" data-id=' + item.id + ' href="#" target="_blank" class="edit">' +
+                                    '<i class="icon-eye"></i>' +
+                                    '</a>' +
+                                    '<a data-url="{{route('admin.brands.destroy', ['id' => 'test'])}}" data-id=' + item.id + ' href="#" target="_blank" class="delete">' +
+                                    '<i class="fa fa-trash"></i>' +
+                                    '</a>' +
+                                    '</div>';
+                            });
+
+                            return html;
+
+                        }},
+                    {data: 'categories', name: 'categories', render: function (data, type, row) {
+                            var html = ''
+                            row.categories.forEach(item => {
+                                html += '<div class="d-flex align-items-center justify-content-between">' +
+                                    item.name +
+                                    '<a data-url="{{route('admin.categories.edit', ['id' => 'test'])}}" data-id=' + item.id + ' href="#" target="_blank" class="edit">' +
+                                    '<i class="icon-eye"></i>' +
+                                    '</a>' +
+                                    '<a data-url="{{route('admin.categories.destroy', ['id' => 'test'])}}" data-id=' + item.id + ' href="#" target="_blank" class="delete">' +
+                                    '<i class="fa fa-trash"></i>' +
+                                    '</a>' +
+                                    '</div>';
+                            });
+
+                            return html;
+
+                        }},
                     {data: 'value', name: 'value'},
                     {data: 'cart_value', name: 'cart_value'},
                     {data: 'expires_at', name: 'expires_at'},

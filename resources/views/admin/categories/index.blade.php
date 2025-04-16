@@ -58,6 +58,7 @@
             $('#admin-table').DataTable({
                 processing: true,
                 serverSide: true,
+                bFilter: false,
                 ajax: {
                     url: "{{ route('admin.categories') }}",
                     data: function (d) {
@@ -76,16 +77,24 @@
                         }
                     },
                     {data: 'slug', name: 'slug'},
-                    {
-                        render: function (data, type, row) {
-                            return 'TODO'
-                        }
-                    },
-                    {
-                        render: function (data, type, row) {
-                            return 'TODO'
-                        }
-                    },
+                    {data: 'products', name: 'products' },
+                    {data: 'subcategories', name: 'subcategories', render: function (data, type, row) {
+                        var html = ''
+                            row.subcategories.forEach(item => {
+                                html += '<div class="d-flex align-items-center justify-content-between">' +
+                                    item.name +
+                                    '<a data-url="{{route('admin.categories.edit', ['id' => 'test'])}}" data-id=' + item.id + ' href="#" target="_blank" class="edit">' +
+                                    '<i class="icon-eye"></i>' +
+                                    '</a>' +
+                                    '<a data-url="{{route('admin.categories.destroy', ['id' => 'test'])}}" data-id=' + item.id + ' href="#" target="_blank" class="delete">' +
+                                    '<i class="fa fa-trash"></i>' +
+                                    '</a>' +
+                                    '</div>';
+                            });
+
+                        return html;
+
+                        }},
                     {
                         orderable: false,
                         searchable: false,

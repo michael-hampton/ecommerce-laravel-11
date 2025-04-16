@@ -7,31 +7,26 @@
                 <label for="exampleInputEmail1" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Name"
                        value="{{old('name')}}">
-                @error('name') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Mobile</label>
                 <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile"
                        value="{{old('mobile')}}">
-                @error('mobile') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email</label>
                 <input type="email" class="form-control" id="name" name="email" placeholder="Email"
                        value="{{old('email')}}">
-                @error('email') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password"
                        value="{{old('password')}}">
-                @error('password') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Confirm Password</label>
                 <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Password"
                        value="{{old('confirm')}}">
-                @error('confirm') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Role</label>
@@ -41,7 +36,6 @@
                     <option value="USR">User</option>
                     <option value="SUPER">SuperAdmin</option>
                 </select>
-                @error('utype') <p class="invalid-feedback">{{$message}}</p> @enderror
             </div>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="active">
