@@ -1,0 +1,30 @@
+<app-modal title="create category" [child]="child" (closeMeEvent)="close()" (confirmEvent)="save()">
+  <ng-template #child>
+    <div class="card p-3">
+      <div class="card-body">
+        <app-modal title="create category" [child]="child" (closeMeEvent)="close()" (confirmEvent)="save()">
+          <ng-template #child>
+            <div class="card p-3">
+              <div class="card-body">
+                <form class="form-horizontal" method="post">
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Attribute</label>
+                    <select class="form-control" id="attribute_id" name="attribute_id">
+                      <option value="">Select Attribute</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </ng-template>
+        </app-modal>
+
+      </div>
+    </div>
+  </ng-template>
+</app-modal>

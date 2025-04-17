@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\AttributeValueController;
+use App\Http\Controllers\AngularController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PaymentProviders\PaypalController;
 use App\Http\Middleware\AuthAdmin;
@@ -189,5 +190,7 @@ Route::get('/checkout/order-confirmation', [\App\Http\Controllers\Front\Checkout
 
 Route::get('/change-password', [\App\Http\Controllers\Front\HomeController::class, 'changePassword'])->name('change-password');
 Route::post('/change-password', [\App\Http\Controllers\Front\HomeController::class, 'updatePassword'])->name('update-password');
+
+Route::any('/angular/{any}', [AngularController::class, 'index']);
 
 
