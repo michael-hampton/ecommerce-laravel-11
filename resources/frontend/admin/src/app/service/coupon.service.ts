@@ -4,6 +4,7 @@ import {BASE_URL} from '../config';
 import {of} from 'rxjs';
 import {Coupon} from '../data/coupon';
 import {formatDate} from '@angular/common';
+import {Brand} from '../data/brand';
 
 export const MODULE = 'admin/coupons'
 
@@ -192,8 +193,26 @@ export class CouponService {
 
   constructor(private httpclient: HttpClient) { }
 
+  create(payload: Partial<Coupon>) {
+    alert('creating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  update(id: number, payload: Partial<Coupon>) {
+    alert('updating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  delete(id: number) {
+    alert('deleting')
+    return of(this.coupons);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
   getData(){
-    return of(this.coupons)
+    return of({data: this.coupons})
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

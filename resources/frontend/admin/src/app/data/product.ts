@@ -2,7 +2,7 @@ import {Category} from './category';
 import {Brand} from './brand';
 
 export type Product = {
-  id: number
+  id?: number
   name: string
   slug: string
   short_description: string

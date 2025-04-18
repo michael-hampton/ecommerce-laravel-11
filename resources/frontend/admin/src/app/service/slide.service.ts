@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BASE_URL} from '../config';
 import {of} from 'rxjs';
 import {Slide} from '../data/slide';
+import {Brand} from '../data/brand';
 
 export const MODULE = 'admin/slides'
 
@@ -56,8 +57,26 @@ export class SlideService {
 
   constructor(private httpclient: HttpClient) { }
 
+  delete(id: number) {
+    alert('deleting')
+    return of(this.slides);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  create(payload: Partial<Slide>) {
+    alert('creating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  update(id: number, payload: Partial<Slide>) {
+    alert('updating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
   getData(){
-    return of(this.slides)
+    return of({data: this.slides})
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BASE_URL} from '../config';
 import {of} from 'rxjs';
 import {Brand} from '../data/brand';
+import {Category} from '../data/category';
 
 export const MODULE = 'admin/brands'
 
@@ -36,8 +37,26 @@ export class BrandService {
 
   constructor(private httpclient: HttpClient) { }
 
+  delete(id: number) {
+    alert('deleting')
+    return of(this.brands);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  create(payload: Partial<Brand>) {
+    alert('creating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  update(id: number, payload: Partial<Brand>) {
+    alert('updating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
   getData(){
-    return of(this.brands)
+    return of({data: this.brands})
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

@@ -174,8 +174,14 @@ export class OrderService {
 
   constructor(private httpclient: HttpClient) { }
 
+  delete(id: number) {
+    alert('deleting')
+    return of(this.orders);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
   getData(){
-    return of(this.orders)
+    return of({data: this.orders})
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import {DashboardComponent} from './components/dashboard/dashboard.component';
-import {AttributeValuesComponent} from './components/attribute-values/attribute-values.component';
-import {AttributesComponent} from './components/attributes/attributes.component';
-import {BrandsComponent} from './components/brands/brands.component';
-import {CategoriesComponent} from './components/categories/categories.component';
-import {CouponsComponent} from './components/coupons/coupons.component';
-import {OrdersComponent} from './components/orders/orders.component';
-import {ProductsComponent} from './components/products/products.component';
-import {SlidesComponent} from './components/slides/slides.component';
-import {UsersComponent} from './components/users/users.component';
-import {SettingsComponent} from './components/settings/settings.component';
+import {DashboardComponent} from './features/dashboard/dashboard.component';
+import {AttributeValuesComponent} from './features/attribute-values/attribute-values.component';
+import {AttributesComponent} from './features/attributes/attributes.component';
+import {BrandsComponent} from './features/brands/brands.component';
+import {CategoriesComponent} from './features/categories/categories.component';
+import {CouponsComponent} from './features/coupons/coupons.component';
+import {OrdersComponent} from './features/orders/orders.component';
+import {ProductsComponent} from './features/products/products.component';
+import {SlidesComponent} from './features/slides/slides.component';
+import {UsersComponent} from './features/users/users.component';
+import {SettingsComponent} from './features/settings/settings.component';
 
 export const routes: Routes = [
   {path: '', component:DashboardComponent},

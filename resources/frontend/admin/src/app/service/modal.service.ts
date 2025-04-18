@@ -1,8 +1,7 @@
 import {ComponentFactoryResolver, ComponentRef, Injectable, Type, ViewContainerRef} from '@angular/core';
-import {ModalComponent} from '../components/modal/modal.component';
 import {Subject} from 'rxjs';
-import {ModalConfig} from '../components/modal/modal.config';
-import {FormComponent} from '../components/categories/form/form.component';
+import {ModalComponent} from '../shared/modal/modal.component';
+import {ModalConfig} from '../shared/modal/modal.config';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +11,30 @@ export class ModalService {
   private componentSubscriber!: Subject<string>;
   constructor(private resolver: ComponentFactoryResolver) {}
 
-  openModal(type: Type<ModalComponent>, entry: ViewContainerRef, modalTitle: string, modalBody: string) {
+  openModal(type: Type<ModalComponent>, entry: ViewContainerRef, formData: any, config: ModalConfig) {
     let factory = this.resolver.resolveComponentFactory(type);
     this.componentRef = entry.createComponent(factory);
     console.log(this.componentRef.instance)
-    this.componentRef.instance.title = modalTitle;
-    this.componentRef.instance.body = modalBody;
+    this.componentRef.instance.title = config.modalTitle;
+    this.componentRef.instance.formData = formData;
     this.componentRef.instance.modalService = this;
+    this.componentRef.instance.saveButtonText = 'Save';
+    this.componentRef.instance.saveButtonClass = 'btn-primary';
+    this.componentRef.instance.closeMeEvent.subscribe(() => this.closeModal());
+    this.componentRef.instance.confirmEvent.subscribe(() => this.confirm());
+    this.componentSubscriber = new Subject<string>();
+    return this.componentSubscriber.asObservable();
+  }
+
+  openConfirmationModal(type: Type<ModalComponent>, entry: ViewContainerRef, formData: any, config: ModalConfig) {
+    let factory = this.resolver.resolveComponentFactory(type);
+    this.componentRef = entry.createComponent(factory);
+    console.log(this.componentRef.instance)
+    this.componentRef.instance.title = config.modalTitle;
+    this.componentRef.instance.body = config.modalBody ?? '';
+    this.componentRef.instance.saveButtonText = 'Delete';
+    this.componentRef.instance.saveButtonClass = 'btn-danger';
+    this.componentRef.instance.formData = formData;
     this.componentRef.instance.closeMeEvent.subscribe(() => this.closeModal());
     this.componentRef.instance.confirmEvent.subscribe(() => this.confirm());
     this.componentSubscriber = new Subject<string>();
@@ -26,7 +42,6 @@ export class ModalService {
   }
 
   closeModal() {
-    alert('here')
     this.componentSubscriber.complete();
     this.componentRef.destroy();
   }

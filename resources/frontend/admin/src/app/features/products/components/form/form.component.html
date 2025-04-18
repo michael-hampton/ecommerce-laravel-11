@@ -1,0 +1,190 @@
+<app-modal [title]="title" [saveButtonDisabled]="form?.invalid || false" [child]="child" (closeMeEvent)="close()"
+           (confirmEvent)="save()">
+  <ng-template #child>
+    <div class="card p-3" *ngIf="lookupVm$ | async as vm">
+      <div class="card-body" *ngIf="form">
+        <form method="POST" enctype="multipart/form-data" [formGroup]="form">
+          <input type="hidden" name="charge_featured" id="charge_featured" value="0">
+          <div class="d-flex">
+            <div class="card p-3 col-lg-6">
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="inputAddress" class="form-label">Name</label>
+                    <input class="form-control" type="text" placeholder="Enter product name" name="name"
+                           formControlName="name">
+                    <div class="form-text">Do not exceed 100 characters when entering the product name.
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="inputAddress" class="form-label">Slug</label>
+                    <input class="form-control" type="text" placeholder="Enter product slug" name="slug"
+                           formControlName="slug">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="inputEmail4" class="form-label">Category</label>
+                    <select class="form-control" name="category_id" id="category_id" formControlName="category_id">
+                      <option value="">Choose category</option>
+                      <option *ngFor="let category of vm.categories"
+                              [value]="category.id">
+                        {{ category.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="inputPassword4" class="form-label">Subcategory</label>
+                    <select class="form-control" id="subcategoryDropdown" name="subcategory_id"
+                            formControlName="subcategory_id">
+                      <option value="">Choose Subcategory</option>
+                      <option *ngFor="let subcategory of vm.subcategories"
+                              [value]="subcategory.id">
+                        {{ subcategory.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="inputAddress" class="form-label">Brand</label>
+                    <select class="form-control" name="brand_id" formControlName="brand_id">
+                      <option value="">Choose Brand</option>
+                      <option *ngFor="let brand of vm.brands"
+                              [value]="brand.id">
+                        {{ brand.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="inputAddress" class="form-label">Short Description</label>
+                    <textarea class="form-control" name="short_description" id="short_description"
+                              formControlName="short_description">
+                        </textarea>
+                    <div id="emailHelp" class="form-text">Do not exceed 100 characters when entering the product
+                      name.
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="inputAddress" class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="description" formControlName="description">
+                        </textarea>
+                    <div class="form-text">Do not exceed 100 characters when entering the product
+                      name.
+                    </div>
+                  </div>
+
+                  <div class="accordion" id="accordionExample">
+                    <div *ngFor="let attribute of vm.attributes" class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                                [attr.data-bs-toggle]="'collapse'"
+                                [attr.data-bs-target]="'#parent-'+attribute.id"
+                                aria-expanded="false"
+                                aria-controls="collapseTwo">
+                          {{ attribute.name }}
+                        </button>
+                      </h2>
+                      <div id="parent-{{attribute.id}}" class="accordion-collapse collapse"
+                           data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <div class="form-check" *ngFor="let attributeValue of attribute.attribute_values">
+                            <input class="form-check-input attribute-checkbox" type="checkbox"
+                                   value="{{attributeValue.id}}"
+                                   name="attribute_values[{{attribute.id}}]"
+                                   id="{{attributeValue.id}}">
+                            <label class="form-check-label" for="flexCheckDefault">
+                              {{ attributeValue.name }}
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="card p-3 ms-3 col-lg-6">
+              <div class="card-body">
+                <div class="row g-3">
+                  <div>
+                    <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
+                    <div class="upload-image flex-grow" *ngIf="formVm$ | async as formVm">
+                      <div *ngIf="formVm.imagePreview" class="item" id="imgpreview">
+                        <img [src]="formVm.imagePreview" class="effect8" alt="">
+                      </div>
+                      <div id="upload-file" class="item up-load">
+                        <label class="uploadfile" for="myFile">
+                                    <span class="icon">
+                                        <i class="fa fa-upload"></i>
+                                    </span>
+                          <span class="body-text">Drop your images here or select <span
+                            class="tf-color">click to browse</span></span>
+                          <input type="file" id="myFile" name="image" accept="image/*" formControlName="image"
+                                 (change)="_formStore.selectFile($event)">
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="body-title form-control">Upload Gallery Images</div>
+                    <div class="upload-image mb-16">
+                      <div id="galUpload" class="item up-load">
+                        <label class="uploadfile" for="gFile">
+                                    <span class="icon">
+                                        <i class="fa fa-upload"></i>
+                                    </span>
+                          <span class="text-tiny">Drop your images here or select <span
+                            class="tf-color">click to browse</span></span>
+                          <input type="file" id="gFile" name="images[]" accept="image/*" multiple>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="inputEmail4" class="form-label">Regular Price</label>
+                    <input class="form-control" type="text" placeholder="Enter regular price" name="regular_price"
+                           formControlName="regular_price">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="inputPassword4" class="form-label">Sale Price</label>
+                    <input class="form-control" type="text" placeholder="Enter sale price" name="sale_price"
+                           formControlName="sale_price">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="inputEmail4" class="form-label">SKU</label>
+                    <input class="form-control" type="text" placeholder="Enter SKU" name="SKU" tabindex="0"
+                           formControlName="sku">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="inputPassword4" class="form-label">Quantity</label>
+                    <input class="form-control" type="text" placeholder="Enter quantity" name="quantity"
+                           formControlName="quantity">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="inputEmail4" class="form-label">Stock</label>
+                    <select class="form-control" name="stock_status" formControlName="stock_status">
+                      <option value="instock">InStock</option>
+                      <option value="outofstock">Out of Stock</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="inputPassword4" class="form-label">Featured</label>
+                    <select class="form-control" name="featured" id="featured" formControlName="featured">
+                      <option value="0">No</option>
+                      <option value="1">Yes</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
+</app-modal>

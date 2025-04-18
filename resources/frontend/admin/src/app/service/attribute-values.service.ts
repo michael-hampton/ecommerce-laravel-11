@@ -51,8 +51,26 @@ export class AttributeValuesService {
 
   constructor(private httpclient: HttpClient) { }
 
-  getData(){
+  create(payload: Partial<AttributeValue>) {
+    alert('creating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  update(id: number, payload: Partial<AttributeValue>) {
+    alert('updating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  delete(id: number){
+    alert('deleting')
     return of(this.attributeValues);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  getData(){
+    return of({data: this.attributeValues});
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

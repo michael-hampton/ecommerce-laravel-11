@@ -70,8 +70,26 @@ export class CategoryService {
 
   constructor(private httpclient: HttpClient) { }
 
+  delete(id: number) {
+    alert('deleting')
+    return of(this.categories);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  create(payload: Partial<Category>) {
+    alert('creating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
+  update(id: number, payload: Partial<Category>) {
+    alert('updating')
+    return of(payload);
+    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  }
+
   getData(){
-    return of(this.categories)
+    return of({data: this.categories})
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }
