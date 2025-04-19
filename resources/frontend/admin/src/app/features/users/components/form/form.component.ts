@@ -1,17 +1,14 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {User} from '../../../../data/user';
-import {UserFormStore} from '../../store/form.store';
+import {UserFormStore} from "../../../../store/users/form.store";
+import {ModalComponent} from "../../../../shared/components/modal/modal.component";
+import {User} from '../../../../types/users/user';
+import {RoleEnum} from '../../../../types/users/role.enum';
 
 @Component({
   selector: 'app-form',
-  imports: [
-    CommonModule,
-    ModalComponent,
-    ReactiveFormsModule
-  ],
+  standalone: false,
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -35,17 +32,6 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
   }
 
-  open = () => {
-    console.log('content', this.content)
-    console.log('service', this.modalService)
-    // super.open();
-    return Promise.resolve();
-  }
-
-  override close() {
-    super.close();
-  }
-
   save() {
     if (this.form?.valid) {
       const model: User = {
@@ -60,6 +46,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
       this._formStore.saveData(model).subscribe(result => {
         alert('good')
+        this.confirm()
       })
     }
   }
@@ -89,4 +76,6 @@ export class FormComponent extends ModalComponent implements OnInit {
       image: new FormControl(''),
     })
   }
+
+  protected readonly RoleEnum = RoleEnum;
 }

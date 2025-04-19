@@ -1,18 +1,14 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Brand} from '../../../../data/brand';
-import {LookupStore} from '../../../../shared/store/lookup.store';
-import {BrandFormStore} from '../../store/form.store';
+import {ModalComponent} from '../../../../shared/components/modal/modal.component';
+import {LookupStore} from "../../../../store/lookup.store";
+import {BrandFormStore} from "../../../../store/brands/form.store";
+import {Brand} from '../../../../types/brands/brand';
 
 @Component({
   selector: 'app-form',
-  imports: [
-    CommonModule,
-    ModalComponent,
-    ReactiveFormsModule
-  ],
+  standalone: false,
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -42,17 +38,6 @@ export class FormComponent extends ModalComponent implements OnInit {
     });
   }
 
-  open = () => {
-    console.log('content', this.content)
-    console.log('service', this.modalService)
-    // super.open();
-    return Promise.resolve();
-  }
-
-  override close() {
-    super.close();
-  }
-
   save() {
     if (this.form?.valid) {
       const model: Brand = {
@@ -63,6 +48,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
       this._formStore.saveData(model).subscribe(result => {
         alert('here')
+        this.confirm();
       })
     }
   }

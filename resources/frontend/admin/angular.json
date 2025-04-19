@@ -7,7 +7,14 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
         }
       },
       "root": "",
@@ -21,8 +28,7 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js",
-              "@angular/localize/init"
+              "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -33,9 +39,9 @@
               }
             ],
             "styles": [
-              "node_modules/datatables.net-dt/css/dataTables.dataTables.min.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/bootstrap/scss/bootstrap.scss",
+              "node_modules/datatables.net-dt/css/dataTables.dataTables.min.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
@@ -57,13 +63,7 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all",
-              "outputPath": "../../../public/assets/admin",
-              "deployUrl": "/assets/admin/"
-            },
-            "dev": {
-              "outputPath": "dist/assets/admin",
-              "baseHref": "/assets/admin/"
+              "outputHashing": "all"
             },
             "development": {
               "optimization": false,
@@ -81,9 +81,6 @@
             },
             "development": {
               "buildTarget": "admin:build:development"
-            },
-            "dev": {
-              "buildTarget": "admin:build:dev"
             }
           },
           "defaultConfiguration": "development"
@@ -96,8 +93,7 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing",
-              "@angular/localize/init"
+              "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
@@ -108,15 +104,9 @@
               }
             ],
             "styles": [
-              "node_modules/datatables.net-dt/css/dataTables.dataTables.min.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
-            "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/datatables.net/js/dataTables.min.js"
-            ]
+            "scripts": []
           }
         }
       }

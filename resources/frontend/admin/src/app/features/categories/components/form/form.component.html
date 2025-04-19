@@ -1,9 +1,9 @@
-<app-modal [title]="title" [saveButtonDisabled]="form?.invalid || false" [child]="child"
-           (closeMeEvent)="close()" (confirmEvent)="save()">
+<app-modal [title]="title" [child]="child"
+           (closeMeEvent)="close()">
   <ng-template #child>
     <div class="card p-3" *ngIf="lookupVm$ | async as vm">
       <div class="card-body" *ngIf="form">
-        <form method="POST"
+        <form admin-form method="POST" id="admin-form"
               enctype="multipart/form-data" [formGroup]="form">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Name</label>
@@ -40,9 +40,17 @@
                                                         </span>
                 <span class="body-text">Drop your images here or select <span
                   class="tf-color">click to browse</span></span>
-                <input type="file" id="myFile" name="image" accept="image/*" formControlName="image" (change)="_formStore.selectFile($event)">
+                <input type="file" id="myFile" name="image" accept="image/*" formControlName="image"
+                       (change)="_formStore.selectFile($event)">
               </label>
             </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
+            <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
+                    (click)="save()">{{ saveButtonText }}
+            </button>
           </div>
         </form>
       </div>

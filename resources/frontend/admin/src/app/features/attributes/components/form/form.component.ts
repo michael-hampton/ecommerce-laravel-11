@@ -1,17 +1,13 @@
 import {AfterViewInit, Component, ElementRef, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Attribute} from '../../../../data/attribute';
-import {AttributeFormStore} from '../../store/form.store';
+import {ModalComponent} from "../../../../shared/components/modal/modal.component";
+import {Attribute} from "../../../../types/attributes/attribute";
+import {AttributeFormStore} from "../../../../store/attributes/form.store";
 
 @Component({
   selector: 'app-form',
-  imports: [
-    CommonModule,
-    ModalComponent,
-    ReactiveFormsModule
-  ],
+  standalone: false,
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -35,18 +31,8 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
   }
 
-  open = () => {
-    console.log('content', this.content)
-    console.log('service', this.modalService)
-    // super.open();
-    return Promise.resolve();
-  }
-
-  override close() {
-    super.close();
-  }
-
   save() {
+    alert('here')
     if (this.form?.valid) {
       const model: Attribute = {
         name: this.form.value.name,
@@ -54,6 +40,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
       this._formStore.saveData(model).subscribe(result => {
         alert('good');
+        this.confirm();
       })
     }
   }

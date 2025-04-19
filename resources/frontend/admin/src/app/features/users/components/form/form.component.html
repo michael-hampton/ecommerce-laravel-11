@@ -1,9 +1,9 @@
-<app-modal [title]="title" [saveButtonDisabled]="form?.invalid || false" [child]="child"
+<app-modal [title]="title" [child]="child"
            (closeMeEvent)="close()" (confirmEvent)="save()">
   <ng-template #child>
     <div class="card p-3">
       <div class="card-body" *ngIf="form">
-        <form method="POST"
+        <form admin-form method="POST"
               enctype="multipart/form-data" [formGroup]="form">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Name</label>
@@ -32,9 +32,7 @@
             <label for="exampleInputEmail1" class="form-label">Role</label>
             <select class="form-control" id="utype" name="utype" formControlName="utype">
               <option value="">Select Role</option>
-              <option value="ADM">Admin</option>
-              <option value="USR">User</option>
-              <option value="SUPER">SuperAdmin</option>
+              <option *ngFor="let role of RoleEnum | keyvalue" value="{{role.key}}">{{role.value}}</option>
             </select>
           </div>
           <div class="form-check form-switch">
@@ -60,6 +58,13 @@
                        (change)="_formStore.selectFile($event)">
               </label>
             </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
+            <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
+                    (click)="save()">{{ saveButtonText }}
+            </button>
           </div>
         </form>
       </div>

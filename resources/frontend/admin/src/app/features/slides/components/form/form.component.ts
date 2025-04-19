@@ -1,17 +1,13 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Slide} from '../../../../data/slide';
-import {SlideFormStore} from '../../store/form.store';
+import {ModalComponent} from "../../../../shared/components/modal/modal.component";
+import {SlideFormStore} from "../../../../store/slides/form.store";
+import {Slide} from "../../../../types/slides/slide";
 
 @Component({
   selector: 'app-form',
-  imports: [
-    CommonModule,
-    ModalComponent,
-    ReactiveFormsModule
-  ],
+  standalone: false,
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -34,18 +30,6 @@ export class FormComponent extends ModalComponent implements OnInit {
       this.patchForm();
     }
   }
-
-  open = () => {
-    console.log('content', this.content)
-    console.log('service', this.modalService)
-    // super.open();
-    return Promise.resolve();
-  }
-
-  override close() {
-    super.close();
-  }
-
   save() {
     if (this.form?.valid) {
       const model: Slide = {
@@ -60,6 +44,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
       this._formStore.saveData(model).subscribe(result => {
         alert('good')
+        this.confirm();
       })
     }
   }

@@ -1,18 +1,15 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Coupon} from '../../../../data/coupon';
-import {LookupStore} from '../../../../shared/store/lookup.store';
-import {CouponFormStore} from '../../store/form.store';
+import {LookupStore} from "../../../../store/lookup.store";
+import {ModalComponent} from "../../../../shared/components/modal/modal.component";
+import {CouponFormStore} from "../../../../store/coupons/form.store";
+import {Coupon} from "../../../../types/coupons/coupon";
+import {CouponTypeEnum} from '../../../../types/coupons/coupon-type.enum';
 
 @Component({
   selector: 'app-form',
-  imports: [
-    CommonModule,
-    ModalComponent,
-    ReactiveFormsModule
-  ],
+  standalone: false,
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -42,17 +39,6 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
   }
 
-  open = () => {
-    console.log('content', this.content)
-    console.log('service', this.modalService)
-    // super.open();
-    return Promise.resolve();
-  }
-
-  override close() {
-    super.close();
-  }
-
   save() {
     if (this.form?.valid) {
       const model: Coupon = {
@@ -68,6 +54,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
       this._formStore.saveData(model).subscribe(result => {
         alert('good');
+        this.confirm();
       })
     }
   }
@@ -92,10 +79,12 @@ export class FormComponent extends ModalComponent implements OnInit {
       type: new FormControl('', [Validators.required]),
       value: new FormControl('', [Validators.required]),
       cart_value: new FormControl('', [Validators.required]),
-      usages: new FormControl(0),
+      usages: new FormControl(1),
       expires_at: new FormControl(0),
       categories: new FormControl(''),
       brands: new FormControl(''),
     })
   }
+
+  protected readonly CouponTypeEnum = CouponTypeEnum;
 }

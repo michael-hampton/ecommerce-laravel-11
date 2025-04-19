@@ -3,7 +3,7 @@
   <ng-template #child>
     <div class="card p-3" *ngIf="lookupVm$ | async as vm">
       <div class="card-body" *ngIf="form">
-        <form method="POST" enctype="multipart/form-data" [formGroup]="form">
+        <form admin-form method="POST" enctype="multipart/form-data" [formGroup]="form">
           <input type="hidden" name="charge_featured" id="charge_featured" value="0">
           <div class="d-flex">
             <div class="card p-3 col-lg-6">
@@ -166,15 +166,15 @@
                   <div class="col-md-6">
                     <label for="inputEmail4" class="form-label">Stock</label>
                     <select class="form-control" name="stock_status" formControlName="stock_status">
-                      <option value="instock">InStock</option>
-                      <option value="outofstock">Out of Stock</option>
+                      <option value="">Select Option</option>
+                      <option *ngFor="let stock_status of StockStatus | keyvalue" value="{{stock_status.key}}">{{stock_status.value}}</option>
                     </select>
                   </div>
                   <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Featured</label>
                     <select class="form-control" name="featured" id="featured" formControlName="featured">
-                      <option value="0">No</option>
-                      <option value="1">Yes</option>
+                      <option value="">Select Option</option>
+                      <option *ngFor="let featured of FeaturedEnum | keyvalue" value="{{featured.key}}">{{featured.value}}</option>
                     </select>
                   </div>
                 </div>
@@ -182,6 +182,13 @@
               </div>
             </div>
 
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
+            <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
+                    (click)="save()">{{ saveButtonText }}
+            </button>
           </div>
         </form>
       </div>

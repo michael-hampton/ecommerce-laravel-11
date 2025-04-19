@@ -1,22 +1,17 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Product} from '../../../../data/product';
-import {ProductFormStore} from '../../store/form.store';
-import {LookupStore} from '../../../../shared/store/lookup.store';
-import {NgbAccordionBody, NgbAccordionButton, NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {CategoryFormStore} from '../../../categories/store/form.store';
+import {catchError, forkJoin, of} from 'rxjs';
+import {ModalComponent} from '../../../../shared/components/modal/modal.component';
+import {LookupStore} from "../../../../store/lookup.store";
+import {ProductFormStore} from "../../../../store/products/form.store";
+import {Product} from "../../../../types/products/product";
+import {StockStatusEnum} from '../../../../types/products/stock-status.enum';
+import {FeaturedEnum} from '../../../../types/products/featured.enum';
 
 @Component({
   selector: 'app-form',
-  imports: [
-    CommonModule,
-    ModalComponent,
-    ReactiveFormsModule,
-    NgbModule,
-
-  ],
+  standalone: false,
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -36,9 +31,11 @@ export class FormComponent extends ModalComponent implements OnInit {
   override ngOnInit() {
     super.ngOnInit();
 
-    this._lookupStore.getCategories();
-    this._lookupStore.getBrands();
-    this._lookupStore.getAttributes();
+    forkJoin([
+      this._lookupStore.getCategories(),
+      this._lookupStore.getBrands(),
+      this._lookupStore.getAttributes()
+    ]);
 
     this.initializeForm();
 
@@ -54,18 +51,6 @@ export class FormComponent extends ModalComponent implements OnInit {
       this._lookupStore.getSubcategories(value)
     });
   }
-
-  open = () => {
-    console.log('content', this.content)
-    console.log('service', this.modalService)
-    // super.open();
-    return Promise.resolve();
-  }
-
-  override close() {
-    super.close();
-  }
-
   save() {
     if (this.form?.valid) {
       const model: Product = {
@@ -81,14 +66,14 @@ export class FormComponent extends ModalComponent implements OnInit {
         SKU: this.form.value.sku,
         quantity: this.form.value.quantity,
         stock_status: this.form.value.stock_status,
-        featured: this.form.value.featured,
+        featured: this.form.value.featured === 'yes',
         image: this.form.value.image,
         seller_id: 1, //TODO
         images: ''
       } as Product;
 
       this._formStore.saveData(model).subscribe(result => {
-        alert('good')
+        this.confirm();
       })
     }
   }
@@ -108,7 +93,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       sku: this.formData.sku,
       quantity: this.formData.quantity,
       stock_status: this.formData.stock_status,
-      featured: this.formData.featured,
+      featured: this.formData.featured === true,
       image: this.formData.image,
     })
   }
@@ -140,4 +125,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
     this.form?.patchValue({slug: value})
   }
+
+  protected readonly StockStatus = StockStatusEnum;
+  protected readonly FeaturedEnum = FeaturedEnum;
 }
