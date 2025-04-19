@@ -2,6 +2,12 @@
   <h3>Categories</h3>
 </div>
 
+<app-table [items]="test" (headerClick)="headerClick($event)" (changePage)="pageChanged($event)">
+  <data-table-column header="test" property="test" [sortable]="true"></data-table-column>
+  <data-table-column header="test2" property="test2" [sortable]="true"></data-table-column>
+  <data-table-column header="test3" property="test3" [sortable]="true"></data-table-column>
+</app-table>
+
 <div class="card py-2 mb-3">
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center">

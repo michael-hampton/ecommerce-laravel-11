@@ -21,6 +21,39 @@ export class CategoryListComponent implements OnInit {
   entry!: ViewContainerRef;
   sub!: Subscription;
 
+  test = [
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'}
+  ]
+
   constructor(
     private _store: CategoryStore,
     private modalService: ModalService,
@@ -143,5 +176,14 @@ export class CategoryListComponent implements OnInit {
       .subscribe((v) => {
 
       });
+  }
+
+  pageChanged(event: Event) {
+    alert('here')
+  }
+
+  headerClick(event: Event) {
+    alert('here')
+    console.log('event', event)
   }
 }

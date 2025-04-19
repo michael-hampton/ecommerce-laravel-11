@@ -8,6 +8,7 @@ import {DataTablesModule} from 'angular-datatables';
 import {SharedModule} from '../../shared/shared.module';
 import {ModalComponent} from '../../shared/components/modal/modal.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import {ColumnComponent} from '../../shared/components/table/column/column.component';
 
 
 @NgModule({
@@ -21,7 +22,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     DataTablesModule,
     SharedModule,
     ModalComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ]
 })
 export class CategoriesModule { }
