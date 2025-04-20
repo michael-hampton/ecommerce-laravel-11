@@ -47,6 +47,6 @@
     </table>
     <div class="loading-cover" *ngIf="showReloading && reloading"></div>
 
-    <data-table-pagination *ngIf="pagination" [items]="items" (changePage)="pageChanged($event)"></data-table-pagination>
+    <data-table-pagination *ngIf="pagination" (pageUpdated)="pageChanged($event)"></data-table-pagination>
   </div>
 </div>

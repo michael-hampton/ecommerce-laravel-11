@@ -1,0 +1,28 @@
+<div  *ngIf="toastState.stateItem$ | async as toast" class="toast-container position-absolute p-3 top-0 end-0">
+  <div [class.show]="toast.visible" [class.d-none]="!toast.visible"
+       class="toast align-items-center text-white {{toast.extracss}} border-0"
+       role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body">
+      {{ toast.text }}
+
+      <div class="mt-2 pt-2 border-top" *ngIf="toast.buttons.length">
+        <button *ngFor="let button of toast.buttons" [class]="button.css"
+                (click)="button.click($event)">{{ button.text }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<ng-container *ngIf="toastState.stateItem$ | async as toast">-->
+<!--  <div [class.d-none]="!toast.visible"-->
+<!--       class="{{toast.css}} {{toast.extracss}}">-->
+<!--    <div class="text">{{ toast.text }} </div>-->
+<!--    <div class="buttons" *ngIf="toast.buttons.length">-->
+<!--      <button *ngFor="let button of toast.buttons"-->
+<!--              [class]="button.css"-->
+<!--              (click)="button.click($event)">{{button.text}}</button>-->
+<!--    </div>-->
+
+<!--  </div>-->
+<!--</ng-container>-->

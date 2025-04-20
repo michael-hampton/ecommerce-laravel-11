@@ -5,6 +5,7 @@ import {tapResponse} from '@ngrx/operators'
 import {ProductApi} from '../../apis/product.api';
 import {GlobalStore} from '../global.store';
 import {Product} from "../../types/products/product";
+import {UiError} from '../../core/services/exception.service';
 
 export interface ProductFormState {
   loading: boolean;
@@ -52,7 +53,7 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
         },
         error: (error: HttpErrorResponse) => {
           this.patchState({loading: false, saveSuccess: false})
-          this._globalStore.setError(error.message)
+          this._globalStore.setError(UiError(error))
         },
         finalize: () => this.patchState({loading: false}),
       })

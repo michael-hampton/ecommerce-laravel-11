@@ -6,6 +6,7 @@ import {ModalService} from "../../../../services/modal.service";
 import {Category} from "../../../../types/categories/category";
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {FormComponent} from '../form/form.component';
+import * as test from 'node:test';
 
 @Component({
   selector: 'app-category-list',
@@ -22,6 +23,28 @@ export class CategoryListComponent implements OnInit {
   sub!: Subscription;
 
   test = [
+    {test: '1', test2: 'b', test3: 'c'},
+    {test: '2', test2: 'b', test3: 'c'},
+    {test: '3', test2: 'b', test3: 'c'},
+    {test: '4', test2: 'b', test3: 'c'},
+    {test: '5', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: '7', test2: 'b', test3: 'c'},
+    {test: '8', test2: 'b', test3: 'c'},
+    {test: '9', test2: 'b', test3: 'c'},
+    {test: '10', test2: 'b', test3: 'c'},
+    {test: '11', test2: 'b', test3: 'c'},
+    {test: '12', test2: 'b', test3: 'c'},
+    {test: '13', test2: 'b', test3: 'c'},
+    {test: '14', test2: 'b', test3: 'c'},
+    {test: '15', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: 'a', test2: 'b', test3: 'c'},
+    {test: '21', test2: 'b', test3: 'c'},
+    {test: '22', test2: 'b', test3: 'c'},
     {test: 'a', test2: 'b', test3: 'c'},
     {test: 'a', test2: 'b', test3: 'c'},
     {test: 'a', test2: 'b', test3: 'c'},
@@ -29,30 +52,9 @@ export class CategoryListComponent implements OnInit {
     {test: 'a', test2: 'b', test3: 'c'},
     {test: 'a', test2: 'b', test3: 'c'},
     {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'}
+    {test: '30', test2: 'b', test3: 'c'}
   ]
+  items: any[]= [];
 
   constructor(
     private _store: CategoryStore,
@@ -62,6 +64,7 @@ export class CategoryListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.items = this.test.slice(0, 10);
     this.dtOptions = {
       ajax: (dataTablesParameters: any, callback) => {
         this._store.loadData().subscribe(resp => {
@@ -179,11 +182,13 @@ export class CategoryListComponent implements OnInit {
   }
 
   pageChanged(event: Event) {
+    console.log('event', event)
     alert('here')
   }
 
-  headerClick(event: Event) {
+  headerClick(event: {page: number, limit: number}) {
     alert('here')
+    this.items = this.test.slice(event.page, event.limit)
     console.log('event', event)
   }
 }

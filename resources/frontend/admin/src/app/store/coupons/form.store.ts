@@ -5,6 +5,7 @@ import {tapResponse} from '@ngrx/operators'
 import {CouponApi} from '../../apis/coupon.api';
 import {GlobalStore} from '../global.store';
 import {Coupon} from "../../types/coupons/coupon";
+import {UiError} from '../../core/services/exception.service';
 
 
 export interface CouponFormState {
@@ -48,7 +49,7 @@ export class CouponFormStore extends ComponentStore<CouponFormState> {
         },
         error: (error: HttpErrorResponse) => {
           this.patchState({loading: false, saveSuccess: false})
-          this._globalStore.setError(error.message)
+          this._globalStore.setError(UiError(error))
         },
         finalize: () => this.patchState({loading: false}),
       })

@@ -6,6 +6,7 @@ import {tapResponse} from '@ngrx/operators'
 import {Brand} from '../../types/brands/brand';
 import {BrandApi} from '../../apis/brand.api';
 import {GlobalStore} from "../global.store";
+import {UiError} from '../../core/services/exception.service';
 
 
 export interface BrandState {
@@ -54,7 +55,7 @@ export class BrandStore extends ComponentStore<BrandState> {
             },
             error: (error: HttpErrorResponse) => {
               this.patchState({loading: false, saveSuccess: false})
-              this._globalStore.setError(error.message)
+              this._globalStore.setError(UiError(error))
             },
             finalize: () => this.patchState({loading: false}),
           })
@@ -69,7 +70,7 @@ export class BrandStore extends ComponentStore<BrandState> {
         response.data ? response.data : []
       ),
       catchError((error: HttpErrorResponse) => {
-        this._globalStore.setError(error.message)
+        this._globalStore.setError(UiError(error))
         return throwError(() => error)
       })
     )

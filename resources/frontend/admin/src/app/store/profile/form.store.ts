@@ -5,6 +5,7 @@ import {tapResponse} from '@ngrx/operators'
 import {GlobalStore} from "../global.store";
 import {Seller} from '../../types/seller/seller';
 import {SellerApi} from '../../apis/seller.api';
+import {UiError} from '../../core/services/exception.service';
 
 export interface ProfileFormState {
   loading: boolean;
@@ -55,7 +56,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
         },
         error: (error: HttpErrorResponse) => {
           this.patchState({loading: false, saveSuccess: false})
-          this._globalStore.setError(error.message)
+          this._globalStore.setError(UiError(error))
         },
         finalize: () => this.patchState({loading: false}),
       })
@@ -88,7 +89,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     return this._api.getSeller(sellerId).pipe(
       tapResponse({
         next: (data) => this.patchState({data: data.data}),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(error.message),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this.patchState({loading: false}),
       })
     )

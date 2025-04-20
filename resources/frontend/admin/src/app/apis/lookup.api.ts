@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 import {formatDate} from '@angular/common';
 import {Order} from '../types/orders/order';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -490,6 +491,9 @@ export class LookupApi {
       },
     ]
 
-    return of({data: categories})
+    const error = new HttpErrorResponse({ status: 422 });
+    return throwError(error) as any;
+
+    //return of({data: categories})
   }
 }

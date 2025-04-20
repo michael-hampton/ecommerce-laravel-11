@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
 import { tapResponse } from '@ngrx/operators'
+import {IUiError} from '../core/services/exception.service';
+import {Toast} from '../services/toast/toast.service';
 
 
 export interface GlobalState {
@@ -19,7 +21,7 @@ const defaultState: GlobalState = {
   providedIn: 'root'
 })
 export class GlobalStore extends ComponentStore<GlobalState> {
-  constructor() {
+  constructor(private toast: Toast) {
     super(defaultState);
   }
 
@@ -36,11 +38,13 @@ export class GlobalStore extends ComponentStore<GlobalState> {
     },
     { debounce: true }
   );
-  setError(error: string) {
-    this.patchState({error: error})
+  setError(error: IUiError) {
+    this.toast.ShowError('hello world');
+    this.patchState({error: error.message})
   }
 
   setSuccess(success: string) {
+    this.toast.ShowSuccess('hello world');
     this.patchState({success: success})
   }
 }

@@ -5,6 +5,7 @@ import {tapResponse} from '@ngrx/operators'
 import {SlideApi} from '../../apis/slide.api';
 import {GlobalStore} from "../global.store";
 import {Slide} from "../../types/slides/slide";
+import {UiError} from '../../core/services/exception.service';
 
 
 export interface SlideFormState {
@@ -53,7 +54,7 @@ export class SlideFormStore extends ComponentStore<SlideFormState> {
         },
         error: (error: HttpErrorResponse) => {
           this.patchState({loading: false, saveSuccess: false})
-          this._globalStore.setError(error.message)
+          this._globalStore.setError(UiError(error))
         },
         finalize: () => this.patchState({loading: false}),
       })

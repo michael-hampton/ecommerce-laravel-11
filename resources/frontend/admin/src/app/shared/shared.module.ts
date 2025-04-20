@@ -8,24 +8,27 @@ import {DataTableHeaderComponent} from './components/table/data-table-header/dat
 import {RowComponent} from './components/table/row/row.component';
 import {ColumnComponent} from './components/table/column/column.component';
 import {Hide} from './components/table/utils/hide';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PixelConverter} from './components/table/utils/px';
 import { DataTablePaginationComponent } from './components/table/data-table-pagination/data-table-pagination.component';
+import { ToastComponent } from './components/toast/toast.component';
 
 @NgModule({
-  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent],
+  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent],
   imports: [
     CommonModule,
     ControlErrorComponent,
     Hide,
     FormsModule,
-    PixelConverter
+    PixelConverter,
+    ReactiveFormsModule
   ],
   exports: [
     FormSubmitDirective,
     FieldValidationFlagDirective,
     DataTableComponent,
-    ColumnComponent
+    ColumnComponent,
+    ToastComponent
   ]
 })
 export class SharedModule { }

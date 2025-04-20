@@ -9,6 +9,7 @@ import {Attribute} from '../types/attributes/attribute';
 import {Brand} from '../types/brands/brand';
 import {LookupApi} from '../apis/lookup.api';
 import {Order} from '../types/orders/order';
+import {UiError} from '../core/services/exception.service';
 
 
 export interface GlobalState {
@@ -60,7 +61,7 @@ export class LookupStore extends ComponentStore<GlobalState> {
         this._lookupService.getCategories().pipe(
           tapResponse({
             next: (categories) => this.patchState({categories: categories.data}),
-            error: (error: HttpErrorResponse) => this._globalStore.setError(error.message),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this.patchState({loading: false}),
           })
         )
@@ -75,7 +76,7 @@ export class LookupStore extends ComponentStore<GlobalState> {
         this._lookupService.getOrders().pipe(
           tapResponse({
             next: (orders) => this.patchState({orders: orders.data}),
-            error: (error: HttpErrorResponse) => this._globalStore.setError(error.message),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this.patchState({loading: false}),
           })
         )
@@ -88,8 +89,13 @@ export class LookupStore extends ComponentStore<GlobalState> {
       switchMap(categoryId =>
         this._lookupService.getSubcategories(categoryId).pipe(
           tapResponse({
-            next: (subcategories) => this.patchState({ subcategories: subcategories.data }),
-            error: (error: HttpErrorResponse) => this._globalStore.setError(error.message),
+            next: (subcategories) => {
+              console.log(subcategories)
+              //this.patchState({ subcategories: subcategories.data })
+            },
+            error: (error: HttpErrorResponse) => {
+              this._globalStore.setError(UiError(error))
+            },
             finalize: () => this.patchState({ loading: false }),
           })
         )
@@ -105,7 +111,7 @@ export class LookupStore extends ComponentStore<GlobalState> {
         this._lookupService.getBrands().pipe(
           tapResponse({
             next: (brands) => this.patchState({brands: brands.data}),
-            error: (error: HttpErrorResponse) => this._globalStore.setError(error.message),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this.patchState({loading: false}),
           })
         )
@@ -120,7 +126,7 @@ export class LookupStore extends ComponentStore<GlobalState> {
         this._lookupService.getAttributes().pipe(
           tapResponse({
             next: (attributes) => this.patchState({attributes: attributes.data}),
-            error: (error: HttpErrorResponse) => this._globalStore.setError(error.message),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this.patchState({loading: false}),
           })
         )

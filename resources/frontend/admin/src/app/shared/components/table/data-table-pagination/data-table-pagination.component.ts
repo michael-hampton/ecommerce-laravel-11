@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Inject, Input, Output, SimpleChanges} from '@angular/core';
+import {DataTableComponent} from '../data-table/data-table.component';
 
 @Component({
   selector: 'data-table-pagination',
@@ -7,100 +8,91 @@ import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/co
   styleUrl: './data-table-pagination.component.scss'
 })
 export class DataTablePaginationComponent {
-  @Input() items?: Array<any>;
-  @Output() changePage = new EventEmitter();
-  @Input() initialPage = 1;
-  @Input() pageSize = 10;
-  @Input() maxPages = 10;
 
-  pager?: Pager;
-
-  ngOnChanges(changes: SimpleChanges) {
-    // set page when items array first set or changed
-    if (changes['items'].currentValue !== changes['items'].previousValue) {
-      this.setPage(this.initialPage);
-    }
+  @Output() pageUpdated = new EventEmitter();
+  constructor(@Inject(forwardRef(() => DataTableComponent)) public dataTable: DataTableComponent) {
   }
 
-  setPage(page: number) {
-    if (!this.items?.length)
-      return;
-
-    // get new pager object for specified page
-    this.pager = this.paginate(this.items.length, page, this.pageSize, this.maxPages);
-
-    // get new page of items from items array
-    const pageOfItems = this.items.slice(this.pager.startIndex, this.pager.endIndex + 1);
-
-    // call change page function in parent component
-    this.changePage.emit(pageOfItems);
+  pageBack() {
+    this.dataTable.offset -= Math.min(this.dataTable.limit, this.dataTable.offset);
+    this.pageUpdated.emit()
   }
 
-  paginate(totalItems: number, currentPage: number = 1, pageSize: number = 10, maxPages: number = 10): Pager {
-    // calculate total pages
-    let totalPages = Math.ceil(totalItems / pageSize);
+  pageForward() {
+    this.dataTable.offset += this.dataTable.limit;
+    this.pageUpdated.emit()
+  }
 
-    // ensure current page isn't out of range
-    if (currentPage < 1) {
-      currentPage = 1;
-    } else if (currentPage > totalPages) {
-      currentPage = totalPages;
-    }
+  changePage(pageNo: number) {
+    this.page = Number(pageNo)
+    this.dataTable.page = Number(pageNo)
+    this.pageUpdated.emit()
+  }
 
+  pageFirst() {
+    this.dataTable.offset = 0;
+  }
+
+  get startIndex() {
+    return (this.page - 1) * this.limit
+  }
+
+  get endIndex() {
+    return Math.min(this.startIndex + this.limit - 1, this.itemCount - 1);
+  }
+
+  pageLast() {
+    this.dataTable.offset = (this.maxPage - 1) * this.dataTable.limit;
+  }
+
+  get itemCount() {
+    return this.dataTable.itemCount
+  }
+
+  get pages() {
     let startPage: number, endPage: number;
-    if (totalPages <= maxPages) {
-      // total pages less than max so show all pages
+    if (this.maxPage <= 10) {
+      // less than 10 total pages so show all
       startPage = 1;
-      endPage = totalPages;
+      endPage = this.maxPage;
     } else {
-      // total pages more than max so calculate start and end pages
-      let maxPagesBeforeCurrentPage = Math.floor(maxPages / 2);
-      let maxPagesAfterCurrentPage = Math.ceil(maxPages / 2) - 1;
-      if (currentPage <= maxPagesBeforeCurrentPage) {
-        // current page near the start
+      // more than 10 total pages so calculate start and end pages
+      if (this.page <= 6) {
         startPage = 1;
-        endPage = maxPages;
-      } else if (currentPage + maxPagesAfterCurrentPage >= totalPages) {
-        // current page near the end
-        startPage = totalPages - maxPages + 1;
-        endPage = totalPages;
+        endPage = 10;
+      } else if (this.page + 4 >= this.maxPage) {
+        startPage = this.maxPage - 9;
+        endPage = this.maxPage;
       } else {
-        // current page somewhere in the middle
-        startPage = currentPage - maxPagesBeforeCurrentPage;
-        endPage = currentPage + maxPagesAfterCurrentPage;
+        startPage = this.page - 5;
+        endPage = this.page + 4;
       }
     }
-
-    // calculate start and end item indexes
-    let startIndex = (currentPage - 1) * pageSize;
-    let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
-
-    // create an array of pages to ng-repeat in the pager control
-    let pages = Array.from(Array((endPage + 1) - startPage).keys()).map(i => startPage + i);
-
-    // return object with all pager properties required by the view
-    return {
-      totalItems,
-      currentPage,
-      pageSize,
-      totalPages,
-      startPage,
-      endPage,
-      startIndex,
-      endIndex,
-      pages
-    };
+   return Array.from(Array(endPage + 1 - startPage).keys()).map(i => startPage + i);
   }
-}
 
-export interface Pager {
-  totalItems: number;
-  currentPage: number;
-  pageSize: number;
-  totalPages: number;
-  startPage: number;
-  endPage: number;
-  startIndex: number;
-  endIndex: number;
-  pages: number[];
+  get maxPage() {
+    return Math.ceil(this.dataTable.itemCount / this.dataTable.limit);
+  }
+
+  get limit() {
+    return this.dataTable.limit;
+  }
+
+  set limit(value) {
+    this.dataTable.limit = Number(<any>value); // TODO better way to handle that value of number <input> is string?
+  }
+
+  get page() {
+    return this.dataTable.page;
+  }
+
+  set page(value) {
+    this.dataTable.page = Number(<any>value);
+  }
+
+  // Track by
+  trackByFn(index: any, item: any) {
+    return item; // or item.id
+  }
 }

@@ -5,6 +5,7 @@ import {tapResponse} from '@ngrx/operators'
 import {AttributeApi} from '../../apis/attribute.api';
 import {GlobalStore} from "../global.store";
 import {Attribute} from '../../types/attributes/attribute';
+import {UiError} from '../../core/services/exception.service';
 
 
 export interface AttributeFormState {
@@ -48,7 +49,7 @@ export class AttributeFormStore extends ComponentStore<AttributeFormState> {
         },
         error: (error: HttpErrorResponse) => {
           this.patchState({loading: false, saveSuccess: false})
-          this._globalStore.setError(error.message)
+          this._globalStore.setError(UiError(error))
         },
         finalize: () => this.patchState({loading: false}),
       })

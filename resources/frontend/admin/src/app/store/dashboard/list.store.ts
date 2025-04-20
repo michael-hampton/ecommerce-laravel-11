@@ -8,6 +8,7 @@ import {ProductApi} from '../../apis/product.api';
 import {GlobalStore} from "../global.store";
 import {Dashboard} from '../../types/dashboard/dashboard';
 import {DashboardApi} from '../../apis/dashboard.api';
+import {UiError} from '../../core/services/exception.service';
 
 
 export interface DashboardState {
@@ -53,7 +54,7 @@ export class DashboardStore extends ComponentStore<DashboardState> {
         this._api.getData().pipe(
           tapResponse({
             next: (data) => this.patchState({data: data.data}),
-            error: (error: HttpErrorResponse) => this._globalStore.setError(error.message),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this.patchState({loading: false}),
           })
         )

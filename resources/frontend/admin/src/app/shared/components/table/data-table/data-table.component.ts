@@ -224,7 +224,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   }
 
   pageChanged(event: Event) {
-    this.changePage.emit(event)
+    this.changePage.emit({page: this.page, limit: this.limit, sortBy: this.sortBy, sortAsc: this.sortAsc})
   }
 
   // Download

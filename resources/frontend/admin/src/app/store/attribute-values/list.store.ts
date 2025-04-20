@@ -6,6 +6,7 @@ import {tapResponse} from '@ngrx/operators'
 import {AttributeValue} from "../../types/attribute-values/attribute-value";
 import {AttributeValuesApi} from '../../apis/attribute-values.api';
 import {GlobalStore} from "../global.store";
+import {UiError} from '../../core/services/exception.service';
 
 
 export interface AttributeValueState {
@@ -54,7 +55,7 @@ export class AttributeValueStore extends ComponentStore<AttributeValueState> {
             },
             error: (error: HttpErrorResponse) => {
               this.patchState({loading: false, saveSuccess: false})
-              this._globalStore.setError(error.message)
+              this._globalStore.setError(UiError(error))
             },
             finalize: () => this.patchState({loading: false}),
           })
@@ -69,7 +70,7 @@ export class AttributeValueStore extends ComponentStore<AttributeValueState> {
         response.data ? response.data : []
       ),
       catchError((error: HttpErrorResponse) => {
-        this._globalStore.setError(error.message)
+        this._globalStore.setError(UiError(error))
         return throwError(() => error)
       })
     )
