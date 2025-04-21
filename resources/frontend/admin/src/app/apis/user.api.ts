@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {User} from '../types/users/user';
+import {FilterModel, PagedData} from '../types/filter.model';
+import {Category} from '../types/categories/category';
 
 export const MODULE = 'admin/users'
 
@@ -78,8 +80,9 @@ export class UserApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.users})
+  getData(filter: FilterModel): Observable<PagedData<User>>{
+    return of({data: this.users, page: 1, totalCount: this.users.length} as PagedData<User>)
+
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

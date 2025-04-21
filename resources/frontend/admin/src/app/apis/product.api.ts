@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Product} from "../types/products/product";
+import {FilterModel, PagedData} from '../types/filter.model';
+import {Category} from '../types/categories/category';
+import {User} from '../types/users/user';
 
 export const MODULE = 'admin/products'
 
@@ -188,8 +191,9 @@ export class ProductApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.products})
+  getData(filter: FilterModel): Observable<PagedData<Product>>{
+    return of({data: this.products, page: 1, totalCount: this.products.length} as PagedData<Product>)
+
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

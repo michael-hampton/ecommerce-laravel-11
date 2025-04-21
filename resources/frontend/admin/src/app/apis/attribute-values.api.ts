@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {AttributeValue} from '../types/attribute-values/attribute-value';
+import {FilterModel, PagedData} from '../types/filter.model';
+import {Category} from '../types/categories/category';
+import {User} from '../types/users/user';
 
 export const MODULE = 'admin/attributeValues'
 
@@ -68,8 +71,8 @@ export class AttributeValuesApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.attributeValues});
+  getData(filter: FilterModel): Observable<PagedData<AttributeValue>>{
+    return of({data: this.attributeValues, page: 1, totalCount: this.attributeValues.length} as PagedData<AttributeValue>)
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

@@ -1,4 +1,4 @@
-import {Component, forwardRef, Inject} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Inject, Output} from '@angular/core';
 import {DataTableComponent} from '../data-table/data-table.component';
 
 @Component({
@@ -10,10 +10,20 @@ import {DataTableComponent} from '../data-table/data-table.component';
 export class DataTableHeaderComponent {
 
   columnSelectorOpen = false;
+  @Output() searchUpdated = new EventEmitter();
 
   _closeSelector() {
     this.columnSelectorOpen = false;
   }
 
   constructor(@Inject(forwardRef(() => DataTableComponent)) public dataTable: DataTableComponent) {}
+
+  search(event: KeyboardEvent) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.searchUpdated.emit({search: inputValue})
+  }
+
+  addButtonClicked(event: Event) {
+    this.dataTable.addButton.emit(event)
+  }
 }

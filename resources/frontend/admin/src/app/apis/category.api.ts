@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Category} from '../types/categories/category';
+import {FilterModel, PagedData} from '../types/filter.model';
 
 export const MODULE = 'admin/categories'
 
@@ -10,7 +11,7 @@ export const MODULE = 'admin/categories'
 })
 export class CategoryApi {
 
-  private categories: Category[] = [
+  private categories = [
     {
       id: 1, name: 'Category 1', slug: 'category-1',
       image: '',
@@ -87,8 +88,8 @@ export class CategoryApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.categories})
+  getData(filter: FilterModel): Observable<PagedData<Category>>{
+    return of({data: this.categories, page: 1, totalCount: this.categories.length} as PagedData<Category>)
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

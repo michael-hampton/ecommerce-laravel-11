@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {formatDate} from '@angular/common';
 import {Order} from '../types/orders/order';
+import {FilterModel, PagedData} from '../types/filter.model';
+import {Category} from '../types/categories/category';
+import {User} from '../types/users/user';
 
 export const MODULE = 'admin/orders'
 
@@ -224,8 +227,9 @@ export class OrderApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.orders})
+  getData(filter: FilterModel): Observable<PagedData<Order>>{
+    return of({data: this.orders, page: 1, totalCount: this.orders.length} as PagedData<Order>)
+
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

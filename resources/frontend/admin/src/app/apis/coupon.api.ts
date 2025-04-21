@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {formatDate} from '@angular/common';
 import {Coupon} from "../types/coupons/coupon";
+import {FilterModel, PagedData} from '../types/filter.model';
+import {Category} from '../types/categories/category';
+import {User} from '../types/users/user';
 
 export const MODULE = 'admin/coupons'
 
@@ -209,8 +212,9 @@ export class CouponApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.coupons})
+  getData(filter: FilterModel): Observable<PagedData<Coupon>>{
+    return of({data: this.coupons, page: 1, totalCount: this.coupons.length} as PagedData<Coupon>)
+
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

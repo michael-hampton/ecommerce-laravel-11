@@ -1,15 +1,60 @@
-<div class="py-4">
-  <h3>Orders</h3>
-</div>
+<ng-container *ngIf="vm$ | async as vm">
+  <app-table [indexColumn]="false" headerTitle="Orders" (reload)="reload()"
+             [sortBy]="sortBy" [sortAsc]="sortAsc"
+             [itemCount]="vm.data.totalCount" [items]="vm.data.data"
+             (changePage)="pageChanged($event)">
 
-<div class="card p-3">
-  <div class="card-body">
-    <div class="table-responsive">
+    <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
+    <data-table-column header="Customer" [sortable]="false">
+      <ng-template #dataTableCell let-item="item">
+        <div class="d-flex align-items-center justify-content-between me-3">
+          <img src="{{item.customer.name}}" alt="{{item.customer.name}}" class="image">
+          <div class="">
+            <a href="#" class="fw-bold">{{ item.customer.name }}</a>
+          </div>
+        </div>
+      </ng-template>
+    </data-table-column>
+    <data-table-column header="Mobile" [sortable]="false">
+      <ng-template #dataTableCell let-item="item">
+       {{item.customer.mobile}}
+      </ng-template>
+    </data-table-column>
+    <data-table-column header="Subtotal" property="subtotal" [sortable]="true"></data-table-column>
+    <data-table-column header="Shipping" property="shipping" [sortable]="true"></data-table-column>
+    <data-table-column header="Commission" property="commission" [sortable]="true"></data-table-column>
+    <data-table-column header="Tax" property="tax" [sortable]="true"></data-table-column>
+    <data-table-column header="Total" property="total" [sortable]="true"></data-table-column>
+    <data-table-column header="Status" property="status" [sortable]="true"></data-table-column>
+    <data-table-column header="Order Date" property="order_date" [sortable]="true"></data-table-column>
+    <data-table-column header="No of Items" property="number_of_items" [sortable]="true"></data-table-column>
+    <data-table-column header="Delivered Date" property="delivered_date" [sortable]="true"></data-table-column>
+    <data-table-column header="Cancelled Date" property="cancelled_date" [sortable]="true"></data-table-column>
+    <data-table-column header="Action" [sortable]="false">
+      <ng-template #dataTableCell let-item="item">
+        <div class="d-flex align-items-center justify-content-between">
+          <a href="javascript:void(0)" class="edit">
+            <i class="fa fa-eye"></i>
+          </a>
+        </div>
+      </ng-template>
+    </data-table-column>
+  </app-table>
+</ng-container>
 
-      <table datatable [dtOptions]="dtOptions" class="table table-bordered table-striped">
-      </table>
-    </div>
-  </div>
-  <div class="divider"></div>
-</div>
+
+<!--<div class="py-4">-->
+<!--  <h3>Orders</h3>-->
+<!--</div>-->
+
+<!--<div class="card p-3">-->
+<!--  <div class="card-body">-->
+<!--    <div class="table-responsive">-->
+
+<!--      <table datatable [dtOptions]="dtOptions" class="table table-bordered table-striped">-->
+<!--      </table>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="divider"></div>-->
+<!--</div>-->
 

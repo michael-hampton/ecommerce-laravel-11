@@ -27,11 +27,14 @@ export class ColumnComponent implements OnInit {
   @ContentChild('dataTableHeader') headerTemplate: any;
 
   getCellColor(row: RowComponent, index: number) {
-    if (this.cellColors !== undefined) {
-      return (<CellCallback>this.cellColors)(row.item, row, this, index);
-    }
-
-    return '#FFF'
+    return index % 2 === 0 ? '#FFF' : '#EEE'
+    // if (this.cellColors !== undefined) {
+    //   return (<CellCallback>this.cellColors)(row.item, row, this, index);
+    // }
+    //
+    // //alert(index)
+    //
+    // return '#FFF'
   }
 
   styleClassObject = {}; // for [ngClass]

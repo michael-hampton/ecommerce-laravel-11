@@ -1,35 +1,37 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ComponentStore} from '@ngrx/component-store';
-import {catchError, map, pipe, switchMap, tap, throwError} from 'rxjs';
+import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {Attribute} from '../../types/attributes/attribute';
 import {GlobalStore} from "../global.store";
 import {AttributeApi} from '../../apis/attribute.api';
 import {UiError} from '../../core/services/exception.service';
+import {FilterModel, PagedData} from '../../types/filter.model';
+import {Category} from '../../types/categories/category';
 
 
 export interface AttributeState {
-  attributes: Attribute[];
+  data: PagedData<Attribute>
 }
 
 const defaultState: AttributeState = {
-  attributes: [],
+  data: {} as PagedData<Attribute>,
 };
 
 @Injectable({
   providedIn: 'root'
 })
 export class AttributeStore extends ComponentStore<AttributeState> {
-  constructor(private _service: AttributeApi, private _globalStore: GlobalStore) {
+  constructor(private _api: AttributeApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
 
-  readonly attributes$ = this.select(({attributes}) => attributes);
+  readonly data$ = this.select(({data}) => data);
 
   readonly vm$ = this.select(
     {
-      attributes: this.attributes$,
+      data: this.data$,
     },
     {debounce: true}
   );
@@ -37,7 +39,7 @@ export class AttributeStore extends ComponentStore<AttributeState> {
   readonly delete = this.effect<number>(
     pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((id) => this._service.delete(id).pipe(
+      switchMap((id) => this._api.delete(id).pipe(
           tapResponse({
             next: (users) => {
               this._globalStore.setSuccess('Deleted successfully');
@@ -54,15 +56,23 @@ export class AttributeStore extends ComponentStore<AttributeState> {
     )
   );
 
-  loadData = () => {
-    return this._service.getData().pipe(
-      map(response =>
-        response.data ? response.data : []
-      ),
-      catchError((error: HttpErrorResponse) => {
-        this._globalStore.setError(UiError(error))
-        return throwError(() => error)
+  loadData = this.effect((filter$: Observable<FilterModel>) =>
+    filter$.pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      switchMap((filter: FilterModel) => {
+        return this._api.getData(filter).pipe(
+          tapResponse({
+            next: (data) => {
+              alert('hete666')
+              this.patchState({data: data as PagedData<Attribute>});
+            },
+            error: (error: HttpErrorResponse) => {
+              this._globalStore.setError(UiError(error));
+            },
+            finalize: () => this._globalStore.setLoading(false)
+          })
+        );
       })
     )
-  }
+  );
 }

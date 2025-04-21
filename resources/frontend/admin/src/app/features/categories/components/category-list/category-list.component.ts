@@ -1,4 +1,4 @@
-import {Component, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {Config} from 'datatables.net';
 import {Subscription} from 'rxjs';
 import {CategoryStore} from "../../../../store/categories/list.store";
@@ -6,6 +6,7 @@ import {ModalService} from "../../../../services/modal.service";
 import {Category} from "../../../../types/categories/category";
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {FormComponent} from '../form/form.component';
+import {defaultPaging, FilterModel} from '../../../../types/filter.model';
 
 @Component({
   selector: 'app-category-list',
@@ -20,139 +21,19 @@ export class CategoryListComponent implements OnInit {
   @ViewChild('modal', {read: ViewContainerRef})
   entry!: ViewContainerRef;
   sub!: Subscription;
+  sortBy: string = 'test'
+  sortAsc: boolean = true
 
-  test = [
-    {test: '1', test2: 'b', test3: 'c'},
-    {test: '2', test2: 'b', test3: 'c'},
-    {test: '3', test2: 'b', test3: 'c'},
-    {test: '4', test2: 'b', test3: 'c'},
-    {test: '5', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: '7', test2: 'b', test3: 'c'},
-    {test: '8', test2: 'b', test3: 'c'},
-    {test: '9', test2: 'b', test3: 'c'},
-    {test: '10', test2: 'b', test3: 'c'},
-    {test: '11', test2: 'b', test3: 'c'},
-    {test: '12', test2: 'b', test3: 'c'},
-    {test: '13', test2: 'b', test3: 'c'},
-    {test: '14', test2: 'b', test3: 'c'},
-    {test: '15', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: '21', test2: 'b', test3: 'c'},
-    {test: '22', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: 'a', test2: 'b', test3: 'c'},
-    {test: '30', test2: 'b', test3: 'c'}
-  ]
-  items: any[]= [];
+  private _store: CategoryStore = inject(CategoryStore)
+  vm$ = this._store.vm$
 
   constructor(
-    private _store: CategoryStore,
     private modalService: ModalService,
-    private renderer: Renderer2
   ) {
   }
 
   ngOnInit(): void {
-    this.items = this.test.slice(0, 10);
-    this.dtOptions = {
-      ajax: (dataTablesParameters: any, callback) => {
-        this._store.loadData().subscribe(resp => {
-          callback({
-            data: resp
-          });
-        });
-      },
-      lengthMenu: [5, 10, 20, 50],
-      pageLength: 10,
-      columns: [
-        {data: 'id', name: '#'},
-        {
-          data: 'name', name: 'Name', className: 'd-flex', render: function (data, type, row) {
-            return '<div class="d-flex align-items-center justify-content-between me-3">' +
-              '<img src="' + row.image + '" alt="' + row.name + '" class="image"></div>' +
-              '<div class="">' +
-              '<a href="#" class="fw-bold">' + row.name + '</a>' + '</div>';
-          }
-        },
-        {data: 'slug', title: 'Slug'},
-        {data: 'products', title: 'Products'},
-        {
-          data: 'subcategories', title: 'Subcategories', render: function (data, type, row) {
-            var html = ''
-            row.subcategories?.forEach((item: Category) => {
-              html += '<div class="d-flex align-items-center justify-content-between">' +
-                item.name +
-                '<a data-url="#" data-id=' + item.id + ' href="#" target="_blank" class="edit">' +
-                '<i class="icon-eye"></i>' +
-                '</a>' +
-                '<a data-url="#" data-id=' + item.id + ' href="#" target="_blank" class="delete">' +
-                '<i class="fa fa-trash"></i>' +
-                '</a>' +
-                '</div>';
-            });
-
-            return html;
-
-          }
-        },
-        {
-          orderable: false,
-          searchable: false,
-          render: function (data, type, row) {
-            return '<div class="d-flex align-items-center justify-content-between">' +
-              '<a href="#" class="edit">' +
-              '<i class="fa fa-eye"></i>' +
-              '</a>' +
-              '<a href="#" class="delete">' +
-              '<i class="fa fa-trash"></i>' +
-              '</a>' +
-              '</div>';
-          }
-        }
-      ],
-      rowCallback: (row: Node, data: any, index: number) => {
-        // Cast row to HTMLElement to access querySelector
-        const rowElement = row as HTMLElement;
-
-        // Ensure the last cell (Actions column) is styled
-        const actionCell = rowElement.querySelector('td:last-child');
-        if (actionCell) {
-          actionCell.setAttribute(
-            'style',
-            'display: flex; justify-content: center; '
-          );
-        }
-
-        // Find the button in the row and attach a click listener using Renderer2
-        const deleteButton = rowElement.querySelector('.delete');
-        const editButton = rowElement.querySelector('.edit');
-        if (deleteButton) {
-          this.renderer.listen(deleteButton, 'click', (event) => {
-            event.preventDefault();
-            this.delete(data)
-            console.log('Row data:', data); // Log the data for the clicked row
-          });
-        }
-        if (editButton) {
-          this.renderer.listen(editButton, 'click', (event) => {
-            event.preventDefault();
-            this.edit(data)
-            console.log('Row data:', data); // Log the data for the clicked row
-          });
-        }
-        return row;
-      }
-    };
+   this._store.loadData(defaultPaging);
   }
 
   delete = async (data: any) => {
@@ -172,7 +53,6 @@ export class CategoryListComponent implements OnInit {
   }
 
   add(event: Event) {
-    event.preventDefault()
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Category'})
       .subscribe((v) => {
@@ -180,14 +60,16 @@ export class CategoryListComponent implements OnInit {
       });
   }
 
-  pageChanged(event: Event) {
-    console.log('event', event)
-    alert('here')
+  pageChanged(event: FilterModel) {
+    this.sortBy = event.sortBy
+    this.sortAsc = event.sortAsc
+    const startIndex = (event.page - 1) * event.limit
+    const endIndex = event.page * event.limit
+
+    this._store.loadData(event);
   }
 
-  headerClick(event: {page: number, limit: number}) {
-    alert('here')
-    this.items = this.test.slice(event.page, event.limit)
-    console.log('event', event)
+  reload() {
+    this._store.loadData(defaultPaging);
   }
 }

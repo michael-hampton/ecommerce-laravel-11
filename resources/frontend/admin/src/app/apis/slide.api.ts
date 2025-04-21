@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Slide} from "../types/slides/slide";
+import {FilterModel, PagedData} from '../types/filter.model';
+import {Category} from '../types/categories/category';
+import {User} from '../types/users/user';
 
 export const MODULE = 'admin/slides'
 
@@ -73,8 +76,9 @@ export class SlideApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.slides})
+  getData(filter: FilterModel): Observable<PagedData<Slide>>{
+    return of({data: this.slides, page: 1, totalCount: this.slides.length} as PagedData<Slide>)
+
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

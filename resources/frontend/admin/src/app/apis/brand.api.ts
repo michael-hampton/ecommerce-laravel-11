@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Brand} from '../types/brands/brand';
+import {FilterModel, PagedData} from '../types/filter.model';
+import {Category} from '../types/categories/category';
+import {User} from '../types/users/user';
 
 export const MODULE = 'admin/brands'
 
@@ -53,8 +56,9 @@ export class BrandApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(){
-    return of({data: this.brands})
+  getData(filter: FilterModel): Observable<PagedData<Brand>>{
+    return of({data: this.brands, page: 1, totalCount: this.brands.length} as PagedData<Brand>)
+
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 }

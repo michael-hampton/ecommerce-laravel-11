@@ -1,20 +1,22 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ComponentStore} from '@ngrx/component-store';
-import {catchError, map, pipe, switchMap, tap, throwError} from 'rxjs';
+import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {Slide} from '../../types/slides/slide';
 import {SlideApi} from '../../apis/slide.api';
 import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
+import {FilterModel, PagedData} from '../../types/filter.model';
+import {Attribute} from '../../types/attributes/attribute';
 
 
 export interface SlideState {
-  slides: Slide[];
+  data: PagedData<Slide>
 }
 
 const defaultState: SlideState = {
-  slides: [],
+  data: {} as PagedData<Slide>
 };
 
 @Injectable({
@@ -25,11 +27,11 @@ export class SlideStore extends ComponentStore<SlideState> {
     super(defaultState);
   }
 
-  readonly slides$ = this.select(({slides}) => slides);
+  readonly data$ = this.select(({data}) => data);
 
   readonly vm$ = this.select(
     {
-      slides: this.slides$,
+      data: this.data$,
     },
     {debounce: true}
   );
@@ -54,15 +56,23 @@ export class SlideStore extends ComponentStore<SlideState> {
     )
   );
 
-  loadData = () => {
-    return this._api.getData().pipe(
-      map(response =>
-        response.data ? response.data : []
-      ),
-      catchError((error: HttpErrorResponse) => {
-        this._globalStore.setError(UiError(error))
-        return throwError(() => error)
+  loadData = this.effect((filter$: Observable<FilterModel>) =>
+    filter$.pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      switchMap((filter: FilterModel) => {
+        return this._api.getData(filter).pipe(
+          tapResponse({
+            next: (data) => {
+              alert('hete666')
+              this.patchState({data: data as PagedData<Slide>});
+            },
+            error: (error: HttpErrorResponse) => {
+              this._globalStore.setError(UiError(error));
+            },
+            finalize: () => this._globalStore.setLoading(false)
+          })
+        );
       })
     )
-  }
+  );
 }

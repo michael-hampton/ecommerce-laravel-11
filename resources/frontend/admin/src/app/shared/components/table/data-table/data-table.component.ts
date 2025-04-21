@@ -6,12 +6,20 @@ import {
   Input,
   OnInit,
   Output,
-  QueryList, TemplateRef,
+  QueryList,
+  TemplateRef,
   ViewChildren
 } from '@angular/core';
-import {DataTableParams, DataTableSortCallback, DataTableTranslations, defaultTranslations, RowCallback} from '../types';
+import {
+  DataTableParams,
+  DataTableSortCallback,
+  DataTableTranslations,
+  defaultTranslations,
+  RowCallback
+} from '../types';
 import {RowComponent} from '../row/row.component';
 import {ColumnComponent} from '../column/column.component';
+import {FilterModel} from '../../../../types/filter.model';
 
 @Component({
   selector: 'app-table',
@@ -50,7 +58,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   @Input() rowTooltip: RowCallback;
   @Input() selectColumn = false;
   @Input() multiSelect = true;
-  @Input() substituteRows = true;
+  @Input() substituteRows = false;
   @Input() expandableRows = false;
   @Input() translations: DataTableTranslations = defaultTranslations;
   @Input() selectOnRowClick = false;
@@ -58,6 +66,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   @Input() showReloading = false;
   @Input() showDownloadButton = false;
   @Output() changePage = new EventEmitter();
+  @Output() addButton = new EventEmitter();
 
   // UI state without input:
 
@@ -67,6 +76,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   // UI state: visible ge/set for the outside with @Input for one-time initial values
 
+  private _search: string;
   private _sortBy: string;
   private _sortAsc = true;
   private _customSort: DataTableSortCallback;
@@ -79,9 +89,18 @@ export class DataTableComponent implements DataTableParams, OnInit {
     return this._sortBy;
   }
 
+  @Input()
+  get search() {
+    return this._search;
+  }
+
   set sortBy(value) {
     this._sortBy = value;
     this._triggerReload();
+  }
+
+  set search(value: string) {
+    this._search = value;
   }
 
   @Input()
@@ -223,8 +242,19 @@ export class DataTableComponent implements DataTableParams, OnInit {
     });
   }
 
-  pageChanged(event: Event) {
-    this.changePage.emit({page: this.page, limit: this.limit, sortBy: this.sortBy, sortAsc: this.sortAsc})
+  pageChanged() {
+    this.changePage.emit({
+      page: this.page,
+      limit: this.limit,
+      sortBy: this.sortBy,
+      sortAsc: this.sortAsc,
+      searchText: this.search
+    } as FilterModel)
+  }
+
+  searchChanged(search: {search: string}) {
+    this.search = search.search;
+    this.pageChanged()
   }
 
   // Download
@@ -242,7 +272,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   @Output() cellClick = new EventEmitter();
   @Output() rowExpandChange = new EventEmitter();
 
-   rowClicked(row: RowComponent, event: Event) {
+  rowClicked(row: RowComponent, event: Event) {
     this.rowClick.emit({row, event});
   }
 
@@ -251,8 +281,9 @@ export class DataTableComponent implements DataTableParams, OnInit {
   }
 
   headerClicked(column: ColumnComponent, event: MouseEvent) {
-    if (!this._resizeInProgress) {
-      this.headerClick.emit({column, event});
+    if (!this._resizeInProgress && column.sortable) {
+      let ascending = this.sortBy === column.property ? !this.sortAsc : true;
+      this.changePage.emit({page: this.page, limit: this.limit, sortBy: column.property, sortAsc: ascending})
     } else {
       this._resizeInProgress = false; // this is because I can't prevent click from mousup of the drag end
     }
@@ -386,7 +417,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
      and even increase the table width. The current implementation suffers from the fact,
      that offsetWidth sometimes contains out-of-date values. */
     if ((dx < 0 && (columnElement.offsetWidth + dx) <= this.resizeLimit) || !columnElement.nextElementSibling || // resizing doesn't make sense for the last visible column
-      (dx >= 0 && ((<HTMLElement> columnElement.nextElementSibling).offsetWidth + dx) <= this.resizeLimit)) {
+      (dx >= 0 && ((<HTMLElement>columnElement.nextElementSibling).offsetWidth + dx) <= this.resizeLimit)) {
       return false;
     }
     return true;

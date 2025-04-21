@@ -1,10 +1,12 @@
-import {Component, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {Config} from "datatables.net";
 import {Subscription} from "rxjs";
 import {ModalService} from "../../../../services/modal.service";
 import {UserStore} from '../../../../store/users/list.store';
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
 import {FormComponent} from '../form/form.component';
+import {defaultPaging, FilterModel} from '../../../../types/filter.model';
+import {CategoryStore} from '../../../../store/categories/list.store';
 
 @Component({
   selector: 'app-user-list',
@@ -19,83 +21,19 @@ export class UserListComponent implements OnInit {
   @ViewChild('modal', {read: ViewContainerRef})
   entry!: ViewContainerRef;
   sub!: Subscription;
+  sortBy: string = 'name'
+  sortAsc: boolean = true
+
+  private _store: UserStore = inject(UserStore)
+  vm$ = this._store.vm$
 
   constructor(
     private modalService: ModalService,
-    private _store: UserStore,
-    private renderer: Renderer2
   ) {
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      ajax: (dataTablesParameters: any, callback) => {
-        this._store.loadData().subscribe(resp => {
-          callback({
-            data: resp
-          });
-        });
-      },
-      lengthMenu: [5, 10, 20, 50],
-      processing: true,
-      serverSide: true,
-      search: false,
-      pageLength: 10,
-      columns: [
-        {data: 'id', title: '#'},
-        {
-          data: 'name', title: 'Name'
-        },
-        {data: 'email', title: 'Email'},
-        {data: 'mobile', title: 'Mobile'},
-        {
-          orderable: false,
-          searchable: false,
-          render: function (data, type, row) {
-            return '<div class="d-flex align-items-center justify-content-between">' +
-              '<a href="#" class="edit">' +
-              '<i class="fa fa-eye"></i>' +
-              '</a>' +
-              '<a href="#" class="delete">' +
-              '<i class="fa fa-trash"></i>' +
-              '</a>' +
-              '</div>';
-          }
-        }
-      ],
-      rowCallback: (row: Node, data: any, index: number) => {
-        // Cast row to HTMLElement to access querySelector
-        const rowElement = row as HTMLElement;
-
-        // Ensure the last cell (Actions column) is styled
-        const actionCell = rowElement.querySelector('td:last-child');
-        if (actionCell) {
-          actionCell.setAttribute(
-            'style',
-            'display: flex; justify-content: center; '
-          );
-        }
-
-        // Find the button in the row and attach a click listener using Renderer2
-        const deleteButton = rowElement.querySelector('.delete');
-        const editButton = rowElement.querySelector('.edit');
-        if (deleteButton) {
-          this.renderer.listen(deleteButton, 'click', (event) => {
-            event.preventDefault();
-            this.delete(data)
-            console.log('Row data:', data); // Log the data for the clicked row
-          });
-        }
-        if (editButton) {
-          this.renderer.listen(editButton, 'click', (event) => {
-            event.preventDefault();
-            this.edit(data)
-            console.log('Row data:', data); // Log the data for the clicked row
-          });
-        }
-        return row;
-      }
-    };
+    this._store.loadData(defaultPaging);
   }
 
   edit(data: any) {
@@ -122,5 +60,18 @@ export class UserListComponent implements OnInit {
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create User'})
       .subscribe((v) => {
       });
+  }
+
+  pageChanged(event: FilterModel) {
+    this.sortBy = event.sortBy
+    this.sortAsc = event.sortAsc
+    const startIndex = (event.page - 1) * event.limit
+    const endIndex = event.page * event.limit
+
+    this._store.loadData(event);
+  }
+
+  reload() {
+    this._store.loadData(defaultPaging);
   }
 }
