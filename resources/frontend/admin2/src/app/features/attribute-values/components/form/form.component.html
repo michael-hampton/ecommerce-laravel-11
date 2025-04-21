@@ -1,0 +1,33 @@
+<app-modal [child]="child" [title]="title" (closeMeEvent)="close()" (confirmEvent)="save()">
+  <ng-template #child>
+    <div class="card p-3" *ngIf="lookupVm$ | async as vm">
+      <div class="card-body" *ngIf="form">
+        <form admin-form class="form-horizontal" method="post" [formGroup]="form">
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Name"
+                   formControlName="name">
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Attribute</label>
+            <select class="form-control" id="attribute_id" name="attribute_id" formControlName="attribute_id">
+              <option value="">Select Attribute</option>
+              <option *ngFor="let attribute of vm.attributes"
+                      [value]="attribute.id">
+                {{ attribute.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
+            <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
+                    (click)="save()">{{ saveButtonText }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
+</app-modal>

@@ -16,7 +16,9 @@ import {ControlErrorComponent} from "../components/control-error/control-error.c
 
 export const defaultErrors = {
   required: (error) => `This field is required`,
-  minlength: ({requiredLength, actualLength}) => `Expect ${requiredLength} but got ${actualLength}`
+  minlength: ({requiredLength, actualLength}) => `Expect ${requiredLength} but got ${actualLength}`,
+  future: (error) => 'The date must be in the future',
+  matchPassword: (error) => 'Passwords must match',
 }
 
 export const FORM_ERRORS = new InjectionToken('FORM_ERRORS', {

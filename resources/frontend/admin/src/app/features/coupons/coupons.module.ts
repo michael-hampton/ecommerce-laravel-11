@@ -8,6 +8,7 @@ import {DataTablesModule} from 'angular-datatables';
 import {SharedModule} from '../../shared/shared.module';
 import {ModalComponent} from '../../shared/components/modal/modal.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import {InputDirective} from "../../core/input/input.directive";
 
 
 @NgModule({
@@ -15,13 +16,14 @@ import {ReactiveFormsModule} from '@angular/forms';
     FormComponent,
     CouponListComponent
   ],
-  imports: [
-    CommonModule,
-    CouponsRoutingModule,
-    DataTablesModule,
-    SharedModule,
-    ModalComponent,
-    ReactiveFormsModule
-  ]
+    imports: [
+        CommonModule,
+        CouponsRoutingModule,
+        DataTablesModule,
+        SharedModule,
+        ModalComponent,
+        ReactiveFormsModule,
+        InputDirective
+    ]
 })
 export class CouponsModule { }

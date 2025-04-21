@@ -6,6 +6,7 @@ import {ModalComponent} from "../../../../shared/components/modal/modal.componen
 import {CouponFormStore} from "../../../../store/coupons/form.store";
 import {Coupon} from "../../../../types/coupons/coupon";
 import {CouponTypeEnum} from '../../../../types/coupons/coupon-type.enum';
+import {futureValidator} from '../../../../core/input/validators';
 
 @Component({
   selector: 'app-form',
@@ -80,7 +81,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       value: new FormControl('', [Validators.required]),
       cart_value: new FormControl('', [Validators.required]),
       usages: new FormControl(1),
-      expires_at: new FormControl(0),
+      expires_at: new FormControl(null, futureValidator),
       categories: new FormControl(''),
       brands: new FormControl(''),
     })

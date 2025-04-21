@@ -75,7 +75,6 @@ export class StateService<T> {
   }
 
   SetState(item: T): Observable<T | null> {
-    alert('here444')
     this.stateItem.next(item);
     return this.stateItem$;
   }

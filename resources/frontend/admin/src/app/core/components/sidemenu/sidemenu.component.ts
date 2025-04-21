@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {RouterLink} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -9,4 +10,10 @@ import {RouterLink} from '@angular/router';
 })
 export class SidemenuComponent {
 
+  constructor(private _auth: AuthService) {
+  }
+
+  logout() {
+    this._auth.Logout();
+  }
 }

@@ -6,7 +6,6 @@ import {ModalService} from "../../../../services/modal.service";
 import {Category} from "../../../../types/categories/category";
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {FormComponent} from '../form/form.component';
-import * as test from 'node:test';
 
 @Component({
   selector: 'app-category-list',

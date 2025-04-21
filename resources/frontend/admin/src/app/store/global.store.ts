@@ -39,12 +39,12 @@ export class GlobalStore extends ComponentStore<GlobalState> {
     { debounce: true }
   );
   setError(error: IUiError) {
-    this.toast.ShowError('hello world');
+    this.toast.ShowError(error.message);
     this.patchState({error: error.message})
   }
 
   setSuccess(success: string) {
-    this.toast.ShowSuccess('hello world');
+    this.toast.ShowSuccess(success);
     this.patchState({success: success})
   }
 }

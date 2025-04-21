@@ -5,6 +5,7 @@ import {UserFormStore} from "../../../../store/users/form.store";
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
 import {User} from '../../../../types/users/user';
 import {RoleEnum} from '../../../../types/users/role.enum';
+import {matchPasswordFn} from '../../../../core/input/validators';
 
 @Component({
   selector: 'app-form',
@@ -71,10 +72,13 @@ export class FormComponent extends ModalComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       mobile: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
+      confirm: new FormControl('', [Validators.required]),
       utype: new FormControl('', [Validators.required]),
       active: new FormControl('', [Validators.required]),
       image: new FormControl(''),
     })
+
+    this.form.get('confirm').setValidators(matchPasswordFn(this.form.get('password')));
   }
 
   protected readonly RoleEnum = RoleEnum;
