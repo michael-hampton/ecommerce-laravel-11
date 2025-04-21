@@ -13,16 +13,10 @@ import {UiError} from '../../core/services/exception.service';
 
 export interface DashboardState {
   data: Dashboard;
-  loading: boolean;
-  error: string;
-  saveSuccess: boolean;
 }
 
 const defaultState: DashboardState = {
   data: {} as Dashboard,
-  loading: false,
-  error: '',
-  saveSuccess: false
 };
 
 @Injectable({
@@ -34,14 +28,10 @@ export class DashboardStore extends ComponentStore<DashboardState> {
   }
 
   readonly data$ = this.select(({data}) => data);
-  private readonly loading$ = this.select((state) => state.loading);
-  private readonly error$ = this.select((state) => state.error);
 
   readonly vm$ = this.select(
     {
       data: this.data$,
-      loading: this.loading$,
-      error: this.error$,
     },
     {debounce: true}
   );
@@ -49,13 +39,16 @@ export class DashboardStore extends ComponentStore<DashboardState> {
   getData = this.effect<void>(
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
     pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this._globalStore.setLoading(true)),
       switchMap(filter =>
         this._api.getData().pipe(
           tapResponse({
             next: (data) => this.patchState({data: data.data}),
-            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            error: (error: HttpErrorResponse) => {
+              this._globalStore.setLoading(false)
+              this._globalStore.setError(UiError(error))
+            },
+            finalize: () => this._globalStore.setLoading(false),
           })
         )
       )

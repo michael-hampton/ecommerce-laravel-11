@@ -12,9 +12,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PixelConverter} from './components/table/utils/px';
 import { DataTablePaginationComponent } from './components/table/data-table-pagination/data-table-pagination.component';
 import { ToastComponent } from './components/toast/toast.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
-  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent],
+  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent],
   imports: [
     CommonModule,
     ControlErrorComponent,
@@ -23,12 +24,13 @@ import { ToastComponent } from './components/toast/toast.component';
     PixelConverter,
     ReactiveFormsModule
   ],
-  exports: [
-    FormSubmitDirective,
-    FieldValidationFlagDirective,
-    DataTableComponent,
-    ColumnComponent,
-    ToastComponent
-  ]
+    exports: [
+        FormSubmitDirective,
+        FieldValidationFlagDirective,
+        DataTableComponent,
+        ColumnComponent,
+        ToastComponent,
+        LoaderComponent
+    ]
 })
 export class SharedModule { }

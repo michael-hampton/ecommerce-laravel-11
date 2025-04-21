@@ -15,7 +15,6 @@ export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;
   form?: FormGroup;
   _formStore = inject(AttributeFormStore)
-  formVm$ = this._formStore.vm$;
 
   public constructor(private fb: FormBuilder) {
     super();

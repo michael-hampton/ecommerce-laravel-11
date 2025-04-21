@@ -11,16 +11,10 @@ import {UiError} from '../../core/services/exception.service';
 
 export interface AttributeState {
   attributes: Attribute[];
-  loading: boolean;
-  error: string;
-  saveSuccess: boolean;
 }
 
 const defaultState: AttributeState = {
   attributes: [],
-  loading: false,
-  error: '',
-  saveSuccess: false
 };
 
 @Injectable({
@@ -32,32 +26,28 @@ export class AttributeStore extends ComponentStore<AttributeState> {
   }
 
   readonly attributes$ = this.select(({attributes}) => attributes);
-  private readonly loading$ = this.select((state) => state.loading);
-  private readonly error$ = this.select((state) => state.error);
 
   readonly vm$ = this.select(
     {
       attributes: this.attributes$,
-      loading: this.loading$,
-      error: this.error$,
     },
     {debounce: true}
   );
 
   readonly delete = this.effect<number>(
     pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this._globalStore.setLoading(true)),
       switchMap((id) => this._service.delete(id).pipe(
           tapResponse({
             next: (users) => {
               this._globalStore.setSuccess('Deleted successfully');
-              this.patchState({loading: false, saveSuccess: true})
+              //this.patchState({loading: false, saveSuccess: true})
             },
             error: (error: HttpErrorResponse) => {
-              this.patchState({loading: false, saveSuccess: false})
+              this._globalStore.setLoading(false)
               this._globalStore.setError(UiError(error))
             },
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this._globalStore.setLoading(false),
           })
         )
       )

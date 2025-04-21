@@ -3,6 +3,7 @@ import { ComponentStore } from '@ngrx/component-store';
 import { tapResponse } from '@ngrx/operators'
 import {IUiError} from '../core/services/exception.service';
 import {Toast} from '../services/toast/toast.service';
+import {LoaderService} from '../services/loader/loader.service';
 
 
 export interface GlobalState {
@@ -21,7 +22,7 @@ const defaultState: GlobalState = {
   providedIn: 'root'
 })
 export class GlobalStore extends ComponentStore<GlobalState> {
-  constructor(private toast: Toast) {
+  constructor(private toast: Toast, private loader: LoaderService) {
     super(defaultState);
   }
 
@@ -41,6 +42,14 @@ export class GlobalStore extends ComponentStore<GlobalState> {
   setError(error: IUiError) {
     this.toast.ShowError(error.message);
     this.patchState({error: error.message})
+  }
+
+  setLoading(loading: boolean) {
+    if(loading) {
+      return this.loader.show();
+    }
+
+    return this.loader.hide();
   }
 
   setSuccess(success: string) {

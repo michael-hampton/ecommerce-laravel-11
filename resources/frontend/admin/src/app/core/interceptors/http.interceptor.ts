@@ -17,8 +17,8 @@ import {
   Subject,
   filter,
 } from 'rxjs';
-import {AuthService} from '../services/auth.service';
-import {AuthState} from '../services/auth.state';
+import {AuthService} from '../auth/auth.service';
+import {AuthState} from '../auth/auth.state';
 
 @Injectable()
 export class AppInterceptor implements HttpInterceptor {

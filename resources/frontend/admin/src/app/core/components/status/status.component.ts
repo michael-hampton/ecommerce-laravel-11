@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { map, Observable } from 'rxjs';
-import { IUser } from '../../services/user.model';
-import { AuthState } from '../../services/auth.state';
+import { IUser } from '../../auth/user.model';
+import { AuthState } from '../../auth/auth.state';
 
 @Component({
   selector: 'app-status',

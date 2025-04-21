@@ -6,20 +6,15 @@ import {GlobalStore} from "../global.store";
 import {Seller} from '../../types/seller/seller';
 import {SellerApi} from '../../apis/seller.api';
 import {UiError} from '../../core/services/exception.service';
+import {tap} from 'rxjs/operators';
 
 export interface ProfileFormState {
-  loading: boolean;
-  error: string;
-  saveSuccess: boolean;
   imagePreview: string;
   currentFile?: File;
   data: Seller
 }
 
 const defaultState: ProfileFormState = {
-  loading: false,
-  error: '',
-  saveSuccess: false,
   imagePreview: '',
   currentFile: undefined,
   data: {} as Seller
@@ -33,12 +28,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     super(defaultState);
   }
 
-  private readonly loading$ = this.select((state) => state.loading);
-  private readonly error$ = this.select((state) => state.error);
-
   vm$ = this.select(state => ({
-    loading: state.loading,
-    error: state.error,
     imagePreview: state.imagePreview,
     data: state.data
   }))
@@ -46,19 +36,19 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   saveData = (payload: Partial<Seller>) => {
     const {id, ...dataCreate} = payload
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
-    this.patchState({loading: true})
+    this._globalStore.setLoading(true)
 
     return request$.pipe(
       tapResponse({
         next: (users) => {
           this._globalStore.setSuccess('Saved successfully');
-          this.patchState({loading: false, saveSuccess: true})
+          //this.patchState({loading: false, saveSuccess: true})
         },
         error: (error: HttpErrorResponse) => {
-          this.patchState({loading: false, saveSuccess: false})
+          this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))
         },
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this._globalStore.setLoading(false),
       })
     )
   }
@@ -90,7 +80,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
       tapResponse({
         next: (data) => this.patchState({data: data.data}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this._globalStore.setLoading(false),
       })
     )
   }

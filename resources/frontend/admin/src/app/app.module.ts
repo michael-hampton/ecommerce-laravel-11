@@ -10,7 +10,7 @@ import {HTTP_INTERCEPTORS, provideHttpClient} from '@angular/common/http';
 import {ToastComponent} from './shared/components/toast/toast.component';
 import {SharedModule} from './shared/shared.module';
 import {Toast} from './services/toast/toast.service';
-import {AuthState} from './core/services/auth.state';
+import {AuthState} from './core/auth/auth.state';
 import {AppInterceptor} from './core/interceptors/http.interceptor';
 
 const CoreProviders = [

@@ -9,17 +9,11 @@ import {UiError} from '../../core/services/exception.service';
 
 
 export interface SlideFormState {
-  loading: boolean;
-  error: string;
-  saveSuccess: boolean;
   imagePreview: string;
   currentFile?: File;
 }
 
 const defaultState: SlideFormState = {
-  loading: false,
-  error: '',
-  saveSuccess: false,
   imagePreview: '',
   currentFile: undefined
 };
@@ -32,31 +26,27 @@ export class SlideFormStore extends ComponentStore<SlideFormState> {
     super(defaultState);
   }
 
-  private readonly loading$ = this.select((state) => state.loading);
-  private readonly error$ = this.select((state) => state.error);
-
   vm$ = this.select(state => ({
-    loading: state.loading,
-    error: state.error,
     imagePreview: state.imagePreview,
   }))
 
   saveData = (payload: Partial<Slide>) => {
     const {id, ...dataCreate} = payload
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
-    this.patchState({loading: true})
+    this._globalStore.setLoading(true)
 
     return request$.pipe(
       tapResponse({
         next: (users) => {
           this._globalStore.setSuccess('Saved successfully');
-          this.patchState({loading: false, saveSuccess: true})
+          //this.patchState({loading: false, saveSuccess: true})
         },
         error: (error: HttpErrorResponse) => {
-          this.patchState({loading: false, saveSuccess: false})
+          //this.patchState({loading: false, saveSuccess: false})
+          this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))
         },
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this._globalStore.setLoading(false),
       })
     )
   }

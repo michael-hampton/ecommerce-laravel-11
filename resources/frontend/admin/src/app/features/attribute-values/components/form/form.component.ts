@@ -19,7 +19,6 @@ export class FormComponent extends ModalComponent implements OnInit {
   private _lookupStore = inject(LookupStore)
   lookupVm$ = this._lookupStore.vm$;
   _formStore = inject(AttributeValueFormStore)
-  formVm$ = this._formStore.vm$;
 
   public constructor(private fb: FormBuilder) {
     super();
