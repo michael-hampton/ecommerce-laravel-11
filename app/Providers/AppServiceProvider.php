@@ -16,10 +16,12 @@ use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Repositories\Interfaces\IProductRepository;
+use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\ISlideRepository;
 use App\Repositories\Interfaces\IUserRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
+use App\Repositories\SellerRepository;
 use App\Repositories\SlideRepository;
 use App\Repositories\UserRepository;
 use App\Services\AddressService;
@@ -50,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
      * @var string[]
      */
     private $repositories = [
+        ISellerRepository::class => SellerRepository::class,
         IProductRepository::class => ProductRepository::class,
         IOrderRepository::class => OrderRepository::class,
         ICouponRepository::class => CouponRepository::class,

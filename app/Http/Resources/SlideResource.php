@@ -18,7 +18,7 @@ class SlideResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'image' => $this->image,
+            'image' => asset('images/slides') . '/' . $this->image,
             'subtitle' => $this->subtitle,
             'link' => $this->link,
             'active' => $this->active,

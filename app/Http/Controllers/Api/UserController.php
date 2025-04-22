@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\SlideResource;
 use App\Http\Resources\UserResource;
 use App\Repositories\Interfaces\IUserRepository;
 use App\Services\Interfaces\IUserService;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     public function __construct(private IUserRepository $userRepository, private IUserService  $userService)
     {
@@ -25,26 +26,13 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->getAll(null, 'id', 'desc');
+        $users = $this->userRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+        );
 
-        $collection = UserResource::collection($users)->resolve();
-
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (\Illuminate\Support\Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.users.index', compact('users'));
+        return $this->sendPaginatedResponse($users, UserResource::collection($users));
     }
 
     /**

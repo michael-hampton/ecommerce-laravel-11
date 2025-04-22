@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAttributeRequest;
 use App\Http\Requests\UpdateAttributeRequest;
 use App\Http\Resources\AttributeResource;
@@ -12,7 +11,7 @@ use Illuminate\Http\Request;
 use Psy\Util\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class AttributeController extends Controller
+class AttributeController extends ApiController
 {
     public function __construct(private IAttributeService $attributeService, private IAttributeRepository $attributeRepository) {
 
@@ -25,25 +24,13 @@ class AttributeController extends Controller
      */
     public function index(Request $request)
     {
-        $attributes = $this->attributeRepository->getAll(null, 'id', 'desc');
-        $collection = AttributeResource::collection($attributes)->resolve();
+        $attributes = $this->attributeRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+        );
 
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (\Illuminate\Support\Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.attributes.index', compact('attributes'));
+        return $this->sendPaginatedResponse($attributes, AttributeResource::collection($attributes));
     }
 
     /**

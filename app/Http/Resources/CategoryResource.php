@@ -18,8 +18,11 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'meta_title' => $this->meta_title,
+            'meta_description' => $this->meta_description,
+            'meta_keywords' => $this->meta_keywords,
             'slug' => $this->slug,
-            'image' => $this->image,
+            'image' => asset('images/categories') . '/' . $this->image,
             'products' => $this->products->count(),
             'subcategories' => $this->subcategories->toArray(),
             'created_at' => $this->created_at,

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
+use App\Http\Resources\AttributeValueResource;
 use App\Http\Resources\BrandResource;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Services\Interfaces\IBrandService;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 use Psy\Util\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class BrandController extends Controller
+class BrandController extends ApiController
 {
     public function __construct(private IBrandService $brandService, private IBrandRepository $brandRepository) {
 
@@ -25,25 +26,13 @@ class BrandController extends Controller
      */
     public function index(Request $request)
     {
-        $brands = $this->brandRepository->getAll(null, 'id', 'desc');
-        $collection = BrandResource::collection($brands)->resolve();
+        $brands = $this->brandRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+        );
 
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (\Illuminate\Support\Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.brands.index', compact('brands'));
+        return $this->sendPaginatedResponse($brands, BrandResource::collection($brands));
     }
 
     /**

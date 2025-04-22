@@ -2,7 +2,13 @@
 
 namespace App\Repositories;
 
-class SellerRepository
-{
+use App\Models\Profile;
+use App\Repositories\Interfaces\ISellerRepository;
 
+class SellerRepository extends BaseRepository implements ISellerRepository
+{
+    public function __construct(Profile $profile)
+    {
+        parent::__construct($profile);
+    }
 }

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateSlideRequest;
 use App\Http\Requests\UpdateSlideRequest;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\SlideResource;
 use App\Repositories\Interfaces\ISlideRepository;
 use App\Services\Interfaces\ISlideService;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 use Psy\Util\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class SlideController extends Controller
+class SlideController extends ApiController
 {
     public function __construct(private ISlideRepository $slideRepository, private ISlideService $slideService)
     {
@@ -26,25 +27,13 @@ class SlideController extends Controller
      */
     public function index(Request $request)
     {
-        $slides = $this->slideRepository->getAll(null, 'id', 'desc');
-        $collection = SlideResource::collection($slides)->resolve();
+        $slides = $this->slideRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+        );
 
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (\Illuminate\Support\Str::contains(Str::lower($row['title']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.slides.index', compact('slides'));
+        return $this->sendPaginatedResponse($slides, SlideResource::collection($slides));
     }
 
     /**

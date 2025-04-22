@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCouponRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CouponResource;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
@@ -13,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class CouponController extends Controller
+class CouponController extends ApiController
 {
     public function __construct(
         private ICouponRepository $couponRepository,
@@ -32,25 +33,13 @@ class CouponController extends Controller
      */
     public function index(Request $request)
     {
-        $coupons = $this->couponRepository->getAll(null, 'id', 'desc');
-        $collection = CouponResource::collection($coupons)->resolve();
+        $coupons = $this->couponRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+        );
 
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (Str::contains(Str::lower($row['code']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.coupons.index', compact('coupons'));
+        return $this->sendPaginatedResponse($coupons, CouponResource::collection($coupons));
     }
 
     /**

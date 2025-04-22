@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
@@ -15,13 +15,12 @@ use App\Repositories\BrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Interfaces\IProductService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
-use Yajra\DataTables\Facades\DataTables;
 
-class ProductController extends Controller
+class ProductController extends ApiController
 {
     public function __construct(
         private IProductService     $productService,
@@ -34,39 +33,20 @@ class ProductController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
      * @param Request $request
-     * @return Response
-     * @throws \Exception
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $products = $this->productRepository->getAll(
-            null,
-            'created_at',
-            'desc',
-            ['seller_id' => auth()->user()->id]
+        $products = $this->productRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            ['seller_id' => auth('sanctum')->user()->id]
         );
 
-       $collection = ProductResource::collection($products)->resolve();
+       return $this->sendPaginatedResponse($products, ProductResource::collection($products));
 
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.products.index', compact('products'));
     }
 
     /**
@@ -92,7 +72,7 @@ class ProductController extends Controller
     {
         $result = $this->productService->createProduct($request->all());
 
-        if($request->ajax()) {
+        if ($request->ajax()) {
             return response()->json($result);
         }
 

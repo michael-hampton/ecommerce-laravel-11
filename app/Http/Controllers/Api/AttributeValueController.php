@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAttributeValueRequest;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Psy\Util\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class AttributeValueController extends Controller
+class AttributeValueController extends ApiController
 {
     public function __construct(
         private IAttributeRepository $attributeRepository,
@@ -30,25 +30,13 @@ class AttributeValueController extends Controller
      */
     public function index(Request $request)
     {
-        $attributeValues = $this->attributeValueRepository->getAll(null, 'id', 'desc');
-        $collection = AttributeValueResource::collection($attributeValues)->resolve();
+        $attributeValues = $this->attributeValueRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+        );
 
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (\Illuminate\Support\Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.attribute-values.index', compact('attributeValues'));
+        return $this->sendPaginatedResponse($attributeValues, AttributeValueResource::collection($attributeValues));
     }
 
     /**

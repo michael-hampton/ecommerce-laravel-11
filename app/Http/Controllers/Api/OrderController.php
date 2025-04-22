@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateOrderStatusRequest;
+use App\Http\Resources\CouponResource;
 use App\Http\Resources\OrderResource;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Interfaces\IOrderService;
@@ -12,7 +13,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class OrderController extends Controller
+class OrderController extends ApiController
 {
     public function __construct(private IOrderRepository $orderRepository, private IOrderService $orderService)
     {
@@ -25,25 +26,14 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $orders = $this->orderRepository->getAll(null, 'id', 'asc', ['seller_id' => auth()->id()]);
-        $collection = OrderResource::collection($orders)->resolve();
+        $orders = $this->orderRepository->getPaginated(
+            $request->integer('limit'),
+            $request->string('sortBy'),
+            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            ['seller_id' => auth('sanctum')->user()->id]
+        );
 
-        if ($request->ajax()) {
-            return DataTables::of($collection)->filter(function ($instance) use ($request) {
-                if (!empty($request->get('search'))) {
-                    $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                        if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                            return true;
-                        }
-                        return false;
-
-                    });
-
-                };
-            })->make(true);
-        }
-
-        return view('admin.orders.index', compact('orders'));
+        return $this->sendPaginatedResponse($orders, OrderResource::collection($orders));
     }
 
     public function orderDetails(int $orderId)

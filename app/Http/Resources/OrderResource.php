@@ -18,7 +18,7 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'customer' => $this->customer,
+            'customer' => UserResource::make($this->customer),
             'subtotal' => $this->subtotal(),
             'shipping' => $this->shipping(),
             'discount' => $this->discount,

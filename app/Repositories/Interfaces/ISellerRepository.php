@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Interfaces;
 
-class ISellerRepository
+use App\Repositories\BaseRepository;
+
+interface ISellerRepository extends IBaseRepository
 {
 
 }

@@ -18,12 +18,12 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'image' => asset('images/users') . '/' . $this->image,
             'email' => $this->email,
             'mobile' => $this->mobile,
             'active' => $this->active,
             'utype' => $this->utype,
             'approved' => $this->approved,
-            'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
