@@ -1,27 +1,24 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
 import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {AttributeValue} from "../../types/attribute-values/attribute-value";
 import {AttributeValuesApi} from '../../apis/attribute-values.api';
 import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
-import {FilterModel, PagedData} from '../../types/filter.model';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
+import {FilterStore} from '../filter.store';
+import {Product} from '../../types/products/product';
 
-
-export interface AttributeValueState {
-  data: PagedData<AttributeValue>
-}
-
-const defaultState: AttributeValueState = {
-  data: {} as PagedData<AttributeValue>
+const defaultState: FilterState<AttributeValue> = {
+  data: {} as PagedData<AttributeValue>,
+  filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class AttributeValueStore extends ComponentStore<AttributeValueState> {
+export class AttributeValueStore extends FilterStore<AttributeValue> {
   constructor(private _api: AttributeValuesApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
@@ -31,6 +28,8 @@ export class AttributeValueStore extends ComponentStore<AttributeValueState> {
   readonly vm$ = this.select(
     {
       data: this.data$,
+      filter: this.filter$
+
     },
     {debounce: true}
   );
@@ -58,20 +57,14 @@ export class AttributeValueStore extends ComponentStore<AttributeValueState> {
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((filter: FilterModel) => {
-        return this._api.getData(filter).pipe(
+      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
           tapResponse({
-            next: (data) => {
-              alert('hete666')
-              this.patchState({data: data as PagedData<AttributeValue>});
-            },
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error));
-            },
-            finalize: () => this._globalStore.setLoading(false)
+            next: (data) => this.patchState({data: data as PagedData<AttributeValue>}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            complete: () => this._globalStore.setLoading(false)
           })
-        );
-      })
+        )
+      )
     )
   );
 }

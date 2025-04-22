@@ -1,5 +1,6 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Users" (reload)="reload()" [sortBy]="sortBy" [sortAsc]="sortAsc"
+  <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Users" (reload)="reload()"
+             [sortBy]="vm.filter.sortBy" [sortAsc]="vm.filter.sortAsc"
              [itemCount]="vm.data.totalCount" [items]="vm.data.data"
              (changePage)="pageChanged($event)">
     <data-table-column header="#" property="id" [sortable]="true"></data-table-column>

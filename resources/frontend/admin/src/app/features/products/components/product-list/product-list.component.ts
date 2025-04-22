@@ -7,6 +7,7 @@ import {ModalComponent} from "../../../../shared/components/modal/modal.componen
 import {FormComponent} from '../form/form.component';
 import {defaultPaging, FilterModel} from '../../../../types/filter.model';
 import {CategoryStore} from '../../../../store/categories/list.store';
+import {GlobalStore} from '../../../../store/global.store';
 
 @Component({
   selector: 'app-product-list',
@@ -15,17 +16,15 @@ import {CategoryStore} from '../../../../store/categories/list.store';
   styleUrl: './product-list.component.scss'
 })
 export class ProductListComponent implements OnInit {
-  dtOptions: Config = {};
-  @ViewChild('confirmationModal')
-  private deleteModalComponent!: ViewContainerRef;
   @ViewChild('modal', {read: ViewContainerRef})
   entry!: ViewContainerRef;
   sub!: Subscription;
-  sortBy: string = 'name'
-  sortAsc: boolean = true
 
   private _store: ProductStore = inject(ProductStore)
   vm$ = this._store.vm$
+
+  private _globalStore = inject(GlobalStore)
+  globalvm$ = this._globalStore.vm$
 
   constructor(
     private modalService: ModalService,
@@ -33,7 +32,7 @@ export class ProductListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._store.loadData(defaultPaging);
+    this._store.loadData(this._store.filter$);
   }
 
   edit(data: any) {
@@ -47,7 +46,8 @@ export class ProductListComponent implements OnInit {
     this.sub = this.modalService
       .openConfirmationModal(ModalComponent, this.entry, data, {
         modalTitle: 'Are you sure?',
-        modalBody: 'click confirm or close'
+        modalBody: 'click confirm or close',
+        //size: 'modal-sm'
       })
       .subscribe((v) => {
         this._store.delete(data.id)
@@ -62,16 +62,11 @@ export class ProductListComponent implements OnInit {
       });
   }
 
-  pageChanged(event: FilterModel) {
-    this.sortBy = event.sortBy
-    this.sortAsc = event.sortAsc
-    const startIndex = (event.page - 1) * event.limit
-    const endIndex = event.page * event.limit
-
-    this._store.loadData(event);
+  pageChanged(filter: FilterModel) {
+    this._store.updateFilter(filter)
   }
 
   reload() {
-    this._store.loadData(defaultPaging);
+    this._store.reset();
   }
 }

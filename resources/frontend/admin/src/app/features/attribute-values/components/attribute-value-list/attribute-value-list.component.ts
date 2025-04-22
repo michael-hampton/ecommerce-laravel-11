@@ -5,8 +5,7 @@ import {AttributeValueStore} from '../../../../store/attribute-values/list.store
 import {ModalService} from '../../../../services/modal.service';
 import {FormComponent} from '../form/form.component';
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
-import {defaultPaging, FilterModel} from '../../../../types/filter.model';
-import {CategoryStore} from '../../../../store/categories/list.store';
+import {FilterModel} from '../../../../types/filter.model';
 
 @Component({
   selector: 'app-attribute-value-list',
@@ -22,8 +21,6 @@ export class AttributeValueListComponent implements OnInit {
   @ViewChild('modal', {read: ViewContainerRef})
   entry!: ViewContainerRef;
   sub!: Subscription;
-  sortBy: string = 'name'
-  sortAsc: boolean = true
 
   private _store: AttributeValueStore = inject(AttributeValueStore)
   vm$ = this._store.vm$
@@ -34,7 +31,7 @@ export class AttributeValueListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._store.loadData(defaultPaging);
+    this._store.loadData(this._store.filter$);
   }
 
   delete = async (data: any) => {
@@ -63,16 +60,11 @@ export class AttributeValueListComponent implements OnInit {
       });
   }
 
-  pageChanged(event: FilterModel) {
-    this.sortBy = event.sortBy
-    this.sortAsc = event.sortAsc
-    const startIndex = (event.page - 1) * event.limit
-    const endIndex = event.page * event.limit
-
-    this._store.loadData(event);
+  pageChanged(filter: FilterModel) {
+    this._store.updateFilter(filter)
   }
 
   reload() {
-    this._store.loadData(defaultPaging);
+    this._store.reset()
   }
 }

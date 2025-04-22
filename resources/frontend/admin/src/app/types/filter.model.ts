@@ -1,3 +1,5 @@
+import {User} from './users/user';
+
 export type FilterModel = {
   page: number;
   limit: number;
@@ -18,3 +20,9 @@ export type PagedData<T> = {
   totalCount: number
   data: T[]
 }
+
+export interface FilterState<T> {
+  filter: FilterModel,
+  data: PagedData<T>
+}
+

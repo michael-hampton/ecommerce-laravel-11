@@ -18,13 +18,9 @@ import {CategoryStore} from '../../../../store/categories/list.store';
 })
 export class CouponListComponent implements OnInit {
   dtOptions: Config = {};
-  @ViewChild('confirmationModal')
-  private deleteModalComponent!: ViewContainerRef;
   @ViewChild('modal', {read: ViewContainerRef})
   entry!: ViewContainerRef;
   sub!: Subscription;
-  sortBy: string = 'code'
-  sortAsc: boolean = true
 
   private _store: CouponStore = inject(CouponStore)
   vm$ = this._store.vm$
@@ -35,7 +31,7 @@ export class CouponListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._store.loadData(defaultPaging);
+    this._store.loadData(this._store.filter$);
   }
 
   delete = async (data: any) => {
@@ -64,16 +60,11 @@ export class CouponListComponent implements OnInit {
       });
   }
 
-  pageChanged(event: FilterModel) {
-    this.sortBy = event.sortBy
-    this.sortAsc = event.sortAsc
-    const startIndex = (event.page - 1) * event.limit
-    const endIndex = event.page * event.limit
-
-    this._store.loadData(event);
+  pageChanged(filter: FilterModel) {
+    this._store.updateFilter(filter)
   }
 
   reload() {
-    this._store.loadData(defaultPaging);
+    this._store.reset();
   }
 }

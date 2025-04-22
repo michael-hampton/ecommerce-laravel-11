@@ -7,22 +7,19 @@ import {Brand} from '../../types/brands/brand';
 import {BrandApi} from '../../apis/brand.api';
 import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
-import {FilterModel, PagedData} from '../../types/filter.model';
-import {Attribute} from '../../types/attributes/attribute';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
+import {FilterStore} from '../filter.store';
+import {Product} from '../../types/products/product';
 
-
-export interface BrandState {
-  data: PagedData<Brand>
-}
-
-const defaultState: BrandState = {
+const defaultState: FilterState<Brand> = {
   data: {} as PagedData<Brand>,
+  filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class BrandStore extends ComponentStore<BrandState> {
+export class BrandStore extends FilterStore<Brand> {
   constructor(private _api: BrandApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
@@ -32,6 +29,7 @@ export class BrandStore extends ComponentStore<BrandState> {
   readonly vm$ = this.select(
     {
       data: this.data$,
+      filter: this.filter$
     },
     {debounce: true}
   );
@@ -60,20 +58,14 @@ export class BrandStore extends ComponentStore<BrandState> {
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((filter: FilterModel) => {
-        return this._api.getData(filter).pipe(
+      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
           tapResponse({
-            next: (data) => {
-              alert('hete666')
-              this.patchState({data: data as PagedData<Brand>});
-            },
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error));
-            },
-            finalize: () => this._globalStore.setLoading(false)
+            next: (data) => this.patchState({data: data as PagedData<Brand>}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            complete: () => this._globalStore.setLoading(false)
           })
-        );
-      })
+        )
+      )
     )
   );
 }

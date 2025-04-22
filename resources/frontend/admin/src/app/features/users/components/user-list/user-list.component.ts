@@ -15,14 +15,9 @@ import {CategoryStore} from '../../../../store/categories/list.store';
   styleUrl: './user-list.component.scss'
 })
 export class UserListComponent implements OnInit {
-  dtOptions: Config = {};
-  @ViewChild('confirmationModal')
-  private deleteModalComponent!: ViewContainerRef;
   @ViewChild('modal', {read: ViewContainerRef})
   entry!: ViewContainerRef;
   sub!: Subscription;
-  sortBy: string = 'name'
-  sortAsc: boolean = true
 
   private _store: UserStore = inject(UserStore)
   vm$ = this._store.vm$
@@ -33,7 +28,7 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._store.loadData(defaultPaging);
+    this._store.loadData(this._store.filter$);
   }
 
   edit(data: any) {
@@ -62,16 +57,11 @@ export class UserListComponent implements OnInit {
       });
   }
 
-  pageChanged(event: FilterModel) {
-    this.sortBy = event.sortBy
-    this.sortAsc = event.sortAsc
-    const startIndex = (event.page - 1) * event.limit
-    const endIndex = event.page * event.limit
-
-    this._store.loadData(event);
+  pageChanged(filter: FilterModel) {
+    this._store.updateFilter(filter)
   }
 
   reload() {
-    this._store.loadData(defaultPaging);
+    this._store.reset();
   }
 }

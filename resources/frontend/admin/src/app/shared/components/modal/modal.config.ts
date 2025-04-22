@@ -3,6 +3,7 @@ export interface ModalConfig {
   modalBody?: string
   saveButtonLabel?: string
   closeButtonLabel?: string
+  size?: string;
   shouldClose?(): Promise<boolean> | boolean
   shouldSave?(): Promise<boolean> | boolean
   onClose?(): Promise<boolean> | boolean

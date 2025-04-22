@@ -7,22 +7,19 @@ import {Attribute} from '../../types/attributes/attribute';
 import {GlobalStore} from "../global.store";
 import {AttributeApi} from '../../apis/attribute.api';
 import {UiError} from '../../core/services/exception.service';
-import {FilterModel, PagedData} from '../../types/filter.model';
-import {Category} from '../../types/categories/category';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
+import {FilterStore} from '../filter.store';
+import {Product} from '../../types/products/product';
 
-
-export interface AttributeState {
-  data: PagedData<Attribute>
-}
-
-const defaultState: AttributeState = {
+const defaultState: FilterState<Attribute> = {
   data: {} as PagedData<Attribute>,
+  filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class AttributeStore extends ComponentStore<AttributeState> {
+export class AttributeStore extends FilterStore<Attribute> {
   constructor(private _api: AttributeApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
@@ -32,6 +29,7 @@ export class AttributeStore extends ComponentStore<AttributeState> {
   readonly vm$ = this.select(
     {
       data: this.data$,
+      filter: this.filter$
     },
     {debounce: true}
   );
@@ -59,20 +57,14 @@ export class AttributeStore extends ComponentStore<AttributeState> {
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((filter: FilterModel) => {
-        return this._api.getData(filter).pipe(
+      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
           tapResponse({
-            next: (data) => {
-              alert('hete666')
-              this.patchState({data: data as PagedData<Attribute>});
-            },
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error));
-            },
-            finalize: () => this._globalStore.setLoading(false)
+            next: (data) => this.patchState({data: data as PagedData<Attribute>}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            complete: () => this._globalStore.setLoading(false)
           })
-        );
-      })
+        )
+      )
     )
   );
 }

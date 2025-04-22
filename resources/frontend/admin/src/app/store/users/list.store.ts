@@ -7,22 +7,19 @@ import {User} from "../../types/users/user";
 import {UserApi} from '../../apis/user.api';
 import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
-import {FilterModel, PagedData} from '../../types/filter.model';
-import {Attribute} from '../../types/attributes/attribute';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
+import {FilterStore} from '../filter.store';
+import {Product} from '../../types/products/product';
 
-
-export interface UserState {
-  data: PagedData<User>
-}
-
-const defaultState: UserState = {
+const defaultState: FilterState<User> = {
   data: {} as PagedData<User>,
+  filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserStore extends ComponentStore<UserState> {
+export class UserStore extends FilterStore<User> {
   constructor(private _api: UserApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
@@ -32,6 +29,7 @@ export class UserStore extends ComponentStore<UserState> {
   readonly vm$ = this.select(
     {
       data: this.data$,
+      filter: this.filter$
     },
     {debounce: true}
   );
@@ -60,20 +58,14 @@ export class UserStore extends ComponentStore<UserState> {
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((filter: FilterModel) => {
-        return this._api.getData(filter).pipe(
+      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
           tapResponse({
-            next: (data) => {
-              alert('hete666')
-              this.patchState({data: data as PagedData<User>});
-            },
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error));
-            },
-            finalize: () => this._globalStore.setLoading(false)
+            next: (data) => this.patchState({data: data as PagedData<User>}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            complete: () => this._globalStore.setLoading(false)
           })
-        );
-      })
+        )
+      )
     )
   );
 }

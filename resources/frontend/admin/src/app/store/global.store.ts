@@ -41,10 +41,12 @@ export class GlobalStore extends ComponentStore<GlobalState> {
   );
   setError(error: IUiError) {
     this.toast.ShowError(error.message);
+    this.setLoading(false)
     this.patchState({error: error.message})
   }
 
   setLoading(loading: boolean) {
+    this.patchState({loading: loading})
     if(loading) {
       return this.loader.show();
     }

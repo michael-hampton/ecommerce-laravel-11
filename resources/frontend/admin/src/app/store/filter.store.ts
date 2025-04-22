@@ -1,6 +1,19 @@
 import {ComponentStore} from '@ngrx/component-store';
-import {AttributeValueState} from './attribute-values/list.store';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../types/filter.model';
+import {User} from '../types/users/user';
+export class FilterStore<T extends object> extends ComponentStore<FilterState<T>> {
 
-export class FilterStore<T extends object> extends ComponentStore<T> {
+  constructor(classState: any) {
+    super(classState);
+  }
 
+  readonly filter$ = this.select(({filter}) => filter);
+
+  updateFilter(filter: FilterModel) {
+    this.patchState({filter: filter})
+  }
+
+  reset() {
+    this.patchState({filter: defaultPaging})
+  }
 }

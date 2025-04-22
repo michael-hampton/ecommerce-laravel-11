@@ -1,6 +1,5 @@
 import {effect, Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
 import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {Category} from '../../types/categories/category';
@@ -8,21 +7,18 @@ import {CategoryApi} from '../../apis/category.api';
 import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
 import {FilterStore} from '../filter.store';
-import {FilterModel, PagedData} from '../../types/filter.model';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
+import {Product} from '../../types/products/product';
 
-
-export interface CategoryState {
-  data: PagedData<Category>;
-}
-
-const defaultState: CategoryState = {
+const defaultState: FilterState<Category> = {
   data: {} as PagedData<Category>,
+  filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryStore extends FilterStore<CategoryState> {
+export class CategoryStore extends FilterStore<Category> {
   constructor(private _api: CategoryApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
@@ -32,6 +28,7 @@ export class CategoryStore extends FilterStore<CategoryState> {
   readonly vm$ = this.select(
     {
       data: this.data$,
+      filter: this.filter$
     },
     {debounce: true}
   );
@@ -57,35 +54,16 @@ export class CategoryStore extends FilterStore<CategoryState> {
   );
 
   loadData = this.effect((filter$: Observable<FilterModel>) =>
-      filter$.pipe(
-       tap(() => this._globalStore.setLoading(true)),
-        switchMap((filter: FilterModel) => {
-          return this._api.getData(filter).pipe(
-            tapResponse({
-              next: (data) => {
-                alert('hete666')
-                this.patchState({data: data as PagedData<Category>});
-              },
-              error: (error: HttpErrorResponse) => {
-                this._globalStore.setError(UiError(error));
-              },
-              finalize: () => this._globalStore.setLoading(false)
-            })
-          );
-        })
+    filter$.pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
+          tapResponse({
+            next: (data) => this.patchState({data: data as PagedData<Category>}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            complete: () => this._globalStore.setLoading(false)
+          })
+        )
       )
+    )
   );
-
-
-  /* loadData = () => {
-  eturn this._api.getData().pipe(
-     map(response =>
-       response.data ? response.data : []
-     ),
-     catchError((error: HttpErrorResponse) => {
-       this._globalStore.setError(UiError(error))
-       return throwError(() => error)
-     })
-   )
- }*/
 }

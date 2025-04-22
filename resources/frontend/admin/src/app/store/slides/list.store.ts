@@ -1,28 +1,24 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
 import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {Slide} from '../../types/slides/slide';
 import {SlideApi} from '../../apis/slide.api';
 import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
-import {FilterModel, PagedData} from '../../types/filter.model';
-import {Attribute} from '../../types/attributes/attribute';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
+import {FilterStore} from '../filter.store';
+import {Product} from '../../types/products/product';
 
-
-export interface SlideState {
-  data: PagedData<Slide>
-}
-
-const defaultState: SlideState = {
-  data: {} as PagedData<Slide>
+const defaultState: FilterState<Slide> = {
+  data: {} as PagedData<Slide>,
+  filter: {...defaultPaging, ...{sortBy: 'title'}}
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class SlideStore extends ComponentStore<SlideState> {
+export class SlideStore extends FilterStore<Slide> {
   constructor(private _api: SlideApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
@@ -32,6 +28,7 @@ export class SlideStore extends ComponentStore<SlideState> {
   readonly vm$ = this.select(
     {
       data: this.data$,
+      filter: this.filter$
     },
     {debounce: true}
   );
@@ -59,20 +56,14 @@ export class SlideStore extends ComponentStore<SlideState> {
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((filter: FilterModel) => {
-        return this._api.getData(filter).pipe(
+      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
           tapResponse({
-            next: (data) => {
-              alert('hete666')
-              this.patchState({data: data as PagedData<Slide>});
-            },
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error));
-            },
-            finalize: () => this._globalStore.setLoading(false)
+            next: (data) => this.patchState({data: data as PagedData<Slide>}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            complete: () => this._globalStore.setLoading(false)
           })
-        );
-      })
+        )
+      )
     )
   );
 }

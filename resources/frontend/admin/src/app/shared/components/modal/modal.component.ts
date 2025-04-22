@@ -20,6 +20,7 @@ import {ModalService} from '../../../services/modal.service';
 export class ModalComponent {
   @Input() title: string = '';
   @Input() body: string = '';
+  @Input() size: string = 'modal-xl';
   @Output() public closeMeEvent = new EventEmitter();
   @Output() public confirmEvent = new EventEmitter();
   @Input() child: TemplateRef<any> | null = null;
@@ -29,6 +30,7 @@ export class ModalComponent {
   @Input() formData: any;
   @Input() modalService: ModalService | undefined
   ngOnInit(): void {
+    alert(this.size)
     console.log('child', this.child)
     console.log('Modal init');
   }

@@ -1,5 +1,6 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Slides" (reload)="reload()" [sortBy]="sortBy" [sortAsc]="sortAsc"
+  <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Slides" (reload)="reload()"
+             [sortBy]="vm.filter.sortBy" [sortAsc]="vm.filter.sortAsc"
              [itemCount]="vm.data.totalCount" [items]="vm.data.data"
              (changePage)="pageChanged($event)">
     <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
@@ -15,7 +16,7 @@
     <data-table-column header="Subtitle" property="subtitle" [sortable]="true"></data-table-column>
     <data-table-column header="Link" property="link" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
-        <a href="{{item.link}}" target="_blank">{{item.link_text}}</a>
+        <a href="{{item.link}}" target="_blank">{{ item.link_text }}</a>
       </ng-template>
     </data-table-column>
     <data-table-column header="Action" [sortable]="false">

@@ -1,0 +1,11 @@
+.overlay {
+  background-color: #EFEFEF;
+  position: absolute;
+  z-index: 9999;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  opacity: .5;
+  filter: alpha(opacity=50);
+}

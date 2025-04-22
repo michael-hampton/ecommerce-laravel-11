@@ -7,22 +7,20 @@ import {Order} from '../../types/orders/order';
 import {OrderApi} from '../../apis/order.api';
 import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
-import {FilterModel, PagedData} from '../../types/filter.model';
-import {Attribute} from '../../types/attributes/attribute';
+import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
+import {FilterStore} from '../filter.store';
+import {Product} from '../../types/products/product';
 
 
-export interface OrderState {
-  data: PagedData<Order>;
-}
-
-const defaultState: OrderState = {
+const defaultState: FilterState<Order> = {
   data: {} as PagedData<Order>,
+  filter: {...defaultPaging, ...{sortBy: 'order_date', sortAsc: false}}
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class OrderStore extends ComponentStore<OrderState> {
+export class OrderStore extends FilterStore<Order> {
   constructor(private _api: OrderApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
@@ -32,6 +30,7 @@ export class OrderStore extends ComponentStore<OrderState> {
   readonly vm$ = this.select(
     {
       data: this.data$,
+      filter: this.filter$
     },
     {debounce: true}
   );
@@ -60,20 +59,14 @@ export class OrderStore extends ComponentStore<OrderState> {
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((filter: FilterModel) => {
-        return this._api.getData(filter).pipe(
+      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
           tapResponse({
-            next: (data) => {
-              alert('hete666')
-              this.patchState({data: data as PagedData<Order>});
-            },
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error));
-            },
-            finalize: () => this._globalStore.setLoading(false)
+            next: (data) => this.patchState({data: data as PagedData<Order>}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            complete: () => this._globalStore.setLoading(false)
           })
-        );
-      })
+        )
+      )
     )
   );
 }
