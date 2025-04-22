@@ -19,21 +19,22 @@ export class SettingPageComponent {
   ngOnInit() {
     this.initForm();
 
-    this._store.getData(1).subscribe(result => {
+    this._store.getData(1).subscribe((result: Seller) => {
+      alert('here')
       this.form?.patchValue({
-        id: result.data.id,
-        name: result.data.name,
-        email: result.data.email,
-        phone: result.data.mobile,
-        username: result.data.username,
-        address1: result.data.address1,
-        address2: result.data.address2,
-        city: result.data.city,
-        state: result.data.state,
-        zip: result.data.zip,
-        bio: result.data.bio,
-        active: result.data.active,
-        image: result.data.image
+        id: result.id,
+        name: result.name,
+        email: result.email,
+        phone: result.phone,
+        username: result.username,
+        address1: result.address1,
+        address2: result.address2,
+        city: result.city,
+        state: result.state,
+        zip: result.zip,
+        bio: result.biography,
+        active: result.active,
+        image: result.profile_picture
       })
     })
   }
@@ -45,16 +46,16 @@ export class SettingPageComponent {
       const model: Seller = {
         name: this.form.value.name,
         email: this.form.value.email,
-        mobile: this.form.value.phone,
+        phone: this.form.value.phone,
         username: this.form.value.username,
         address1: this.form.value.address1,
         address2: this.form.value.address2,
         city: this.form.value.city,
         state: this.form.value.state,
         zip: this.form.value.zip,
-        bio: this.form.value.bio,
+        biography: this.form.value.bio,
         active: true,
-        image: this.form.value.image
+        profile_picture: this.form.value.image
       } as Seller;
 
       console.log('model', model)

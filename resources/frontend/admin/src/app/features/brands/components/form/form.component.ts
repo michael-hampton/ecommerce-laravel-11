@@ -5,6 +5,7 @@ import {ModalComponent} from '../../../../shared/components/modal/modal.componen
 import {LookupStore} from "../../../../store/lookup.store";
 import {BrandFormStore} from "../../../../store/brands/form.store";
 import {Brand} from '../../../../types/brands/brand';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -38,7 +39,7 @@ export class FormComponent extends ModalComponent implements OnInit {
     });
   }
 
-  save() {
+  async save() {
     if (this.form?.valid) {
       const model: Brand = {
         name: this.form.value.name,
@@ -58,8 +59,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       id: this.formData.id,
       name: this.formData.name,
       slug: this.formData.slug,
-      image: this.formData.image
+      //image: this.formData.image
     })
+
+    this._formStore.addImage(this.formData.image)
   }
 
   initializeForm() {
@@ -77,5 +80,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       .replace(/ +/g, "-");
 
     this.form?.patchValue({slug: value})
+  }
+
+  async getImageUrl() {
+    const imagePreview = await firstValueFrom(this._formStore.image$)
+    return !imagePreview || !imagePreview.length ? this.form.controls['image'].value : imagePreview
   }
 }

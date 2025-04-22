@@ -1,6 +1,6 @@
 import {ComponentStore} from '@ngrx/component-store';
 import {defaultPaging, FilterModel, FilterState, PagedData} from '../types/filter.model';
-import {User} from '../types/users/user';
+
 export class FilterStore<T extends object> extends ComponentStore<FilterState<T>> {
 
   constructor(classState: any) {

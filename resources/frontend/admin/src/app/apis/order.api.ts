@@ -6,8 +6,9 @@ import {Order} from '../types/orders/order';
 import {FilterModel, PagedData} from '../types/filter.model';
 import {Category} from '../types/categories/category';
 import {User} from '../types/users/user';
+import {BaseHttpClient} from './base.http-client';
 
-export const MODULE = 'admin/orders'
+export const MODULE = 'orders'
 
 @Injectable({
   providedIn: 'root'
@@ -219,7 +220,7 @@ export class OrderApi {
     },
   ]
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient) { }
 
   delete(id: number) {
     alert('deleting')
@@ -227,9 +228,8 @@ export class OrderApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(filter: FilterModel): Observable<PagedData<Order>>{
-    return of({data: this.orders, page: 1, totalCount: this.orders.length} as PagedData<Order>)
-
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  getData(filter: FilterModel): Observable<any>{
+    return this.baseHttpClient.get(filter, MODULE);
+    //return of({data: this.orders, current_page: 1, total: this.orders.length} as PagedData<Order>)
   }
 }

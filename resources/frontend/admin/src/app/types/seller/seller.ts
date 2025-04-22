@@ -2,14 +2,15 @@ export type Seller = {
   id?: number
   name: string
   email: string
-  mobile: string
+  phone: string
   active: boolean
-  image: string
-  bio: string
+  profile_picture: string
+  biography: string
   address1?: string
   address2?: string
   state?: string
   zip?: string
+  country?: string
   city?: string
   username: string
 }

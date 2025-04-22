@@ -32,7 +32,7 @@
     <div class="col-lg-3">
       <div class="text-center">
         <div class="position-relative d-inline-block">
-          <img src="{{vm.data.image}}" class="rounded-circle profile-pic" alt="Profile Picture" id="output">
+          <img src="{{vm.data.profile_picture}}" class="rounded-circle profile-pic" alt="Profile Picture" id="output">
           <button id="upload-button" class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle">
             <i class="fas fa-camera"></i>
           </button>
@@ -101,7 +101,7 @@
                 </div>
                 <div class="form-group">
                   <label for="inputAddress2">Bio</label>
-                  <textarea class="form-control" id="bio" name="bio" formControlName="bio">{{vm.data.bio}}</textarea>
+                  <textarea class="form-control" id="bio" name="bio" formControlName="bio">{{vm.data.biography}}</textarea>
                 </div>
                 <button type="submit" class="btn btn-primary" (click)="save()">Save</button>
               </form>

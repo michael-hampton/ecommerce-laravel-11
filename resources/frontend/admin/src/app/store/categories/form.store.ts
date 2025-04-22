@@ -26,6 +26,8 @@ export class CategoryFormStore extends ComponentStore<CategoryFormState> {
     super(defaultState);
   }
 
+  readonly image$ = this.select(({imagePreview}) => imagePreview);
+
   vm$ = this.select(state => ({
     imagePreview: state.imagePreview,
   }))
@@ -72,4 +74,8 @@ export class CategoryFormStore extends ComponentStore<CategoryFormState> {
       }
     }
   }
+
+  readonly addImage = this.updater((state, imagePreview: string) => ({
+    imagePreview: imagePreview,
+  }));
 }

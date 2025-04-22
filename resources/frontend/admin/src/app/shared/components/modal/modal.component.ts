@@ -30,7 +30,6 @@ export class ModalComponent {
   @Input() formData: any;
   @Input() modalService: ModalService | undefined
   ngOnInit(): void {
-    alert(this.size)
     console.log('child', this.child)
     console.log('Modal init');
   }

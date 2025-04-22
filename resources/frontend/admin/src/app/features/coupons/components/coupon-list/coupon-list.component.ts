@@ -5,10 +5,7 @@ import {ModalService} from '../../../../services/modal.service';
 import {CouponStore} from '../../../../store/coupons/list.store';
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {FormComponent} from '../form/form.component';
-import {Brand} from "../../../../types/brands/brand";
-import {Category} from "../../../../types/categories/category";
 import {defaultPaging, FilterModel} from '../../../../types/filter.model';
-import {CategoryStore} from '../../../../store/categories/list.store';
 
 @Component({
   selector: 'app-coupon-list',
@@ -61,10 +58,12 @@ export class CouponListComponent implements OnInit {
   }
 
   pageChanged(filter: FilterModel) {
+    alert('here666')
     this._store.updateFilter(filter)
   }
 
   reload() {
+    alert('yes33')
     this._store.reset();
   }
 }

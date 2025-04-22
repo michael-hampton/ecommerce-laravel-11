@@ -18,8 +18,9 @@ export class AuthService {
   Login(payload: Partial<Login>): Observable<any> {
     return this._api.Login(payload.email, payload.password).pipe(
       map((response) => {
+        console.log('response from login', response)
         // prepare the response to be handled, then return
-        const retUser: IAuthInfo = NewAuthInfo((<any>response).data);
+        const retUser: IAuthInfo = NewAuthInfo((<any>response));
 
         // save session and return user if needed
         return this.authState.SaveSession(retUser);

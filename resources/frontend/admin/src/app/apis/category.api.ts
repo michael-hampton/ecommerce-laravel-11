@@ -3,8 +3,9 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {Category} from '../types/categories/category';
 import {FilterModel, PagedData} from '../types/filter.model';
+import {BaseHttpClient} from './base.http-client';
 
-export const MODULE = 'admin/categories'
+export const MODULE = 'categories'
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +69,7 @@ export class CategoryApi {
     },
   ]
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient) { }
 
   delete(id: number) {
     alert('deleting')
@@ -88,8 +89,8 @@ export class CategoryApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(filter: FilterModel): Observable<PagedData<Category>>{
-    return of({data: this.categories, page: 1, totalCount: this.categories.length} as PagedData<Category>)
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  getData(filter: FilterModel): Observable<any>{
+    return this.baseHttpClient.get(filter, MODULE);
+    //return of({data: this.categories, current_page: 1, total: this.categories.length} as PagedData<Category>)
   }
 }

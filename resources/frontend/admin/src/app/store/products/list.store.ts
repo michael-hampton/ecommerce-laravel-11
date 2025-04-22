@@ -41,10 +41,7 @@ export class ProductStore extends FilterStore<Product> {
               this._globalStore.setSuccess('Deleted successfully');
               //this.patchState({loading: false, saveSuccess: true})
             },
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setLoading(false)
-              this._globalStore.setError(UiError(error))
-            },
+            error: (error: HttpErrorResponse) =>  this._globalStore.setError(UiError(error)),
             finalize: () => this._globalStore.setLoading(false),
           })
         )
@@ -57,9 +54,13 @@ export class ProductStore extends FilterStore<Product> {
       tap(() => this._globalStore.setLoading(true)),
       switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
           tapResponse({
-            next: (data) => this.patchState({data: data as PagedData<Product>}),
+            next: (data) => {
+              this.patchState({data: data as PagedData<Product>})
+            },
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            complete: () => this._globalStore.setLoading(false)
+            complete: () => {
+              this._globalStore.setLoading(false)
+            }
           })
         )
       )

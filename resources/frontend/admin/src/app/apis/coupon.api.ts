@@ -1,198 +1,18 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {formatDate} from '@angular/common';
 import {Coupon} from "../types/coupons/coupon";
-import {FilterModel, PagedData} from '../types/filter.model';
-import {Category} from '../types/categories/category';
-import {User} from '../types/users/user';
+import {FilterModel} from '../types/filter.model';
+import {BaseHttpClient} from './base.http-client';
 
-export const MODULE = 'admin/coupons'
+export const MODULE = 'coupons'
 
 @Injectable({
   providedIn: 'root'
 })
 export class CouponApi {
 
-  private coupons: Coupon[] = [
-    {
-      id: 1, code: 'Category 1',
-      type: 'fixed',
-      value: 20,
-      cart_value: 2,
-      expires_at: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ssZZZZZ', 'en_US'),
-      brands: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        products: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        products: 0
-      }],
-      categories: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }],
-      seller_id: 0,
-      usages: 0
-    },
-    {
-      id: 2, code: 'Category 1',
-      type: 'fixed',
-      value: 20,
-      cart_value: 2,
-      expires_at: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ssZZZZZ', 'en_US'),
-      brands: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        products: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        products: 0
-      }],
-      categories: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }],
-      seller_id: 0,
-      usages: 0
-    },
-    {
-      id: 3, code: 'Category 1',
-      type: 'fixed',
-      value: 20,
-      cart_value: 2,
-      expires_at: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ssZZZZZ', 'en_US'),
-      brands: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        products: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        products: 0
-      }],
-      categories: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }],
-      seller_id: 0,
-      usages: 0
-    },
-    {
-      id: 4, code: 'Category 1',
-      type: 'fixed',
-      value: 20,
-      cart_value: 2,
-      expires_at: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ssZZZZZ', 'en_US'),
-      brands: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        products: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        products: 0
-      }],
-      categories: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }],
-      seller_id: 0,
-      usages: 0
-    },
-    {
-      id: 5, code: 'Category 1',
-      type: 'fixed',
-      value: 20,
-      cart_value: 2,
-      expires_at: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ssZZZZZ', 'en_US'),
-      brands: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        products: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        products: 0
-      }],
-      categories: [{
-        id: 1,
-        name: 'test 1',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }, {
-        id: 2,
-        name: 'test 2',
-        slug: '',
-        image: '',
-        parent_id: 0
-      }],
-      seller_id: 0,
-      usages: 0
-    },
-  ]
-
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient) { }
 
   create(payload: Partial<Coupon>) {
     alert('creating')
@@ -208,13 +28,12 @@ export class CouponApi {
 
   delete(id: number) {
     alert('deleting')
-    return of(this.coupons);
+    return of(true);
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(filter: FilterModel): Observable<PagedData<Coupon>>{
-    return of({data: this.coupons, page: 1, totalCount: this.coupons.length} as PagedData<Coupon>)
-
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  getData(filter: FilterModel): Observable<any>{
+    return this.baseHttpClient.get(filter, MODULE);
+    //return of({data: this.coupons, current_page: 1, total: this.coupons.length} as PagedData<Coupon>)
   }
 }

@@ -78,7 +78,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   getData(sellerId: number) {
     return this._api.getSeller(sellerId).pipe(
       tapResponse({
-        next: (data) => this.patchState({data: data.data}),
+        next: (data) => this.patchState({data: data as Seller}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this._globalStore.setLoading(false),
       })

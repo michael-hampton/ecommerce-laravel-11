@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {of} from "rxjs";
+import {BaseHttpClient} from './base.http-client';
+import {environment} from '../../environments/environment';
 
-export const MODULE = 'admin'
+export const MODULE = 'dashboard'
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +22,10 @@ export class DashboardApi {
     totalCancelledAmount: 100
   }
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   getData(){
-    return of({data: this.data})
-    //return this.httpclient.get(`${environment.apiUrl}/${MODULE}`);
+    //return of({data: this.data})
+    return this.httpClient.get(`${environment.apiUrl}/${MODULE}`);
   }
 }

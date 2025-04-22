@@ -61,8 +61,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       password: this.formData.password,
       utype: this.formData.utype,
       active: this.formData.active,
-      image: this.formData.image,
+      //image: this.formData.image,
     })
+
+    this._formStore.addImage(this.formData.image)
   }
 
   initializeForm() {

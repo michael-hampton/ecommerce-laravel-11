@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
 import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {Order} from '../../types/orders/order';
@@ -9,12 +8,11 @@ import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
 import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
 import {FilterStore} from '../filter.store';
-import {Product} from '../../types/products/product';
 
 
 const defaultState: FilterState<Order> = {
   data: {} as PagedData<Order>,
-  filter: {...defaultPaging, ...{sortBy: 'order_date', sortAsc: false}}
+  filter: {...defaultPaging, ...{sortBy: 'id', sortAsc: false}}
 };
 
 @Injectable({
@@ -44,11 +42,7 @@ export class OrderStore extends FilterStore<Order> {
               this._globalStore.setSuccess('Deleted successfully');
               //this.patchState({loading: false, saveSuccess: true})
             },
-            error: (error: HttpErrorResponse) => {
-              //this.patchState({loading: false, saveSuccess: false})
-              this._globalStore.setLoading(false)
-              this._globalStore.setError(UiError(error))
-            },
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this._globalStore.setLoading(false),
           })
         )

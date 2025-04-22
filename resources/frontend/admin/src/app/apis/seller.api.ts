@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Seller} from '../types/seller/seller';
+import {BaseHttpClient} from './base.http-client';
 
-export const MODULE = 'admin/sellers'
+export const MODULE = 'sellers'
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class SellerApi {
     {
       id: 1, name: 'Category 1',
       email: 'michaelhamptondesign@yahoo.com',
-      mobile: '07851624051',
-      image: '',
+      phone: '07851624051',
+      profile_picture: '',
       active: false,
       address1: 'test',
       address2: 'test2',
@@ -23,13 +24,13 @@ export class SellerApi {
       city: 'city',
       state: 'state',
       username: 'test',
-      bio: 'test bio'
+      biography: 'test biography'
     },
     {
       id: 2, name: 'Category 1',
       email: 'michaelhamptondesign@yahoo.com',
-      mobile: '07851624051',
-      image: '',
+      phone: '07851624051',
+      profile_picture: '',
       active: false,
       address1: 'test',
       address2: 'test2',
@@ -37,13 +38,13 @@ export class SellerApi {
       city: 'city',
       state: 'state',
       username: 'test',
-      bio: 'test bio'
+      biography: 'test biography'
     },
     {
       id: 3, name: 'Category 1',
       email: 'michaelhamptondesign@yahoo.com',
-      mobile: '07851624051',
-      image: '',
+      phone: '07851624051',
+      profile_picture: '',
       active: false,
       address1: 'test',
       address2: 'test2',
@@ -51,13 +52,13 @@ export class SellerApi {
       city: 'city',
       state: 'state',
       username: 'test',
-      bio: 'test bio'
+      biography: 'test biography'
     },
     {
       id: 4, name: 'Category 1',
       email: 'michaelhamptondesign@yahoo.com',
-      mobile: '07851624051',
-      image: '',
+      phone: '07851624051',
+      profile_picture: '',
       active: false,
       address1: 'test',
       address2: 'test2',
@@ -65,13 +66,13 @@ export class SellerApi {
       city: 'city',
       state: 'state',
       username: 'test',
-      bio: 'test bio'
+      biography: 'test biography'
     },
     {
       id: 5, name: 'Category 1',
       email: 'michaelhamptondesign@yahoo.com',
-      mobile: '07851624051',
-      image: '',
+      phone: '07851624051',
+      profile_picture: '',
       active: false,
       address1: 'test',
       address2: 'test2',
@@ -79,12 +80,12 @@ export class SellerApi {
       city: 'city',
       state: 'state',
       username: 'test',
-      bio: 'test bio'
+      biography: 'test biography'
 
     },
   ]
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient) { }
 
   delete(id: number) {
     alert('deleting')
@@ -110,7 +111,7 @@ export class SellerApi {
   }
 
   getSeller(id: number){
-    return of({data: this.users[0]})
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.baseHttpClient.getById(`${MODULE}/${id}`);
+    // return of({data: this.users[0]})
   }
 }

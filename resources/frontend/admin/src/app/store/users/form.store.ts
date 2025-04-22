@@ -26,6 +26,8 @@ export class UserFormStore extends ComponentStore<UserFormState> {
     super(defaultState);
   }
 
+  readonly image$ = this.select(({imagePreview}) => imagePreview);
+
   vm$ = this.select(state => ({
     imagePreview: state.imagePreview,
   }))
@@ -71,4 +73,8 @@ export class UserFormStore extends ComponentStore<UserFormState> {
       }
     }
   }
+
+  readonly addImage = this.updater((state, imagePreview: string) => ({
+    imagePreview: imagePreview,
+  }));
 }

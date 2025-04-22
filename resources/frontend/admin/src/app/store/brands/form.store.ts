@@ -25,6 +25,8 @@ export class BrandFormStore extends ComponentStore<BrandFormState> {
     super(defaultState);
   }
 
+  readonly image$ = this.select(({imagePreview}) => imagePreview);
+
   vm$ = this.select(state => ({
     imagePreview: state.imagePreview,
   }))
@@ -71,4 +73,8 @@ export class BrandFormStore extends ComponentStore<BrandFormState> {
       }
     }
   }
+
+  readonly addImage = this.updater((state, imagePreview: string) => ({
+    imagePreview: imagePreview,
+  }));
 }

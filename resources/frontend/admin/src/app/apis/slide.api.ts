@@ -5,8 +5,9 @@ import {Slide} from "../types/slides/slide";
 import {FilterModel, PagedData} from '../types/filter.model';
 import {Category} from '../types/categories/category';
 import {User} from '../types/users/user';
+import {BaseHttpClient} from './base.http-client';
 
-export const MODULE = 'admin/slides'
+export const MODULE = 'slides'
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +57,7 @@ export class SlideApi {
     },
   ]
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient) { }
 
   delete(id: number) {
     alert('deleting')
@@ -76,9 +77,8 @@ export class SlideApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(filter: FilterModel): Observable<PagedData<Slide>>{
-    return of({data: this.slides, page: 1, totalCount: this.slides.length} as PagedData<Slide>)
-
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  getData(filter: FilterModel): Observable<any>{
+    return this.baseHttpClient.get(filter, MODULE);
+    //return of({data: this.slides, current_page: 1, total: this.slides.length} as PagedData<Slide>)
   }
 }

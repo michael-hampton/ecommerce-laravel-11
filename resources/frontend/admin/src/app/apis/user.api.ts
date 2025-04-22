@@ -4,8 +4,9 @@ import {Observable, of} from 'rxjs';
 import {User} from '../types/users/user';
 import {FilterModel, PagedData} from '../types/filter.model';
 import {Category} from '../types/categories/category';
+import {BaseHttpClient} from './base.http-client';
 
-export const MODULE = 'admin/users'
+export const MODULE = 'users'
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +61,7 @@ export class UserApi {
     },
   ]
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient) { }
 
   delete(id: number) {
     alert('deleting')
@@ -80,9 +81,8 @@ export class UserApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(filter: FilterModel): Observable<PagedData<User>>{
-    return of({data: this.users, page: 1, totalCount: this.users.length} as PagedData<User>)
-
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  getData(filter: FilterModel): Observable<any>{
+    return this.baseHttpClient.get(filter, MODULE);
+    //return of({data: this.users, current_page: 1, total: this.users.length} as PagedData<User>)
   }
 }

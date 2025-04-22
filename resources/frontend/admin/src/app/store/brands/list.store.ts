@@ -39,10 +39,7 @@ export class BrandStore extends FilterStore<Brand> {
       tap(() => this._globalStore.setLoading(true)),
       switchMap((id) => this._api.delete(id).pipe(
           tapResponse({
-            next: (users) => {
-              this._globalStore.setSuccess('Deleted successfully');
-              //this.patchState({loading: false, saveSuccess: true})
-            },
+            next: (users) => this._globalStore.setSuccess('Deleted successfully'),
             error: (error: HttpErrorResponse) => {
               //this.patchState({loading: false, saveSuccess: false})
               this._globalStore.setLoading(false)

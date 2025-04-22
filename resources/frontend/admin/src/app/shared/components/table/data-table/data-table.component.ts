@@ -62,7 +62,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   @Input() expandableRows = false;
   @Input() translations: DataTableTranslations = defaultTranslations;
   @Input() selectOnRowClick = false;
-  @Input() autoReload = true;
+  @Input() autoReload = false;
   @Input() showReloading = false;
   @Input() showDownloadButton = false;
   @Output() changePage = new EventEmitter();
@@ -96,7 +96,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   set sortBy(value) {
     this._sortBy = value;
-    this._triggerReload();
+    //this._triggerReload();
   }
 
   set search(value: string) {
@@ -110,7 +110,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   set sortAsc(value) {
     this._sortAsc = value;
-    this._triggerReload();
+    //this._triggerReload();
   }
 
   @Input()
@@ -120,7 +120,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   set customSort(value) {
     this._customSort = value;
-    this._triggerReload();
+    //this._triggerReload();
   }
 
   @Input()
@@ -130,7 +130,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   set offset(value) {
     this._offset = value;
-    this._triggerReload();
+    //this._triggerReload();
   }
 
   @Input()
@@ -140,7 +140,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   set limit(value) {
     this._limit = value;
-    this._triggerReload();
+    //this._triggerReload();
   }
 
   // calculated property:

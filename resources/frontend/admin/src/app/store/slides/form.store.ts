@@ -26,6 +26,8 @@ export class SlideFormStore extends ComponentStore<SlideFormState> {
     super(defaultState);
   }
 
+  readonly image$ = this.select(({imagePreview}) => imagePreview);
+
   vm$ = this.select(state => ({
     imagePreview: state.imagePreview,
   }))
@@ -72,4 +74,8 @@ export class SlideFormStore extends ComponentStore<SlideFormState> {
       }
     }
   }
+
+  readonly addImage = this.updater((state, imagePreview: string) => ({
+    imagePreview: imagePreview,
+  }));
 }

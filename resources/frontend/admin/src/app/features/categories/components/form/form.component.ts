@@ -47,7 +47,10 @@ export class FormComponent extends ModalComponent implements OnInit {
         name: this.form.value.name,
         slug: this.form.value.slug,
         image: this.form.value.image,
-        parent_id: this.form.value.parent_id
+        parent_id: this.form.value.parent_id,
+        meta_title: this.form.value.meta_title,
+        meta_description: this.form.value.meta_description,
+        meta_keywords: this.form.value.meta_keywords,
       } as Category;
 
       this._formStore.saveData(model).subscribe(result => {
@@ -61,9 +64,14 @@ export class FormComponent extends ModalComponent implements OnInit {
       id: this.formData.id,
       name: this.formData.name,
       slug: this.formData.slug,
-      image: this.formData.image,
+      //image: this.formData.image,
       parent_id: this.formData.parent_id,
+      meta_title: this.formData.meta_title,
+      meta_description: this.formData.meta_description,
+      meta_keywords: this.formData.meta_keywords,
     })
+
+    this._formStore.addImage(this.formData.image)
   }
 
   initializeForm() {
@@ -73,6 +81,9 @@ export class FormComponent extends ModalComponent implements OnInit {
       slug: new FormControl('', [Validators.required]),
       image: new FormControl(''),
       parent_id: new FormControl(''),
+      meta_title: new FormControl(''),
+      meta_description: new FormControl(''),
+      meta_keywords: new FormControl(''),
     });
   }
 

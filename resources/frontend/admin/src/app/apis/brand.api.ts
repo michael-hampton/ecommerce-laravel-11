@@ -5,8 +5,9 @@ import {Brand} from '../types/brands/brand';
 import {FilterModel, PagedData} from '../types/filter.model';
 import {Category} from '../types/categories/category';
 import {User} from '../types/users/user';
+import {BaseHttpClient} from './base.http-client';
 
-export const MODULE = 'admin/brands'
+export const MODULE = 'brands'
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class BrandApi {
     },
   ]
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient) { }
 
   delete(id: number) {
     alert('deleting')
@@ -56,9 +57,8 @@ export class BrandApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(filter: FilterModel): Observable<PagedData<Brand>>{
-    return of({data: this.brands, page: 1, totalCount: this.brands.length} as PagedData<Brand>)
-
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+  getData(filter: FilterModel): Observable<any>{
+    return this.baseHttpClient.get(filter, MODULE);
+    //return of({data: this.brands, current_page: 1, total: this.brands.length} as PagedData<Brand>)
   }
 }

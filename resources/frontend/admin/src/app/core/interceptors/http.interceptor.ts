@@ -34,19 +34,20 @@ export class AppInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     // to make a local call to our front-end server side
     // neet to filter out some specific link, let's say it's localdata/setsession
-    if (req.url.indexOf('localdata') > -1) {
-      // this call is local, thus the url is relative to this same server
-      // if your server cannot handle relative calls, prefix it with the proper
-      // url, like https://my.domain/ + url
-      return next.handle(req);
-    }
-
-    // prefixing the api with proper value, mostly from config
-    // remote config url are expected to filtered out, it would not make sense
-    const url = 'https://saphire.sekrab.com/api' + req.url;
+    // if (req.url.indexOf('localdata') > -1) {
+    //   alert('mike1')
+    //   // this call is local, thus the url is relative to this same server
+    //   // if your server cannot handle relative calls, prefix it with the proper
+    //   // url, like https://my.domain/ + url
+    //   return next.handle(req);
+    // }
+    //
+    // // prefixing the api with proper value, mostly from config
+    // // remote config url are expected to filtered out, it would not make sense
+    // const url = 'https://saphire.sekrab.com/api' + req.url;
 
     const adjustedReq = req.clone({
-      url: url,
+      url: req.url,
       setHeaders: this.getHeaders(),
     });
 

@@ -90,12 +90,14 @@ export class FormComponent extends ModalComponent implements OnInit {
       brand_id: this.formData.brand_id,
       regular_price: this.formData.regular_price,
       sale_price: this.formData.sale_price,
-      sku: this.formData.sku,
+      sku: this.formData.SKU,
       quantity: this.formData.quantity,
       stock_status: this.formData.stock_status,
       featured: this.formData.featured === true,
-      image: this.formData.image,
+      //image: this.formData.image,
     })
+
+    this._formStore.addImage(this.formData.image)
   }
 
   initializeForm() {

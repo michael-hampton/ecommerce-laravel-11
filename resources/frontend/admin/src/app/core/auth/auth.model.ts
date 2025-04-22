@@ -14,17 +14,21 @@ export interface IAuthInfo {
 }
 
 export const NewAuthInfo = (data: any): IAuthInfo => {
-  return {
+  const obj = {
     payload: {
-      email: data.payload.email,
-      name: data.payload.name,
-      id: data.payload.id,
+      email: data.user.email,
+      name: data.user.name,
+      id: data.user.id,
     },
-    accessToken: data.accessToken,
-    refreshToken: data.refreshToken,
+    accessToken: data.token,
+    //refreshToken: data.refreshToken,
     // map expiresIn value to exact time stamp
-    expiresAt: Date.now() + data.expiresIn * 1000,
+    //expiresAt: Date.now() + data.expiresIn * 1000,
   };
+
+  console.log('obj', obj)
+
+  return obj
 };
 
 export const PrepSetSession = (auth: IAuthInfo): any => {

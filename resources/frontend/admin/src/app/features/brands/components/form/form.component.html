@@ -16,9 +16,9 @@
           <div>
             <label for="exampleInputEmail1" class="form-label">Upload Image</label>
           </div>
-          <div class="upload-image flex-grow"  *ngIf="formVm$ | async as formVm">
-            <div *ngIf="formVm.imagePreview" class="item" id="imgpreview">
-              <img [src]="formVm.imagePreview" class="effect8" alt="">
+          <div class="upload-image flex-grow">
+            <div *ngIf="_formStore.image$ | async as image" class="item" id="imgpreview">
+              <img [src]="image" class="effect8" alt="">
             </div>
             <div id="upload-file" class="item up-load">
               <label class="uploadfile" for="myFile">
@@ -27,7 +27,7 @@
                                                         </span>
                 <span class="body-text">Drop your images here or select <span
                   class="tf-color">click to browse</span></span>
-                <input type="file" id="myFile" name="image" accept="image/*" formControlName="image" (change)="_formStore.selectFile($event)">
+                <input type="file" id="myFile" name="image" accept="image/*" (change)="_formStore.selectFile($event)" formControlName="image">
               </label>
             </div>
           </div>

@@ -24,14 +24,28 @@
                 {{ category.name }}
               </option>
             </select>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Meta Title</label>
+            <input type="text" class="form-control" id="meta_title" name="meta_title" placeholder="Meta Title" formControlName="meta_title">
+            <p class="text-danger"></p>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Meta Description</label>
+            <input type="text" class="form-control" id="meta_description" name="meta_description" placeholder="Meta Description" formControlName="meta_description">
+            <p class="text-danger"></p>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Meta Keywords</label>
+            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords" placeholder="Meta Keywords" formControlName="meta_keywords">
             <p class="text-danger"></p>
           </div>
           <div>
             <label for="exampleInputEmail1" class="form-label">Upload Image</label>
           </div>
-          <div class="upload-image flex-grow" *ngIf="formVm$ | async as formVm">
-            <div *ngIf="formVm.imagePreview" class="item" id="imgpreview">
-              <img [src]="formVm.imagePreview" class="effect8" alt="">
+          <div class="upload-image flex-grow">
+            <div *ngIf="_formStore.image$ | async as image" class="item" id="imgpreview">
+              <img [src]="image" class="effect8" alt="">
             </div>
             <div id="upload-file" class="item up-load">
               <label class="uploadfile" for="myFile">

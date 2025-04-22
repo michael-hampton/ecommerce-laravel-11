@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import {TopbarComponent} from "./core/components/topbar/topbar.component";
 import {SidemenuComponent} from './core/components/sidemenu/sidemenu.component';
 import {CoreModule} from './core/core.module';
-import {HTTP_INTERCEPTORS, provideHttpClient} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ToastComponent} from './shared/components/toast/toast.component';
 import {SharedModule} from './shared/shared.module';
 import {Toast} from './services/toast/toast.service';
@@ -42,7 +42,9 @@ const CoreProviders = [
     NgbModule,
     SharedModule,
   ],
-  providers: [provideHttpClient(), Toast, ...CoreProviders],
+  providers: [provideHttpClient(withInterceptorsFromDi()), Toast, ...CoreProviders,  {
+    provide: HTTP_INTERCEPTORS, useClass: AppInterceptor, multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

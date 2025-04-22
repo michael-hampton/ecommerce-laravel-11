@@ -16,8 +16,9 @@ export const defaultPaging: FilterModel = {
 }
 
 export type PagedData<T> = {
-  page: number
-  totalCount: number
+  current_page: number
+  total: number
+  per_page: number;
   data: T[]
 }
 

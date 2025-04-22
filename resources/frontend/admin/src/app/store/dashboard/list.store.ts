@@ -9,6 +9,7 @@ import {GlobalStore} from "../global.store";
 import {Dashboard} from '../../types/dashboard/dashboard';
 import {DashboardApi} from '../../apis/dashboard.api';
 import {UiError} from '../../core/services/exception.service';
+import {PagedData} from '../../types/filter.model';
 
 
 export interface DashboardState {
@@ -43,11 +44,8 @@ export class DashboardStore extends ComponentStore<DashboardState> {
       switchMap(filter =>
         this._api.getData().pipe(
           tapResponse({
-            next: (data) => this.patchState({data: data.data}),
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setLoading(false)
-              this._globalStore.setError(UiError(error))
-            },
+            next: (data) => this.patchState({data: data as Dashboard}),
+            error: (error: HttpErrorResponse) =>  this._globalStore.setError(UiError(error)),
             finalize: () => this._globalStore.setLoading(false),
           })
         )

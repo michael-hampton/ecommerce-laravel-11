@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
 import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {Coupon} from '../../types/coupons/coupon';
@@ -9,7 +8,6 @@ import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
 import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
 import {FilterStore} from '../filter.store';
-import {Product} from '../../types/products/product';
 
 const defaultState: FilterState<Coupon> = {
   data: {} as PagedData<Coupon>,
