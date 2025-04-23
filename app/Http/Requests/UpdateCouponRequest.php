@@ -24,7 +24,7 @@ class UpdateCouponRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => 'required|string|max:255|unique:coupons,code,'.request()->route('id'),
+            'code' => 'required|string|max:255|unique:coupons,code,'.request()->get('id'),
             'type'=>'required',
             'value'=>'required|numeric',
             'cart_value'=>'required|numeric',

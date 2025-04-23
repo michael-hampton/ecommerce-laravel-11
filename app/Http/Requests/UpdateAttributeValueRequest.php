@@ -24,7 +24,7 @@ class UpdateAttributeValueRequest extends FormRequest
     {
         return [
             'attribute_id' => 'required|integer|exists:product_attributes,id',
-            'name' => 'required|string|max:255|unique:attribute_values,name,' . request()->route('id'),
+            'name' => 'required|string|max:255|unique:attribute_values,name,' . request()->get('id'),
         ];
     }
 }

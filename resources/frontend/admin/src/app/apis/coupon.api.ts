@@ -4,6 +4,8 @@ import {formatDate} from '@angular/common';
 import {Coupon} from "../types/coupons/coupon";
 import {FilterModel} from '../types/filter.model';
 import {BaseHttpClient} from './base.http-client';
+import {environment} from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
 
 export const MODULE = 'coupons'
 
@@ -12,28 +14,21 @@ export const MODULE = 'coupons'
 })
 export class CouponApi {
 
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   create(payload: Partial<Coupon>) {
-    alert('creating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload);
   }
 
   update(id: number, payload: Partial<Coupon>) {
-    alert('updating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }
 
   delete(id: number) {
-    alert('deleting')
-    return of(true);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
   getData(filter: FilterModel): Observable<any>{
     return this.baseHttpClient.get(filter, MODULE);
-    //return of({data: this.coupons, current_page: 1, total: this.coupons.length} as PagedData<Coupon>)
   }
 }

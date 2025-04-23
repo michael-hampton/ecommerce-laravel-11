@@ -30,7 +30,7 @@ class OrderController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
-            ['seller_id' => auth('sanctum')->user()->id]
+            ['seller_id' => auth('sanctum')->user()->id, 'name' => $request->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($orders, OrderResource::collection($orders));

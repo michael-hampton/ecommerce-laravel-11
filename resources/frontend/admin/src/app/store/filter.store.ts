@@ -3,8 +3,11 @@ import {defaultPaging, FilterModel, FilterState, PagedData} from '../types/filte
 
 export class FilterStore<T extends object> extends ComponentStore<FilterState<T>> {
 
+  initialState: FilterState<T>;
+
   constructor(classState: any) {
     super(classState);
+    this.initialState = classState;
   }
 
   readonly filter$ = this.select(({filter}) => filter);
@@ -14,6 +17,6 @@ export class FilterStore<T extends object> extends ComponentStore<FilterState<T>
   }
 
   reset() {
-    this.patchState({filter: defaultPaging})
+     this.patchState({filter: this.initialState.filter})
   }
 }

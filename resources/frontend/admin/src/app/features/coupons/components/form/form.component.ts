@@ -52,8 +52,11 @@ export class FormComponent extends ModalComponent implements OnInit {
         brands: this.form.value.brands,
       } as Coupon;
 
+      if (this.form.value.id) {
+        model.id = this.form.value.id
+      }
+
       this._formStore.saveData(model).subscribe(result => {
-        alert('good');
         this.confirm();
       })
     }
@@ -68,13 +71,14 @@ export class FormComponent extends ModalComponent implements OnInit {
       cart_value: this.formData.cart_value,
       usages: this.formData.usages,
       expires_at: this.formData.expires_at,
-      categories: this.formData.categories,
-      brands: this.formData.brands,
+      categories: this.formData.categories.map(x => x.id),
+      brands: this.formData.brands.map(x => x.id),
     })
   }
 
   initializeForm() {
     this.form = this.fb.group({
+      id: new FormControl<number | null>(null),
       code: new FormControl('', [Validators.required]),
       type: new FormControl('', [Validators.required]),
       value: new FormControl('', [Validators.required]),

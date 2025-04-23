@@ -76,7 +76,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   // UI state: visible ge/set for the outside with @Input for one-time initial values
 
-  private _search: string;
+  private _search: string = '';
   private _sortBy: string;
   private _sortAsc = true;
   private _customSort: DataTableSortCallback;
@@ -248,7 +248,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
       limit: this.limit,
       sortBy: this.sortBy,
       sortAsc: this.sortAsc,
-      searchText: this.search
+      searchText: this.search ?? ''
     } as FilterModel)
   }
 

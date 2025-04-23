@@ -61,6 +61,14 @@ export class AuthService {
     return of(user)
   }
 
+  GetUser() {
+    const _localuser: IAuthInfo = JSON.parse(localStorage.getItem('user'));
+    if (_localuser && _localuser.accessToken) {
+      return <IAuthInfo>_localuser;
+    }
+    return null;
+  }
+
   Logout(): Observable<boolean> {
     // logout locally
     this.authState.Logout();

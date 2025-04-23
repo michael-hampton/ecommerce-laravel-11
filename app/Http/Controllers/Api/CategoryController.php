@@ -31,31 +31,23 @@ class CategoryController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            ['name' => $request->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($categories, CategoryResource::collection($categories));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $categories = $this->categoryRepository->getAll();
-        return view('admin.categories.create', compact('categories'));
-    }
 
     /**
      * @param StoreCategoryRequest $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreCategoryRequest $request)
     {
         $result = $this->categoryService->createCategory($request->all());
 
-        return redirect()->route('admin.categories')->with('success', 'Category created successfully.');
+        return response()->json($result);
+
     }
 
     /**
@@ -70,38 +62,25 @@ class CategoryController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(int $id)
-    {
-        $categories = $this->categoryRepository->getAll();
-        $category = Category::find($id);
-        return view('admin.categories.edit', compact('category', 'categories'));
-    }
-
-    /**
      * @param UpdateCategoryRequest $request
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateCategoryRequest $request, int $id)
     {
         $result = $this->categoryService->updateCategory($request->except(['_token', '_method']), $id);
 
-        return redirect()->route('admin.categories')->with('success', 'Category updated successfully.');
+        return response()->json($result);
     }
 
     /**
      * @param int $id
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(int $id)
     {
         $result = $this->categoryService->deleteCategory($id);
 
-        return redirect()->route('admin.categories')->with('success', 'Category deleted successfully.');
+        return response()->json($result);
     }
 }

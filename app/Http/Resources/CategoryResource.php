@@ -20,6 +20,7 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
+            'description' => $this->description,
             'meta_keywords' => $this->meta_keywords,
             'slug' => $this->slug,
             'image' => asset('images/categories') . '/' . $this->image,

@@ -41,14 +41,21 @@ export class FormComponent extends ModalComponent implements OnInit {
 
   async save() {
     if (this.form?.valid) {
+      const file = await firstValueFrom(this._formStore.file$)
       const model: Brand = {
         name: this.form.value.name,
         slug: this.form.value.slug,
-        image: this.form.value.image
       } as Brand;
 
+      if (file) {
+        model.image = file
+      }
+
+      if (this.form.value.id) {
+        model.id = this.form.value.id
+      }
+
       this._formStore.saveData(model).subscribe(result => {
-        alert('here')
         this.confirm();
       })
     }

@@ -26,6 +26,7 @@ export class SlideFormStore extends ComponentStore<SlideFormState> {
     super(defaultState);
   }
 
+  readonly file$ = this.select(state => state.currentFile);
   readonly image$ = this.select(({imagePreview}) => imagePreview);
 
   vm$ = this.select(state => ({

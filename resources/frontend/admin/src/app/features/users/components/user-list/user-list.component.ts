@@ -35,6 +35,7 @@ export class UserListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit User'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 
@@ -46,6 +47,7 @@ export class UserListComponent implements OnInit {
       })
       .subscribe((v) => {
         this._store.delete(data.id)
+        this._store.reset();
       });
   }
 
@@ -54,6 +56,7 @@ export class UserListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create User'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 

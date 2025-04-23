@@ -21,9 +21,8 @@ class SlideController extends ApiController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -31,31 +30,21 @@ class SlideController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            ['name' => $request->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($slides, SlideResource::collection($slides));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('admin.slides.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateSlideRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(CreateSlideRequest $request)
     {
-        $this->slideService->createSlide($request->all());
-        return redirect()->route('admin.slides');
+        $result = $this->slideService->createSlide($request->all());
+
+        return response()->json($result);
     }
 
     /**
@@ -70,39 +59,25 @@ class SlideController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(int $id)
-    {
-        $slide = $this->slideRepository->getById($id);
-        return view('admin.slides.edit', compact('slide'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateSlideRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateSlideRequest $request, $id)
     {
-        $this->slideService->updateSlide($request->validated(), $id);
-        return redirect()->route('admin.slides');
+        $result = $this->slideService->updateSlide($request->validated(), $id);
+
+        return response()->json($result);
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        $this->slideService->deleteSlide($id);
-        return redirect()->route('admin.slides');
+        $result = $this->slideService->deleteSlide($id);
+
+        return response()->json($result);
     }
 }

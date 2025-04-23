@@ -30,31 +30,20 @@ class UserController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            ['name' => $request->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($users, UserResource::collection($users));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('admin.users.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        $this->userService->createUser($request->all());
-        return redirect()->route('admin.users');
+        $result = $this->userService->createUser($request->all());
+        return response()->json($result);
     }
 
     /**
@@ -69,28 +58,14 @@ class UserController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $user = $this->userRepository->getById($id);
-        return view('admin.users.edit', compact('user'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateUserRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateUserRequest $request, $id)
     {
-        $this->userService->updateUser($request->except(['_token', '_method']), $id);
-        return back()->with('success', 'User updated successfully');
+        $result = $this->userService->updateUser($request->except(['_token', '_method']), $id);
+        return response()->json($result);
     }
 
     public function updateActive(Request $request, $id)
@@ -100,15 +75,14 @@ class UserController extends ApiController
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        $this->userService->deleteUser($id);
-        return redirect()->route('admin.users');
+        $result = $this->userService->deleteUser($id);
+
+        return response()->json($result);
     }
 
     public function changeStatus(bool $status, $id)

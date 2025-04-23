@@ -5,8 +5,6 @@
              (changePage)="pageChanged($event)">
     <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
     <data-table-column header="Name" property="name" [sortable]="true"></data-table-column>
-    <data-table-column header="Slug" property="slug" [sortable]="true"></data-table-column>
-    <data-table-column header="Products" property="products" [sortable]="true"></data-table-column>
     <data-table-column header="Attribute" property="attribute" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
        {{item.attribute.name}}

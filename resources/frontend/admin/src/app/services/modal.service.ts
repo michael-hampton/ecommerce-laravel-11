@@ -35,6 +35,7 @@ export class ModalService {
     this.componentRef.instance.size = config.size ?? '';
     this.componentRef.instance.saveButtonText = 'Delete';
     this.componentRef.instance.saveButtonClass = 'btn-danger';
+    this.componentRef.instance.showFooter = true;
     this.componentRef.instance.formData = formData;
     this.componentRef.instance.closeMeEvent.subscribe(() => this.closeModal());
     this.componentRef.instance.confirmEvent.subscribe(() => this.confirm());

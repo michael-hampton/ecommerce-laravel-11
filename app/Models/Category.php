@@ -16,7 +16,8 @@ class Category extends Model
         'parent_id',
         'meta_title',
         'meta_description',
-        'meta_keywords'
+        'meta_keywords',
+        'description'
     ];
 
     public function products()

@@ -3,77 +3,31 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {AttributeValue} from '../types/attribute-values/attribute-value';
 import {FilterModel, PagedData} from '../types/filter.model';
-import {Category} from '../types/categories/category';
-import {User} from '../types/users/user';
 import {BaseHttpClient} from './base.http-client';
+import {environment} from '../../environments/environment';
 
-export const MODULE = 'attributeValues'
+export const MODULE = 'attribute-values'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AttributeValuesApi {
 
-  private attributeValues: AttributeValue[] = [
-    {
-      id: 1, name: 'Red', attribute_id: 1,
-      attribute: {
-        id: 1,
-        name: 'Color'
-      }
-    },
-    {
-      id: 2, name: 'Yellow', attribute_id: 1,
-      attribute: {
-        id: 1,
-        name: 'Color'
-      }
-    },
-    {
-      id: 3, name: 'Large', attribute_id: 2,
-      attribute: {
-        id: 2,
-        name: 'Size'
-      }
-    },
-    {
-      id: 4, name: 'Large', attribute_id: 3,
-      attribute: {
-        id: 2,
-        name: 'Size'
-      }
-    },
-    {
-      id: 5, name: 'New', attribute_id: 4,
-      attribute: {
-        id: 3,
-        name: 'Condition'
-      }
-    },
-  ]
-
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   create(payload: Partial<AttributeValue>) {
-    alert('creating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload);
   }
 
   update(id: number, payload: Partial<AttributeValue>) {
-    alert('updating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }
 
   delete(id: number){
-    alert('deleting')
-    return of(this.attributeValues);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
   getData(filter: FilterModel): Observable<any>{
     return this.baseHttpClient.get(filter, MODULE);
-    //return of({data: this.attributeValues, current_page: 1, total: this.attributeValues.length} as PagedData<AttributeValue>)
   }
 }

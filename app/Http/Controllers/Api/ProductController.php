@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
@@ -15,7 +14,7 @@ use App\Repositories\BrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Interfaces\IProductService;
-use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,9 +23,7 @@ class ProductController extends ApiController
 {
     public function __construct(
         private IProductService     $productService,
-        private IProductRepository  $productRepository,
-        private ICategoryRepository $categoryRepository,
-        private BrandRepository     $brandRepository
+        private IProductRepository  $productRepository
     )
     {
 
@@ -34,7 +31,7 @@ class ProductController extends ApiController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
@@ -42,41 +39,25 @@ class ProductController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
-            ['seller_id' => auth('sanctum')->user()->id]
+            [
+                'seller_id' => auth('sanctum')->user()->id,
+                'name' => $request->get('searchText')
+            ]
         );
 
-       return $this->sendPaginatedResponse($products, ProductResource::collection($products));
+        return $this->sendPaginatedResponse($products, ProductResource::collection($products));
 
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        $categories = $this->categoryRepository->getAll(null, 'name', 'asc', ['ignore_children' => true]);
-        $brands = $this->brandRepository->getAll();
-        $pattributes = ProductAttribute::all();
-        $productAttributeValues = AttributeValue::all()->keyBy('attribute_id');
-
-        return view('admin.products.create', compact('categories', 'brands', 'pattributes', 'productAttributeValues'));
     }
 
     /**
      * @param StoreProductRequest $request
-     * @return void
+     * @return JsonResponse
      */
     public function store(StoreProductRequest $request)
     {
         $result = $this->productService->createProduct($request->all());
 
-        if ($request->ajax()) {
-            return response()->json($result);
-        }
-
-        return redirect()->route('admin.products')->with('success', 'Product created successfully.');
+        return response()->json($result);
     }
 
     /**
@@ -91,44 +72,26 @@ class ProductController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function edit(int $id)
-    {
-        $categories = $this->categoryRepository->getAll(null, 'name', 'asc', ['ignore_children' => true]);
-        $brands = $this->brandRepository->getAll();
-        $product = Product::find($id);
-        $subcategories = $product->category->parent ? $product->category->parent->subcategories : [];
-
-        $productAttributeValues = ProductAttributeValue::where('product_id', $product->id)->get();
-        $productAttributes = ProductAttribute::all();
-        return view('admin.products.edit', compact('product', 'categories', 'brands', 'productAttributeValues', 'productAttributeValues', 'productAttributes', 'subcategories'));
-    }
-
-    /**
      * @param UpdateProductRequest $request
      * @param $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
     public function update(UpdateProductRequest $request, $id)
     {
         $result = $this->productService->updateProduct($request->except(['_token', '_method', 'attr', 'charge_featured']), $id);
 
-        return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
+        return response()->json($result);
     }
 
     /**
      * @param int $id
-     * @return void
+     * @return JsonResponse
      */
     public function destroy(int $id)
     {
         $result = $this->productService->deleteProduct($id);
 
-        return redirect()->route('admin.products')->with('success', 'Product deleted successfully.');
+        return response()->json($result);
     }
 
     public function getSubcategories(Request $request)

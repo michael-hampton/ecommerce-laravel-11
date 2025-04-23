@@ -28,7 +28,7 @@ class UpdateSlideRequest extends FormRequest
             'title' => 'required|string',
             'subtitle' => 'required|string',
             'link' => 'required|string|url:http,https',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

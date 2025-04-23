@@ -6,6 +6,8 @@ import {FilterModel, PagedData} from '../types/filter.model';
 import {Category} from '../types/categories/category';
 import {User} from '../types/users/user';
 import {BaseHttpClient} from './base.http-client';
+import {Attribute} from '../types/attributes/attribute';
+import {environment} from '../../environments/environment';
 
 export const MODULE = 'brands'
 
@@ -14,51 +16,22 @@ export const MODULE = 'brands'
 })
 export class BrandApi {
 
-  private brands: Brand[] = [
-    {
-      id: 1, name: 'Brand 1', slug: 'brand-1', image: 'test',
-      products: 4
-    },
-    {
-      id: 2, name: 'Brand 1', slug: 'brand-2', image: 'test',
-      products: 5
-    },
-    {
-      id: 3, name: 'Brand 1', slug: 'brand-3', image: 'test',
-      products: 6
-    },
-    {
-      id: 4, name: 'Brand 1', slug: 'brand-4', image: 'test',
-      products: 7
-    },
-    {
-      id: 5, name: 'Brand 1', slug: 'brand-5', image: 'test',
-      products: 8
-    },
-  ]
-
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   delete(id: number) {
-    alert('deleting')
-    return of(this.brands);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
   create(payload: Partial<Brand>) {
-    alert('creating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, this.baseHttpClient.getFormData(payload));
   }
 
   update(id: number, payload: Partial<Brand>) {
-    alert('updating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.baseHttpClient.update(`${environment.apiUrl}/${MODULE}/${id}`, payload)
+
   }
 
   getData(filter: FilterModel): Observable<any>{
     return this.baseHttpClient.get(filter, MODULE);
-    //return of({data: this.brands, current_page: 1, total: this.brands.length} as PagedData<Brand>)
   }
 }

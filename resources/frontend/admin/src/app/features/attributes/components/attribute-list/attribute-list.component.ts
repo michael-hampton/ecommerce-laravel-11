@@ -40,6 +40,7 @@ export class AttributeListComponent implements OnInit {
       })
       .subscribe((v) => {
         this._store.delete(data.id)
+        this._store.reset();
       });
   }
 
@@ -48,6 +49,7 @@ export class AttributeListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Attribute'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 
@@ -55,6 +57,7 @@ export class AttributeListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Attribute'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 

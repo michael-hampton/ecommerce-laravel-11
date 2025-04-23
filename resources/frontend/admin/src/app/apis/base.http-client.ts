@@ -1,4 +1,4 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {MODULE} from './product.api';
 import {FilterModel} from '../types/filter.model';
@@ -21,5 +21,21 @@ export class BaseHttpClient
 
   getById(url: string) {
     return this.httpclient.get(`${environment.apiUrl}/${url}`);
+  }
+
+  update(url: string, payload: any) {
+    const formData = this.getFormData(payload)
+    formData.append('_method', 'PUT')
+
+    return this.httpclient.post(`${url}`,
+      formData,
+      {headers: new HttpHeaders({ContentType: 'application/json'})}
+    );
+  }
+
+  getFormData(object: any): FormData  {
+    const formData = new FormData();
+    Object.keys(object).forEach(key => formData.append(key, object[key]));
+    return formData;
   }
 }

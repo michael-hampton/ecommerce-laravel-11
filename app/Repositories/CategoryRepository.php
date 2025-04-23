@@ -26,6 +26,10 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository
             $query->where('is_featured', '=', $searchParams['is_featured']);
         });
 
+        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
+            $query->where('name', 'like', "%{$searchParams['name']}%");
+        });
+
         return $query;
     }
 }

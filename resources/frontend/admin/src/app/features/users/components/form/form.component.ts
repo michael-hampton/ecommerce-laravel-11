@@ -6,6 +6,7 @@ import {ModalComponent} from "../../../../shared/components/modal/modal.componen
 import {User} from '../../../../types/users/user';
 import {RoleEnum} from '../../../../types/users/role.enum';
 import {matchPasswordFn} from '../../../../core/input/validators';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -33,20 +34,27 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
   }
 
-  save() {
+  async save() {
     if (this.form?.valid) {
+      const file = await firstValueFrom(this._formStore.file$)
       const model: User = {
         name: this.form.value.name,
         email: this.form.value.email,
         mobile: this.form.value.mobile,
         password: this.form.value.password,
         utype: this.form.value.utype,
-        active: this.form.value.active,
-        image: this.form.value.image,
+        active: this.form.value.active === true ? 1 : 0,
       } as User;
 
+      if (file) {
+        model.image = file
+      }
+
+      if (this.form.value.id) {
+        model.id = this.form.value.id
+      }
+
       this._formStore.saveData(model).subscribe(result => {
-        alert('good')
         this.confirm()
       })
     }

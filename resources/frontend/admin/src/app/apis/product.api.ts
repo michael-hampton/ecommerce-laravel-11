@@ -7,6 +7,7 @@ import {Category} from '../types/categories/category';
 import {User} from '../types/users/user';
 import {environment} from '../../environments/environment';
 import {BaseHttpClient} from './base.http-client';
+import {Attribute} from '../types/attributes/attribute';
 
 export const MODULE = 'products'
 
@@ -15,24 +16,19 @@ export const MODULE = 'products'
 })
 export class ProductApi {
 
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   delete(id: number) {
-    alert('deleting')
-    return of(true);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
   create(payload: Partial<Product>) {
-    alert('creating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, this.baseHttpClient.getFormData(payload));
   }
 
   update(id: number, payload: Partial<Product>) {
-    alert('updating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.baseHttpClient.update(`${environment.apiUrl}/${MODULE}/${id}`, payload)
+
   }
 
   getData(filter: FilterModel): Observable<any>{

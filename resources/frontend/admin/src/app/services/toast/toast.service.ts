@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, of, Subscription, throwError, timer} from 'rxjs';
+import {Observable, of, Subscription, throwError, timer} from 'rxjs';
 import {EnumTimeout, IToast} from './toast.model';
 import {keys} from '../../core/locale/resources';
 import {Res} from '../../core/res';
@@ -35,17 +34,20 @@ export class Toast extends StateService<IToast> {
     this.SetState(this.defaultOptions);
   }
 
-  Show(code: string, options?: IToast) {
+  Show(code: string, options?: IToast, message: string = '') {
     // first hide and kill the timer
     this.Hide();
 
     // extend default options
-    const _options: IToast = { ...this.defaultOptions, ...options };
+    const _options: IToast = {...this.defaultOptions, ...options};
 
-    const message = Res.Get(code, options?.text || keys.Unknown);
+    if (message === '') {
+      message = Res.Get(code, options?.text || keys.Unknown);
+    }
+
     // timeout a bit to allow for animation effect
     timer(100).subscribe(() => {
-      this.SetState({ ..._options, text: message, visible: true });
+      this.SetState({..._options, text: message, visible: true});
     });
 
     // timeout and hide
@@ -57,22 +59,25 @@ export class Toast extends StateService<IToast> {
   }
 
   // short cuts for specific styles
-  ShowError(code: string, options?: IToast) {
-    this.Show(code, { extracss: 'bg-danger', ...options });
+  ShowError(code: string, options?: IToast, message: string = '') {
+    this.Show(code, {extracss: 'bg-danger', ...options}, message);
   }
-  ShowSuccess(code: string, options?: IToast) {
-    this.Show(code, { extracss: 'bg-success', ...options });
+
+  ShowSuccess(code: string, options?: IToast, message: string = '') {
+    this.Show(code, {extracss: 'bg-success', ...options}, message);
   }
-  ShowWarning(code: string, options?: IToast) {
-    this.Show(code, { extracss: 'bg-warning', ...options });
+
+  ShowWarning(code: string, options?: IToast, message: string = '') {
+    this.Show(code, {extracss: 'bg-warning', ...options}, message);
   }
+
   Hide() {
     // find subscroption and unsubscribe
     if (this.isCanceled) {
       this.isCanceled.unsubscribe();
     }
     // reset to visible
-    this.UpdateState({ visible: false });
+    this.UpdateState({visible: false});
   }
 
   // show code then return null

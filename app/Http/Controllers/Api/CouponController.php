@@ -19,17 +19,14 @@ class CouponController extends ApiController
     public function __construct(
         private ICouponRepository $couponRepository,
         private ICouponService $couponService,
-        private ICategoryRepository $categoryRepository,
-        private IBrandRepository $brandRepository,
     )
     {
 
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -37,34 +34,21 @@ class CouponController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            ['name' => $request->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($coupons, CouponResource::collection($coupons));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $categories = $this->categoryRepository->getAll(null, 'name', 'asc');
-        $brands = $this->brandRepository->getAll(null, 'name', 'asc');
-        return view('admin.coupons.create', compact('categories', 'brands'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreCouponRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreCouponRequest $request)
     {
         $result = $this->couponService->createCoupon($request->all());
+        return response()->json($result);
 
-        return redirect()->route('admin.coupons')->with('success', 'Coupon created successfully.');
     }
 
     /**
@@ -79,43 +63,25 @@ class CouponController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $coupon = $this->couponRepository->getById($id);
-        $categories = $this->categoryRepository->getAll(null, 'name', 'asc');
-        $brands = $this->brandRepository->getAll(null, 'name', 'asc');
-        return view('admin.coupons.edit', compact('coupon', 'categories', 'brands'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
         $result = $this->couponService->updateCoupon($request->except(['_token', '_method']), $id);
 
-        return redirect()->route('admin.coupons')->with('success', 'Coupon updated successfully.');
+        return response()->json($result);
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
         $result = $this->couponService->deleteCoupon($id);
 
-        return redirect()->route('admin.coupons')->with('success', 'Coupon deleted successfully.');
+        return response()->json($result);
     }
 }

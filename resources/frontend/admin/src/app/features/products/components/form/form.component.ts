@@ -1,13 +1,13 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {catchError, forkJoin, of} from 'rxjs';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {firstValueFrom, forkJoin} from 'rxjs';
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {LookupStore} from "../../../../store/lookup.store";
 import {ProductFormStore} from "../../../../store/products/form.store";
 import {Product} from "../../../../types/products/product";
 import {StockStatusEnum} from '../../../../types/products/stock-status.enum';
 import {FeaturedEnum} from '../../../../types/products/featured.enum';
+import {AuthService} from '../../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-form',
@@ -23,6 +23,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   lookupVm$ = this._lookupStore.vm$;
   _formStore = inject(ProductFormStore)
   formVm$ = this._formStore.vm$;
+  private _authService = inject(AuthService)
 
   public constructor(private fb: FormBuilder) {
     super();
@@ -51,7 +52,12 @@ export class FormComponent extends ModalComponent implements OnInit {
       this._lookupStore.getSubcategories(value)
     });
   }
-  save() {
+
+  async save() {
+    const file = await firstValueFrom(this._formStore.file$)
+
+    const user = this._authService.GetUser()
+
     if (this.form?.valid) {
       const model: Product = {
         name: this.form.value.name,
@@ -66,11 +72,18 @@ export class FormComponent extends ModalComponent implements OnInit {
         SKU: this.form.value.sku,
         quantity: this.form.value.quantity,
         stock_status: this.form.value.stock_status,
-        featured: this.form.value.featured === 'yes',
-        image: this.form.value.image,
-        seller_id: 1, //TODO
+        featured: this.form.value.featured === 'yes' ? 1 : 0,
+        seller_id: Number(user.payload.id),
         images: ''
       } as Product;
+
+      if (file) {
+        model.image = file
+      }
+
+      if (this.form.value.id) {
+        model.id = this.form.value.id
+      }
 
       this._formStore.saveData(model).subscribe(result => {
         this.confirm();
@@ -79,6 +92,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   }
 
   patchForm() {
+    console.log('form data', this.formData)
     this.form?.patchValue({
       id: this.formData.id,
       name: this.formData.name,
@@ -92,10 +106,14 @@ export class FormComponent extends ModalComponent implements OnInit {
       sale_price: this.formData.sale_price,
       sku: this.formData.SKU,
       quantity: this.formData.quantity,
-      stock_status: this.formData.stock_status,
-      featured: this.formData.featured === true,
+      stock_status: this.formData.has_stock === true ? 'instock' : 'outofstock',
+      featured: this.formData.featured === 0 ? 'no' : 'yes',
       //image: this.formData.image,
     })
+
+    if (this.formData.category_id) {
+      this._lookupStore.getSubcategories(this.formData.category_id)
+    }
 
     this._formStore.addImage(this.formData.image)
   }
@@ -116,7 +134,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       quantity: new FormControl(1, [Validators.required]),
       stock_status: new FormControl('', [Validators.required]),
       featured: new FormControl('', [Validators.required]),
-      image: new FormControl('', [Validators.required]),
+      image: new FormControl(''),
     })
   }
 

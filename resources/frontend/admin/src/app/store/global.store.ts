@@ -40,7 +40,7 @@ export class GlobalStore extends ComponentStore<GlobalState> {
     { debounce: true }
   );
   setError(error: IUiError) {
-    this.toast.ShowError(error.message);
+    this.toast.ShowError(error.code, {}, error.message);
     this.setLoading(false)
     this.patchState({error: error.message})
   }
@@ -55,7 +55,7 @@ export class GlobalStore extends ComponentStore<GlobalState> {
   }
 
   setSuccess(success: string) {
-    this.toast.ShowSuccess(success);
+    this.toast.ShowSuccess(null, {}, success);
     this.patchState({success: success})
   }
 }

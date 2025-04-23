@@ -2,7 +2,7 @@ export type Slide = {
   id: number
   title: string
   subtitle: string
-  image: string
+  image?: File
   link: string
   tags: string
   active: boolean

@@ -42,8 +42,11 @@ export class FormComponent extends ModalComponent implements OnInit {
         attribute_id: this.form.value.attribute_id
       } as AttributeValue;
 
+      if (this.form.value.id) {
+        model.id = this.form.value.id
+      }
+
       this._formStore.saveData(model).subscribe(result => {
-        alert('good');
         this.confirm();
       })
     }

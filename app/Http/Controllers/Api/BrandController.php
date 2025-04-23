@@ -20,9 +20,8 @@ class BrandController extends ApiController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -30,30 +29,22 @@ class BrandController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            ['name' => $request->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($brands, BrandResource::collection($brands));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('admin.brands.create');
-    }
 
     /**
      * @param StoreBrandRequest $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreBrandRequest $request)
     {
         $result = $this->brandService->createBrand($request->all());
 
-        return redirect()->route('admin.brands')->with('success', 'Brand created successfully.');
+        return response()->json($result);
     }
 
     /**
@@ -68,39 +59,26 @@ class BrandController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(int $id)
-    {
-        $brand = $this->brandRepository->getById($id);
-        return view('admin.brands.edit', compact('brand'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateBrandRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateBrandRequest $request, $id)
     {
         $result = $this->brandService->updateBrand($request->except(['_token', '_method']), $id);
 
-        return redirect()->route('admin.brands')->with('success', 'Brand updated successfully.');
+        return response()->json($result);
     }
 
     /**
      * @param int $id
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(int $id)
     {
         $result = $this->brandService->deleteBrand($id);
 
-        return redirect()->route('admin.brands')->with('success', 'Brand deleted successfully.');
+        return response()->json($result);
+
     }
 }

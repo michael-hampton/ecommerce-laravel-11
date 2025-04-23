@@ -25,6 +25,7 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
     super(defaultState);
   }
 
+  readonly file$ = this.select(state => state.currentFile);
   readonly image$ = this.select(({imagePreview}) => imagePreview);
 
   vm$ = this.select(state => ({

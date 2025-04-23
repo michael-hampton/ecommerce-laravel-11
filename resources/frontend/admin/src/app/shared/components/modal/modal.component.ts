@@ -4,8 +4,7 @@ import {
   Input,
   Output, TemplateRef, ViewChild,
 } from '@angular/core';
-import {CommonModule, NgTemplateOutlet} from '@angular/common';
-import {FormSubmitDirective} from '../../directives/form-submit.directive';
+import {CommonModule, NgIf, NgTemplateOutlet} from '@angular/common';
 import {ModalService} from '../../../services/modal.service';
 
 
@@ -13,7 +12,8 @@ import {ModalService} from '../../../services/modal.service';
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   imports: [
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    NgIf
   ],
   styleUrl: './modal.component.scss'
 })
@@ -29,6 +29,7 @@ export class ModalComponent {
   @Input() saveButtonClass: string = 'btn-primary'
   @Input() formData: any;
   @Input() modalService: ModalService | undefined
+  @Input() showFooter: boolean = false;
   ngOnInit(): void {
     console.log('child', this.child)
     console.log('Modal init');

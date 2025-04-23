@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class UpdateBrandRequest extends FormRequest
 {
@@ -24,9 +25,8 @@ class UpdateBrandRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:brands,name,'.request()->route('id'),
-            'slug' => 'required|string|max:255|unique:brands,slug,' . request()->route('id'),
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255|unique:brands,name,'.request()->get('id'),
+            'slug' => 'required|string|max:255|unique:brands,slug,' . request()->get('id'),
         ];
     }
 }

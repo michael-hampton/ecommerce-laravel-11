@@ -72,7 +72,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
             $query->where('regular_price', '<=', $searchParams['maxPrice']);
         });
 
-        $query->when(isset($searchParams['name']), function (Builder $query) use ($searchParams) {
+        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('name', 'like', "%{$searchParams['name']}%");
         });
 

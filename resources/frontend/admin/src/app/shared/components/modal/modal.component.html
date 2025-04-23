@@ -11,7 +11,11 @@
         } @else {
           <ng-container *ngTemplateOutlet="child"></ng-container>
         }
+      </div>
 
+      <div *ngIf="showFooter === true" class="modal-footer">
+        <button class="btn btn-success" data-bs-dismiss="modal" (click)="confirm()">Ok</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
       </div>
     </div>
   </div>

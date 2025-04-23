@@ -4,6 +4,7 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} fr
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
 import {SlideFormStore} from "../../../../store/slides/form.store";
 import {Slide} from "../../../../types/slides/slide";
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -30,8 +31,9 @@ export class FormComponent extends ModalComponent implements OnInit {
       this.patchForm();
     }
   }
-  save() {
+  async save() {
     if (this.form?.valid) {
+      const file = await firstValueFrom(this._formStore.file$)
       const model: Slide = {
         title: this.form.value.title,
         subtitle: this.form.value.subtitle,
@@ -39,8 +41,15 @@ export class FormComponent extends ModalComponent implements OnInit {
         link: this.form.value.link,
         link_text: this.form.value.link_text,
         active: this.form.value.active,
-        image: this.form.value.image,
       } as Slide;
+
+      if (file) {
+        model.image = file
+      }
+
+      if (this.form.value.id) {
+        model.id = this.form.value.id
+      }
 
       this._formStore.saveData(model).subscribe(result => {
         alert('good')

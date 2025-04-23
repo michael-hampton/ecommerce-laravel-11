@@ -6,6 +6,7 @@ import {FilterModel, PagedData} from '../types/filter.model';
 import {Category} from '../types/categories/category';
 import {User} from '../types/users/user';
 import {BaseHttpClient} from './base.http-client';
+import {environment} from '../../environments/environment';
 
 export const MODULE = 'attributes'
 
@@ -14,151 +15,21 @@ export const MODULE = 'attributes'
 })
 export class AttributeApi {
 
-  private attributes: Attribute[] = [
-    {
-      id: 1, name: 'Color', attribute_values: [{
-        id: 3,
-        name: 'test 4',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 1,
-        name: 'test 1',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 1,
-        name: 'test 2',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }]
-    },
-    {
-      id: 2, name: 'Size', attribute_values: [{
-        id: 10,
-        name: 'test 10',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 9,
-        name: 'test 9',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 8,
-        name: 'test 8',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }]
-    },
-    {
-      id: 3, name: 'Package Size', attribute_values: [{
-        id: 5,
-        name: 'test 6',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 1,
-        name: 'test 1',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 2,
-        name: 'test 2',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }]
-    },
-    {
-      id: 4, name: 'Condition', attribute_values: [{
-        id: 3,
-        name: 'test 3',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 4,
-        name: 'test 4',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }, {
-        id: 5,
-        name: 'test 5',
-        attribute_id: 0,
-        attribute: {
-          id: 0,
-          name: '',
-          attribute_values: undefined
-        }
-      }]
-    }
-  ]
-
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   delete(id: number) {
-    alert('deleting')
-    return of(this.attributes);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
   create(payload: Partial<Attribute>) {
-    alert('creating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload);
   }
 
   update(id: number, payload: Partial<Attribute>) {
-    alert('updating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }
 
   getData(filter: FilterModel): Observable<any> {
     return this.baseHttpClient.get(filter, MODULE);
-    //return of({data: this.attributes, current_page: 1, total: this.attributes.length} as PagedData<Attribute>)
   }
 }

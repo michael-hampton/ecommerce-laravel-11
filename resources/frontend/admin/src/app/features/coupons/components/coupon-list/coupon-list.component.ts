@@ -39,6 +39,7 @@ export class CouponListComponent implements OnInit {
       })
       .subscribe((v) => {
         this._store.delete(data.id)
+        this._store.reset();
       });
   }
 
@@ -46,6 +47,7 @@ export class CouponListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Coupon'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 
@@ -54,6 +56,7 @@ export class CouponListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Attribute'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 

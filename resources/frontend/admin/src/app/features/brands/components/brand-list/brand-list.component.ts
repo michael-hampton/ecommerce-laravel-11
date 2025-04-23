@@ -40,6 +40,7 @@ export class BrandListComponent implements OnInit {
       })
       .subscribe((v) => {
         this._store.delete(data.id)
+        this._store.reset();
       });
   }
 
@@ -47,6 +48,7 @@ export class BrandListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Brand'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 
@@ -55,6 +57,7 @@ export class BrandListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Brand'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 

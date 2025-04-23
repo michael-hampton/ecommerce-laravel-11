@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ProductResource extends JsonResource
 {
@@ -15,7 +14,7 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-         return [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
@@ -31,6 +30,9 @@ class ProductResource extends JsonResource
             'featured' => $this->featured,
             'quantity' => $this->quantity,
             'seller_id' => $this->seller_id,
+            'category_id' => $this->category->has('parent') ? $this->category->parent_id : $this->category_id,
+            'subcategory_id' => $this->category_id,
+            'brand_id' => $this->brand_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

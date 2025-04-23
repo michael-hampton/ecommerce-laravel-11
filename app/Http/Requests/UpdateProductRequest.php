@@ -24,9 +24,9 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:products,name,'.request()->route('id'),
-            'slug' => 'required|string|max:255|unique:products,slug,' . request()->route('id'),
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255|unique:products,name,'.request()->get('id'),
+            'slug' => 'required|string|max:255|unique:products,slug,' . request()->get('id'),
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

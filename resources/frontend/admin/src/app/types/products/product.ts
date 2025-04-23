@@ -10,10 +10,10 @@ export type Product = {
   regular_price: number
   sale_price: number
   stock_status: string
-  featured: boolean
+  featured: number
   quantity: number
-  images: string
-  image: string
+  images: any
+  image?: any
   brand_id: number
   category_id: number
   SKU: string,

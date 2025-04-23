@@ -5,6 +5,8 @@ import {User} from '../types/users/user';
 import {FilterModel, PagedData} from '../types/filter.model';
 import {Category} from '../types/categories/category';
 import {BaseHttpClient} from './base.http-client';
+import {Attribute} from '../types/attributes/attribute';
+import {environment} from '../../environments/environment';
 
 export const MODULE = 'users'
 
@@ -13,76 +15,21 @@ export const MODULE = 'users'
 })
 export class UserApi {
 
-  private users: User[] = [
-    {
-      id: 1, name: 'Category 1',
-      email: '',
-      password: '',
-      mobile: '07851624051',
-      image: '',
-      utype: '',
-      active: false
-    },
-    {
-      id: 2, name: 'Category 1',
-      email: '',
-      password: '',
-      mobile: '07851624051',
-      image: '',
-      utype: '',
-      active: false
-    },
-    {
-      id: 3, name: 'Category 1',
-      email: '',
-      password: '',
-      mobile: '07851624051',
-      image: '',
-      utype: '',
-      active: false
-    },
-    {
-      id: 4, name: 'Category 1',
-      email: '',
-      password: '',
-      mobile: '07851624051',
-      image: '',
-      utype: '',
-      active: false
-    },
-    {
-      id: 5, name: 'Category 1',
-      email: '',
-      password: '',
-      mobile: '07851624051',
-      image: '',
-      utype: '',
-      active: false
-    },
-  ]
-
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   delete(id: number) {
-    alert('deleting')
-    return of(this.users);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
   create(payload: Partial<User>) {
-    alert('creating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, this.baseHttpClient.getFormData(payload));
   }
 
   update(id: number, payload: Partial<User>) {
-    alert('updating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.baseHttpClient.update(`${environment.apiUrl}/${MODULE}/${id}`, payload)
   }
 
   getData(filter: FilterModel): Observable<any>{
     return this.baseHttpClient.get(filter, MODULE);
-    //return of({data: this.users, current_page: 1, total: this.users.length} as PagedData<User>)
   }
 }

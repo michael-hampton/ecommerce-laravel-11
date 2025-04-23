@@ -3,6 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Seller} from '../types/seller/seller';
 import {BaseHttpClient} from './base.http-client';
+import {Attribute} from '../types/attributes/attribute';
+import {environment} from '../../environments/environment';
 
 export const MODULE = 'sellers'
 
@@ -11,107 +13,21 @@ export const MODULE = 'sellers'
 })
 export class SellerApi {
 
-  private users: Seller[] = [
-    {
-      id: 1, name: 'Category 1',
-      email: 'michaelhamptondesign@yahoo.com',
-      phone: '07851624051',
-      profile_picture: '',
-      active: false,
-      address1: 'test',
-      address2: 'test2',
-      zip: 'zip',
-      city: 'city',
-      state: 'state',
-      username: 'test',
-      biography: 'test biography'
-    },
-    {
-      id: 2, name: 'Category 1',
-      email: 'michaelhamptondesign@yahoo.com',
-      phone: '07851624051',
-      profile_picture: '',
-      active: false,
-      address1: 'test',
-      address2: 'test2',
-      zip: 'zip',
-      city: 'city',
-      state: 'state',
-      username: 'test',
-      biography: 'test biography'
-    },
-    {
-      id: 3, name: 'Category 1',
-      email: 'michaelhamptondesign@yahoo.com',
-      phone: '07851624051',
-      profile_picture: '',
-      active: false,
-      address1: 'test',
-      address2: 'test2',
-      zip: 'zip',
-      city: 'city',
-      state: 'state',
-      username: 'test',
-      biography: 'test biography'
-    },
-    {
-      id: 4, name: 'Category 1',
-      email: 'michaelhamptondesign@yahoo.com',
-      phone: '07851624051',
-      profile_picture: '',
-      active: false,
-      address1: 'test',
-      address2: 'test2',
-      zip: 'zip',
-      city: 'city',
-      state: 'state',
-      username: 'test',
-      biography: 'test biography'
-    },
-    {
-      id: 5, name: 'Category 1',
-      email: 'michaelhamptondesign@yahoo.com',
-      phone: '07851624051',
-      profile_picture: '',
-      active: false,
-      address1: 'test',
-      address2: 'test2',
-      zip: 'zip',
-      city: 'city',
-      state: 'state',
-      username: 'test',
-      biography: 'test biography'
-
-    },
-  ]
-
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) { }
 
   delete(id: number) {
-    alert('deleting')
-    return of(this.users);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
   create(payload: Partial<Seller>) {
-    alert('creating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload);
   }
 
   update(id: number, payload: Partial<Seller>) {
-    alert('updating')
-    return of(payload);
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
-  }
-
-  getAll(){
-    return of({data: this.users[0]})
-    //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
+    return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }
 
   getSeller(id: number){
     return this.baseHttpClient.getById(`${MODULE}/${id}`);
-    // return of({data: this.users[0]})
   }
 }

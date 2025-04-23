@@ -12,7 +12,8 @@ export const defaultPaging: FilterModel = {
   page: 1,
   limit: 10,
   sortBy: 'name',
-  sortAsc: true
+  sortAsc: true,
+  searchText: ''
 }
 
 export type PagedData<T> = {

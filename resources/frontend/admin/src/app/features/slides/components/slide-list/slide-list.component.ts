@@ -39,6 +39,7 @@ export class SlideListComponent implements OnInit {
       })
       .subscribe((v) => {
         this._store.delete(data.id)
+        this._store.reset();
       });
   }
 
@@ -46,6 +47,7 @@ export class SlideListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Slide'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 
@@ -54,6 +56,7 @@ export class SlideListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Slide'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 

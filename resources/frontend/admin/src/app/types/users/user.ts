@@ -4,7 +4,7 @@ export type User = {
   email: string
   password: string
   mobile: string
-  image: string
+  image?: File
   utype: string
-  active: boolean
+  active: number
 }

@@ -22,7 +22,7 @@ class UpdateAttributeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:product_attributes,name,'.request()->route('id'),
+            'name' => 'required|unique:product_attributes,name,'.request()->get('id'),
         ];
     }
 }

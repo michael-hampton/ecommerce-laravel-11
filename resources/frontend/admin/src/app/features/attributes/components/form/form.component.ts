@@ -31,14 +31,16 @@ export class FormComponent extends ModalComponent implements OnInit {
   }
 
   save() {
-    alert('here')
     if (this.form?.valid) {
       const model: Attribute = {
         name: this.form.value.name,
       } as Attribute;
 
+      if (this.form.value.id) {
+        model.id = this.form.value.id
+      }
+
       this._formStore.saveData(model).subscribe(result => {
-        alert('good');
         this.confirm();
       })
     }

@@ -5,8 +5,7 @@ import { ModalService } from '../../../../services/modal.service';
 import {ProductStore} from "../../../../store/products/list.store";
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
 import {FormComponent} from '../form/form.component';
-import {defaultPaging, FilterModel} from '../../../../types/filter.model';
-import {CategoryStore} from '../../../../store/categories/list.store';
+import { FilterModel} from '../../../../types/filter.model';
 import {GlobalStore} from '../../../../store/global.store';
 
 @Component({
@@ -39,6 +38,7 @@ export class ProductListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Product'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 
@@ -51,6 +51,7 @@ export class ProductListComponent implements OnInit {
       })
       .subscribe((v) => {
         this._store.delete(data.id)
+        this._store.reset();
       });
   }
 
@@ -59,6 +60,7 @@ export class ProductListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Product'})
       .subscribe((v) => {
+        this._store.reset();
       });
   }
 

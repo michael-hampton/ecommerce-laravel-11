@@ -37,9 +37,9 @@ class CouponRepository extends BaseRepository implements ICouponRepository
             $query->where('regular_price', '<=', $searchParams['maxPrice']);
         });
 
-//        $query->when(isset($searchParams['name']), function (Builder $query) use ($searchParams) {
-//            $query->where('name', 'like', "%{$searchParams['name']}%");
-//        });
+        $query->when(isset($searchParams['name']), function (Builder $query) use ($searchParams) {
+            $query->where('code', 'like', "%{$searchParams['name']}%");
+        });
 
         return $query;
     }

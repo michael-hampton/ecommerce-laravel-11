@@ -37,6 +37,7 @@ export class CategoryListComponent implements OnInit {
       .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: 'click confirm or close'})
       .subscribe((v) => {
         this._store.delete(data.id)
+        this._store.reset();
       });
   }
 
@@ -45,6 +46,7 @@ export class CategoryListComponent implements OnInit {
       .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Category'})
       .subscribe((v) => {
         this.modalService.closeModal();
+        this._store.reset();
       });
   }
 
@@ -52,7 +54,7 @@ export class CategoryListComponent implements OnInit {
     this.sub = this.modalService
       .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Category'})
       .subscribe((v) => {
-
+        this._store.reset();
       });
   }
 
