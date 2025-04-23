@@ -34,4 +34,9 @@ class Category extends Model
     {
         return $this->hasOne(Category::class, 'id', 'parent_id');
     }
+
+    public function hasGrandchildren()
+    {
+      return !empty($this->parent_id) && $this->subcategories()->count() > 0;
+    }
 }

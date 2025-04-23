@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //lookup
     Route::get('lookup/orders', [\App\Http\Controllers\Api\LookupController::class, 'getOrders'])->name('admin.dashboard');
-    Route::get('lookup/categories', [\App\Http\Controllers\Api\LookupController::class, 'getCategories'])->name('admin.dashboard');
+    Route::get('lookup/categories/{parentOnly?}', [\App\Http\Controllers\Api\LookupController::class, 'getCategories'])->name('admin.dashboard');
     Route::get('lookup/brands', [\App\Http\Controllers\Api\LookupController::class, 'getBrands'])->name('admin.dashboard');
     Route::get('lookup/attributes', [\App\Http\Controllers\Api\LookupController::class, 'getAttributes'])->name('admin.dashboard');
     Route::get('lookup/subcategories/{categoryId}', [\App\Http\Controllers\Api\LookupController::class, 'getSubcategories'])->name('admin.dashboard');

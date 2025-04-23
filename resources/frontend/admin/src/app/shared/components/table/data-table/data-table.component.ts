@@ -204,6 +204,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   reloadItems() {
     this._reloading = true;
+    this._search = ''
     this.reload.emit(this._getRemoteParameters());
   }
 

@@ -13,9 +13,11 @@ import {PixelConverter} from './components/table/utils/px';
 import { DataTablePaginationComponent } from './components/table/data-table-pagination/data-table-pagination.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
+import { ControlValueAccessorDirective } from './components/category-selector/control-value-accessor.directive';
 
 @NgModule({
-  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent],
+  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent, CategorySelectorComponent, ControlValueAccessorDirective],
   imports: [
     CommonModule,
     ControlErrorComponent,
@@ -30,7 +32,8 @@ import { LoaderComponent } from './components/loader/loader.component';
         DataTableComponent,
         ColumnComponent,
         ToastComponent,
-        LoaderComponent
+        LoaderComponent,
+        CategorySelectorComponent
     ]
 })
 export class SharedModule { }

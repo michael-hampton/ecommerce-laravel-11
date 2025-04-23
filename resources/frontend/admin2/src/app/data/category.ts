@@ -6,4 +6,5 @@ export type Category = {
   parent_id: number;
   products?: number
   subcategories?: Category[]
+  has_grandchild: boolean
 }

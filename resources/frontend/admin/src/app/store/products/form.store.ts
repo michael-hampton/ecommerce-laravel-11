@@ -6,22 +6,29 @@ import {ProductApi} from '../../apis/product.api';
 import {GlobalStore} from '../global.store';
 import {Product} from "../../types/products/product";
 import {UiError} from '../../core/services/exception.service';
+import {switchMap, tap} from 'rxjs';
+import {Category} from '../../types/categories/category';
+import {LookupApi} from '../../apis/lookup.api';
 
 export interface ProductFormState {
   imagePreview: string;
   currentFile?: File;
+  subcategories: Category[],
+  grandchildren: Category[]
 }
 
 const defaultState: ProductFormState = {
   imagePreview: '',
-  currentFile: undefined
+  currentFile: undefined,
+  subcategories: [],
+  grandchildren: []
 };
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductFormStore extends ComponentStore<ProductFormState> {
-  constructor(private _api: ProductApi, private _globalStore: GlobalStore) {
+  constructor(private _api: ProductApi, private _globalStore: GlobalStore, private _lookupService: LookupApi) {
     super(defaultState);
   }
 
@@ -52,6 +59,36 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
     )
   }
 
+  readonly getSubcategories = this.effect<number>((categoryId) => {
+    return categoryId.pipe(
+      switchMap(categoryId =>
+        this._lookupService.getSubcategories(categoryId).pipe(
+          tapResponse({
+            next: (subcategories) => this.patchState({ subcategories: subcategories as Category[] }),
+            error: (error: HttpErrorResponse) => {
+              this._globalStore.setError(UiError(error))
+            },
+          })
+        )
+      )
+    );
+  });
+
+  readonly getGrandChildrenCategories = this.effect<number>((categoryId) => {
+    return categoryId.pipe(
+      switchMap(categoryId =>
+        this._lookupService.getSubcategories(categoryId).pipe(
+          tapResponse({
+            next: (subcategories) => this.patchState({ grandchildren: subcategories as Category[] }),
+            error: (error: HttpErrorResponse) => {
+              this._globalStore.setError(UiError(error))
+            },
+          })
+        )
+      )
+    );
+  });
+
   selectFile(event: any): void {
     this.patchState({imagePreview: ''})
     const selectedFiles = event.target.files;
@@ -74,7 +111,7 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
     }
   }
 
-  readonly addImage = this.updater((state, imagePreview: string) => ({
-    imagePreview: imagePreview,
-  }));
+  updateImagePreview(imagePreview: string) {
+    this.patchState({imagePreview: imagePreview})
+  }
 }

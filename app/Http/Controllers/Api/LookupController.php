@@ -18,21 +18,33 @@ class LookupController
     {
         $orders = Order::orderBy('name', 'asc')
             ->whereRelation('orderItems', 'seller_id', ['seller_id' => auth('sanctum')->user()->id])
-            ->get();
+            ->get()
+        ;
 
         return response()->json(OrderResource::collection($orders), 200);
     }
 
-    public function getBrands() {
+    public function getBrands()
+    {
         $brands = Brand::orderBy('name', 'asc')
-            ->get();
+            ->get()
+        ;
 
         return response()->json(BrandResource::collection($brands), 200);
     }
 
-    public function getCategories() {
-        $categories = Category::orderBy('created_at', 'desc')
-            ->get();
+    public function getCategories(bool $parentOnly = false)
+    {
+        $query = Category::orderBy('created_at', 'desc');
+        if ($parentOnly) {
+            $query->where(function ($query) {
+                $query->where('parent_id', '=', null)
+                    ->orWhere('parent_id', '=', 0)
+                ;
+            });
+        }
+
+        $categories = $query->get();
 
         return response()->json(CategoryResource::collection($categories), 200);
     }
@@ -41,14 +53,17 @@ class LookupController
     {
         $categories = Category::orderBy('name', 'asc')
             ->where('parent_id', $categoryId)
-            ->get();
+            ->get()
+        ;
 
         return response()->json(CategoryResource::collection($categories), 200);
     }
 
-    public function getAttributes() {
+    public function getAttributes()
+    {
         $attributes = ProductAttribute::orderBy('name', 'asc')
-            ->get();
+            ->get()
+        ;
 
         return response()->json(AttributeResource::collection($attributes), 200);
     }

@@ -21,27 +21,19 @@
                     <input class="form-control" type="text" placeholder="Enter product slug" name="slug"
                            formControlName="slug">
                   </div>
-                  <div class="col-md-6">
-                    <label for="inputEmail4" class="form-label">Category</label>
-                    <select class="form-control" name="category_id" id="category_id" formControlName="category_id">
-                      <option value="">Choose category</option>
-                      <option *ngFor="let category of vm.categories"
-                              [value]="category.id">
-                        {{ category.name }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Subcategory</label>
-                    <select class="form-control" id="subcategoryDropdown" name="subcategory_id"
-                            formControlName="subcategory_id">
-                      <option value="">Choose Subcategory</option>
-                      <option *ngFor="let subcategory of vm.subcategories"
-                              [value]="subcategory.id">
-                        {{ subcategory.name }}
-                      </option>
-                    </select>
-                  </div>
+                  <app-category-selector formControlName="category_id" [displayGrandchildren]="true" [disableGrandchildren]="false" ></app-category-selector>
+
+<!--                  <div class="col-md-6">-->
+<!--                    <label for="inputPassword4" class="form-label">Subcategory</label>-->
+<!--                    <select class="form-control" id="subcategoryDropdown" name="subcategory_id"-->
+<!--                            formControlName="subcategory_id">-->
+<!--                      <option value="">Choose Subcategory</option>-->
+<!--                      <option *ngFor="let subcategory of vm.subcategories"-->
+<!--                              [value]="subcategory.id">-->
+<!--                        {{ subcategory.name }}-->
+<!--                      </option>-->
+<!--                    </select>-->
+<!--                  </div>-->
 
                   <div class="col-12">
                     <label for="inputAddress" class="form-label">Brand</label>

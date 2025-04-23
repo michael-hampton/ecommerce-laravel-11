@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { ComponentStore } from '@ngrx/component-store';
-import { tapResponse } from '@ngrx/operators'
+import {Injectable} from '@angular/core';
+import {ComponentStore} from '@ngrx/component-store';
+import {tapResponse} from '@ngrx/operators'
 import {pipe, switchMap, tap} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {GlobalStore} from './global.store';
@@ -82,23 +82,6 @@ export class LookupStore extends ComponentStore<GlobalState> {
         )
       )
     ));
-
-  readonly getSubcategories = this.effect<number>((categoryId) => {
-    return categoryId.pipe(
-      tap(() => this.patchState({ loading: true })),
-      switchMap(categoryId =>
-        this._lookupService.getSubcategories(categoryId).pipe(
-          tapResponse({
-            next: (subcategories) => this.patchState({ subcategories: subcategories as Category[] }),
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error))
-            },
-            finalize: () => this.patchState({ loading: false }),
-          })
-        )
-      )
-    );
-  });
 
   getBrands = this.effect<void>(
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.

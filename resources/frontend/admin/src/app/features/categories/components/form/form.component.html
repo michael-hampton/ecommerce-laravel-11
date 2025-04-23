@@ -1,7 +1,7 @@
 <app-modal [title]="title" [child]="child"
            (closeMeEvent)="close()">
   <ng-template #child>
-    <div class="card p-3" *ngIf="lookupVm$ | async as vm">
+    <div class="card p-3" *ngIf="formVm$ | async as vm">
       <div class="card-body" *ngIf="form">
         <form admin-form method="POST" id="admin-form"
               enctype="multipart/form-data" [formGroup]="form">
@@ -17,39 +17,35 @@
           </div>
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Description</label>
-            <input type="text" class="form-control" id="description" name="description" placeholder="Description" formControlName="description">
+            <input type="text" class="form-control" id="description" name="description" placeholder="Description"
+                   formControlName="description">
             <p class="text-danger"></p>
           </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Parent</label>
-            <select class="form-select" name="parent_id" formControlName="parent_id">
-              <option value="">None</option>
-              <option *ngFor="let category of vm.categories"
-                      [value]="category.id">
-                {{ category.name }}
-              </option>
-            </select>
-          </div>
+        <app-category-selector formControlName="parent_id" label="Parent" [disableGrandchildren]="true" ></app-category-selector>
+
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Meta Title</label>
-            <input type="text" class="form-control" id="meta_title" name="meta_title" placeholder="Meta Title" formControlName="meta_title">
+            <input type="text" class="form-control" id="meta_title" name="meta_title" placeholder="Meta Title"
+                   formControlName="meta_title">
             <p class="text-danger"></p>
           </div>
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Meta Description</label>
-            <input type="text" class="form-control" id="meta_description" name="meta_description" placeholder="Meta Description" formControlName="meta_description">
+            <input type="text" class="form-control" id="meta_description" name="meta_description"
+                   placeholder="Meta Description" formControlName="meta_description">
             <p class="text-danger"></p>
           </div>
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Meta Keywords</label>
-            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords" placeholder="Meta Keywords" formControlName="meta_keywords">
+            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords" placeholder="Meta Keywords"
+                   formControlName="meta_keywords">
             <p class="text-danger"></p>
           </div>
           <div>
             <label for="exampleInputEmail1" class="form-label">Upload Image</label>
           </div>
           <div class="upload-image flex-grow">
-            <div *ngIf="_formStore.image$ | async as image" class="item" id="imgpreview">
+            <div *ngIf="_store.image$ | async as image" class="item" id="imgpreview">
               <img [src]="image" class="effect8" alt="">
             </div>
             <div id="upload-file" class="item up-load">
@@ -60,7 +56,7 @@
                 <span class="body-text">Drop your images here or select <span
                   class="tf-color">click to browse</span></span>
                 <input type="file" id="myFile" name="image" accept="image/*" formControlName="image"
-                       (change)="_formStore.selectFile($event)">
+                       (change)="_store.selectFile($event)">
               </label>
             </div>
           </div>

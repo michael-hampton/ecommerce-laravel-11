@@ -17,10 +17,9 @@ export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;
   form?: FormGroup;
 
-  private _lookupStore = inject(LookupStore)
-  _formStore = inject(CategoryFormStore)
-  formVm$ = this._formStore.vm$;
-  lookupVm$ = this._lookupStore.vm$;
+  _store = inject(CategoryFormStore)
+  formVm$ = this._store.vm$;
+  protected readonly input = input;
 
   public constructor(private fb: FormBuilder) {
     super();
@@ -30,8 +29,6 @@ export class FormComponent extends ModalComponent implements OnInit {
     super.ngOnInit();
 
     this.initializeForm();
-
-    this._lookupStore.getCategories();
 
     if (this.formData?.id) {
       this.patchForm();
@@ -44,7 +41,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
   async save() {
     if (this.form?.valid) {
-      const file = await firstValueFrom(this._formStore.file$)
+      const file = await firstValueFrom(this._store.file$)
 
       const model: Category = {
         name: this.form.value.name,
@@ -64,7 +61,7 @@ export class FormComponent extends ModalComponent implements OnInit {
         model.id = this.form.value.id
       }
 
-      this._formStore.saveData(model).subscribe(result => {
+      this._store.saveData(model).subscribe(result => {
         this.confirm();
       });
     }
@@ -83,7 +80,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       description: this.formData.description
     })
 
-    this._formStore.addImage(this.formData.image)
+    this._store.addImage(this.formData.image)
   }
 
   initializeForm() {
@@ -107,6 +104,4 @@ export class FormComponent extends ModalComponent implements OnInit {
 
     this.form?.patchValue({slug: value})
   }
-
-  protected readonly input = input;
 }

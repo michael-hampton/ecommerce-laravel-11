@@ -2,12 +2,11 @@ import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ComponentStore} from '@ngrx/component-store';
 import {tapResponse} from '@ngrx/operators'
-import {CategoryApi} from '../../apis/category.api';
-import {GlobalStore} from '../global.store';
-import {Category} from '../../types/categories/category';
-import {UiError} from '../../core/services/exception.service';
-import {pipe, switchMap, tap} from 'rxjs';
-import {LookupApi} from '../../apis/lookup.api';
+import {Category} from '../../../../types/categories/category';
+import {GlobalStore} from '../../../../store/global.store';
+import {LookupApi} from '../../../../apis/lookup.api';
+import {pipe, switchMap} from 'rxjs';
+import {UiError} from '../../../../core/error.model';
 
 
 export interface CategoryFormState {
@@ -27,8 +26,8 @@ const defaultState: CategoryFormState = {
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryFormStore extends ComponentStore<CategoryFormState> {
-  constructor(private _api: CategoryApi, private _globalStore: GlobalStore, private _lookupService: LookupApi) {
+export class CategorySelectorStore extends ComponentStore<CategoryFormState> {
+  constructor(private _globalStore: GlobalStore, private _lookupService: LookupApi) {
     super(defaultState);
   }
 
@@ -41,49 +40,6 @@ export class CategoryFormStore extends ComponentStore<CategoryFormState> {
     categories: state.categories,
     children: state.children
   }))
-
-  saveData = (payload: Partial<Category>) => {
-    const {id, ...dataCreate} = payload
-    const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
-    this._globalStore.setLoading(true)
-
-    return request$.pipe(
-      tapResponse({
-        next: (users) => {
-          this._globalStore.setSuccess('Saved successfully');
-          //this.patchState({loading: false, saveSuccess: true})
-        },
-        error: (error: HttpErrorResponse) => {
-          //this.patchState({loading: false, saveSuccess: false})
-          this._globalStore.setLoading(false)
-          this._globalStore.setError(UiError(error))
-        },
-        finalize: () => this._globalStore.setLoading(false),
-      })
-    )
-  }
-
-  selectFile(event: any): void {
-    this.patchState({imagePreview: ''})
-    const selectedFiles = event.target.files;
-
-    if (selectedFiles) {
-      const file: File | null = selectedFiles.item(0);
-
-      if (file) {
-        this.patchState({imagePreview: '', currentFile: file})
-
-        const reader = new FileReader();
-
-        reader.onload = (e: any) => {
-          this.patchState({imagePreview: e.target.result})
-
-        };
-
-        reader.readAsDataURL(file);
-      }
-    }
-  }
 
   getCategories = this.effect<void>(
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
@@ -99,7 +55,7 @@ export class CategoryFormStore extends ComponentStore<CategoryFormState> {
               const formattedChildren = []
 
               children.forEach((cat) => {
-                if(!formattedChildren[cat.parent_id]) {
+                if (!formattedChildren[cat.parent_id]) {
                   formattedChildren[cat.parent_id] = []
                 }
                 formattedChildren[cat.parent_id].push(cat)
@@ -116,9 +72,4 @@ export class CategoryFormStore extends ComponentStore<CategoryFormState> {
       )
     )
   )
-
-
-  readonly addImage = this.updater((state, imagePreview: string) => ({
-    imagePreview: imagePreview,
-  }));
 }

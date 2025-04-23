@@ -1,0 +1,23 @@
+<div class="mb-3" *ngIf="vm$ | async as vm">
+  <label [for]="inputId" class="form-label">{{label}}</label>
+  <select [formControl]="control" class="form-select" [id]="inputId" *ngIf="control">
+    <option value="">None</option>
+    @for (category of vm.categories; track category.id) {
+      <option class="fw-bold">{{ category.name }}</option>
+
+      @for (child of getChildren(category.id); track child.id) {
+        <option class="child-indented"
+                [value]="child.id">
+          &nbsp;&nbsp;&nbsp;{{ child.name }}
+        </option>
+
+        @if (hasChildren(child.id) && displayGrandchildren === true) {
+          <option [class.text-danger]="disableGrandchildren" [disabled]="disableGrandchildren" *ngFor="let grandchild of getChildren(child.id)" class="child-indented"
+                  [value]="grandchild.id">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ grandchild.name }}
+          </option>
+        }
+      }
+    }
+  </select>
+</div>

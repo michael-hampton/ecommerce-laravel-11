@@ -47,10 +47,6 @@ export class FormComponent extends ModalComponent implements OnInit {
     this.form?.controls['name'].valueChanges.subscribe(value => {
       this.stringToSlug(value)
     });
-
-    this.form?.controls['category_id'].valueChanges.subscribe(value => {
-      this._lookupStore.getSubcategories(value)
-    });
   }
 
   async save() {
@@ -108,14 +104,13 @@ export class FormComponent extends ModalComponent implements OnInit {
       quantity: this.formData.quantity,
       stock_status: this.formData.has_stock === true ? 'instock' : 'outofstock',
       featured: this.formData.featured === 0 ? 'no' : 'yes',
-      //image: this.formData.image,
     })
 
     if (this.formData.category_id) {
-      this._lookupStore.getSubcategories(this.formData.category_id)
+      this._formStore.getSubcategories(this.formData.category_id)
     }
 
-    this._formStore.addImage(this.formData.image)
+    this._formStore.updateImagePreview(this.formData.image)
   }
 
   initializeForm() {
