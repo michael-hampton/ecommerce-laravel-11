@@ -16,7 +16,7 @@ class LookupController
 
     public function getOrders()
     {
-        $orders = Order::orderBy('name', 'asc')
+        $orders = Order::orderBy('created_at', 'desc')
             ->whereRelation('orderItems', 'seller_id', ['seller_id' => auth('sanctum')->user()->id])
             ->get()
         ;

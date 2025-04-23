@@ -4,7 +4,7 @@ import {CategorySelectorStore} from './store/category-selector.store';
 import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
-import {ControlValueAccessorDirective} from './control-value-accessor.directive';
+import {ControlValueAccessorDirective} from '../../directives/control-value-accessor.directive';
 
 @Component({
   selector: 'app-category-selector',

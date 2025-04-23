@@ -7,51 +7,51 @@
       <a href="#" class="nav-link px-0 align-middle" routerLink="/">
         <i class="fs-4 fa-people"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
     </li>
-    <li>
+    <li  *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="products">
         <i class="fs-4 fa-bootstrap"></i> <span class="ms-1 d-none d-sm-inline">Products</span></a>
     </li>
-    <li>
+    <li *hasRole="RoleEnum['Super User']">
       <a href="#" class="nav-link px-0 align-middle" routerLink="brands">
         <i class="text-white fs-4 fa fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Brands</span> </a>
     </li>
 
-    <li>
+    <li  *hasRole="RoleEnum['Super User']">
       <a href="#" class="nav-link px-0 align-middle" routerLink="categories">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Categories</span> </a>
     </li>
 
-    <li>
+    <li  *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="coupons">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Coupons</span> </a>
     </li>
 
-    <li>
+    <li  *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="orders">
         <i class="fs-4 fa-people"></i> <span class="ms-1 d-none d-sm-inline">Orders</span> </a>
     </li>
 
-    <li>
+    <li  *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="attributes">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Attributes</span> </a>
     </li>
 
-    <li>
+    <li  *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="attribute-values">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Attribute Values</span> </a>
     </li>
 
-    <li>
+    <li  *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="slides">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Slides</span> </a>
     </li>
 
-    <li>
+    <li *hasRole="RoleEnum['Super User']">
       <a href="#" class="nav-link px-0 align-middle" routerLink="users">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Users</span> </a>
     </li>
 
-    <li>
+    <li *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="settings">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Settings</span> </a>
     </li>

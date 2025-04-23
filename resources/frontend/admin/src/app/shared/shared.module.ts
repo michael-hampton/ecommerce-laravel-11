@@ -14,7 +14,7 @@ import { DataTablePaginationComponent } from './components/table/data-table-pagi
 import { ToastComponent } from './components/toast/toast.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
-import { ControlValueAccessorDirective } from './components/category-selector/control-value-accessor.directive';
+import { ControlValueAccessorDirective } from './directives/control-value-accessor.directive';
 
 @NgModule({
   declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent, CategorySelectorComponent, ControlValueAccessorDirective],

@@ -18,8 +18,8 @@
     <data-table-column header="Products" property="products" [sortable]="true"></data-table-column>
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <div class="d-flex align-items-center justify-content-between">
-          <a href="javascript:void(0)" class="edit" (click)="edit(item)">
+        <div class="d-flex align-items-center">
+          <a href="javascript:void(0)" class="edit me-3" (click)="edit(item)">
             <i class="fa fa-eye"></i>
           </a>
           <a href="javascript:void(0)" class="delete" (click)="delete(item)">
@@ -30,40 +30,6 @@
     </data-table-column>
   </app-table>
 </ng-container>
-
-<!--<div class="py-4">-->
-<!--  <h3>Brands</h3>-->
-<!--</div>-->
-
-<!--<div class="card py-2 mb-3">-->
-<!--  <div class="card-body">-->
-<!--    <div class="d-flex justify-content-between align-items-center">-->
-<!--      <div>-->
-<!--        <div class="input-group">-->
-<!--          <input class="form-control border-end-0 border" type="search" placeholder="Search"-->
-<!--                 id="example-search-input">-->
-<!--          <span class="input-group-append">-->
-<!--                    <button class="btn btn-outline-secondary bg-white border-start-0 border-bottom-0 border ms-n5"-->
-<!--                            type="button">-->
-<!--                        <i class="fa fa-search"></i>-->
-<!--                    </button>-->
-<!--                </span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <a href="#" class="btn btn-primary add"  (click)="add($event)">Add New Brand</a>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--<div class="card p-3">-->
-<!--  <div class="card-body">-->
-<!--    <div class="table-responsive">-->
-<!--      <table datatable [dtOptions]="dtOptions" class="table table-bordered table-striped">-->
-<!--      </table>-->
-<!--    </div>-->
-<!--    <div class="divider"></div>-->
-<!--  </div>-->
-<!--</div>-->
 
 <div #confirmationModal></div>
 

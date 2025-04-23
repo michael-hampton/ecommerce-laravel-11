@@ -32,8 +32,8 @@
     <data-table-column header="Cancelled Date" property="cancelled_date" [sortable]="true"></data-table-column>
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <div class="d-flex align-items-center justify-content-between">
-          <a href="javascript:void(0)" class="edit">
+        <div class="d-flex align-items-center">
+          <a href="javascript:void(0)" class="edit me-3">
             <i class="fa fa-eye"></i>
           </a>
         </div>
@@ -41,20 +41,4 @@
     </data-table-column>
   </app-table>
 </ng-container>
-
-
-<!--<div class="py-4">-->
-<!--  <h3>Orders</h3>-->
-<!--</div>-->
-
-<!--<div class="card p-3">-->
-<!--  <div class="card-body">-->
-<!--    <div class="table-responsive">-->
-
-<!--      <table datatable [dtOptions]="dtOptions" class="table table-bordered table-striped">-->
-<!--      </table>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="divider"></div>-->
-<!--</div>-->
 
