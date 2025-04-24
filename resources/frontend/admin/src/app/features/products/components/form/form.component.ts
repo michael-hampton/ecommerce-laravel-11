@@ -54,6 +54,12 @@ export class FormComponent extends ModalComponent implements OnInit {
       }
     })
 
+    this._formStore.files$.subscribe(result => {
+      this.form.patchValue({
+        imagesSource: result
+      });
+    });
+
     if (this.formData?.id) {
       this.patchForm();
     }
@@ -84,7 +90,7 @@ export class FormComponent extends ModalComponent implements OnInit {
         stock_status: this.form.value.stock_status,
         featured: this.form.value.featured === 'yes' ? 1 : 0,
         seller_id: Number(user.payload.id),
-        images: ''
+        images: this.form.value.imagesSource
       } as Product;
 
       if (file) {
@@ -96,11 +102,11 @@ export class FormComponent extends ModalComponent implements OnInit {
       }
 
       model.attributes = this.attributeValues.map((result: AttributeValue) => {
-          return {
-            attribute_id: result.attribute_id,
-            attribute_value_id: result.id,
-            selected: this.form.value[`attribute-${result.id}`] === true
-          }
+        return {
+          attribute_id: result.attribute_id,
+          attribute_value_id: result.id,
+          selected: this.form.value[`attribute-${result.id}`] === true
+        }
       });
 
       this._formStore.saveData(model).subscribe(result => {
@@ -133,6 +139,7 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
 
     this._formStore.updateImagePreview(this.formData.image)
+    this._formStore.updateImageGallery(this.formData.images)
   }
 
   initializeForm() {
@@ -152,6 +159,8 @@ export class FormComponent extends ModalComponent implements OnInit {
       stock_status: new FormControl('', [Validators.required]),
       featured: new FormControl('', [Validators.required]),
       image: new FormControl(''),
+      images: new FormControl(''),
+      imagesSource: new FormControl('')
     })
   }
 

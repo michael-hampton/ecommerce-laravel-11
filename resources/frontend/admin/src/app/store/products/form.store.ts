@@ -14,14 +14,18 @@ export interface ProductFormState {
   imagePreview: string;
   currentFile?: File;
   subcategories: Category[],
-  grandchildren: Category[]
+  grandchildren: Category[],
+  selectedFiles?: FileList;
+  previews?: string[];
 }
 
 const defaultState: ProductFormState = {
   imagePreview: '',
   currentFile: undefined,
   subcategories: [],
-  grandchildren: []
+  grandchildren: [],
+  previews: []
+
 };
 
 @Injectable({
@@ -33,10 +37,13 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
   }
 
   readonly file$ = this.select(state => state.currentFile);
+  readonly files$ = this.select(state => state.selectedFiles);
   readonly image$ = this.select(({imagePreview}) => imagePreview);
+  readonly galleryImages$ = this.select(({previews}) => previews);
 
   vm$ = this.select(state => ({
     imagePreview: state.imagePreview,
+    selectedFiles: state.selectedFiles
   }))
 
   saveData = (payload: Partial<Product>) => {
@@ -111,7 +118,33 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
     }
   }
 
+  bulkUpload(event: any): void {
+    const selectedFiles = event.target.files
+    this.patchState({selectedFiles: selectedFiles})
+
+    let previews = [];
+    if (selectedFiles && selectedFiles[0]) {
+      const numberOfFiles = selectedFiles.length;
+      for (let i = 0; i < numberOfFiles; i++) {
+        const reader = new FileReader();
+
+        reader.onload = (e: any) => {
+          console.log(e.target.result);
+          previews.push(e.target.result);
+        };
+
+        reader.readAsDataURL(selectedFiles[i]);
+      }
+
+      this.patchState({previews: previews})
+    }
+  }
+
   updateImagePreview(imagePreview: string) {
     this.patchState({imagePreview: imagePreview})
+  }
+
+  updateImageGallery(images: string[]) {
+    this.patchState({previews: images})
   }
 }

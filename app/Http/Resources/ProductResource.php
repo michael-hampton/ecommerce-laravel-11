@@ -19,6 +19,9 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'image' => asset('images/products') . '/' . $this->image,
+            'images' => collect(explode(',', $this->images))->map(function ($image) {
+                return asset('images/products') . '/' . $image;
+            }),
             'category' => $this->category,
             'brand' => $this->brand,
             'short_description' => $this->short_description,
