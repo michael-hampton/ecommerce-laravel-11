@@ -20,7 +20,6 @@ export class SettingPageComponent {
     this.initForm();
 
     this._store.getData(1).subscribe((result: Seller) => {
-      alert('here')
       this.form?.patchValue({
         id: result.id,
         name: result.name,
@@ -55,7 +54,8 @@ export class SettingPageComponent {
         zip: this.form.value.zip,
         biography: this.form.value.bio,
         active: true,
-        profile_picture: this.form.value.image
+        profile_picture: this.form.value.image,
+        id: this.form.value.id
       } as Seller;
 
       console.log('model', model)
@@ -68,6 +68,7 @@ export class SettingPageComponent {
 
   initForm() {
     this.form = this.fb.group({
+      id: new FormControl(null),
       name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.email]),
       phone: new FormControl('', [Validators.required]),

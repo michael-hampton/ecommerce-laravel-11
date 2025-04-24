@@ -5,11 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\IUserRepository;
+use App\Services\Interfaces\ISellerService;
 use Illuminate\Http\Request;
 
 class SellerController extends Controller
 {
-    function __construct(private ISellerRepository $sellerRepository, private IUserRepository $userRepository)
+    function __construct(
+        private ISellerRepository $sellerRepository,
+        private IUserRepository $userRepository,
+        private ISellerService $sellerService
+    )
     {
 
     }
@@ -27,7 +32,9 @@ class SellerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $result = $this->sellerService->createSeller($request->all());
+
+        return response()->json($result);
     }
 
     /**
@@ -49,7 +56,9 @@ class SellerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $result = $this->sellerService->updateSeller($request->all(), $id);
+
+        return response()->json($result);
     }
 
     /**
@@ -57,6 +66,8 @@ class SellerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $result = $this->sellerService->deleteSeller($id);
+
+        return response()->json($result);
     }
 }

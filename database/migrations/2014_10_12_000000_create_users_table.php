@@ -13,16 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+        Schema::table('users', function (Blueprint $table) {
             $table->string('mobile')->unique();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('utype')->default('USR')->comment('ADM for Admin User USR For user');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->string('utype')->default('USR')->comment('ADM for Admin User USR For user SUPER For Super Admin');
         });
     }
 

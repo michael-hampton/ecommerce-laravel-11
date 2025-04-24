@@ -17,7 +17,6 @@ class AttributeService implements IAttributeService
 
 
     public function createAttribute(array $data) {
-
         $this->repository->create($data);
     }
 

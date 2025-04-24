@@ -38,10 +38,12 @@ use App\Services\Interfaces\ICategoryService;
 use App\Services\Interfaces\ICouponService;
 use App\Services\Interfaces\IOrderService;
 use App\Services\Interfaces\IProductService;
+use App\Services\Interfaces\ISellerService;
 use App\Services\Interfaces\ISlideService;
 use App\Services\Interfaces\IUserService;
 use App\Services\OrderService;
 use App\Services\ProductService;
+use App\Services\SellerService;
 use App\Services\SlideService;
 use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
@@ -79,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         ISlideService::class => SlideService::class,
         IAttributeService::class => AttributeService::class,
         IAttributeValueService::class => AttributeValueService::class,
+        ISellerService::class => SellerService::class,
     ];
 
     /**
