@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {formatDate} from '@angular/common';
-import {Order} from '../types/orders/order';
-import {FilterModel, PagedData} from '../types/filter.model';
-import {Category} from '../types/categories/category';
-import {User} from '../types/users/user';
+import {FilterModel} from '../types/filter.model';
 import {BaseHttpClient} from './base.http-client';
+import {OrderDetail} from '../types/orders/order-detail';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 export const MODULE = 'orders'
 
@@ -15,7 +13,8 @@ export const MODULE = 'orders'
 })
 export class OrderApi {
 
-  constructor(private baseHttpClient: BaseHttpClient) { }
+  constructor(private baseHttpClient: BaseHttpClient, private httpClient: HttpClient) {
+  }
 
   delete(id: number) {
     alert('deleting')
@@ -23,7 +22,19 @@ export class OrderApi {
     //return this.httpclient.get(`${BASE_URL}/${MODULE}`);
   }
 
-  getData(filter: FilterModel): Observable<any>{
+  getData(filter: FilterModel): Observable<any> {
     return this.baseHttpClient.get(filter, MODULE);
+  }
+
+  getOrderDetails(orderId: number) {
+    return this.httpClient.get(`${environment.apiUrl}/orders/${orderId}`)
+  }
+
+  saveOrderDetailStatus(orderItemId: number, payload: any) {
+   return this.httpClient.put(`${environment.apiUrl}/orders/details/${orderItemId}`, payload)
+  }
+
+  update(id: number, payload: any) {
+   return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload)
   }
 }

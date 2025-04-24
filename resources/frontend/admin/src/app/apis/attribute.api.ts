@@ -1,10 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {Attribute} from '../types/attributes/attribute';
-import {FilterModel, PagedData} from '../types/filter.model';
-import {Category} from '../types/categories/category';
-import {User} from '../types/users/user';
+import {FilterModel} from '../types/filter.model';
 import {BaseHttpClient} from './base.http-client';
 import {environment} from '../../environments/environment';
 

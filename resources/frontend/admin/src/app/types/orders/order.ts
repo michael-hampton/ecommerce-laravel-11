@@ -1,4 +1,6 @@
 import {User} from '../users/user';
+import {Address} from './address';
+import {Customer} from './customer';
 
 export type Order = {
   id: number,
@@ -16,21 +18,11 @@ export type Order = {
   review_status: string,
   total: number,
   commission: number,
-  tracking_number: number,
+  tracking_number: string,
   courier_name: string
-  customer?: User
+  customer?: Customer
   order_date: string
   number_of_items: number
   delivered_date: string
   address: Address
-}
-
-export type Address = {
-  phone: string
-  address1: string
-  address2: string
-  zip: string
-  state: string
-  city: string
-  country: string
 }

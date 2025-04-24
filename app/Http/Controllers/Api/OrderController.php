@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Http\Resources\CouponResource;
+use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
+use App\Models\Order;
+use App\Models\OrderLog;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Interfaces\IOrderService;
 use Illuminate\Http\Request;
@@ -20,9 +23,8 @@ class OrderController extends ApiController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -34,25 +36,6 @@ class OrderController extends ApiController
         );
 
         return $this->sendPaginatedResponse($orders, OrderResource::collection($orders));
-    }
-
-    public function orderDetails(int $orderId)
-    {
-        $items = $this->orderRepository->getOrderDetails($orderId, auth()->id());
-        $order = $this->orderRepository->getById($orderId);
-        $transaction = $order->transaction()->where('seller_id', auth()->id())->first();
-
-        return view('admin.orders.details', compact('items', 'order', 'transaction'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -67,44 +50,40 @@ class OrderController extends ApiController
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
+     * @param int $orderId
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(int $orderId)
     {
-        //
+        $order = Order::with(['logs', 'transaction', 'orderItems', 'customer', 'address'])->whereId($orderId)->firstOrFail();
+
+        $resource = OrderDetailResource::make($order);
+
+        return response()->json($resource);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response
+     * @param UpdateOrderStatusRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateOrderStatusRequest $request, $id)
     {
-        $this->orderService->updateOrder($request->except(['_token', '_method']), $id);
-        return back()->with('success', 'Order updated successfully');
+        $result = $this->orderService->updateOrder($request->except(['_token', '_method']), $id);
+
+        return response()->json($result);
     }
 
+    /**
+     * @param UpdateOrderStatusRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateItemDetails(UpdateOrderStatusRequest $request, $id)
     {
-        $this->orderService->updateOrderLine($request->except(['_token', '_method']), $id);
-        return back()->with('success', 'Order Line updated successfully');
+        $result = $this->orderService->updateOrderLine($request->except(['_token', '_method']), $id);
+
+        return response()->json($result);
     }
 
     /**

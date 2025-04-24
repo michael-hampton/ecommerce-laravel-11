@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\OrderItem;
 use App\Models\OrderLog;
 use App\Models\Shipping;
+use App\Models\Transaction;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
 use App\Services\Interfaces\IOrderService;
@@ -206,16 +207,15 @@ class OrderService implements IOrderService
             $orderData['courier_name'] = $data['courier_name'];
         }
 
-        $orderItem = OrderItem::whereId($id)->first();
+        $orderItem = OrderItem::with('order')->whereId($id)->first();
         $order = $orderItem->order;
 
         $orderItem->update($orderData);
 
         if ($data['status'] === 'delivered') {
-            $order = $this->repository->getById($id);
-            $transaction = $order->transaction->where('seller_id', \auth()->id())->first();
-            $transaction->payment_status = $data['status'] === 'delivered' ? 'approved' : 'refunded';
-            $transaction->save();
+            $transactions = $order->transaction->where('seller_id', \auth('sanctum')->user()->id);
+            //$transaction->payment_status = $data['status'] === 'delivered' ? 'approved' : 'refunded';
+            Transaction::whereIn('id', $transactions->pluck('id'))->update(['payment_status' => $data['status'] === 'delivered' ? 'approved' : 'refunded']);
         }
 
         $email = $order->customer->email;
@@ -238,6 +238,8 @@ class OrderService implements IOrderService
             'tracking_number' => $data['tracking_number'],
             'status_to' => $data['status'],
         ]);
+
+        return $orderItem;
     }
 
     public function deleteOrder(array $data)

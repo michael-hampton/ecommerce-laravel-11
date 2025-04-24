@@ -1,0 +1,174 @@
+<div class="p-4" *ngIf="vm$ | async as vm">
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="card col-lg-6 me-3">
+      <div class="card-header">Order Totals</div>
+      <div class="card-body">
+        <ul class="list-unstyled">
+          <li><span class="fw-bold">Shipping</span> {{ vm.order.totals.shipping }}</li>
+          <li><span class="fw-bold">Discount</span> {{ vm.order.totals.discount }}</li>
+          <li><span class="fw-bold">Total</span> {{ vm.order.totals.total }}</li>
+          <li><span class="fw-bold">Status</span> {{ vm.order.totals.payment_status }}</li>
+          <li><span class="fw-bold">Payment Method</span> {{ vm.order.totals.payment_method }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card col-lg-6 me-3">
+      <div class="card-header">Customer Details</div>
+      <div class="card-body">
+        <ul class="list-unstyled">
+          <li><span class="fw-bold">Name</span> {{ vm.order.customer.name }}</li>
+          <li><span class="fw-bold">Email</span> {{ vm.order.customer.email }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-between">
+    <div class="card col-lg-6 me-3">
+      <div class="card-header">Shipping Address</div>
+      <div class="card-body">
+        <ul class="list-unstyled">
+          <li>{{ vm.order.address.name }}</li>
+          <li>{{ vm.order.address.address1 }} {{ vm.order.address.address2 }}</li>
+          <li>{{ vm.order.address.city }}, {{ vm.order.address.state }}</li>
+          <li>{{ vm.order.address.zip }}</li>
+          <li>{{ vm.order.address.country }}</li>
+          <li>Phone : {{ vm.order.address.phone }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card col-lg-6">
+      <div class="card-header">History</div>
+      <div class="card-body">
+        <form [formGroup]="orderStatusForm">
+          <div class="row">
+            <div class="col-md-3">
+              <label class="form-label">Status</label>
+              <select id="status" name="status" class="form-control" formControlName="status">
+                <option *ngFor="let status of OrderStatusEnum | keyvalue" [value]="status.key">{{ status.value }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-sm-3">
+              <label class="form-label">Tracking No</label>
+              <input type="text" class="form-control" name="tracking_number"
+                     formControlName="tracking_number">
+            </div>
+
+            <div class="col-sm-4">
+              <label class="form-label">Courier</label>
+              <input type="text" class="form-control" name="courier_name"
+                     formControlName="courier_name">
+            </div>
+
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-success" (click)="saveOrderForm()">Update</button>
+            </div>
+          </div>
+
+        </form>
+
+        <div style="max-height: 300px; overflow-y: auto">
+          <ul class="list-group mt-3">
+            <li *ngFor="let orderLog of vm.order.orderLogs"
+                class="list-group-item d-flex justify-content-between align-items-center">
+              Order {{ orderLog.status_to }}
+              <span>{{ formatDate(orderLog.created_at, 'dd/MM/yyyy HH:mm', 'en-US') }}</span>
+            </li>
+
+            @for (orderItem of vm.order.orderItems; track orderItem.id) {
+              <li *ngFor="let orderItemLog of orderItem.orderLogs"
+                  class="list-group-item d-flex justify-content-between align-items-center">
+                Order Item {{ orderItemLog.status_to }}
+                <span>{{ formatDate(orderItemLog.created_at, 'dd/MM/yyyy HH:mm', 'en-US') }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="wg-box">
+    <div class="flex items-center justify-between gap10 flex-wrap">
+      <div class="wg-filter flex-grow">
+        <h5>Ordered Items</h5>
+      </div>
+      <a class="tf-button style-1 w208" routerLink="/">Back</a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-bvm.ordered">
+        <thead>
+        <tr>
+          <th style="width: 35%">Name</th>
+          <th style="width: 10%" class="text-center">Price</th>
+          <th style="width: 10%" class="text-center">Quantity</th>
+          <th class="text-center">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let orderItem of vm.order.orderItems">
+          <td class="">
+            <div class="d-flex align-items-center justify-content-between">
+              <img style="width: 100px" src="{{orderItem.product.image}}" alt=""
+                   class="image">
+              <div>
+                <div class="fw-bold">
+                  <a href="#" target="_blank"
+                     class="body-title-2">{{ orderItem.product.name }}</a>
+                </div>
+                <ul class="list-unstyled">
+                  <li>Category: {{ orderItem.product.category.name }}</li>
+                  <li>Brand: {{ orderItem.product.brand.name }}</li>
+                  <li>SKU: {{ orderItem.product.SKU }}</li>
+                </ul>
+              </div>
+            </div>
+          </td>
+          <td class="text-center">{{ orderItem.price }}</td>
+          <td class="text-center">{{ orderItem.quantity }}</td>
+          <td>
+
+            <div class="row">
+              <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select name="status"
+                        class="form-control" (change)="handleOrderItemForm($event, orderItem.id)">
+                  <option *ngFor="let status of OrderStatusEnum | keyvalue" [value]="status.key"
+                          [selected]="orderItem.status === status.key">{{ status.value }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-sm-4" id="tracking-number-container">
+                <label class="form-label">Tracking No</label>
+                <input type="text" class="form-control"
+                       id="tracking_number" name="tracking_number" (keyup)="handleOrderItemForm($event, orderItem.id)"
+                       value="{{orderItem.tracking_number}}">
+              </div>
+
+              <div class="col-sm-4" id="courier-name-container">
+                <label class="form-label">Courier</label>
+                <input type="text" class="form-control"
+                       id="courier_name" name="courier_name" (keyup)="handleOrderItemForm($event, orderItem.id)"
+                       value="{{orderItem.courier_name}}">
+              </div>
+
+              <div class="col-md-2 mt-3">
+                <button type="button" class="btn btn-success" (click)="handleSaveOrderLineForm(orderItem.id)">Update
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

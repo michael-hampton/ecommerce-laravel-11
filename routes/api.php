@@ -1,8 +1,19 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\AttributeValueController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\LookupController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SellerController;
+use App\Http\Controllers\Api\SlideController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,56 +32,55 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.index');
-    Route::get('/profile', [\App\Http\Controllers\Admin\AdminController::class, 'profile'])->name('admin.profile');
-    Route::put('/profile/update', [\App\Http\Controllers\Admin\AdminController::class, 'updateProfile'])->name('admin.profile.update');
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+    Route::put('/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 
 
 //Brands
-    Route::apiResource('brands', \App\Http\Controllers\Api\BrandController::class);
+    Route::apiResource('brands', BrandController::class);
 // Categories
-    Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
+    Route::apiResource('categories', CategoryController::class);
 
 // products
-    Route::apiResource('products', \App\Http\Controllers\Api\ProductController::class);
-    Route::post('products/subcategories', [\App\Http\Controllers\Api\ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
+    Route::apiResource('products', ProductController::class);
+    Route::post('products/subcategories', [ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
 
 // users
-    Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
+    Route::apiResource('users', UserController::class);
 
-    Route::put('users/updateActive/{id}', [\App\Http\Controllers\Api\UserController::class, 'updateActive'])->name('admin.users.updateActive');
+    Route::put('users/updateActive/{id}', [UserController::class, 'updateActive'])->name('admin.users.updateActive');
 
 // slides
-    Route::apiResource('slides', \App\Http\Controllers\Api\SlideController::class);
+    Route::apiResource('slides', SlideController::class);
 
 
 //orders
-    Route::apiResource('orders', \App\Http\Controllers\Api\OrderController::class);
-    Route::get('orders/{orderId}/details', [\App\Http\Controllers\Api\OrderController::class, 'orderDetails'])->name('admin.orderDetails');
-    Route::put('orders/details/update/{orderItemId}', [\App\Http\Controllers\Api\OrderController::class, 'updateItemDetails'])->name('admin.orders.updateItemDetails');
+    Route::apiResource('orders', OrderController::class);
+    Route::put('orders/details/{orderItemId}', [OrderController::class, 'updateItemDetails'])->name('admin.orders.updateItemDetails');
 
 //attributes
-    Route::apiResource('attributes', \App\Http\Controllers\Api\AttributeController::class);
+    Route::apiResource('attributes', AttributeController::class);
 
     //lookup
-    Route::get('lookup/orders', [\App\Http\Controllers\Api\LookupController::class, 'getOrders'])->name('admin.dashboard');
-    Route::get('lookup/categories/{parentOnly?}', [\App\Http\Controllers\Api\LookupController::class, 'getCategories'])->name('admin.dashboard');
-    Route::get('lookup/brands', [\App\Http\Controllers\Api\LookupController::class, 'getBrands'])->name('admin.dashboard');
-    Route::get('lookup/attributes', [\App\Http\Controllers\Api\LookupController::class, 'getAttributes'])->name('admin.dashboard');
-    Route::get('lookup/subcategories/{categoryId}', [\App\Http\Controllers\Api\LookupController::class, 'getSubcategories'])->name('admin.dashboard');
+    Route::get('lookup/orders', [LookupController::class, 'getOrders'])->name('admin.dashboard');
+    Route::get('lookup/categories/{parentOnly?}', [LookupController::class, 'getCategories'])->name('admin.dashboard');
+    Route::get('lookup/brands', [LookupController::class, 'getBrands'])->name('admin.dashboard');
+    Route::get('lookup/attributes', [LookupController::class, 'getAttributes'])->name('admin.dashboard');
+    Route::get('lookup/subcategories/{categoryId}', [LookupController::class, 'getSubcategories'])->name('admin.dashboard');
 
     // dashboard
-    Route::get('dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'get'])->name('admin.dashboard');
+    Route::get('dashboard', [DashboardController::class, 'get'])->name('admin.dashboard');
 
 //attribute values
-    Route::apiResource('attribute-values', \App\Http\Controllers\Api\AttributeValueController::class);
+    Route::apiResource('attribute-values', AttributeValueController::class);
 
 
 //coupons
-    Route::apiResource('coupons', \App\Http\Controllers\Api\CouponController::class);
+    Route::apiResource('coupons', CouponController::class);
 
     //seller
-    Route::apiResource('sellers', \App\Http\Controllers\Api\SellerController::class);
+    Route::apiResource('sellers', SellerController::class);
 
 });
 

@@ -8,12 +8,14 @@ import {DataTablesModule} from 'angular-datatables';
 import {SharedModule} from '../../shared/shared.module';
 import {ModalComponent} from '../../shared/components/modal/modal.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import { OrderDetailsComponent } from './components/order-details/order-details.component';
 
 
 @NgModule({
   declarations: [
     FormComponent,
-    OrderListComponent
+    OrderListComponent,
+    OrderDetailsComponent
   ],
   imports: [
     CommonModule,

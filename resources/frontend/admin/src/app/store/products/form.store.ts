@@ -81,21 +81,6 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
     );
   });
 
-  readonly getGrandChildrenCategories = this.effect<number>((categoryId) => {
-    return categoryId.pipe(
-      switchMap(categoryId =>
-        this._lookupService.getSubcategories(categoryId).pipe(
-          tapResponse({
-            next: (subcategories) => this.patchState({ grandchildren: subcategories as Category[] }),
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setError(UiError(error))
-            },
-          })
-        )
-      )
-    );
-  });
-
   selectFile(event: any): void {
     this.patchState({imagePreview: ''})
     const selectedFiles = event.target.files;
