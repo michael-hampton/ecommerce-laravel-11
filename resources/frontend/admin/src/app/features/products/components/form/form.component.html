@@ -21,19 +21,20 @@
                     <input class="form-control" type="text" placeholder="Enter product slug" name="slug"
                            formControlName="slug">
                   </div>
-                  <app-category-selector formControlName="category_id" [displayGrandchildren]="true" [disableGrandchildren]="false" ></app-category-selector>
+                  <app-category-selector formControlName="category_id" [displayGrandchildren]="true"
+                                         [disableGrandchildren]="false"></app-category-selector>
 
-<!--                  <div class="col-md-6">-->
-<!--                    <label for="inputPassword4" class="form-label">Subcategory</label>-->
-<!--                    <select class="form-control" id="subcategoryDropdown" name="subcategory_id"-->
-<!--                            formControlName="subcategory_id">-->
-<!--                      <option value="">Choose Subcategory</option>-->
-<!--                      <option *ngFor="let subcategory of vm.subcategories"-->
-<!--                              [value]="subcategory.id">-->
-<!--                        {{ subcategory.name }}-->
-<!--                      </option>-->
-<!--                    </select>-->
-<!--                  </div>-->
+                  <!--                  <div class="col-md-6">-->
+                  <!--                    <label for="inputPassword4" class="form-label">Subcategory</label>-->
+                  <!--                    <select class="form-control" id="subcategoryDropdown" name="subcategory_id"-->
+                  <!--                            formControlName="subcategory_id">-->
+                  <!--                      <option value="">Choose Subcategory</option>-->
+                  <!--                      <option *ngFor="let subcategory of vm.subcategories"-->
+                  <!--                              [value]="subcategory.id">-->
+                  <!--                        {{ subcategory.name }}-->
+                  <!--                      </option>-->
+                  <!--                    </select>-->
+                  <!--                  </div>-->
 
                   <div class="col-12">
                     <label for="inputAddress" class="form-label">Brand</label>
@@ -80,10 +81,7 @@
                            data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                           <div class="form-check" *ngFor="let attributeValue of attribute.attribute_values">
-                            <input class="form-check-input attribute-checkbox" type="checkbox"
-                                   value="{{attributeValue.id}}"
-                                   name="attribute_values[{{attribute.id}}]"
-                                   id="{{attributeValue.id}}">
+                            <input class="form-check-input attribute-checkbox" type="checkbox" [formControlName]="'attribute-'+attributeValue.id"/>
                             <label class="form-check-label" for="flexCheckDefault">
                               {{ attributeValue.name }}
                             </label>
@@ -104,7 +102,7 @@
                     <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
                     <div class="upload-image flex-grow" *ngIf="formVm$ | async as formVm">
                       <div *ngIf="_formStore.image$ | async as image" class="item" id="imgpreview">
-                        <img [src]="image" class="effect8" alt="">
+                        <img style="width: 220px" [src]="image" class="effect8" alt="">
                       </div>
                       <div id="upload-file" class="item up-load">
                         <label class="uploadfile" for="myFile">
@@ -159,14 +157,18 @@
                     <label for="inputEmail4" class="form-label">Stock</label>
                     <select class="form-control" name="stock_status" formControlName="stock_status">
                       <option value="">Select Option</option>
-                      <option *ngFor="let stock_status of StockStatus | keyvalue" value="{{stock_status.key}}">{{stock_status.value}}</option>
+                      <option *ngFor="let stock_status of StockStatus | keyvalue"
+                              value="{{stock_status.key}}">{{ stock_status.value }}
+                      </option>
                     </select>
                   </div>
                   <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Featured</label>
                     <select class="form-control" name="featured" id="featured" formControlName="featured">
                       <option value="">Select Option</option>
-                      <option *ngFor="let featured of FeaturedEnum | keyvalue" value="{{featured.key}}">{{featured.value}}</option>
+                      <option *ngFor="let featured of FeaturedEnum | keyvalue"
+                              value="{{featured.key}}">{{ featured.value }}
+                      </option>
                     </select>
                   </div>
                 </div>

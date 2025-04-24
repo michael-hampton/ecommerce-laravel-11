@@ -33,8 +33,11 @@ export class BaseHttpClient
     );
   }
 
-  getFormData(object: any): FormData  {
-    const formData = new FormData();
+  getFormData(object: any, formData: FormData | undefined = undefined): FormData  {
+    if(!formData) {
+      formData = new FormData();
+    }
+
     Object.keys(object).forEach(key => formData.append(key, object[key]));
     return formData;
   }

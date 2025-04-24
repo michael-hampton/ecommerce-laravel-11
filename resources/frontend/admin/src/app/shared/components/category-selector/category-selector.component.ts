@@ -43,7 +43,6 @@ export class CategorySelectorComponent<T> extends ControlValueAccessorDirective<
     });
   }
   hasChildren(categoryId: number) {
-    console.log('chilsren', this.children, categoryId)
     return !!(this.children && this.children[categoryId])
   }
 

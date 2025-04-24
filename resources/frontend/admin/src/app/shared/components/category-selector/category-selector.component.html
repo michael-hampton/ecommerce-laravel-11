@@ -3,7 +3,7 @@
   <select [formControl]="control" class="form-select" [id]="inputId" *ngIf="control">
     <option value="">None</option>
     @for (category of vm.categories; track category.id) {
-      <option class="fw-bold">{{ category.name }}</option>
+      <option class="fw-bold" [value]="category.id">{{ category.name }}</option>
 
       @for (child of getChildren(category.id); track child.id) {
         <option class="child-indented"

@@ -43,7 +43,8 @@ export class LookupStore extends ComponentStore<GlobalState> {
     super(defaultState);
   }
 
-  private readonly categories$ = this.select((state) => state.categories);
+  readonly attributes$ = this.select((state) => state.attributes);
+
   vm$ = this.select(state => ({
     categories: state.categories,
     brands: state.brands,

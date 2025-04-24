@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helper;
+use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
@@ -11,6 +12,7 @@ use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Interfaces\IProductService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ProductService implements IProductService
@@ -74,14 +76,15 @@ class ProductService implements IProductService
 
     private function saveAttributes(array $data, Product $product)
     {
-        $productAttributes = ProductAttribute::all()->keyBy('id');
+        $productAttributeValues = AttributeValue::all()->keyBy('id');
 
-        foreach ($data as $attribute_id => $attribute_value) {
-            $attr = $productAttributes->get($attribute_id);
+        foreach ($data as $attributeValueId) {
+
+            $attributeValue = $productAttributeValues->get($attributeValueId);
 
             $data = [
-                'product_attribute_id' => $attr->id,
-                'attribute_value_id' => $attribute_value,
+                'product_attribute_id' => $attributeValue->attribute_id,
+                'attribute_value_id' => $attributeValue->id,
                 'product_id' => $product->id,
             ];
 

@@ -8,6 +8,7 @@ import {Product} from "../../../../types/products/product";
 import {StockStatusEnum} from '../../../../types/products/stock-status.enum';
 import {FeaturedEnum} from '../../../../types/products/featured.enum';
 import {AuthService} from '../../../../core/auth/auth.service';
+import {AttributeValue} from '../../../../types/attribute-values/attribute-value';
 
 @Component({
   selector: 'app-form',
@@ -24,6 +25,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   _formStore = inject(ProductFormStore)
   formVm$ = this._formStore.vm$;
   private _authService = inject(AuthService)
+  private attributeValues: AttributeValue[] = [];
 
   public constructor(private fb: FormBuilder) {
     super();
@@ -39,6 +41,18 @@ export class FormComponent extends ModalComponent implements OnInit {
     ]);
 
     this.initializeForm();
+
+    this._lookupStore.attributes$.subscribe(result => {
+      this.attributeValues = result.map(x => x.attribute_values).flatMap(e => [...e])
+
+      if (this.attributeValues && this.attributeValues.length) {
+        this.attributeValues.forEach((result: AttributeValue) => {
+          const productAttribute = this.formData?.product_attributes && this.formData?.product_attributes.length ? this.formData.product_attributes.find(x => x.attribute_value_id === result.id) : false
+
+          this.form.addControl(`attribute-${result.id}`, new FormControl(!!productAttribute));
+        })
+      }
+    })
 
     if (this.formData?.id) {
       this.patchForm();
@@ -80,6 +94,14 @@ export class FormComponent extends ModalComponent implements OnInit {
       if (this.form.value.id) {
         model.id = this.form.value.id
       }
+
+      model.attributes = this.attributeValues.map((result: AttributeValue) => {
+          return {
+            attribute_id: result.attribute_id,
+            attribute_value_id: result.id,
+            selected: this.form.value[`attribute-${result.id}`] === true
+          }
+      });
 
       this._formStore.saveData(model).subscribe(result => {
         this.confirm();

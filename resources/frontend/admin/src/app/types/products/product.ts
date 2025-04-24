@@ -20,5 +20,19 @@ export type Product = {
   seller_id: number
   category?: Category
   brand?: Brand
-  has_stock?: boolean
+  has_stock?: boolean,
+  attributes?: SelectedAttributes[],
+  product_attributes?: ProductAttribute[]
+}
+
+export type SelectedAttributes = {
+  attribute_id: number,
+  attribute_value_id: number,
+  selected: boolean
+}
+
+export type ProductAttribute = {
+  id: number
+  product_attribute_id: number
+  attribute_value_id: number
 }
