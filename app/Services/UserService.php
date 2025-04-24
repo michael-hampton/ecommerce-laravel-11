@@ -61,9 +61,9 @@ class UserService implements IUserService
     {
         $user = $this->repository->getById($id);
 
-        if (File::exists(public_path('uploads/users/' . $user->image))) {
+        /*if (File::exists(public_path('uploads/users/' . $user->image))) {
             File::delete(public_path('uploads/users/' . $user->image));
-        }
+        }*/
 
         $this->repository->delete($id);
     }

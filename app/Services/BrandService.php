@@ -54,9 +54,9 @@ class BrandService implements IBrandService
     public function deleteBrand(int $id) {
         $brand = $this->repository->getById($id);
 
-        if(File::exists(public_path('images/brands/' . $brand->image))){
+        /*if(File::exists(public_path('images/brands/' . $brand->image))){
             File::delete(public_path('images/brands/' . $brand->image));
-        }
+        }*/
 
         $this->repository->delete($id);
     }

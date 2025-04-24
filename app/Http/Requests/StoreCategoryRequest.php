@@ -24,8 +24,8 @@ class StoreCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required|unique:brands,name',
-            'slug'=>'required|unique:brands,slug',
+            'name'=>'required|unique:categories,name',
+            'slug'=>'required|unique:categories,slug',
             'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }

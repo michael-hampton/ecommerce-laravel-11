@@ -157,9 +157,9 @@ class ProductService implements IProductService
     {
         $product = $this->repository->getById($id);
 
-        if (File::exists(public_path('images/products/' . $product->image))) {
+        /*if (File::exists(public_path('images/products/' . $product->image))) {
             File::delete(public_path('images/products/' . $product->image));
-        }
+        }*/
 
         $this->repository->delete($id);
     }

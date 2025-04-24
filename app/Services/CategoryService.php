@@ -65,9 +65,9 @@ class CategoryService implements ICategoryService
     {
         $category = $this->repository->getById($id);
 
-        if (File::exists(public_path('images/categories/' . $category->image))) {
+        /*if (File::exists(public_path('images/categories/' . $category->image))) {
             File::delete(public_path('images/categories/' . $category->image));
-        }
+        }*/
 
         $this->repository->delete($id);
     }
