@@ -16,7 +16,7 @@ interface IBaseRepository
      * @param  string $orderBy column to sort by
      * @param  string $sort sort direction
      */
-    public function getAll(string $columns = null, string $orderBy = 'created_at', string $sort = 'desc');
+    public function getAll(string $columns = null, string $orderBy = 'created_at', string $sort = 'desc', array $whereConditions = []);
 
     /**
      * Get paged items

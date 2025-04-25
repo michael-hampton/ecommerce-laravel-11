@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Models\User;
+use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Repositories\Interfaces\ISlideRepository;
@@ -17,7 +18,8 @@ class HomeController extends Controller
     public function __construct(
         private ICategoryRepository $categoryRepository,
         private IProductRepository  $productRepository,
-        private ISlideRepository    $slideRepository)
+        private ISlideRepository    $slideRepository,
+        private IBrandRepository    $brandRepository)
     {
 
     }

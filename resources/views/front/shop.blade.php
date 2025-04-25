@@ -243,7 +243,7 @@
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" id="{{$brand->name}}"
                                        value="{{$brand->id}}" name="brands"
-                                       @if(in_array($brand->id, explode(',', $brand))) checked="checked" @endif>
+                                       @if(in_array($brand->id, explode(',', $brandId))) checked="checked" @endif>
                                 <label class="form-check-label" for="{{$brand->name}}">
                                     {{$brand->name}}
                                    ({{$brand->products->count()}})

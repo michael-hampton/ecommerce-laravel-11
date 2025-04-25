@@ -30,6 +30,10 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository
             $query->where('name', 'like', "%{$searchParams['name']}%");
         });
 
+        $query->when(!empty($searchParams['menu_status']), function (Builder $query) use ($searchParams) {
+            $query->where('menu_status', $searchParams['menu_status']);
+        });
+
         return $query;
     }
 }

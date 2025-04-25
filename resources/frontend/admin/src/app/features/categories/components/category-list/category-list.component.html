@@ -2,7 +2,7 @@
   <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Categories" (reload)="reload()"
              [sortBy]="vm.filter.sortBy" [sortAsc]="vm.filter.sortAsc"
              [itemCount]="vm.data.total" [items]="vm.data.data"
-             (changePage)="pageChanged($event)">
+             (changePage)="pageChanged($event)" [page]="vm.filter.page">
     <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
     <data-table-column header="Name" property="name" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
