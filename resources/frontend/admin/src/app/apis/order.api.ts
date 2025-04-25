@@ -30,6 +30,10 @@ export class OrderApi {
     return this.httpClient.get(`${environment.apiUrl}/orders/${orderId}`)
   }
 
+  getOrderLogs(orderId: number) {
+    return this.httpClient.get(`${environment.apiUrl}/orders/logs/${orderId}`)
+  }
+
   saveOrderDetailStatus(orderItemId: number, payload: any) {
    return this.httpClient.put(`${environment.apiUrl}/orders/details/${orderItemId}`, payload)
   }

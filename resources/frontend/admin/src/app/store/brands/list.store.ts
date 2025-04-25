@@ -45,7 +45,7 @@ export class BrandStore extends FilterStore<Brand> {
               this._globalStore.setLoading(false)
               this._globalStore.setError(UiError(error))
             },
-            finalize: () => this._globalStore.setLoading(false),
+            complete: () => this._globalStore.setLoading(false),
           })
         )
       )

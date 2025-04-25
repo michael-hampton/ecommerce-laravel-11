@@ -1,5 +1,5 @@
 export enum OrderStatusEnum {
-  'ordered' = 'Ordered',
-  'delivered' = 'Delivered',
-  'cancelled' = 'Cancelled'
+  'Ordered' = 'ordered',
+  'Delivered' = 'delivered',
+  'Cancelled' = 'cancelled'
 }

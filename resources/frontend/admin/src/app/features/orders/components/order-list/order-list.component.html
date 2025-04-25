@@ -26,14 +26,26 @@
 <!--    <data-table-column header="Tax" property="tax" [sortable]="true"></data-table-column>-->
     <data-table-column header="Total" property="total" [sortable]="true"></data-table-column>
     <data-table-column header="Status" property="status" [sortable]="true"></data-table-column>
-    <data-table-column header="Order Date" property="order_date" [sortable]="true"></data-table-column>
+    <data-table-column header="Order Date" property="order_date" [sortable]="true">
+      <ng-template #dataTableCell let-item="item">
+        {{item.order_date | date}}
+      </ng-template>
+    </data-table-column>
     <data-table-column header="No of Items" property="number_of_items" [sortable]="true"></data-table-column>
-    <data-table-column header="Delivered Date" property="delivered_date" [sortable]="true"></data-table-column>
-    <data-table-column header="Cancelled Date" property="cancelled_date" [sortable]="true"></data-table-column>
+    <data-table-column header="Delivered Date" property="delivered_date" [sortable]="true">
+      <ng-template #dataTableCell let-item="item">
+        {{item.delivered_date | date}}
+      </ng-template>
+    </data-table-column>
+    <data-table-column header="Cancelled Date" property="cancelled_date" [sortable]="true">
+      <ng-template #dataTableCell let-item="item">
+        {{item.cancelled_date | date}}
+      </ng-template>
+    </data-table-column>
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
         <div class="d-flex align-items-center">
-          <a href="javascript:void(0)" class="edit me-3">
+          <a href="javascript:void(0)" class="edit me-3" [routerLink]="['details', item.id]">
             <i class="fa fa-eye"></i>
           </a>
         </div>

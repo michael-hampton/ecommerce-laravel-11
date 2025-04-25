@@ -87,6 +87,20 @@ class OrderController extends ApiController
     }
 
     /**
+     * @param int $orderId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logs(int $orderId) {
+        $order = Order::with(['orderItems', 'logs'])->where('id', $orderId)->firstOrFail();
+
+        $orderLogs = $order->logs->sortByDesc('created_at');
+
+        $orderItemLogs = $order->orderItems->map(fn($item) => $item->logs)->flatten()->sortByDesc('created_at');
+
+        return \response()->json($orderLogs->mergeRecursive($orderItemLogs), 200);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param int $id

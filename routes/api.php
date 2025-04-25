@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
 //orders
     Route::apiResource('orders', OrderController::class);
     Route::put('orders/details/{orderItemId}', [OrderController::class, 'updateItemDetails'])->name('admin.orders.updateItemDetails');
+    Route::get('orders/logs/{orderId}', [OrderController::class, 'logs'])->name('admin.orders.updateItemDetails');
 
 //attributes
     Route::apiResource('attributes', AttributeController::class);

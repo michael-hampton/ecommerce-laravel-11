@@ -7,6 +7,7 @@ import {FeaturedEnum} from '../../../../types/products/featured.enum';
 import {OrderStatusEnum} from '../../../../types/orders/orderStatus.enum';
 import {OrderDetail} from '../../../../types/orders/order-detail';
 import {formatDate} from '@angular/common';
+import {OrderItem} from '../../../../types/orders/orderItem';
 
 @Component({
   selector: 'app-order-details',
@@ -23,6 +24,7 @@ export class OrderDetailsComponent implements OnInit {
   private orderId: number;
   private activatedRoute = inject(ActivatedRoute)
   private orderLines: any;
+  protected readonly OrderStatusEnum = OrderStatusEnum;
 
   ngOnInit(): void {
     this.initializeForm()
@@ -32,12 +34,12 @@ export class OrderDetailsComponent implements OnInit {
     })
 
     this._store.getOrderDetails(this.orderId).subscribe((result: OrderDetail) => {
-      this.orderLines = result.orderItems.map(x => {
+      this.orderLines = result.orderItems.map((x: OrderItem) => {
         return {
           id: x.id,
           courier_name: x.courier_name,
           tracking_number: x.tracking_number,
-          status: x.status
+          status: !x.status || x.status === '0' ? OrderStatusEnum['Ordered'] : x.status
         }
       })
       this.patchForm(result)
@@ -69,7 +71,7 @@ export class OrderDetailsComponent implements OnInit {
     }
 
     this._store.saveOrderStatus(obj).subscribe(result => {
-
+      this._store.getOrderLogs(obj.orderId).subscribe();
     })
   }
 
@@ -85,12 +87,7 @@ export class OrderDetailsComponent implements OnInit {
     const el = this.orderLines.find(x => x.id === id)
 
     this._store.saveOrderLineStatus(el).subscribe(result => {
-
+      this._store.getOrderLogs(this.orderId).subscribe();
     })
   }
-
-
-  protected readonly FeaturedEnum = FeaturedEnum;
-  protected readonly OrderStatusEnum = OrderStatusEnum;
-  protected readonly formatDate = formatDate;
 }
