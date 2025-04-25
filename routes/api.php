@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\LookupController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SellerController;
@@ -53,6 +54,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // slides
     Route::apiResource('slides', SlideController::class);
+
+    // messages
+    Route::apiResource('messages', MessageController::class);
 
 
 //orders

@@ -10,6 +10,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'messages',
+    loadChildren: () => import('./features/messages/messages.module').then(m => m.MessagesModule),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'attribute-values',
     loadChildren: () => import('./features/attribute-values/attribute-values.module').then(m => m.AttributeValuesModule),
     canActivate: [AuthGuard],

@@ -5,7 +5,6 @@ import {ModalComponent} from "../../../../shared/components/modal/modal.componen
 import {SlideFormStore} from "../../../../store/slides/form.store";
 import {Slide} from "../../../../types/slides/slide";
 import {firstValueFrom} from 'rxjs';
-import {SlideStore} from '../../../../store/slides/list.store';
 
 @Component({
   selector: 'app-form',

@@ -14,11 +14,13 @@ use App\Repositories\Interfaces\IAttributeValueRepository;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
+use App\Repositories\Interfaces\IMessageRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\ISlideRepository;
 use App\Repositories\Interfaces\IUserRepository;
+use App\Repositories\MessageRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\SellerRepository;
@@ -36,11 +38,13 @@ use App\Services\Interfaces\IAttributeValueService;
 use App\Services\Interfaces\IBrandService;
 use App\Services\Interfaces\ICategoryService;
 use App\Services\Interfaces\ICouponService;
+use App\Services\Interfaces\IMessageService;
 use App\Services\Interfaces\IOrderService;
 use App\Services\Interfaces\IProductService;
 use App\Services\Interfaces\ISellerService;
 use App\Services\Interfaces\ISlideService;
 use App\Services\Interfaces\IUserService;
+use App\Services\MessageService;
 use App\Services\OrderService;
 use App\Services\ProductService;
 use App\Services\SellerService;
@@ -65,6 +69,7 @@ class AppServiceProvider extends ServiceProvider
         ISlideRepository::class => SlideRepository::class,
         IAttributeRepository::class => AttributeRepository::class,
         IAttributeValueRepository::class => AttributeValueRepository::class,
+        IMessageRepository::class => MessageRepository::class,
     ];
 
     /**
@@ -82,6 +87,7 @@ class AppServiceProvider extends ServiceProvider
         IAttributeService::class => AttributeService::class,
         IAttributeValueService::class => AttributeValueService::class,
         ISellerService::class => SellerService::class,
+        IMessageService::class => MessageService::class,
     ];
 
     /**
