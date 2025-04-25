@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('image')->nullable();
+            $table->text("description")->nullable();
+            $table->string("meta_title")->nullable();
+            $table->string("meta_description")->nullable();
+            $table->string("meta_keywords")->nullable();
             $table->timestamps();
         });
     }

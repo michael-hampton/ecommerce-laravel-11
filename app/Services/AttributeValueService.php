@@ -17,15 +17,14 @@ class AttributeValueService implements IAttributeValueService
 
 
     public function createAttributeValue(array $data) {
-        $this->repository->create($data);
+        return $this->repository->create($data);
     }
 
     public function updateAttributeValue(array $data, int $id) {
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteAttributeValue(int $id) {
-
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

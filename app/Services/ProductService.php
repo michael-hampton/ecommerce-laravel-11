@@ -72,6 +72,8 @@ class ProductService implements IProductService
         if (!empty($data['attribute_values'])) {
             $this->saveAttributes($data['attribute_values'], $product);
         }
+
+        return $product;
     }
 
     private function saveAttributes(array $data, Product $product)
@@ -151,6 +153,7 @@ class ProductService implements IProductService
             $this->saveAttributes($attributeValues, $product);
         }
 
+        return $product;
     }
 
     public function deleteProduct(int $id)
@@ -161,7 +164,7 @@ class ProductService implements IProductService
             File::delete(public_path('images/products/' . $product->image));
         }*/
 
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 
     private function updateSellerBalance(array $data)

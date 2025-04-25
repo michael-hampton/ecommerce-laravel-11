@@ -18,10 +18,10 @@ class MessageService implements IMessageService
     }
     public function updateMessage(array $data, int $id) {
 
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
     public function deleteMessage(int $id) {
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 
     public function createComment(array $data) {

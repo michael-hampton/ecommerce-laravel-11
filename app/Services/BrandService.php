@@ -16,6 +16,10 @@ class BrandService implements IBrandService
     }
 
 
+    /**
+     * @param array $data
+     * @return mixed
+     */
     public function createBrand(array $data) {
         $data['slug'] = Str::slug($data['name']);
         $filename = time() . '.' . $data['image']->getClientOriginalExtension();
@@ -25,7 +29,7 @@ class BrandService implements IBrandService
         Helper::generateThumbnailImage($data['image'], $filename, 'brands');
         $data['image'] = $filename;
 
-        $this->repository->create($data);
+        return $this->repository->create($data);
     }
 
     public function updateBrand(array $data, int $id) {
@@ -48,7 +52,7 @@ class BrandService implements IBrandService
             $data['image'] = $filename;
         }
 
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteBrand(int $id) {
@@ -58,6 +62,6 @@ class BrandService implements IBrandService
             File::delete(public_path('images/brands/' . $brand->image));
         }*/
 
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

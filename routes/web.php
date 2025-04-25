@@ -40,6 +40,8 @@ Route::get('/', [\App\Http\Controllers\Front\HomeController::class, 'index'])->n
 Route::get('/shop', [\App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/search', [\App\Http\Controllers\Api\ProductController::class, 'productSearch'])->name('shop.searchProducts');
 Route::get('/shop/{slug}', [\App\Http\Controllers\Front\ShopController::class, 'details'])->name('shop.product.details');
+Route::get('/refresh-topbar', [\App\Http\Controllers\Front\ShopController::class, 'refreshShopBreadcrumbs'])->name('shop.refreshShopBreadcrumbs');
+
 
 //wishlist
 Route::post('/wishlist/add', [\App\Http\Controllers\Front\WishListController::class, 'addToWishList'])->name('wishlist.add');

@@ -35,10 +35,21 @@ class ShopController extends Controller
 
     public function index(Request $request)
     {
-        $size = (int)$request->get('size', 12) ?? 12;
-        $orderBy = $request->get('orderBy') ?? -1;
         $brandIds = $request->get('brandId') ?? '';
         $categoryIds = $request->get('categoryId') ?? '';
+        $showCategory = count(array_filter(explode(',', $categoryIds))) == 1;
+        $showBrand = count(array_filter(explode(',', $brandIds))) == 1 && $showCategory === false;
+
+        $brands = $this->brandRepository->setRequiredRelationships(['products'])->getAll(null, 'name', 'asc');
+        $brandIds = $request->get('brandId') ?? '';
+        $brand = $showBrand  ? $brands->where('id', (int)$brandIds)->first() : null;
+
+        $categories = $this->categoryRepository->setRequiredRelationships(['products'])->getAll(null, 'name', 'asc');
+        $categoryIds = $request->get('categoryId') ?? '';
+        $category = $showCategory ? $categories->where('id', (int)$categoryIds)->first() : null;
+
+        $size = (int)$request->get('size', 12) ?? 12;
+        $orderBy = $request->get('orderBy') ?? -1;
         $orderByColumn = 'created_at';
         $orderDir = 'desc';
         $minPrice = $request->get('minPrice') ?? 1;
@@ -64,9 +75,6 @@ class ShopController extends Controller
             ]
         );
 
-        $brands = $this->brandRepository->getAll(null, 'name', 'asc');
-        $categories = $this->categoryRepository->getAll(null, 'name', 'asc');
-
         if (Auth::check()) {
             Cart::instance('cart')->store(Auth::user()->email);
             Cart::instance('wishlist')->store(Auth::user()->email);
@@ -74,25 +82,10 @@ class ShopController extends Controller
 
         Cart::instance('wishlist')->loadWishlistProducts();
 
-        if($request->ajax()) {
-            return view('front.partials.product-search', [
-                'products' => $products,
-                'brands' => $brands,
-                'categories' => $categories,
-                'brandId' => $brandIds,
-                'categoryId' => $categoryIds,
-                'minPrice' => $minPrice,
-                'maxPrice' => $maxPrice,
-                'size' => $size,
-                'orderBy' => $orderBy,
-                'showOptions' => $this->showOptions,
-                'sortOptions' => $this->sortOptions,
-                'currency' => config('shop.currency')
-            ]);
-        }
-
-        return view('front.shop', [
+        $viewData = [
             'products' => $products,
+            'category' => $category,
+            'brand' => $brand,
             'brands' => $brands,
             'categories' => $categories,
             'brandId' => $brandIds,
@@ -104,7 +97,48 @@ class ShopController extends Controller
             'showOptions' => $this->showOptions,
             'sortOptions' => $this->sortOptions,
             'currency' => config('shop.currency')
-        ]);
+        ];
+
+        if ($request->ajax()) {
+            return view('front.partials.product-search', $viewData);
+        }
+
+        return view('front.shop', $viewData);
+    }
+
+    public function refreshShopBreadcrumbs(Request $request)
+    {
+        $brandIds = $request->get('brandId') ?? '';
+        $categoryIds = $request->get('categoryId') ?? '';
+        $showCategory = count(array_filter(explode(',', $categoryIds))) == 1;
+        $showBrand = count(array_filter(explode(',', $brandIds))) == 1 && $showCategory === false;
+
+        $brands = $this->brandRepository->getAll(null, 'name', 'asc');
+        $brandIds = $request->get('brandId') ?? '';
+        $brand = $showBrand  ? $brands->where('id', (int)$brandIds)->first() : null;
+
+        $categories = $this->categoryRepository->getAll(null, 'name', 'asc');
+        $categoryIds = $request->get('categoryId') ?? '';
+        $category = $showCategory ? $categories->where('id', (int)$categoryIds)->first() : null;
+
+        $size = (int)$request->get('size', 12) ?? 12;
+        $orderBy = $request->get('orderBy') ?? -1;
+
+        $viewData = [
+            'category' => $category,
+            'brand' => $brand,
+            'brands' => $brands,
+            'categories' => $categories,
+            'brandId' => $brandIds,
+            'categoryId' => $categoryIds,
+            'size' => $size,
+            'orderBy' => $orderBy,
+            'showOptions' => $this->showOptions,
+            'sortOptions' => $this->sortOptions,
+            'currency' => config('shop.currency')
+        ];
+
+        return view('front.partials.shop-topbar', $viewData);
     }
 
     public function details(string $slug)

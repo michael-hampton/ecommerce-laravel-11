@@ -17,14 +17,14 @@ class AttributeService implements IAttributeService
 
 
     public function createAttribute(array $data) {
-        $this->repository->create($data);
+        return $this->repository->create($data);
     }
 
     public function updateAttribute(array $data, int $id) {
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteAttribute(int $id) {
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

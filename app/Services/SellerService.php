@@ -12,14 +12,14 @@ class SellerService implements ISellerService
 
     }
     public function createSeller(array $data) {
-        $this->repository->create($data);
+        return $this->repository->create($data);
     }
 
     public function updateSeller(array $data, int $id) {
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteSeller(int $id) {
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

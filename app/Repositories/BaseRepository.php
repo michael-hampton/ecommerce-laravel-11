@@ -9,6 +9,8 @@ use Illuminate\Pagination\Paginator;
 
 class BaseRepository implements IBaseRepository
 {
+    protected $requiredRelationships = [];
+
     public function __construct(protected Model $model)
     {
     }
@@ -24,7 +26,7 @@ class BaseRepository implements IBaseRepository
     public function getAll(string $columns = null, string $orderBy = 'created_at', string $sort = 'desc', array $searchParams = [])
     {
         return $this->applyFilters($searchParams)
-            //->with($this->requiredRelationships)
+            ->with($this->requiredRelationships)
             ->orderBy($orderBy, $sort)
             ->get()
         ;
@@ -303,6 +305,12 @@ class BaseRepository implements IBaseRepository
         return $this->cacheTtl;
     }
 
+    public function setRequiredRelationships(array $requiredRelationships): self
+    {
+        $this->requiredRelationships = $requiredRelationships;
+        return $this;
+    }
+
     /**
      * @return $this
      */
@@ -320,4 +328,6 @@ class BaseRepository implements IBaseRepository
 //    {
 //        return $this->uses;
 //    }
+
+
 }

@@ -30,7 +30,7 @@ class CategoryService implements ICategoryService
         Helper::generateThumbnailImage($data['image'], $filename, 'categories');
 
         $data['image'] = $filename;
-        $this->repository->create($data);
+        return $this->repository->create($data);
     }
 
     public function updateCategory(array $data, int $id)
@@ -58,7 +58,7 @@ class CategoryService implements ICategoryService
             $data['image'] = $filename;
         }
 
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteCategory(int $id)
@@ -69,6 +69,6 @@ class CategoryService implements ICategoryService
             File::delete(public_path('images/categories/' . $category->image));
         }*/
 
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

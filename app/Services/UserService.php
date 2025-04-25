@@ -31,7 +31,7 @@ class UserService implements IUserService
 
         $data['active'] = (empty($data['active']) ? 0 : $data['active'] === 'on') ? 1 : 0;
 
-        $this->repository->create($data);
+        return $this->repository->create($data);
     }
 
     public function updateUser(array $data, int $id)
@@ -54,17 +54,17 @@ class UserService implements IUserService
             $data['image'] = $filename;
         }
 
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteUser(int $id)
     {
-        $user = $this->repository->getById($id);
+        /*$user = $this->repository->getById($id);
 
-        /*if (File::exists(public_path('uploads/users/' . $user->image))) {
+        if (File::exists(public_path('uploads/users/' . $user->image))) {
             File::delete(public_path('uploads/users/' . $user->image));
         }*/
 
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

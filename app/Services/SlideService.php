@@ -22,7 +22,7 @@ class SlideService implements ISlideService
         Helper::generateThumbnailImage($data['image'], $filename, 'slides');
         $data['image'] = $filename;
 
-        $this->repository->create($data);
+        return $this->repository->create($data);
     }
 
     public function updateSlide(array $data, int $id) {
@@ -44,7 +44,7 @@ class SlideService implements ISlideService
             $data['image'] = $filename;
         }
 
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteSlide(int $id) {
@@ -54,6 +54,6 @@ class SlideService implements ISlideService
             File::delete(public_path('images/slides/' . $slide->image));
         }
 
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

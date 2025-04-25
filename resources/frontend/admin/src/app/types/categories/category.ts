@@ -6,7 +6,7 @@ export type Category = {
   meta_title: string;
   meta_description: string;
   meta_keywords: string;
-  description: true,
+  description: string
   parent_id: number;
   products?: number
   subcategories?: Category[]

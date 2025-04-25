@@ -142,11 +142,11 @@ class CouponService implements ICouponService
 
         $data['seller_id'] = auth()->id();
 
-        $this->repository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
     public function deleteCoupon(int $id)
     {
-        $this->repository->delete($id);
+        return $this->repository->delete($id);
     }
 }

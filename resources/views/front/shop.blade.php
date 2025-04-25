@@ -144,52 +144,8 @@
     </style>
     <div class="container py-5">
         <!-- Top Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            @if(count(array_filter(explode(',', $categoryId))) == 1)
-                <div class="row container">
-                    <div class="col-12">
-                        @php
-                            $currentCategory = $categories->where('id', (int)$categoryId)->first();
-                        @endphp
-                        <div class="breadcrumb mb-0 d-none d-md-block">
-                            @if(!empty($currentCategory->parent_id))
-                                <a href="#"
-                                   class="menu-link menu-link_us-s text-uppercase fw-medium">{{$currentCategory->parent->name}}</a>
-                                <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
-                                <a href="#"
-                                   class="menu-link menu-link_us-s text-uppercase fw-medium">{{$currentCategory->name}}</a>
-                            @else
-                                <a href="#"
-                                   class="menu-link menu-link_us-s text-uppercase fw-medium">{{$currentCategory->name}}</a>
-                            @endif
-                        </div><!-- /.breadcrumb -->
-                    </div>
-                </div>
-            @else
-                <h4>Products</h4>
-            @endif
-            <div class="d-flex gap-2 align-items-center">
-                Showing: <select class="form-control me-5 ms-2"
-                                 aria-label="Sort Items"
-                                 name="pagesize" id="pagesize">
-                    @foreach($showOptions as $showOption)
-                        <option value="{{$showOption}}"
-                                @if($size === $showOption) selected="selected" @endif>{{$showOption}}
-                            products
-                        </option>
-                    @endforeach
-
-                </select>
-                <select class="form-control ms-2"
-                        aria-label="Sort Items"
-                        name="total-number" id="total-number">
-                    <option selected>Default Sorting</option>
-                    @foreach($sortOptions as $sortOption)
-                        <option value="{{$sortOption['name']}}"
-                                @if($orderBy === $sortOption['name']) selected="selected" @endif>{{$sortOption['name']}}</option>
-                    @endforeach
-                </select>
-            </div>
+        <div class="shop-topbar">
+            @include('front.partials.shop-topbar')
         </div>
 
         <div class="row g-4">
@@ -205,6 +161,7 @@
                                        @if(in_array($category->id, explode(',', $categoryId))) checked="checked" @endif>
                                 <label class="form-check-label" for="{{$category->name}}">
                                     {{$category->name}}
+                                    ({{$category->products->count()}})
                                 </label>
                             </div>
 
@@ -217,8 +174,24 @@
                                                @if(in_array($subcategory->id, explode(',', $categoryId))) checked="checked" @endif>
                                         <label class="form-check-label" for="{{$subcategory->name}}">
                                             {{$subcategory->name}}
+                                            ({{$subcategory->products->count()}})
                                         </label>
                                     </div>
+
+                                    @if($subcategory->subcategories->count() > 0)
+                                        @foreach($subcategory->subcategories as $grandparent)
+                                            <div class="form-check mb-2" style="margin-left: 70px">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="{{$grandparent->name}}"
+                                                       value="{{$grandparent->id}}" name="categories"
+                                                       @if(in_array($grandparent->id, explode(',', $categoryId))) checked="checked" @endif>
+                                                <label class="form-check-label" for="{{$grandparent->name}}">
+                                                    {{$grandparent->name}}
+                                                    ({{$grandparent->products->count()}})
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    @endif
                                 @endforeach
 
                             @endif
@@ -246,7 +219,8 @@
 
                     <div class="filter-group">
                         <h6 class="mb-3">Price Range</h6>
-                        <input type="range" class="form-range" min="1" max="5000" step="5" value="500" name="price_range">
+                        <input type="range" class="form-range" min="1" max="5000" step="5" value="500"
+                               name="price_range">
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">{{$currency}}{{$minPrice}}</span>
                             <span class="text-muted">{{$currency}}{{$maxPrice}}</span>
@@ -272,6 +246,7 @@
                                        @if(in_array($brand->id, explode(',', $brand))) checked="checked" @endif>
                                 <label class="form-check-label" for="{{$brand->name}}">
                                     {{$brand->name}}
+                                   ({{$brand->products->count()}})
                                 </label>
                             </div>
                         @endforeach
@@ -392,6 +367,29 @@
 
         });
 
+
+        function refreshTopbar() {
+            let formData = Array
+                .from(new FormData(document.getElementById('frmfilter')))
+                .filter(function ([k, v]) {
+                    return v
+                });
+            const params = new URLSearchParams(formData);
+
+            $.ajax({
+                url: "{{route('shop.refreshShopBreadcrumbs')}}" + '?' + params,
+                type: "get",
+                datatype: "html",
+            })
+                .done(function (data) {
+                    $(".shop-topbar").empty().html(data);
+                    //location.hash = page;
+                })
+                .fail(function (jqXHR, ajaxOptions, thrownError) {
+                    alert('No response from server');
+                });
+        }
+
         function getData() {
             let formData = Array
                 .from(new FormData(document.getElementById('frmfilter')))
@@ -409,6 +407,7 @@
             })
                 .done(function (data) {
                     $("#product-list").empty().html(data);
+                    refreshTopbar();
                     //location.hash = page;
                 })
                 .fail(function (jqXHR, ajaxOptions, thrownError) {

@@ -45,6 +45,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       const model: Brand = {
         name: this.form.value.name,
         slug: this.form.value.slug,
+        meta_title: this.form.value.meta_title,
+        meta_description: this.form.value.meta_description,
+        meta_keywords: this.form.value.meta_keywords,
+        description: this.form.value.description
       } as Brand;
 
       if (file) {
@@ -66,7 +70,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       id: this.formData.id,
       name: this.formData.name,
       slug: this.formData.slug,
-      //image: this.formData.image
+      meta_title: this.formData.meta_title,
+      meta_description: this.formData.meta_description,
+      meta_keywords: this.formData.meta_keywords,
+      description: this.formData.description
     })
 
     this._formStore.addImage(this.formData.image)
@@ -78,6 +85,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       name: new FormControl<string>('', [Validators.required]),
       slug: new FormControl<string>('', [Validators.required]),
       image: new FormControl<string>(''),
+      meta_title: new FormControl(''),
+      meta_description: new FormControl(''),
+      meta_keywords: new FormControl(''),
+      description: new FormControl(''),
     })
   }
 
