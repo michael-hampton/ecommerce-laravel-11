@@ -6,7 +6,7 @@ import {
   Input,
   OnInit,
   Output,
-  QueryList,
+  QueryList, SimpleChanges,
   TemplateRef,
   ViewChildren
 } from '@angular/core';
@@ -63,7 +63,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   @Input() translations: DataTableTranslations = defaultTranslations;
   @Input() selectOnRowClick = false;
   @Input() autoReload = false;
-  @Input() showReloading = false;
+  @Input() loading = false;
   @Input() showDownloadButton = false;
   @Output() changePage = new EventEmitter();
   @Output() addButton = new EventEmitter();
@@ -178,6 +178,10 @@ export class DataTableComponent implements DataTableParams, OnInit {
       this.reloadItems();
     }
   }
+
+  // ngOnChanges(changes: SimpleChanges) {
+  //   console.log('changes', changes['page'])
+  // }
 
   private _initDefaultValues() {
     this.indexColumnVisible = this.indexColumn;

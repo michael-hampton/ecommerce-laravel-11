@@ -24,7 +24,6 @@ export class LoginComponent implements OnInit{
 
   loginUser() {
     this._auth.Login({email: this.loginForm.value.email, password: this.loginForm.value.password}).subscribe(result => {
-      alert('here')
       this.router.navigateByUrl('/');
     })
   }

@@ -33,7 +33,7 @@ export class CouponStore extends FilterStore<Coupon> {
   readonly delete = this.effect<number>(
     pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((id) => this._api.delete(id).pipe(
+      switchMap((id: number) => this._api.delete(id).pipe(
           tapResponse({
             next: (users) => {
               this._globalStore.setSuccess('Deleted successfully');

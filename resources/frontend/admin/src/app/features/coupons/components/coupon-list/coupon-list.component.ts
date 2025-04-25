@@ -62,7 +62,6 @@ export class CouponListComponent implements OnInit {
   }
 
   pageChanged(filter: FilterModel) {
-    alert('here666')
     this._store.updateFilter(filter)
   }
 

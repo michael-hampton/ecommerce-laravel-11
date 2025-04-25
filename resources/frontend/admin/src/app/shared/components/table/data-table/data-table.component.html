@@ -4,7 +4,7 @@
   <div class="card mt-4">
     <div class="card-body">
       <data-table-header *ngIf="header" (searchUpdated)="searchChanged($event)"></data-table-header>
-      <div class="loading-cover" *ngIf="showReloading && reloading"></div>
+      <div class="loading-cover" *ngIf="loading && reloading"></div>
       <div class="table-responsive">
         <table class="table table-condensed table-bordered data-table mt-3">
           <thead>
@@ -60,7 +60,7 @@
 
       </div>
 
-      <data-table-pagination *ngIf="pagination" (pageUpdated)="pageChanged()"></data-table-pagination>
+      <data-table-pagination *ngIf="pagination && !loading" (pageUpdated)="pageChanged()"></data-table-pagination>
     </div>
   </div>
 </div>

@@ -13,7 +13,7 @@ export const defaultPaging: FilterModel = {
   limit: 10,
   sortBy: 'name',
   sortAsc: true,
-  searchText: ''
+  searchText: '',
 }
 
 export type PagedData<T> = {
@@ -25,6 +25,7 @@ export type PagedData<T> = {
 
 export interface FilterState<T> {
   filter: FilterModel,
-  data: PagedData<T>
+  data?: PagedData<T>
+  loading?: boolean
 }
 
