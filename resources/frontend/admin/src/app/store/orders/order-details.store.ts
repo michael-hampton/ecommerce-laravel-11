@@ -14,12 +14,16 @@ export interface OrderDetailsState {
   order: OrderDetail;
   orderLogs: OrderLog[],
   loading: boolean
+  orderUpdated: boolean
+  orderLineUpdated: boolean
 }
 
 const defaultState: OrderDetailsState = {
   order: {} as OrderDetail,
   orderLogs: [],
-  loading: false
+  loading: false,
+  orderUpdated: false,
+  orderLineUpdated: false
 };
 
 @Injectable()
@@ -32,7 +36,9 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
   vm$ = this.select(state => ({
     order: state.order,
     orderLogs: state.orderLogs,
-    loading: state.loading
+    loading: state.loading,
+    orderUpdated: state.orderUpdated,
+    orderLineUpdated: state.orderLineUpdated
   }))
 
   saveOrderStatus = (payload: Partial<SaveOrder>) => {
@@ -41,10 +47,7 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
     return this._api.update(payload.orderId, payload).pipe(
       tap(() => this.patchState({loading: true})),
       tapResponse({
-        next: (users) => {
-          this._globalStore.setSuccess('Saved successfully');
-          //this.patchState({loading: false, saveSuccess: true})
-        },
+        next: () => this.showOrderSuccess(),
         error: (error: HttpErrorResponse) => {
           this._globalStore.setError(UiError(error))
         },
@@ -58,10 +61,7 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
     return this._api.saveOrderDetailStatus(payload.id, payload).pipe(
       tap(() => this.patchState({loading: true})),
       tapResponse({
-        next: (users) => {
-          this._globalStore.setSuccess('Saved successfully');
-          //this.patchState({loading: false, saveSuccess: true})
-        },
+        next: () => this.showOrderLineSuccess(),
         error: (error: HttpErrorResponse) => {
           this._globalStore.setError(UiError(error))
         },
@@ -101,5 +101,21 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
         complete: () => this.patchState({loading: false}),
       })
     )
+  }
+
+  showOrderLineSuccess() {
+    this.patchState({orderLineUpdated: true})
+
+    setTimeout(() => {
+      this.patchState({orderLineUpdated: false})
+    }, 2500);
+  }
+
+  showOrderSuccess() {
+    this.patchState({orderUpdated: true})
+
+    setTimeout(() => {
+      this.patchState({orderUpdated: false})
+    }, 2500);
   }
 }

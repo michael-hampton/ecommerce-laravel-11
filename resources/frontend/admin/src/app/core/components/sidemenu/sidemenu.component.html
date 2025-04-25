@@ -55,6 +55,10 @@
       <a href="#" class="nav-link px-0 align-middle" routerLink="settings">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Settings</span> </a>
     </li>
+    <li *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
+      <a href="#" class="nav-link px-0 align-middle" routerLink="messages">
+        <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Messages</span> </a>
+    </li>
     <li>
       <a href="#" class="nav-link px-0 align-middle" (click)="logout()">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Logout</span> </a>

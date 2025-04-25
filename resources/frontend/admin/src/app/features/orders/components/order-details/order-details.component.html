@@ -44,6 +44,7 @@
         <div class="card-header">History</div>
         <div class="card-body">
           <form [formGroup]="orderStatusForm">
+            <div *ngIf="vm.orderUpdated" class="alert alert-success alert-dismissible">Order was updated successfully</div>
             <div class="row">
               <div class="col-md-3">
                 <label class="form-label">Status</label>
@@ -128,7 +129,7 @@
             <td class="text-center">{{ orderItem.price | currency }}</td>
             <td class="text-center">{{ orderItem.quantity }}</td>
             <td>
-
+              <div *ngIf="vm.orderLineUpdated" class="alert alert-success alert-dismissible">Order line was updated successfully</div>
               <div class="row">
                 <div class="col-md-3">
                   <label class="form-label">Status</label>
