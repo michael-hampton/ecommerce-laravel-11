@@ -14,9 +14,7 @@ export interface CouponFormState {
 const defaultState: CouponFormState = {
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CouponFormStore extends ComponentStore<CouponFormState> {
   constructor(private _api: CouponApi, private _globalStore: GlobalStore) {
     super(defaultState);

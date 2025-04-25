@@ -1,5 +1,4 @@
 import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
-import {Config} from "datatables.net";
 import {Subscription} from 'rxjs';
 import { ModalService } from '../../../../services/modal.service';
 import {ProductStore} from "../../../../store/products/list.store";
@@ -12,7 +11,8 @@ import {GlobalStore} from '../../../../store/global.store';
   selector: 'app-product-list',
   standalone: false,
   templateUrl: './product-list.component.html',
-  styleUrl: './product-list.component.scss'
+  styleUrl: './product-list.component.scss',
+  providers: [ProductStore]
 })
 export class ProductListComponent implements OnInit {
   @ViewChild('modal', {read: ViewContainerRef})

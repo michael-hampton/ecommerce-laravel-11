@@ -8,7 +8,8 @@ import {CategoryStore} from '../../../../store/categories/list.store';
   selector: 'app-order-list',
   standalone: false,
   templateUrl: './order-list.component.html',
-  styleUrl: './order-list.component.scss'
+  styleUrl: './order-list.component.scss',
+  providers: [OrderStore]
 })
 export class OrderListComponent implements OnInit{
 

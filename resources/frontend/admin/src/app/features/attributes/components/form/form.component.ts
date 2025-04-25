@@ -1,6 +1,5 @@
-import {AfterViewInit, Component, ElementRef, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
 import {Attribute} from "../../../../types/attributes/attribute";
 import {AttributeFormStore} from "../../../../store/attributes/form.store";
@@ -9,7 +8,8 @@ import {AttributeFormStore} from "../../../../store/attributes/form.store";
   selector: 'app-form',
   standalone: false,
   templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  styleUrl: './form.component.scss',
+  providers: [AttributeFormStore]
 })
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;

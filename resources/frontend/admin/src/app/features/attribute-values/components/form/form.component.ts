@@ -10,7 +10,8 @@ import {AttributeValue} from '../../../../types/attribute-values/attribute-value
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss',
-  standalone: false
+  standalone: false,
+  providers: [AttributeValueFormStore]
 })
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;

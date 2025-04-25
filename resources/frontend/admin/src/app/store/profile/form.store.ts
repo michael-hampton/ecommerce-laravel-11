@@ -20,9 +20,7 @@ const defaultState: ProfileFormState = {
   data: {} as Seller
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ProfileStore extends ComponentStore<ProfileFormState> {
   constructor(private _api: SellerApi, private _globalStore: GlobalStore) {
     super(defaultState);

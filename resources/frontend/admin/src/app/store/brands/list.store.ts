@@ -16,9 +16,7 @@ const defaultState: FilterState<Brand> = {
   filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BrandStore extends FilterStore<Brand> {
   constructor(private _api: BrandApi, private _globalStore: GlobalStore) {
     super(defaultState);

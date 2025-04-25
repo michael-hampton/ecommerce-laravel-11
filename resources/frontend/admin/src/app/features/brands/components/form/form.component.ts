@@ -1,5 +1,4 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {LookupStore} from "../../../../store/lookup.store";
@@ -11,7 +10,8 @@ import {firstValueFrom} from 'rxjs';
   selector: 'app-form',
   standalone: false,
   templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  styleUrl: './form.component.scss',
+  providers: [BrandFormStore]
 })
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;

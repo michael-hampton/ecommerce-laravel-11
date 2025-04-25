@@ -28,9 +28,7 @@ const defaultState: ProductFormState = {
 
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ProductFormStore extends ComponentStore<ProductFormState> {
   constructor(private _api: ProductApi, private _globalStore: GlobalStore, private _lookupService: LookupApi) {
     super(defaultState);

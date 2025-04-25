@@ -18,9 +18,7 @@ const defaultState: UserFormState = {
   currentFile: undefined
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserFormStore extends ComponentStore<UserFormState> {
   constructor(private _api: UserApi, private _globalStore: GlobalStore) {
     super(defaultState);

@@ -5,14 +5,14 @@ import { ModalService } from '../../../../services/modal.service';
 import {BrandStore} from "../../../../store/brands/list.store";
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {FormComponent} from '../form/form.component';
-import {defaultPaging, FilterModel} from '../../../../types/filter.model';
-import {CategoryStore} from '../../../../store/categories/list.store';
+import { FilterModel} from '../../../../types/filter.model';
 
 @Component({
   selector: 'app-brand-list',
   standalone: false,
   templateUrl: './brand-list.component.html',
-  styleUrl: './brand-list.component.scss'
+  styleUrl: './brand-list.component.scss',
+  providers: [BrandStore]
 })
 export class BrandListComponent implements OnInit {
   dtOptions: Config = {};

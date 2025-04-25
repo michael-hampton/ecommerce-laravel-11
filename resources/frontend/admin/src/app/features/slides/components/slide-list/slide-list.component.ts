@@ -12,7 +12,8 @@ import {CategoryStore} from '../../../../store/categories/list.store';
   selector: 'app-slide-list',
   standalone: false,
   templateUrl: './slide-list.component.html',
-  styleUrl: './slide-list.component.scss'
+  styleUrl: './slide-list.component.scss',
+  providers: [SlideStore]
 })
 export class SlideListComponent implements OnInit {
   @ViewChild('modal', {read: ViewContainerRef})

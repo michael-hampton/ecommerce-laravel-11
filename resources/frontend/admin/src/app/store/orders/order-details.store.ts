@@ -22,9 +22,7 @@ const defaultState: OrderDetailsState = {
   loading: false
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
   constructor(private _api: OrderApi, private _globalStore: GlobalStore) {
     super(defaultState);

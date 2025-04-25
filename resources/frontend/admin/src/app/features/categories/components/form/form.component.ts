@@ -12,6 +12,7 @@ import {firstValueFrom} from 'rxjs';
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss',
+  providers: [CategoryFormStore]
 })
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;

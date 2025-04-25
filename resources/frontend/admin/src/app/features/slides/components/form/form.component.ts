@@ -5,12 +5,14 @@ import {ModalComponent} from "../../../../shared/components/modal/modal.componen
 import {SlideFormStore} from "../../../../store/slides/form.store";
 import {Slide} from "../../../../types/slides/slide";
 import {firstValueFrom} from 'rxjs';
+import {SlideStore} from '../../../../store/slides/list.store';
 
 @Component({
   selector: 'app-form',
   standalone: false,
   templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  styleUrl: './form.component.scss',
+  providers: [SlideFormStore]
 })
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;

@@ -17,9 +17,7 @@ const defaultState: BrandFormState = {
   currentFile: undefined
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BrandFormStore extends ComponentStore<BrandFormState> {
   constructor(private _api: BrandApi, private _globalStore: GlobalStore) {
     super(defaultState);

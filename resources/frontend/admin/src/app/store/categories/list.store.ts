@@ -8,16 +8,13 @@ import {GlobalStore} from "../global.store";
 import {UiError} from '../../core/services/exception.service';
 import {FilterStore} from '../filter.store';
 import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
-import {Product} from '../../types/products/product';
 
 const defaultState: FilterState<Category> = {
   data: {} as PagedData<Category>,
   filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CategoryStore extends FilterStore<Category> {
   constructor(private _api: CategoryApi, private _globalStore: GlobalStore) {
     super(defaultState);

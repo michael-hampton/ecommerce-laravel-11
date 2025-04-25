@@ -3,17 +3,16 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {OrderDetailsStore} from '../../../../store/orders/order-details.store';
 import {SaveOrder} from '../../../../types/orders/save-order';
 import {ActivatedRoute} from '@angular/router';
-import {FeaturedEnum} from '../../../../types/products/featured.enum';
 import {OrderStatusEnum} from '../../../../types/orders/orderStatus.enum';
 import {OrderDetail} from '../../../../types/orders/order-detail';
-import {formatDate} from '@angular/common';
 import {OrderItem} from '../../../../types/orders/orderItem';
 
 @Component({
   selector: 'app-order-details',
   standalone: false,
   templateUrl: './order-details.component.html',
-  styleUrl: './order-details.component.scss'
+  styleUrl: './order-details.component.scss',
+  providers: [OrderDetailsStore]
 })
 export class OrderDetailsComponent implements OnInit {
 

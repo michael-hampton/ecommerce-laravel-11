@@ -12,7 +12,8 @@ import {defaultPaging, FilterModel} from '../../../../types/filter.model';
   selector: 'app-category-list',
   standalone: false,
   templateUrl: './category-list.component.html',
-  styleUrl: './category-list.component.scss'
+  styleUrl: './category-list.component.scss',
+  providers: [CategoryStore]
 })
 export class CategoryListComponent implements OnInit {
   dtOptions: Config = {};

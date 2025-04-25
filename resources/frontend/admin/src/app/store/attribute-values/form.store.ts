@@ -16,9 +16,7 @@ const defaultState: AttributeValueFormState = {
 
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AttributeValueFormStore extends ComponentStore<AttributeValueFormState> {
   constructor(private _api: AttributeValuesApi, private _globalStore: GlobalStore) {
     super(defaultState);

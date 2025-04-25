@@ -20,9 +20,7 @@ const defaultState: DashboardState = {
   data: {} as Dashboard,
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DashboardStore extends ComponentStore<DashboardState> {
   constructor(private _api: DashboardApi, private _globalStore: GlobalStore) {
     super(defaultState);

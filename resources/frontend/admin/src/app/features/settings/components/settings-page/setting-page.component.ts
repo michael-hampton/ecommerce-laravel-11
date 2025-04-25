@@ -7,7 +7,8 @@ import {Seller} from '../../../../types/seller/seller';
   selector: 'app-setting-page',
   standalone: false,
   templateUrl: './setting-page.component.html',
-  styleUrl: './setting-page.component.scss'
+  styleUrl: './setting-page.component.scss',
+  providers: [ProfileStore]
 })
 export class SettingPageComponent {
 

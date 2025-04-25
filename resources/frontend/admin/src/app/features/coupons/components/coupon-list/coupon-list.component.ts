@@ -11,7 +11,8 @@ import {defaultPaging, FilterModel} from '../../../../types/filter.model';
   selector: 'app-coupon-list',
   standalone: false,
   templateUrl: './coupon-list.component.html',
-  styleUrl: './coupon-list.component.scss'
+  styleUrl: './coupon-list.component.scss',
+  providers: [CouponStore]
 })
 export class CouponListComponent implements OnInit {
   dtOptions: Config = {};
@@ -54,7 +55,7 @@ export class CouponListComponent implements OnInit {
   add(event: Event) {
     event.preventDefault()
     this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Attribute'})
+      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Coupon'})
       .subscribe((v) => {
         this._store.reset();
       });

@@ -15,9 +15,7 @@ const defaultState: FilterState<Slide> = {
   filter: {...defaultPaging, ...{sortBy: 'title'}}
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SlideStore extends FilterStore<Slide> {
   constructor(private _api: SlideApi, private _globalStore: GlobalStore) {
     super(defaultState);

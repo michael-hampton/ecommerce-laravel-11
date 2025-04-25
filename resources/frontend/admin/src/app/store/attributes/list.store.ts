@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
 import {catchError, map, Observable, pipe, switchMap, tap, throwError} from 'rxjs';
 import {tapResponse} from '@ngrx/operators'
 import {Attribute} from '../../types/attributes/attribute';
@@ -9,16 +8,13 @@ import {AttributeApi} from '../../apis/attribute.api';
 import {UiError} from '../../core/services/exception.service';
 import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/filter.model';
 import {FilterStore} from '../filter.store';
-import {Product} from '../../types/products/product';
 
 const defaultState: FilterState<Attribute> = {
   data: {} as PagedData<Attribute>,
   filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AttributeStore extends FilterStore<Attribute> {
   constructor(private _api: AttributeApi, private _globalStore: GlobalStore) {
     super(defaultState);

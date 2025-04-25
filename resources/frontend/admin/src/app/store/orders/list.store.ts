@@ -15,9 +15,7 @@ const defaultState: FilterState<Order> = {
   filter: {...defaultPaging, ...{sortBy: 'id', sortAsc: false}}
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OrderStore extends FilterStore<Order> {
   constructor(private _api: OrderApi, private _globalStore: GlobalStore) {
     super(defaultState);

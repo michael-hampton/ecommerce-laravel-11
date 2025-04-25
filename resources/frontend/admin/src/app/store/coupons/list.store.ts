@@ -14,9 +14,7 @@ const defaultState: FilterState<Coupon> = {
   filter: {...defaultPaging, ...{sortBy: 'code'}}
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CouponStore extends FilterStore<Coupon> {
   constructor(private _api: CouponApi, private _globalStore: GlobalStore) {
     super(defaultState);

@@ -12,7 +12,8 @@ import {CategoryStore} from '../../../../store/categories/list.store';
   selector: 'app-user-list',
   standalone: false,
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.scss'
+  styleUrl: './user-list.component.scss',
+  providers: [UserStore]
 })
 export class UserListComponent implements OnInit {
   @ViewChild('modal', {read: ViewContainerRef})

@@ -11,7 +11,8 @@ import {FilterModel} from '../../../../types/filter.model';
   selector: 'app-attribute-value-list',
   standalone: false,
   templateUrl: './attribute-value-list.component.html',
-  styleUrl: './attribute-value-list.component.scss'
+  styleUrl: './attribute-value-list.component.scss',
+  providers: [AttributeValueStore]
 })
 export class AttributeValueListComponent implements OnInit {
   dtOptions: Config = {};

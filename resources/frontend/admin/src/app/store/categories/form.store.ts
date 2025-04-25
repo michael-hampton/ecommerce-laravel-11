@@ -24,9 +24,7 @@ const defaultState: CategoryFormState = {
   children: []
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CategoryFormStore extends ComponentStore<CategoryFormState> {
   constructor(private _api: CategoryApi, private _globalStore: GlobalStore, private _lookupService: LookupApi) {
     super(defaultState);

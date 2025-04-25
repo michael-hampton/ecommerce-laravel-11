@@ -15,9 +15,7 @@ const defaultState: FilterState<AttributeValue> = {
   filter: {...defaultPaging, ...{sortBy: 'name'}}
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AttributeValueStore extends FilterStore<AttributeValue> {
   constructor(private _api: AttributeValuesApi, private _globalStore: GlobalStore) {
     super(defaultState);

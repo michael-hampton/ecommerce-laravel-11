@@ -7,12 +7,14 @@ import {ModalComponent} from '../../../../shared/components/modal/modal.componen
 import {FormComponent} from '../form/form.component';
 import {defaultPaging, FilterModel} from '../../../../types/filter.model';
 import {CategoryStore} from '../../../../store/categories/list.store';
+import {AttributeValueStore} from '../../../../store/attribute-values/list.store';
 
 @Component({
   selector: 'app-attribute-list',
   standalone: false,
   templateUrl: './attribute-list.component.html',
-  styleUrl: './attribute-list.component.scss'
+  styleUrl: './attribute-list.component.scss',
+  providers: [AttributeStore]
 })
 export class AttributeListComponent implements OnInit {
   dtOptions: Config = {};

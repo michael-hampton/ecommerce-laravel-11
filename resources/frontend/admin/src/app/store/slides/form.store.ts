@@ -18,9 +18,7 @@ const defaultState: SlideFormState = {
   currentFile: undefined
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SlideFormStore extends ComponentStore<SlideFormState> {
   constructor(private _api: SlideApi, private _globalStore: GlobalStore) {
     super(defaultState);

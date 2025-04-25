@@ -12,7 +12,8 @@ import {futureValidator} from '../../../../core/input/validators';
   selector: 'app-form',
   standalone: false,
   templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  styleUrl: './form.component.scss',
+  providers: [CouponFormStore]
 })
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;

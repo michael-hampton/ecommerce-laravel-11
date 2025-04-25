@@ -6,7 +6,8 @@ import {LookupStore} from "../../../../store/lookup.store";
   selector: 'app-dashboard-page',
   standalone: false,
   templateUrl: './dashboard-page.component.html',
-  styleUrl: './dashboard-page.component.scss'
+  styleUrl: './dashboard-page.component.scss',
+  providers: [DashboardStore]
 })
 export class DashboardPageComponent implements OnInit{
 
