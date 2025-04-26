@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class DeliveryMethod extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name', 'country_id', 'price', 'courier_id'];
+
+    public function courier() {
+        return $this->belongsTo(Courier::class);
+    }
 }

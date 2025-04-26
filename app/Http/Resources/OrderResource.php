@@ -32,6 +32,7 @@ class OrderResource extends JsonResource
             'number_of_items' => $this->totalCount(),
             'order_date' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'courier' => CourierResource::make($this->courier)
         ];
     }
 }

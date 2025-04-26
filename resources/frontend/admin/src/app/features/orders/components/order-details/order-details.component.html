@@ -44,7 +44,8 @@
         <div class="card-header">History</div>
         <div class="card-body">
           <form [formGroup]="orderStatusForm">
-            <div *ngIf="vm.orderUpdated" class="alert alert-success alert-dismissible">Order was updated successfully</div>
+            <div *ngIf="vm.orderUpdated" class="alert alert-success alert-dismissible">Order was updated successfully
+            </div>
             <div class="row">
               <div class="col-md-3">
                 <label class="form-label">Status</label>
@@ -62,8 +63,13 @@
 
               <div class="col-sm-4">
                 <label class="form-label">Courier</label>
-                <input type="text" class="form-control" name="courier_name"
-                       formControlName="courier_name">
+                <select class="form-control" name="courier_id"
+                        formControlName="courier_id">
+                  <option value="">Select Courier</option>
+                  <option *ngFor="let courier of couriers" value="{{courier.id}}"
+                          [selected]="vm.order.courier_id === courier.id">{{ courier.name }}
+                  </option>
+                </select>
               </div>
 
               <div class="col-md-2">
@@ -129,14 +135,16 @@
             <td class="text-center">{{ orderItem.price | currency }}</td>
             <td class="text-center">{{ orderItem.quantity }}</td>
             <td>
-              <div *ngIf="vm.orderLineUpdated" class="alert alert-success alert-dismissible">Order line was updated successfully</div>
+              <div *ngIf="vm.orderLineUpdated" class="alert alert-success alert-dismissible">Order line was updated
+                successfully
+              </div>
               <div class="row">
                 <div class="col-md-3">
                   <label class="form-label">Status</label>
                   <select name="status"
                           class="form-control" (change)="handleOrderItemForm($event, orderItem.id)">
-                    <option *ngFor="let status of OrderStatusEnum | keyvalue" [value]="status.value"
-                            [selected]="orderItem.status === status.value">{{ status.key }}
+                    <option *ngFor="let status_item of OrderStatusEnum | keyvalue" [value]="status_item.value"
+                            [selected]="orderItem.status === status_item.value">{{ status_item.key }}
                     </option>
                   </select>
                 </div>
@@ -150,9 +158,12 @@
 
                 <div class="col-sm-4" id="courier-name-container">
                   <label class="form-label">Courier</label>
-                  <input type="text" class="form-control"
-                         id="courier_name" name="courier_name" (keyup)="handleOrderItemForm($event, orderItem.id)"
-                         value="{{orderItem.courier_name}}">
+                  <select class="form-control" name="courier_id" (change)="handleOrderItemForm($event, orderItem.id)">
+                    <option value="">Select Courier</option>
+                    <option *ngFor="let courier_item of couriers" value="{{courier_item.id}}"
+                            [selected]="orderItem.courier_id === courier_item.id">{{ courier_item.name }}
+                    </option>
+                  </select>
                 </div>
 
                 <div class="col-md-2 mt-3">

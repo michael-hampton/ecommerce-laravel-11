@@ -6,6 +6,8 @@ import {ActivatedRoute} from '@angular/router';
 import {OrderStatusEnum} from '../../../../types/orders/orderStatus.enum';
 import {OrderDetail} from '../../../../types/orders/order-detail';
 import {OrderItem} from '../../../../types/orders/orderItem';
+import {LookupStore} from '../../../../store/lookup.store';
+import {Courier} from '../../../../types/couriers/courier';
 
 @Component({
   selector: 'app-order-details',
@@ -19,14 +21,20 @@ export class OrderDetailsComponent implements OnInit {
   orderStatusForm: FormGroup;
   private _store = inject(OrderDetailsStore)
   vm$ = this._store.vm$
+  private _lookupStore = inject(LookupStore)
+  lookupVm$ = this._lookupStore.vm$
   private fb = inject(FormBuilder)
   private orderId: number;
   private activatedRoute = inject(ActivatedRoute)
   private orderLines: any;
   protected readonly OrderStatusEnum = OrderStatusEnum;
+  couriers: Courier[] = []
 
   ngOnInit(): void {
     this.initializeForm()
+    this._lookupStore.getCouriers().subscribe((result: Courier[]) => {
+     this.couriers = result
+    })
 
     this.activatedRoute.params.subscribe(params => {
       this.orderId = params['id'];
@@ -36,7 +44,7 @@ export class OrderDetailsComponent implements OnInit {
       this.orderLines = result.orderItems.map((x: OrderItem) => {
         return {
           id: x.id,
-          courier_name: x.courier_name,
+          courier_id: x.courier_id,
           tracking_number: x.tracking_number,
           status: !x.status || x.status === '0' ? OrderStatusEnum['Ordered'] : x.status
         }
@@ -49,7 +57,7 @@ export class OrderDetailsComponent implements OnInit {
     this.orderStatusForm.patchValue({
       status: data.status,
       tracking_number: data.tracking_number,
-      courier_name: data.courier_name
+      courier_id: data.courier_id
     })
   }
 
@@ -57,7 +65,7 @@ export class OrderDetailsComponent implements OnInit {
     this.orderStatusForm = this.fb.group({
       status: ['', Validators.required],
       tracking_number: [''],
-      courier_name: ['']
+      courier_id: ['']
     });
   }
 
@@ -66,7 +74,7 @@ export class OrderDetailsComponent implements OnInit {
       orderId: this.orderId,
       status: this.orderStatusForm.value.status,
       tracking_number: this.orderStatusForm.value.tracking_number,
-      courier_name: this.orderStatusForm.value.courier_name,
+      courier_id: this.orderStatusForm.value.courier_id,
     }
 
     this._store.saveOrderStatus(obj).subscribe(result => {
@@ -88,5 +96,9 @@ export class OrderDetailsComponent implements OnInit {
     this._store.saveOrderLineStatus(el).subscribe(result => {
       this._store.getOrderLogs(this.orderId).subscribe();
     })
+  }
+
+  trackCourierItem(orderItemId: number, courierId: number) {
+    return `${orderItemId}-${courierId}`
   }
 }

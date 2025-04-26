@@ -64,7 +64,7 @@ class BaseRepository implements IBaseRepository
 //            ->orderBy($orderBy, $sort)->toSql());
 
         return  $this->applyFilters($search)
-            //->with($this->requiredRelationships)
+            ->with($this->requiredRelationships)
             ->orderBy($orderBy, $sort)
             ->paginate($paged);
     }

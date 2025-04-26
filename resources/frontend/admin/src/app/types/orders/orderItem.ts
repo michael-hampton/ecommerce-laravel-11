@@ -7,7 +7,7 @@ export type OrderItem = {
   price: string,
   quantity: number,
   tracking_number: string,
-  courier_name: string,
+  courier_id: number,
   created_at: string,
   orderLogs: OrderLog[],
   product: Product

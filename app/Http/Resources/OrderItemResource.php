@@ -20,7 +20,7 @@ class OrderItemResource extends JsonResource
             'price' => $this->price,
             'quantity' => $this->quantity,
             'tracking_number' => $this->tracking_number,
-            'courier_name' => $this->courier_name,
+            'courier_id' => $this->courier_id,
             'orderLogs' => $this->logs->map(function ($item) {
                 return OrderLogResource::make($item);
             }),

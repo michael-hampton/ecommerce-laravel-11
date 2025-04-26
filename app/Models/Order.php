@@ -26,7 +26,7 @@ class Order extends Model
         'total',
         'commission',
         'tracking_number',
-        'courier_name'
+        'courier_id'
     ];
 
     public function customer()
@@ -87,5 +87,10 @@ class Order extends Model
     public function logs()
     {
         return $this->hasMany(OrderLog::class , 'order_id');
+    }
+
+    public function courier()
+    {
+        return $this->belongsTo(Courier::class, 'courier_id');
     }
 }

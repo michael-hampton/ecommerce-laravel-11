@@ -7,13 +7,19 @@ use App\Repositories\AttributeRepository;
 use App\Repositories\AttributeValueRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\CategoryRepository;
+use App\Repositories\CountryRepository;
 use App\Repositories\CouponRepository;
+use App\Repositories\CourierRepository;
+use App\Repositories\DeliveryMethodRepository;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IAttributeRepository;
 use App\Repositories\Interfaces\IAttributeValueRepository;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
+use App\Repositories\Interfaces\ICountryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
+use App\Repositories\Interfaces\ICourierRepository;
+use App\Repositories\Interfaces\IDeliveryMethodRepository;
 use App\Repositories\Interfaces\IMessageRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Repositories\Interfaces\IProductRepository;
@@ -32,12 +38,14 @@ use App\Services\AttributeValueService;
 use App\Services\BrandService;
 use App\Services\CategoryService;
 use App\Services\CouponService;
+use App\Services\DeliveryMethodService;
 use App\Services\Interfaces\IAddressService;
 use App\Services\Interfaces\IAttributeService;
 use App\Services\Interfaces\IAttributeValueService;
 use App\Services\Interfaces\IBrandService;
 use App\Services\Interfaces\ICategoryService;
 use App\Services\Interfaces\ICouponService;
+use App\Services\Interfaces\IDeliveryMethodService;
 use App\Services\Interfaces\IMessageService;
 use App\Services\Interfaces\IOrderService;
 use App\Services\Interfaces\IProductService;
@@ -58,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
      * @var string[]
      */
     private $repositories = [
+        ICourierRepository::class, CourierRepository::class,
+        IDeliveryMethodRepository::class, DeliveryMethodRepository::class,
         ISellerRepository::class => SellerRepository::class,
         IProductRepository::class => ProductRepository::class,
         IOrderRepository::class => OrderRepository::class,
@@ -70,12 +80,14 @@ class AppServiceProvider extends ServiceProvider
         IAttributeRepository::class => AttributeRepository::class,
         IAttributeValueRepository::class => AttributeValueRepository::class,
         IMessageRepository::class => MessageRepository::class,
+        ICountryRepository::class => CountryRepository::class,
     ];
 
     /**
      * @var string[]
      */
     private $services = [
+        IDeliveryMethodService::class => DeliveryMethodService::class,
         IProductService::class => ProductService::class,
         IOrderService::class => OrderService::class,
         ICouponService::class => CouponService::class,

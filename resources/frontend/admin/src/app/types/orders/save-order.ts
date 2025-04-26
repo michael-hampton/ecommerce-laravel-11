@@ -3,12 +3,12 @@ export type SaveOrderLine = {
   lineId: number
   status: string
   tracking_number: string
-  courier_name: string
+  courier_id: number
 }
 
 export type SaveOrder = {
   orderId: number
   status: string
   tracking_number: string
-  courier_name: string
+  courier_id: number
 }

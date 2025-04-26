@@ -7,7 +7,9 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\CourierController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\DeliveryMethodController;
 use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OrderController;
@@ -57,6 +59,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // messages
     Route::apiResource('messages', MessageController::class);
+
+    // couriers
+    Route::apiResource('couriers', CourierController::class);
+
+    //delivery methods
+    // messages
+    Route::apiResource('delivery-methods', DeliveryMethodController::class);
 
 
 //orders

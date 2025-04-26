@@ -19,7 +19,7 @@ export type Order = {
   total: number,
   commission: number,
   tracking_number: string,
-  courier_name: string
+  courier_id: number
   customer?: Customer
   order_date: string
   number_of_items: number

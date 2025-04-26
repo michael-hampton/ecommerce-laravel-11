@@ -153,8 +153,8 @@ class OrderService implements IOrderService
             $orderData['tracking_number'] = $data['tracking_number'];
         }
 
-        if ($data['courier_name']) {
-            $orderData['courier_name'] = $data['courier_name'];
+        if ($data['courier_id']) {
+            $orderData['courier_id'] = $data['courier_id'];
         }
 
         $this->repository->update($id, $orderData);
@@ -183,7 +183,7 @@ class OrderService implements IOrderService
 
         OrderLog::create([
             'order_id' => $id,
-            'courier_name' => $data['courier_name'],
+            'courier_name' => $data['courier_id'],
             'tracking_number' => $data['tracking_number'],
             'status_to' => $data['status'],
         ]);
@@ -205,8 +205,8 @@ class OrderService implements IOrderService
             $orderData['tracking_number'] = $data['tracking_number'];
         }
 
-        if ($data['courier_name']) {
-            $orderData['courier_name'] = $data['courier_name'];
+        if ($data['courier_id']) {
+            $orderData['courier_id'] = $data['courier_id'];
         }
 
         $orderItem = OrderItem::with('order')->whereId($id)->first();
@@ -236,7 +236,7 @@ class OrderService implements IOrderService
 
         OrderLog::create([
             'order_item_id' => $id,
-            'courier_name' => $data['courier_name'],
+            'courier_name' => $data['courier_id'],
             'tracking_number' => $data['tracking_number'],
             'status_to' => $data['status'],
         ]);

@@ -9,6 +9,9 @@ import {SaveOrder, SaveOrderLine} from '../../types/orders/save-order';
 import {OrderDetail} from '../../types/orders/order-detail';
 import {OrderLog} from '../../types/orders/orderLog';
 import {tap} from 'rxjs/operators';
+import {Courier} from '../../types/couriers/courier';
+import {pipe, switchMap} from 'rxjs';
+import {Category} from '../../types/categories/category';
 
 export interface OrderDetailsState {
   order: OrderDetail;
@@ -23,7 +26,7 @@ const defaultState: OrderDetailsState = {
   orderLogs: [],
   loading: false,
   orderUpdated: false,
-  orderLineUpdated: false
+  orderLineUpdated: false,
 };
 
 @Injectable()
@@ -38,7 +41,7 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
     orderLogs: state.orderLogs,
     loading: state.loading,
     orderUpdated: state.orderUpdated,
-    orderLineUpdated: state.orderLineUpdated
+    orderLineUpdated: state.orderLineUpdated,
   }))
 
   saveOrderStatus = (payload: Partial<SaveOrder>) => {

@@ -22,7 +22,7 @@ class OrderItem extends Model
         'shipping_price',
         'review_status',
         'tracking_number',
-        'courier_name',
+        'courier_id',
         'delivery_date',
         'cancelled_date',
     ];
@@ -47,5 +47,10 @@ class OrderItem extends Model
     public function logs()
     {
         return $this->hasMany(OrderLog::class , 'order_item_id');
+    }
+
+    public function courier()
+    {
+        return $this->belongsTo(Courier::class, 'courier_id');
     }
 }

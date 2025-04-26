@@ -10,6 +10,7 @@ import {Brand} from '../types/brands/brand';
 import {LookupApi} from '../apis/lookup.api';
 import {Order} from '../types/orders/order';
 import {UiError} from '../core/services/exception.service';
+import {Courier} from '../types/couriers/courier';
 
 
 export interface GlobalState {
@@ -21,6 +22,7 @@ export interface GlobalState {
   attributes: Attribute[],
   brands: Brand[];
   orders: Order[]
+  couriers: Courier[]
 
 }
 
@@ -32,7 +34,8 @@ const defaultState: GlobalState = {
   brands: [],
   subcategories: [],
   attributes: [],
-  orders: []
+  orders: [],
+  couriers: []
 };
 
 @Injectable({
@@ -50,7 +53,8 @@ export class LookupStore extends ComponentStore<GlobalState> {
     brands: state.brands,
     attributes: state.attributes,
     subcategories: state.subcategories,
-    orders: state.orders
+    orders: state.orders,
+    couriers: state.couriers
   }))
 
 
@@ -98,6 +102,17 @@ export class LookupStore extends ComponentStore<GlobalState> {
         )
       )
     ));
+
+  getCouriers() {
+    // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
+    return this._lookupService.getCouriers().pipe(
+      tapResponse({
+        next: (couriers) => this.patchState({couriers: couriers as Courier[]}),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this.patchState({loading: false}),
+      })
+    )
+  }
 
   getAttributes = this.effect<void>(
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.

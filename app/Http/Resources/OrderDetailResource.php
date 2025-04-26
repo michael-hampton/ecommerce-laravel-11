@@ -39,7 +39,7 @@ class OrderDetailResource extends JsonResource
             'total' => $this->total,
             'commission' => $this->commission,
             'tracking_number' => $this->tracking_number,
-            'courier_name' => $this->courier_name,
+            'courier_id' => $this->courier_id,
             'number_of_items' => $this->totalCount(),
             'order_date' => $this->created_at,
             'updated_at' => $this->updated_at,

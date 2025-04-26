@@ -15,6 +15,10 @@ export class LookupApi {
   constructor(private baseHttpClient: BaseHttpClient) {
   }
 
+  getCouriers() {
+    return this.baseHttpClient.getAll('couriers');
+  }
+
   getBrands() {
     return this.baseHttpClient.getAll('lookup/brands');
   }

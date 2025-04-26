@@ -1,0 +1,9 @@
+import {Country} from '../countries/country';
+
+export type Courier = {
+  id: number;
+  name: string
+  active: boolean;
+  code: string;
+  countries_active: Country[]
+}

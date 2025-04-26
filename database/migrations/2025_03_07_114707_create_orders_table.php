@@ -31,7 +31,8 @@ return new class extends Migration
             $table->decimal('total', 10, 4);
             $table->decimal('commission', 10, 4);
             $table->string('tracking_number')->nullable();
-            $table->string('courier_name')->nullable();
+            $table->unsignedBigInteger('courier_id')->nullable();
+            $table->foreign('courier_id')->references('id')->on('couriers');
             $table->foreign('customer_id')->references('id')->on('users');
             $table->foreign('address_id')->references('id')->on('addresses');
             $table->timestamps();

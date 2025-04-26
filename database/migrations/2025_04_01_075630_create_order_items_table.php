@@ -28,6 +28,8 @@ return new class extends Migration
             $table->date('delivered_date')->nullable();
             $table->date('cancelled_date')->nullable();
             $table->timestamps();
+            $table->unsignedBigInteger('courier_id')->nullable();
+            $table->foreign('courier_id')->references('id')->on('couriers');
             $table->foreign('seller_id')->references('id')->on('users');
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('product_id')->references('id')->on('products');
