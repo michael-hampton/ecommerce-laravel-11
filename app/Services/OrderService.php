@@ -4,8 +4,9 @@ namespace App\Services;
 
 use App\Models\OrderItem;
 use App\Models\OrderLog;
-use App\Models\Shipping;
+use App\Models\DeliveryMethod;
 use App\Models\Transaction;
+use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
 use App\Services\Interfaces\IOrderService;
@@ -18,13 +19,14 @@ use Illuminate\Support\Facades\Session;
 
 class OrderService implements IOrderService
 {
-    public function __construct(private IOrderRepository $repository)
+    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository)
     {
 
     }
 
     public function createOrder(array $data)
     {
+        Cart::instance('cart')->setAddressId($data['address_id']);
         $this->setAmountForCheckout();
 
         $orderData = [
@@ -39,8 +41,8 @@ class OrderService implements IOrderService
         ];
 
         $cartItems = Cart::instance('cart')->content();
-
-        $shipping = Shipping::all();
+        $address = $this->addressRepository->getById($data['address_id']);
+        $shipping = DeliveryMethod::where('country_id', $address->country_id)->get();
         $bulkPrice = $shipping->where('name', 'Bulk')->first()->price;
 
         $order = $this->repository->create($orderData);

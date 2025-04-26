@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-9 order-1">
                                 <h4>SHIPPING DETAILS</h4>
-                                @if($addresses)
+                                @if($addresses->count() > 0)
                                     @foreach($addresses as $address)
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="address"
@@ -66,10 +66,11 @@
                                     <div class="row">
                                         <div class="col">
                                             <label for="country">Country</label>
-                                            <select class="form-select" name="country">
+                                            <select class="form-select" name="country_id">
+                                                <option value="">Select Country</option>
                                                 @foreach($countries as $country)
                                                     <option
-                                                        value="{{Str::lower($country['name'])}}">{{$country['name']}}</option>
+                                                        value="{{$country['id']}}">{{$country['name']}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -210,11 +211,16 @@
                                         </div>
                                     </div>
 
+                                    <div class="p-3 text-center">
+                                        <button type="button" id="btn-checkout"
+                                                class="btn btn-primary btn-lg rounded-pill">Place Order
+                                        </button>
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
+                </div>
             </form>
         </section>
     </main>
@@ -223,10 +229,8 @@
 @push('scripts')
     <script>
         $(function () {
-            $('.form-check-input').on('click', function () {
-                if ($(this).val() === 'card') {
-                    document.getElementById('checkout-form').submit();
-                }
+            $('#btn-checkout').on('click', function () {
+                document.getElementById('checkout-form').submit();
             });
         });
     </script>

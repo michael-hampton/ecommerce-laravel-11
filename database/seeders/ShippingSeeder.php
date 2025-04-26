@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use App\Models\Shipping;
+use App\Models\DeliveryMethod;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -22,7 +22,7 @@ class ShippingSeeder extends Seeder
         ];
 
         foreach ($shippings as $shipping) {
-            Shipping::create($shipping);
+            DeliveryMethod::create($shipping);
         }
     }
 }

@@ -29,6 +29,7 @@ class Product extends Model
         'category_id',
         'SKU',
         'seller_id',
+        'package_size'
     ];
 
     public function category()

@@ -24,6 +24,12 @@ class Cart
     protected $session;
 
     /**
+     * The address id of the user placing the order used to get the country for the delivery method
+     * @var int
+     */
+    private $addressId = 0;
+
+    /**
      * Instance of the event dispatcher.
      *
      * @var Dispatcher
@@ -573,6 +579,11 @@ class Cart
         return $this->numberFormat($total, $decimals, $decimalPoint, $thousandSeperator);
     }
 
+    public function setAddressId(int $addressId)
+    {
+        $this->addressId = $addressId;
+    }
+
     /**
      * Get the total shipping of the items in the cart.
      *
@@ -599,10 +610,10 @@ class Cart
 
             if (isset($bySellers[$cartItem->model->seller_id]) && count($bySellers[$cartItem->model->seller_id]) > 1) {
                 $this->shippingSet[$cartItem->model->seller_id] = true;
-                return $shipping + $cartItem->shipping(true);
+                return $shipping + $cartItem->shipping(true, $this->addressId);
             }
 
-            return $shipping + $cartItem->shipping();
+            return $shipping + $cartItem->shipping(false, $this->addressId);
         }, 0);
 
         return $this->numberFormat($shipping, $decimals, $decimalPoint, $thousandSeperator);

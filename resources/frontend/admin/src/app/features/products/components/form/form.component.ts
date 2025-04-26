@@ -9,6 +9,7 @@ import {StockStatusEnum} from '../../../../types/products/stock-status.enum';
 import {FeaturedEnum} from '../../../../types/products/featured.enum';
 import {AuthService} from '../../../../core/auth/auth.service';
 import {AttributeValue} from '../../../../types/attribute-values/attribute-value';
+import {PackageSizeEnum} from '../../../../types/products/package-size.enum';
 
 @Component({
   selector: 'app-form',
@@ -88,6 +89,7 @@ export class FormComponent extends ModalComponent implements OnInit {
         sale_price: this.form.value.sale_price,
         SKU: this.form.value.sku,
         quantity: this.form.value.quantity,
+        package_size: this.form.value.package_size,
         stock_status: this.form.value.stock_status,
         featured: this.form.value.featured === 'yes' ? 1 : 0,
         seller_id: Number(user.payload.id),
@@ -131,6 +133,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       sale_price: this.formData.sale_price,
       sku: this.formData.SKU,
       quantity: this.formData.quantity,
+      package_size: this.formData.package_size,
       stock_status: this.formData.has_stock === true ? 'instock' : 'outofstock',
       featured: this.formData.featured === 0 ? 'no' : 'yes',
     })
@@ -157,6 +160,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       sale_price: new FormControl(0),
       sku: new FormControl('', [Validators.required]),
       quantity: new FormControl(1, [Validators.required]),
+      package_size: new FormControl('', [Validators.required]),
       stock_status: new FormControl('', [Validators.required]),
       featured: new FormControl('', [Validators.required]),
       image: new FormControl(''),
@@ -175,4 +179,5 @@ export class FormComponent extends ModalComponent implements OnInit {
 
   protected readonly StockStatus = StockStatusEnum;
   protected readonly FeaturedEnum = FeaturedEnum;
+  protected readonly PackageSizeEnum = PackageSizeEnum;
 }

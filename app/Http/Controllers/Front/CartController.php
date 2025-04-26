@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplyCouponCodeRequest;
 use App\Models\ProductAttributeValue;
-use App\Models\Shipping;
+use App\Models\DeliveryMethod;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Services\Cart\Facade\Cart;
 use App\Services\Interfaces\ICouponService;
@@ -25,7 +25,7 @@ class CartController extends Controller
     public function index()
     {
         $items = Cart::instance('cart')->content();
-        $shippings = Shipping::all();
+        $shippings = DeliveryMethod::all();
         $currency = config('shop.currency');
         $productAttributes = ProductAttributeValue::all();
         return view('front.cart', compact('items', 'currency', 'shippings', 'productAttributes'));

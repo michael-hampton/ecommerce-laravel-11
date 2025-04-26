@@ -2,7 +2,8 @@
 
 namespace App\Services\Cart;
 
-use App\Models\Shipping;
+use App\Models\Address;
+use App\Models\DeliveryMethod;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
@@ -16,6 +17,12 @@ class CartItem implements Arrayable, Jsonable
      * @var string
      */
     public $rowId;
+
+    /**
+     * The address id of the user placing the order used to get the country for the delivery method
+     * @var int
+     */
+    private $addressId = 0;
 
     /**
      * The ID of the cart item.
@@ -222,8 +229,9 @@ class CartItem implements Arrayable, Jsonable
      * @param string $thousandSeperator
      * @return string
      */
-    public function shipping($hasBulk = false, $decimals = null, $decimalPoint = null, $thousandSeperator = null): float
+    public function shipping($hasBulk = false, $addressId = 0, $decimals = null, $decimalPoint = null, $thousandSeperator = null): float
     {
+        $this->addressId = $addressId;
         $shipping = $this->getShippingId($hasBulk);
 
         $shippingPrice = $shipping->price;
@@ -231,24 +239,32 @@ class CartItem implements Arrayable, Jsonable
         return $this->numberFormat($shippingPrice, $decimals, $decimalPoint, $thousandSeperator);
     }
 
+    public function setAddressId(int $addressId) {}
+
     public function getShippingId($hasBulk = false)
     {
         $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
 
-        return Shipping::all()->where('name', $packageSize)->first();
+        $address = !empty($this->addressId) ? Address::whereId($this->addressId)->first() : auth()->user()->defaultAddress();
+        $countryId = $address->country_id;
+
+        return DeliveryMethod::all()
+            ->where('country_id', $countryId)
+            ->where('name', $packageSize)
+            ->first();
     }
 
     public function getPackageSize()
     {
         $product = $this->model;
 
-        $attribute = $product->productAttributes->where('product_attribute_id', 1)->first();
+       $size = $product->package_size;
 
-        if (empty($attribute)) {
+        if (empty($size)) {
             return 'Small';
         }
 
-        return $attribute->productAttributeValue->name;
+        return $size;
     }
 
     /**

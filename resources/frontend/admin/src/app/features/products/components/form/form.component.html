@@ -178,6 +178,17 @@
                   </div>
                 </div>
 
+                <div class="mb-3">
+                  <label for="package_size" class="form-label">Package Size</label>
+                  <select class="form-control" name="package_size" id="package_size" formControlName="package_size">
+                    <option value="">Select Option</option>
+                    <option *ngFor="let packageSize of PackageSizeEnum | keyvalue"
+                            value="{{packageSize.value}}">{{ packageSize.value }}
+                    </option>
+                  </select>
+                  <div class="form-text">Small (up to 500g), Medium (up to 1kg), Large (up to 2kg)</div>
+                </div>
+
               </div>
             </div>
 

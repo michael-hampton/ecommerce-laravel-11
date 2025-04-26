@@ -66,7 +66,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <label for="country">Country</label>
-                                            <select class="form-select" name="country">
+                                            <select class="form-select" name="country_id">
                                                 @foreach($countries as $country)
                                                     <option
                                                         value="{{Str::lower($country['name'])}}">{{$country['name']}}</option>
@@ -189,8 +189,11 @@
                                             </ul>
                                         @endif
                                     </div>
-                                </div>
 
+                                    <div class="p-3 text-center">
+                                        <button type="button" id="btn-checkout" class="btn btn-primary btn-lg rounded-pill">Place Order</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

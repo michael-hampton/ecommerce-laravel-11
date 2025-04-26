@@ -25,12 +25,13 @@ class CreateOrderRequest extends FormRequest
     {
         return [
             'name' => 'filled|string|max:100',
+            'mode' => 'required',
             'phone' => 'filled|numeric',
             'address' => 'required_without:name',
             'city' => 'filled|string',
             'state' => 'filled|string',
             'zip' => 'filled|string',
-            'country' => 'filled|string',
+            'country' => 'filled|integer|exists:countries,id',
         ];
     }
 }

@@ -50,6 +50,11 @@ class User extends Authenticatable
 
     public function reviews()
     {
-        return $this->morphMany(Review::class,'commentable');
+        return $this->morphMany(Review::class, 'commentable');
+    }
+
+    public function defaultAddress()
+    {
+        return $this->hasOne(Address::class, 'customer_id', 'id')->first();
     }
 }

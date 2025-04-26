@@ -14,7 +14,6 @@ class AttributeSeeder extends Seeder
     public function run(): void
     {
         $attributes = [
-            ['name' => 'Package Size'],
             ['name' => 'Condition'],
             ['name' => 'Color'],
             ['name' => 'Size']

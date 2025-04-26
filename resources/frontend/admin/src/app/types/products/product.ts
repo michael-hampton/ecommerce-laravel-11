@@ -12,6 +12,7 @@ export type Product = {
   stock_status: string
   featured: number
   quantity: number
+  package_size: string
   images: any
   image?: any
   brand_id: number

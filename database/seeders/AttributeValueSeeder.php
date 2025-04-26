@@ -15,20 +15,17 @@ class AttributeValueSeeder extends Seeder
     public function run(): void
     {
         $attributeValues = [
-            ['name' => 'Large', 'attribute_id' => 1],
-            ['name' => 'Small', 'attribute_id' => 1],
-            ['name' => 'Medium', 'attribute_id' => 1],
-            ['name' => 'New', 'attribute_id' => 2],
-            ['name' => 'Used', 'attribute_id' => 2],
-            ['name' => 'Refurbished', 'attribute_id' => 2],
-            ['name' => 'Red', 'attribute_id' => 3],
-            ['name' => 'Yellow', 'attribute_id' => 3],
-            ['name' => 'Orange', 'attribute_id' => 3],
-            ['name' => 'Green', 'attribute_id' => 3],
-            ['name' => 'Purple', 'attribute_id' => 3],
-            ['name' => 'Large', 'attribute_id' => 4],
-            ['name' => 'Small', 'attribute_id' => 4],
-            ['name' => 'Medium', 'attribute_id' => 4],
+            ['name' => 'New', 'attribute_id' => 1],
+            ['name' => 'Used', 'attribute_id' => 1],
+            ['name' => 'Refurbished', 'attribute_id' => 1],
+            ['name' => 'Red', 'attribute_id' => 2],
+            ['name' => 'Yellow', 'attribute_id' => 2],
+            ['name' => 'Orange', 'attribute_id' => 2],
+            ['name' => 'Green', 'attribute_id' => 2],
+            ['name' => 'Purple', 'attribute_id' => 2],
+            ['name' => 'Large', 'attribute_id' => 3],
+            ['name' => 'Small', 'attribute_id' => 3],
+            ['name' => 'Medium', 'attribute_id' => 3],
         ];
 
         foreach ($attributeValues as $attributeValue) {
