@@ -78,7 +78,7 @@ class Paypal extends BaseProvider
             $transactionData = [
                 'order_id' => $orderData['orderId'],
                 'seller_id' => $sellerId,
-                'status' => 'pending',
+                'status' => 'in-progress',
                 'payment_method' => 'paypal',
                 'customer_id' => Auth::id(),
                 'total' => $total,

@@ -79,7 +79,7 @@ class Stripe extends BaseProvider
                 $transactionData = [
                     'order_id' => $orderData['orderId'],
                     'seller_id' => $sellerId,
-                    'status' => 'pending',
+                    'status' => 'in-progress',
                     'payment_method' => 'card',
                     'customer_id' => Auth::id(),
                     'total' => $total,
@@ -91,7 +91,7 @@ class Stripe extends BaseProvider
                 Transaction::create($transactionData);
 
                 if ($charge['status'] == 'succeeded') {
-                    $order->transaction()->update(['payment_status' => 'approved']);
+                    $order->transaction()->update(['payment_status' => 'pending']);
                 }
             }
 

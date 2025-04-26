@@ -15,6 +15,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'sellers',
+    loadChildren: () => import('./features/sellers/sellers.module').then(m => m.SellersModule),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'attribute-values',
     loadChildren: () => import('./features/attribute-values/attribute-values.module').then(m => m.AttributeValuesModule),
     canActivate: [AuthGuard],

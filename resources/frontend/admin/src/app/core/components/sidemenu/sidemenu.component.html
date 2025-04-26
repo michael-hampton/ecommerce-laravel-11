@@ -15,6 +15,10 @@
       <a href="#" class="nav-link px-0 align-middle" routerLink="brands">
         <i class="text-white fs-4 fa fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Brands</span> </a>
     </li>
+    <li *hasRole="RoleEnum['Super User']">
+      <a href="#" class="nav-link px-0 align-middle" routerLink="sellers">
+        <i class="text-white fs-4 fa fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Sellers</span> </a>
+    </li>
 
     <li  *hasRole="RoleEnum['Super User']">
       <a href="#" class="nav-link px-0 align-middle" routerLink="categories">

@@ -8,13 +8,15 @@ import {SellerApi} from '../../apis/seller.api';
 import {UiError} from '../../core/services/exception.service';
 import {tap} from 'rxjs/operators';
 import {AccountDetails} from '../../types/seller/account-details';
+import {Transaction} from '../../types/orders/transaction';
 
 export interface ProfileFormState {
   imagePreview: string;
   currentFile?: File;
   data: Seller
   bank_account_details: AccountDetails
-  card_details: AccountDetails
+  card_details: AccountDetails,
+  transactions: Transaction[]
 }
 
 const defaultState: ProfileFormState = {
@@ -22,7 +24,8 @@ const defaultState: ProfileFormState = {
   currentFile: undefined,
   data: {} as Seller,
   bank_account_details: {} as AccountDetails,
-  card_details: {} as AccountDetails
+  card_details: {} as AccountDetails,
+  transactions: []
 };
 
 @Injectable()
@@ -107,6 +110,16 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     return this._api.getSeller(sellerId).pipe(
       tapResponse({
         next: (data) => this.patchState({data: data as Seller}),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  getTransactions() {
+    return this._api.getTransactions().pipe(
+      tapResponse({
+        next: (data) => this.patchState({transactions: data as Transaction[]}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this._globalStore.setLoading(false),
       })

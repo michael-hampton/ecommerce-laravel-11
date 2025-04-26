@@ -14,7 +14,9 @@ use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SellerAccountController;
 use App\Http\Controllers\Api\SellerController;
+use App\Http\Controllers\Api\SellerTransactionController;
 use App\Http\Controllers\Api\SlideController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -95,10 +97,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //seller
     Route::apiResource('sellers', SellerController::class);
-    Route::post('sellers/bank', [SellerController::class, 'saveBankDetails'])->name('admin.sellers.updateBankDetails');
-    Route::post('sellers/card', [SellerController::class, 'saveCardDetails'])->name('admin.sellers.updateCardDetails');
-    Route::get('sellers/account/bank', [SellerController::class, 'getSellerBankAccountDetails'])->name('admin.sellers.getBankDetails');
-    Route::get('sellers/account/card', [SellerController::class, 'getSellerCardAccountDetails'])->name('admin.sellers.getCardDetails');
+    Route::post('sellers/active', [SellerController::class, 'toggleActive'])->name('admin.sellers.toggleActive');
+    Route::post('sellers/account/bank', [SellerAccountController::class, 'saveBankDetails'])->name('admin.sellers.updateBankDetails');
+    Route::post('sellers/account/card', [SellerAccountController::class, 'saveCardDetails'])->name('admin.sellers.updateCardDetails');
+    Route::get('sellers/account/bank', [SellerAccountController::class, 'getSellerBankAccountDetails'])->name('admin.sellers.getBankDetails');
+    Route::get('sellers/account/card', [SellerAccountController::class, 'getSellerCardAccountDetails'])->name('admin.sellers.getCardDetails');
+    Route::get('sellers/account/transactions', [SellerTransactionController::class, 'getSellerTransactions'])->name('admin.sellers.getTransactions');
 });
 
 

@@ -27,4 +27,6 @@ class Profile extends Model
         'username',
         'email'
     ];
+
+    protected $casts = ['active' => 'boolean'];
 }

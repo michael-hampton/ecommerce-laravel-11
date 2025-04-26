@@ -32,7 +32,7 @@ class PaypalController extends Controller
         $order = $this->orderRepository->getById($orderId);
         $success = (new Paypal())->paymentSuccess($request);
 
-        $order->transaction()->update(['payment_status' => 'approved']);
+        $order->transaction()->update(['payment_status' => 'pending']);
 
         if($success){
             return view('order-confirmation', ['order' => $order]);

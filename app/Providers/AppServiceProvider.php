@@ -25,12 +25,14 @@ use App\Repositories\Interfaces\IOrderRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\ISlideRepository;
+use App\Repositories\Interfaces\ITransactionRepository;
 use App\Repositories\Interfaces\IUserRepository;
 use App\Repositories\MessageRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\SellerRepository;
 use App\Repositories\SlideRepository;
+use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
 use App\Services\AddressService;
 use App\Services\AttributeService;
@@ -81,6 +83,7 @@ class AppServiceProvider extends ServiceProvider
         IAttributeValueRepository::class => AttributeValueRepository::class,
         IMessageRepository::class => MessageRepository::class,
         ICountryRepository::class => CountryRepository::class,
+        ITransactionRepository::class => TransactionRepository::class,
     ];
 
     /**

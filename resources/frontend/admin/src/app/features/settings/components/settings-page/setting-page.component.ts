@@ -25,6 +25,8 @@ export class SettingPageComponent {
     this.initBankDetailsForm();
     this.initCardDetailsForm();
 
+    this._store.getTransactions()
+
     this._store.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
       this.bankDetailsForm?.patchValue({
         account_name: result.account_name,
