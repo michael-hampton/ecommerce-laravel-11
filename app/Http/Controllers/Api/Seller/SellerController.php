@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Seller;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\UpdateSellerActive;
-use App\Http\Requests\UpdateSellerBankDetails;
-use App\Http\Requests\UpdateSellerCardDetails;
 use App\Http\Resources\SellerResource;
-use App\Http\Resources\SlideResource;
 use App\Models\Profile;
-use App\Models\SellerBankDetails;
 use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\IUserRepository;
 use App\Services\Interfaces\ISellerService;

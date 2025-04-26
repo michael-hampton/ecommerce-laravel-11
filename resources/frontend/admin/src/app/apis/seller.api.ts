@@ -32,8 +32,16 @@ export class SellerApi {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/card`, payload);
   }
 
+  saveWithdrawal(payload: Partial<any>) {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/balance/withdraw`, payload);
+  }
+
   getSellerBankAccountDetails() {
     return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/bank`);
+  }
+
+  getWithdrawals() {
+    return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/balance/withdraw`);
   }
 
   getSellerCardDetails() {
@@ -50,6 +58,10 @@ export class SellerApi {
 
   getTransactions() {
     return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/transactions`);
+  }
+
+  getBalance() {
+    return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/balance`);
   }
 
   toggleActive(sellerId: number, active: boolean) {

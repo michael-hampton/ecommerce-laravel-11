@@ -9,6 +9,9 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'customer_id',
         'seller_id',

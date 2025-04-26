@@ -14,9 +14,10 @@ use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\SellerAccountController;
-use App\Http\Controllers\Api\SellerController;
-use App\Http\Controllers\Api\SellerTransactionController;
+use App\Http\Controllers\Api\Seller\SellerAccountController;
+use App\Http\Controllers\Api\Seller\SellerBalanceController;
+use App\Http\Controllers\Api\Seller\SellerController;
+use App\Http\Controllers\Api\Seller\SellerTransactionController;
 use App\Http\Controllers\Api\SlideController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -102,7 +103,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('sellers/account/card', [SellerAccountController::class, 'saveCardDetails'])->name('admin.sellers.updateCardDetails');
     Route::get('sellers/account/bank', [SellerAccountController::class, 'getSellerBankAccountDetails'])->name('admin.sellers.getBankDetails');
     Route::get('sellers/account/card', [SellerAccountController::class, 'getSellerCardAccountDetails'])->name('admin.sellers.getCardDetails');
-    Route::get('sellers/account/transactions', [SellerTransactionController::class, 'getSellerTransactions'])->name('admin.sellers.getTransactions');
+    Route::get('sellers/account/transactions', [SellerTransactionController::class, 'index'])->name('admin.sellers.getTransactions');
+    Route::get('sellers/account/balance', [SellerBalanceController::class, 'show'])->name('admin.sellers.getBalance');
+    Route::post('sellers/account/balance/withdraw', [SellerBalanceController::class, 'withdraw'])->name('admin.sellers.withdraw');
+    Route::get('sellers/account/balance/withdraw', [SellerBalanceController::class, 'getWithdrawals'])->name('sellers.getWithdrawals');
+
 });
 
 

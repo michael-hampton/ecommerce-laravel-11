@@ -19,6 +19,7 @@ export const defaultErrors = {
   minlength: ({requiredLength, actualLength}) => `Expect ${requiredLength} but got ${actualLength}`,
   future: (error) => 'The date must be in the future',
   matchPassword: (error) => 'Passwords must match',
+  email: (error) => 'You must enter a valid email',
 }
 
 export const FORM_ERRORS = new InjectionToken('FORM_ERRORS', {
@@ -53,6 +54,7 @@ export class FieldValidationFlagDirective implements OnInit {
       const controlErrors = this.control.errors;
       if (controlErrors) {
         const firstKey = Object.keys(controlErrors)[0];
+        alert(firstKey)
         const getError = this.errors[firstKey];
         const text = getError(controlErrors[firstKey]);
 

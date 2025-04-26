@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Seller;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\TransactionResource;
 use App\Repositories\Interfaces\ITransactionRepository;
 
@@ -13,7 +13,7 @@ class SellerTransactionController extends ApiController
 
     }
 
-    public function getSellerTransactions()
+    public function index()
     {
         $transactions = $this->transactionRepository->getAll(null, 'created_at', 'desc');
 

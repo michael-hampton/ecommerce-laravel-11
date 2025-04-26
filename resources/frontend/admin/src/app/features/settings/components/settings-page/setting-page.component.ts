@@ -17,22 +17,27 @@ export class SettingPageComponent {
   vm$ = this._store.vm$
   form?: FormGroup;
   private fb = inject(FormBuilder)
-  private bankDetailsForm: FormGroup;
-  private cardDetailsForm: FormGroup;
+  bankDetailsForm: FormGroup;
+  cardDetailsForm: FormGroup;
+  withdrawForm: FormGroup;
 
   ngOnInit() {
     this.initForm();
     this.initBankDetailsForm();
     this.initCardDetailsForm();
+    this.initWithdrawBalanceForm()
 
-    this._store.getTransactions()
+    this._store.getTransactions().subscribe()
+    this._store.getBalance().subscribe()
+    this._store.getWithdrawals().subscribe()
 
     this._store.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
-      this.bankDetailsForm?.patchValue({
-        account_name: result.account_name,
-        account_number: result.account_number,
-        sort_code: result.sort_code,
-        bank_name: result.bank_name,
+      console.log('res', result)
+      this.bankDetailsForm.patchValue({
+        accountHolderName: result.account_name,
+        accountNumber: result.account_number,
+        routingNumber: result.sort_code,
+        bankName: result.bank_name,
       })
     });
 
@@ -116,8 +121,6 @@ export class SettingPageComponent {
         bank_name: this.bankDetailsForm.value.bankName,
       };
 
-      console.log('model', model)
-
       this._store.saveBankDetails(model).subscribe(result => {
         alert('good');
       })
@@ -127,7 +130,7 @@ export class SettingPageComponent {
   initBankDetailsForm() {
     this.bankDetailsForm = this.fb.group({
       accountHolderName: new FormControl('', [Validators.required]),
-      accountNumber: new FormControl('', [Validators.email]),
+      accountNumber: new FormControl('', [Validators.required]),
       routingNumber: new FormControl('', [Validators.required]),
       bankName: new FormControl('', [Validators.required]),
     })
@@ -136,9 +139,15 @@ export class SettingPageComponent {
   initCardDetailsForm() {
     this.cardDetailsForm = this.fb.group({
       nameOnCard: new FormControl('', [Validators.required]),
-      expiry: new FormControl('', [Validators.email]),
+      expiry: new FormControl('', [Validators.required]),
       cvvCode: new FormControl('', [Validators.required]),
       cardNumber: new FormControl('', [Validators.required]),
+    })
+  }
+
+  initWithdrawBalanceForm() {
+    this.withdrawForm = this.fb.group({
+      amount: new FormControl(0, [Validators.required]),
     })
   }
 
@@ -157,5 +166,14 @@ export class SettingPageComponent {
       bio: new FormControl(''),
       image: new FormControl(''),
     })
+  }
+
+  withdraw() {
+    if (this.withdrawForm.valid) {
+      this._store.saveWithdrawal({amount: this.withdrawForm.value.amount}).subscribe(result => {
+        this._store.getBalance().subscribe()
+      });
+    }
+    console.log(this.withdrawForm.value)
   }
 }
