@@ -23,6 +23,22 @@ export class SellerApi {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload);
   }
 
+  saveBankDetails(payload: Partial<any>) {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/bank`, payload);
+  }
+
+  saveCardDetails(payload: Partial<any>) {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/card`, payload);
+  }
+
+  getSellerBankAccountDetails() {
+    return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/bank`);
+  }
+
+  getSellerCardDetails() {
+    return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/card`);
+  }
+
   update(id: number, payload: Partial<Seller>) {
     return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }

@@ -2,6 +2,7 @@ import {Component, inject} from '@angular/core';
 import {ProfileStore} from '../../../../store/profile/form.store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Seller} from '../../../../types/seller/seller';
+import {AccountDetails} from '../../../../types/seller/account-details';
 
 @Component({
   selector: 'app-setting-page',
@@ -16,9 +17,31 @@ export class SettingPageComponent {
   vm$ = this._store.vm$
   form?: FormGroup;
   private fb = inject(FormBuilder)
+  private bankDetailsForm: FormGroup;
+  private cardDetailsForm: FormGroup;
 
   ngOnInit() {
     this.initForm();
+    this.initBankDetailsForm();
+    this.initCardDetailsForm();
+
+    this._store.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
+      this.bankDetailsForm?.patchValue({
+        account_name: result.account_name,
+        account_number: result.account_number,
+        sort_code: result.sort_code,
+        bank_name: result.bank_name,
+      })
+    });
+
+    this._store.getSellerCardDetails().subscribe((result: AccountDetails) => {
+      this.cardDetailsForm?.patchValue({
+        nameOnCard: result.card_name,
+        expiry: result.card_expiry_date,
+        cvvCode: result.card_cvv,
+        cardNumber: result.card_number,
+      })
+    });
 
     this._store.getData(1).subscribe((result: Seller) => {
       this.form?.patchValue({
@@ -40,8 +63,6 @@ export class SettingPageComponent {
   }
 
   save() {
-      alert('saving')
-
     if (this.form?.valid) {
       const model: Seller = {
         name: this.form.value.name,
@@ -65,6 +86,58 @@ export class SettingPageComponent {
         alert('good');
       })
     }
+  }
+
+  saveCardDetails() {
+    if (this.form?.valid) {
+      const model = {
+        card_name: this.cardDetailsForm.value.nameOnCard,
+        card_expiry_date: this.cardDetailsForm.value.expiry,
+        card_cvv: this.cardDetailsForm.value.cvvCode,
+        card_number: this.cardDetailsForm.value.cardNumber,
+      };
+
+      console.log('model', model)
+
+      this._store.saveCardDetails(model).subscribe(result => {
+        alert('good');
+      })
+    }
+  }
+
+  saveBankDetails() {
+    if (this.form?.valid) {
+      const model = {
+        account_name: this.bankDetailsForm.value.accountHolderName,
+        account_number: this.bankDetailsForm.value.accountNumber,
+        sort_code: this.bankDetailsForm.value.routingNumber,
+        bank_name: this.bankDetailsForm.value.bankName,
+      };
+
+      console.log('model', model)
+
+      this._store.saveBankDetails(model).subscribe(result => {
+        alert('good');
+      })
+    }
+  }
+
+  initBankDetailsForm() {
+    this.bankDetailsForm = this.fb.group({
+      accountHolderName: new FormControl('', [Validators.required]),
+      accountNumber: new FormControl('', [Validators.email]),
+      routingNumber: new FormControl('', [Validators.required]),
+      bankName: new FormControl('', [Validators.required]),
+    })
+  }
+
+  initCardDetailsForm() {
+    this.cardDetailsForm = this.fb.group({
+      nameOnCard: new FormControl('', [Validators.required]),
+      expiry: new FormControl('', [Validators.email]),
+      cvvCode: new FormControl('', [Validators.required]),
+      cardNumber: new FormControl('', [Validators.required]),
+    })
   }
 
   initForm() {

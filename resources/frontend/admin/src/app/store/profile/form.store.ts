@@ -7,17 +7,22 @@ import {Seller} from '../../types/seller/seller';
 import {SellerApi} from '../../apis/seller.api';
 import {UiError} from '../../core/services/exception.service';
 import {tap} from 'rxjs/operators';
+import {AccountDetails} from '../../types/seller/account-details';
 
 export interface ProfileFormState {
   imagePreview: string;
   currentFile?: File;
   data: Seller
+  bank_account_details: AccountDetails
+  card_details: AccountDetails
 }
 
 const defaultState: ProfileFormState = {
   imagePreview: '',
   currentFile: undefined,
-  data: {} as Seller
+  data: {} as Seller,
+  bank_account_details: {} as AccountDetails,
+  card_details: {} as AccountDetails
 };
 
 @Injectable()
@@ -34,14 +39,39 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   saveData = (payload: Partial<Seller>) => {
     const {id, ...dataCreate} = payload
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
-    this._globalStore.setLoading(true)
 
     return request$.pipe(
+      tap(() => this._globalStore.setLoading(true)),
       tapResponse({
-        next: (users) => {
-          this._globalStore.setSuccess('Saved successfully');
-          //this.patchState({loading: false, saveSuccess: true})
+        next: (users) =>  this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => {
+          this._globalStore.setLoading(false)
+          this._globalStore.setError(UiError(error))
         },
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  saveBankDetails = (payload: Partial<any>) => {
+    return this._api.saveBankDetails(payload).pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (users) => this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => {
+          this._globalStore.setLoading(false)
+          this._globalStore.setError(UiError(error))
+        },
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  saveCardDetails = (payload: Partial<any>) => {
+    return this._api.saveCardDetails(payload).pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (users) => this._globalStore.setSuccess('Saved successfully'),
         error: (error: HttpErrorResponse) => {
           this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))
@@ -77,6 +107,26 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     return this._api.getSeller(sellerId).pipe(
       tapResponse({
         next: (data) => this.patchState({data: data as Seller}),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  getSellerBankAccountDetails() {
+    return this._api.getSellerBankAccountDetails().pipe(
+      tapResponse({
+        next: (data) => this.patchState({bank_account_details: data as AccountDetails}),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  getSellerCardDetails() {
+    return this._api.getSellerCardDetails().pipe(
+      tapResponse({
+        next: (data) => this.patchState({card_details: data as AccountDetails}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this._globalStore.setLoading(false),
       })

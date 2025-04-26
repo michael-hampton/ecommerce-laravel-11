@@ -95,7 +95,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //seller
     Route::apiResource('sellers', SellerController::class);
-
+    Route::post('sellers/bank', [SellerController::class, 'saveBankDetails'])->name('admin.sellers.updateBankDetails');
+    Route::post('sellers/card', [SellerController::class, 'saveCardDetails'])->name('admin.sellers.updateCardDetails');
+    Route::get('sellers/account/bank', [SellerController::class, 'getSellerBankAccountDetails'])->name('admin.sellers.getBankDetails');
+    Route::get('sellers/account/card', [SellerController::class, 'getSellerCardAccountDetails'])->name('admin.sellers.getCardDetails');
 });
 
 
