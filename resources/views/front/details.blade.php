@@ -99,10 +99,10 @@
                         <p class="mb-4">{{$product->short_description}}</p>
                         <div class="row">
                             <dt class="col-3">Brand:</dt>
-                            <dd class="col-9">{{$product->brand->name}}</dd>
+                            <dd class="col-9"><a href="{{route('shop.index', ['brandId' => $product->brand_id])}}">{{$product->brand->name}}</a></dd>
 
                             <dt class="col-3">Category</dt>
-                            <dd class="col-9">{{$product->category->name}}</dd>
+                            <dd class="col-9"><a href="{{route('shop.index', ['categoryId' => $product->category_id])}}">{{$product->category->name}}</a></dd>
 
                             <dt class="col-3">Seller</dt>
                             <dd class="col-9"><a
