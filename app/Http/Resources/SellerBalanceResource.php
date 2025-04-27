@@ -16,7 +16,8 @@ class SellerBalanceResource extends JsonResource
     {
         return [
             'seller_id' => $this->seller_id,
-            'balance' => $this->balance
+            'balance' => $this->balance,
+            'previous_balance' => $this->previous_balance
         ];
     }
 }

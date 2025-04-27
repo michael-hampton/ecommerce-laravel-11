@@ -25,6 +25,7 @@ class WithdrawBalanceRequest extends FormRequest
     {
         return [
             'amount' => ['required','numeric','min:1', new CheckBalanceForWithdraw()],
+            'transactionId' => ['sometimes','numeric','exists:transactions,id'],
         ];
     }
 }

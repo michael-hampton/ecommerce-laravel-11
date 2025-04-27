@@ -9,8 +9,9 @@ import {UiError} from '../../core/services/exception.service';
 import {tap} from 'rxjs/operators';
 import {AccountDetails} from '../../types/seller/account-details';
 import {Transaction} from '../../types/orders/transaction';
-import {Balance} from '../../types/seller/balance';
+import {Balance, BalanceCollection} from '../../types/seller/balance';
 import {Withdrawal} from '../../types/seller/withdrawal';
+import {Billing} from '../../types/seller/billing';
 
 export interface ProfileFormState {
   imagePreview: string;
@@ -19,8 +20,9 @@ export interface ProfileFormState {
   bank_account_details: AccountDetails
   card_details: AccountDetails,
   transactions: Transaction[],
-  balance: Balance,
-  withdrawals: Withdrawal[]
+  balance: BalanceCollection,
+  withdrawals: Withdrawal[],
+  billing: Billing
 }
 
 const defaultState: ProfileFormState = {
@@ -30,8 +32,9 @@ const defaultState: ProfileFormState = {
   bank_account_details: {} as AccountDetails,
   card_details: {} as AccountDetails,
   transactions: [],
-  balance: {} as Balance,
-  withdrawals: []
+  balance: {} as BalanceCollection,
+  withdrawals: [],
+  billing: {} as Billing
 };
 
 @Injectable()
@@ -53,6 +56,22 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
 
     return request$.pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (users) =>  this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => {
+          this._globalStore.setLoading(false)
+          this._globalStore.setError(UiError(error))
+        },
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  saveBilling = (payload: Partial<Seller>) => {
+    const {id, ...dataCreate} = payload
+
+    return this._api.saveBilling(payload).pipe(
       tap(() => this._globalStore.setLoading(true)),
       tapResponse({
         next: (users) =>  this._globalStore.setSuccess('Saved successfully'),
@@ -152,7 +171,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   getBalance() {
     return this._api.getBalance().pipe(
       tapResponse({
-        next: (data) => this.patchState({balance: data as Balance}),
+        next: (data) => this.patchState({balance: data as BalanceCollection}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this._globalStore.setLoading(false),
       })
@@ -173,6 +192,16 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     return this._api.getWithdrawals().pipe(
       tapResponse({
         next: (data) => this.patchState({withdrawals: data as Withdrawal[]}),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  getBilling() {
+    return this._api.getWithdrawals().pipe(
+      tapResponse({
+        next: (data) => this.patchState({billing: data as Billing}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this._globalStore.setLoading(false),
       })

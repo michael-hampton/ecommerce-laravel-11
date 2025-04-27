@@ -13,5 +13,5 @@ class SellerBalance extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['balance', 'seller_id'];
+    protected $fillable = ['balance', 'seller_id', 'previous_balance', 'transaction_id'];
 }

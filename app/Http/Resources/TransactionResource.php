@@ -24,6 +24,7 @@ class TransactionResource extends JsonResource
             'payment_method' => $this->payment_method,
             'payment_status' => $this->payment_status,
             'customer' => UserResource::make($this->customer),
+            'withdrawn' => $this->withdrawn,
             'seller_id' => $this->seller_id,
             'country' => $this->country,
             'created_at' => $this->created_at,

@@ -7,16 +7,27 @@ use App\Http\Resources\SellerBalanceResource;
 use App\Http\Resources\SellerWithdrawalResource;
 use App\Models\SellerBalance;
 use App\Models\SellerWithdrawal;
+use App\Models\Transaction;
+use App\Repositories\Interfaces\ISellerRepository;
+use App\Services\Interfaces\ISellerService;
 use Illuminate\Http\JsonResponse;
 
 class SellerBalanceController
 {
+    public function __construct(private ISellerService $sellerService)
+    {
+
+    }
+
 
     public function show()
     {
-        $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->first();
+        $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->get();
 
-        return response()->json(SellerbalanceResource::make($sellerBalance));
+        return response()->json([
+            'balances' => SellerBalanceResource::collection($sellerBalance),
+            'current' => SellerBalanceResource::make($sellerBalance->sortBy('balance')->first())
+        ]);
     }
 
     /**
@@ -25,17 +36,9 @@ class SellerBalanceController
      */
     public function withdraw(WithdrawBalanceRequest $request)
     {
-        $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->first();
-        $affectedRows = $sellerBalance->decrement('balance', $request->get('amount'));
+        $result = $this->sellerService->withdrawFunds($request->all());
 
-        if (!empty($affectedRows)) {
-            SellerWithdrawal::create([
-                'amount' => $request->get('amount'),
-                'seller_id' => auth('sanctum')->id()
-            ]);
-        }
-
-        return response()->json(SellerBalanceResource::make($sellerBalance->fresh()));
+        return response()->json(SellerBalanceResource::make($result));
     }
 
     public function getWithdrawals()

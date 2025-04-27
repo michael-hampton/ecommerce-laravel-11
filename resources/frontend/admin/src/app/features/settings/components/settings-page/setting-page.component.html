@@ -24,6 +24,8 @@
              aria-controls="nav-payment" aria-selected="false">Payments In</a>
           <a class="nav-link" id="balance-tab" data-bs-toggle="tab" href="#nav-balance" role="tab"
              aria-controls="nav-balance" aria-selected="false">Withdrawals</a>
+          <a class="nav-link" id="billing-tab" data-bs-toggle="tab" href="#nav-billing" role="tab"
+             aria-controls="nav-billing" aria-selected="false">Billing Information</a>
 
         </div>
       </nav>
@@ -178,6 +180,7 @@
               <th>Discount</th>
               <th>Commission</th>
               <th>Date</th>
+              <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -190,6 +193,10 @@
               <td>{{ transaction.discount | currency }}</td>
               <td>{{ transaction.commission | currency }}</td>
               <td>{{ transaction.created_at | date }}</td>
+              <td>
+                <i *ngIf="!transaction.withdrawn" style="cursor: pointer"
+                   (click)="withdrawFromTransaction(transaction.total, transaction.id)" class="fa fa-sign-out"></i>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -202,7 +209,7 @@
             </div>
 
             <div class="card-body">
-              <h3>{{ vm.balance.balance | currency }}</h3>
+              <h3>{{ vm.balance.current.balance | currency }}</h3>
 
               <form [formGroup]="withdrawForm">
                 <div class="mb-3">
@@ -230,6 +237,47 @@
                   <span class="">{{ withdrawal.amount }}</span>
                 </li>
               </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-billing" role="tabpanel" aria-labelledby="nav-billing-tab">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Billing</h5>
+            </div>
+
+            <div class="card-body">
+              <form method="post" admin-form enctype="multipart/form-data" [formGroup]="billingForm">
+                <div class="form-group">
+                  <label for="inputAddress">Address</label>
+                  <input type="text" class="form-control" id="inputAddress" name="address1" placeholder="1234 Main St"
+                         formControlName="address1">
+                </div>
+                <div class="form-group">
+                  <label for="inputAddress2">Address 2</label>
+                  <input type="text" class="form-control" id="inputAddress2" name="address2"
+                         placeholder="Apartment, studio, or floor" formControlName="address2">
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-lg-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" class="form-control" id="city" name="city" formControlName="city">
+                  </div>
+                  <div class="form-group col-lg-4">
+                    <label for="inputState">State</label>
+                    <input type="text" class="form-control" id="state" name="state" formControlName="state">
+                  </div>
+                  <div class="form-group col-lg-2">
+                    <label for="inputZip">Zip</label>
+                    <input type="text" class="form-control" id="inputZip" name="zip" formControlName="zip">
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="card-footer text-end">
+              <button class="btn btn-primary" (click)="saveBilling()">Withdraw</button>
             </div>
           </div>
         </div>

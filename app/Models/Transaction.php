@@ -22,6 +22,7 @@ class Transaction extends Model
         'total',
         'shipping',
         'discount',
+        'withdrawn'
     ];
 
     public function order() {

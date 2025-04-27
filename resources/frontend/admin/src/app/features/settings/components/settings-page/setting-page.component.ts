@@ -20,15 +20,20 @@ export class SettingPageComponent {
   bankDetailsForm: FormGroup;
   cardDetailsForm: FormGroup;
   withdrawForm: FormGroup;
+   billingForm: FormGroup;
 
   ngOnInit() {
     this.initForm();
     this.initBankDetailsForm();
     this.initCardDetailsForm();
     this.initWithdrawBalanceForm()
+    this.initBillingForm();
 
+    this._store.getBilling().subscribe()
     this._store.getTransactions().subscribe()
-    this._store.getBalance().subscribe()
+    this._store.getBalance().subscribe(result => {
+      console.log('res', result)
+    })
     this._store.getWithdrawals().subscribe()
 
     this._store.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
@@ -90,6 +95,24 @@ export class SettingPageComponent {
       console.log('model', model)
 
       this._store.saveData(model).subscribe(result => {
+        alert('good');
+      })
+    }
+  }
+
+  saveBilling() {
+    if (this.form?.valid) {
+      const model: Seller = {
+        address1: this.form.value.address1,
+        address2: this.form.value.address2,
+        city: this.form.value.city,
+        state: this.form.value.state,
+        zip: this.form.value.zip,
+      } as Seller;
+
+      console.log('model', model)
+
+      this._store.saveBilling(model).subscribe(result => {
         alert('good');
       })
     }
@@ -158,13 +181,23 @@ export class SettingPageComponent {
       email: new FormControl('', [Validators.email]),
       phone: new FormControl('', [Validators.required]),
       username: new FormControl('', [Validators.required]),
-      address1: new FormControl(1),
-      address2: new FormControl(0),
+      address1: new FormControl(''),
+      address2: new FormControl(''),
       city: new FormControl(''),
       state: new FormControl(''),
       zip: new FormControl(''),
       bio: new FormControl(''),
       image: new FormControl(''),
+    })
+  }
+
+  initBillingForm() {
+    this.billingForm = this.fb.group({
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      city: new FormControl(''),
+      state: new FormControl(''),
+      zip: new FormControl(''),
     })
   }
 
@@ -175,5 +208,11 @@ export class SettingPageComponent {
       });
     }
     console.log(this.withdrawForm.value)
+  }
+
+  withdrawFromTransaction(amount: number, transactionId: number) {
+    this._store.saveWithdrawal({amount: amount, transactionId: transactionId}).subscribe(result => {
+      this._store.getBalance().subscribe()
+    });
   }
 }

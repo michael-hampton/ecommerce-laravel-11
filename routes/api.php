@@ -107,6 +107,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sellers/account/balance', [SellerBalanceController::class, 'show'])->name('admin.sellers.getBalance');
     Route::post('sellers/account/balance/withdraw', [SellerBalanceController::class, 'withdraw'])->name('admin.sellers.withdraw');
     Route::get('sellers/account/balance/withdraw', [SellerBalanceController::class, 'getWithdrawals'])->name('sellers.getWithdrawals');
+    Route::post('sellers/billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'store'])->name('sellers.billing');
+    Route::get('billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'show'])->name('sellers.billing');
 
 });
 

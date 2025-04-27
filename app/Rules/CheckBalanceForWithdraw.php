@@ -16,7 +16,7 @@ class CheckBalanceForWithdraw implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->user()->id)->first();
+        $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->user()->id)->orderBy('balance')->first();
 
         if ($sellerBalance->balance < request()->float('amount')) {
             $fail('Insufficient funds');

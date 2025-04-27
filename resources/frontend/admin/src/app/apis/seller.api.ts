@@ -24,6 +24,10 @@ export class SellerApi {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload);
   }
 
+  saveBilling(payload: Partial<Seller>) {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/billing`, payload);
+  }
+
   saveBankDetails(payload: Partial<any>) {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/bank`, payload);
   }
@@ -42,6 +46,10 @@ export class SellerApi {
 
   getWithdrawals() {
     return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/balance/withdraw`);
+  }
+
+  getBilling() {
+    return this.httpClient.get(`${environment.apiUrl}/billing`);
   }
 
   getSellerCardDetails() {
