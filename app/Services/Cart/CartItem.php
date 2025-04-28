@@ -17,48 +17,41 @@ class CartItem implements Arrayable, Jsonable
      * @var string
      */
     public $rowId;
-
-    /**
-     * The address id of the user placing the order used to get the country for the delivery method
-     * @var int
-     */
-    private $addressId = 0;
-
     /**
      * The ID of the cart item.
      *
      * @var int|string
      */
     public $id;
-
     /**
      * The quantity for this cart item.
      *
      * @var int|float
      */
     public $qty;
-
     /**
      * The name of the cart item.
      *
      * @var string
      */
     public $name;
-
     /**
      * The price without TAX of the cart item.
      *
      * @var float
      */
     public $price;
-
     /**
      * The options for this cart item.
      *
      * @var array
      */
     public $options;
-
+    /**
+     * The address id of the user placing the order used to get the country for the delivery method
+     * @var int
+     */
+    private $addressId = 0;
     /**
      * The FQN of the associated model.
      *
@@ -239,32 +232,43 @@ class CartItem implements Arrayable, Jsonable
         return $this->numberFormat($shippingPrice, $decimals, $decimalPoint, $thousandSeperator);
     }
 
-    public function setAddressId(int $addressId) {}
-
     public function getShippingId($hasBulk = false)
     {
         $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
 
         $address = !empty($this->addressId) ? Address::whereId($this->addressId)->first() : auth()->user()->defaultAddress();
+
+        if (empty($address)) {
+            return DeliveryMethod::all()
+                ->where('name', $packageSize)
+                ->first()
+            ;
+        }
+
         $countryId = $address->country_id;
 
         return DeliveryMethod::all()
             ->where('country_id', $countryId)
             ->where('name', $packageSize)
-            ->first();
+            ->first()
+        ;
     }
 
     public function getPackageSize()
     {
         $product = $this->model;
 
-       $size = $product->package_size;
+        $size = $product->package_size;
 
         if (empty($size)) {
             return 'Small';
         }
 
         return $size;
+    }
+
+    public function setAddressId(int $addressId)
+    {
     }
 
     /**

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->bigInteger('customer_id')->unsigned();
             $table->bigInteger('seller_id')->unsigned();
             $table->bigInteger('order_id')->unsigned();
-            $table->enum('payment_method', ['cash', 'card', 'paypal']);
-            $table->enum('payment_status', ['pending', 'approved', 'declined', 'refunded'])->default('pending');
+            $table->enum('payment_method', ['cash', 'card', 'paypal', 'seller_balance']);
+            $table->enum('payment_status', ['pending', 'approved', 'declined', 'refunded', 'in-progress'])->default('pending');
             $table->decimal('total', 8, 4)->default(0);
             $table->decimal('shipping', 8, 4)->default(0);
             $table->decimal('discount', 8, 4)->default(0);

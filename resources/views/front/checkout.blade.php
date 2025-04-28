@@ -201,6 +201,16 @@
                                                 Cash on delivery
                                             </label>
                                         </div>
+                                        @if(in_array(auth()->user()->utype, ['SUPER', 'ADM']))
+                                        <div class="form-check">
+                                            <input class="form-check-input form-check-input_fill" type="radio"
+                                                   name="mode"
+                                                   id="mode3" value="seller_balance">
+                                            <label class="form-check-label" for="checkout_payment_method_3">
+                                               Use Seller balance
+                                            </label>
+                                        </div>
+                                        @endif
                                         <div class="form-check">
                                             <input class="form-check-input form-check-input_fill" type="radio"
                                                    name="mode"

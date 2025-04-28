@@ -2,6 +2,7 @@
   <table class="table table-bordered table-striped">
     <thead>
     <tr>
+      <th>Id</th>
       <th>Customer</th>
       <th>Payment Method</th>
       <th>Status</th>
@@ -15,6 +16,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let transaction of vm.transactions">
+      <td>{{ transaction.id }}</td>
       <td>{{ transaction.customer.name }}</td>
       <td>{{ transaction.payment_method }}</td>
       <td>{{ transaction.payment_status }}</td>

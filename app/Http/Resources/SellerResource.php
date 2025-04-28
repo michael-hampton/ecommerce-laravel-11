@@ -27,7 +27,8 @@ class SellerResource extends JsonResource
             'address1' => $this->address1,
             'address2' => $this->address2,
             'website' => $this->website,
-            'active' => $this->active
+            'active' => $this->active,
+            'username' => $this->username
         ];
     }
 }

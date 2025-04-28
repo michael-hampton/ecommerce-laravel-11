@@ -92,7 +92,8 @@
                                     <td class="text-center">{{$item->status == 0 ? 'No' : 'Yes'}}</td>
                                     <td class="text-center">
                                         {{$item->approved_date}}
-                                        <a href="{{route('orders.reportOrder', ['orderItemId' => $item->id])}}" class="btn btn-warning btn-lg">Report an issue</a>
+                                        <a href="{{route('orders.reportOrder', ['orderItemId' => $item->id])}}"
+                                           class="btn btn-warning btn-lg">Report an issue</a>
                                         @if($order->status === 'delivered')
                                             <a href="{{route('createReview', ['orderItemId' => $item->id])}}">
                                                 Review Product
@@ -142,12 +143,12 @@
                             </tr>
                             <tr>
                                 <th>Total</th>
-                                <td>$208.12</td>
+                                <td>{{$order->total}}</td>
                                 <th>Payment Mode</th>
-                                <td>{{$order->transaction->first()->payment_method}}</td>
+                                <td>{{$order->transaction->count() > 0 ? $order->transaction->first()->payment_method : 'Seller Balance'}}</td>
                                 <th>Status</th>
                                 <td>
-                                    <span class="badge bg-success">Approved</span>
+                                    <span class="badge bg-success">{{$order->status}}</span>
                                 </td>
                             </tr>
                             </tbody>
@@ -155,15 +156,18 @@
                     </div>
                 </div>
 
-                <div class="wg-box mt-5 d-flex align-items-center justify-content-between">
-                    <form action="{{route('orders.cancelOrder', ['orderId' => $order->id])}}" method="POST">
-                        @csrf
-                        @method('put')
-                        <button type="submit" class="btn btn-danger cancel-order">Cancel Order</button>
-                    </form>
+                @if($order->status !== 'complete')
+                    <div class="wg-box mt-5 d-flex align-items-center justify-content-between">
+                        <form action="{{route('orders.cancelOrder', ['orderId' => $order->id])}}" method="POST">
+                            @csrf
+                            @method('put')
+                            <button type="submit" class="btn btn-danger cancel-order">Cancel Order</button>
+                        </form>
 
-                    <a href="{{route('orders.approveOrder', ['orderId' => $order->id])}}" class="btn btn-success btn-lg">I'm happy with the order</a>
-                </div>
+                        <a href="{{route('orders.approveOrder', ['orderId' => $order->id])}}"
+                           class="btn btn-success btn-lg">I'm happy with the order</a>
+                    </div>
+                @endif
             </div>
         </div>
         @endsection

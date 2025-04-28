@@ -82,7 +82,7 @@ class Stripe extends BaseProvider
                     'status' => 'in-progress',
                     'payment_method' => 'card',
                     'customer_id' => Auth::id(),
-                    'total' => $total,
+                    'total' => $total - $commission,
                     'commission' => $commission,
                     'shipping' => $shipping,
                     'discount' => Session::has('coupon') ? Session::get('coupon')['value'] : 0,

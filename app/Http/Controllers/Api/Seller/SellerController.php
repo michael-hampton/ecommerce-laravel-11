@@ -58,7 +58,7 @@ class SellerController extends ApiController
             $result = $this->userRepository->getById(auth('sanctum')->user()->id);
         }
 
-        return response()->json($result);
+        return response()->json(SellerResource::make($result));
     }
 
     /**

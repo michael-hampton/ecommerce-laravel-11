@@ -11,5 +11,12 @@ class SellerBalance extends Model
 
     protected $table = 'seller_balance';
 
-    protected $fillable = ['balance', 'seller_id', 'previous_balance', 'transaction_id'];
+    protected $fillable = [
+        'balance',
+        'seller_id',
+        'previous_balance',
+        'transaction_id',
+        'order_id',
+        'type'
+    ];
 }
