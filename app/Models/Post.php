@@ -15,7 +15,7 @@ class Post extends Model
      * @var array
      */
 
-    protected $fillable = ['title', 'message', 'seller_id', 'user_id'];
+    protected $fillable = ['title', 'message', 'seller_id', 'user_id', 'order_item_id', 'images'];
 
     /**
      * The has Many Relationship

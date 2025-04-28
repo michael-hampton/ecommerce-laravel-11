@@ -21,7 +21,10 @@ class MessageResource extends JsonResource
             'message' => $this->message,
             'seller_id' => $this->seller_id,
             'title' => $this->title,
-            'comments' => CommentResource::collection($this->comments)
+            'comments' => CommentResource::collection($this->comments),
+            'images' => collect(explode(',', $this->images))->map(function ($image) {
+                return asset('images/messages/' . $image);
+            })
         ];
     }
 }

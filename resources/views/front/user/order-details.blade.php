@@ -91,6 +91,8 @@
                                     <td class="text-center"></td>
                                     <td class="text-center">{{$item->status == 0 ? 'No' : 'Yes'}}</td>
                                     <td class="text-center">
+                                        {{$item->approved_date}}
+                                        <a href="{{route('orders.reportOrder', ['orderItemId' => $item->id])}}" class="btn btn-warning btn-lg">Report an issue</a>
                                         @if($order->status === 'delivered')
                                             <a href="{{route('createReview', ['orderItemId' => $item->id])}}">
                                                 Review Product
@@ -153,12 +155,14 @@
                     </div>
                 </div>
 
-                <div class="wg-box mt-5 text-right">
+                <div class="wg-box mt-5 d-flex align-items-center justify-content-between">
                     <form action="{{route('orders.cancelOrder', ['orderId' => $order->id])}}" method="POST">
                         @csrf
                         @method('put')
                         <button type="submit" class="btn btn-danger cancel-order">Cancel Order</button>
                     </form>
+
+                    <a href="{{route('orders.approveOrder', ['orderId' => $order->id])}}" class="btn btn-success btn-lg">I'm happy with the order</a>
                 </div>
             </div>
         </div>

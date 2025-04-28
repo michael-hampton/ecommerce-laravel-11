@@ -1,0 +1,33 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+      <th>Customer</th>
+      <th>Payment Method</th>
+      <th>Status</th>
+      <th>Total</th>
+      <th>Shipping</th>
+      <th>Discount</th>
+      <th>Commission</th>
+      <th>Date</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let transaction of vm.transactions">
+      <td>{{ transaction.customer.name }}</td>
+      <td>{{ transaction.payment_method }}</td>
+      <td>{{ transaction.payment_status }}</td>
+      <td>{{ transaction.total | currency }}</td>
+      <td>{{ transaction.shipping | currency }}</td>
+      <td>{{ transaction.discount | currency }}</td>
+      <td>{{ transaction.commission | currency }}</td>
+      <td>{{ transaction.created_at | date }}</td>
+      <td>
+        <i *ngIf="!transaction.withdrawn" style="cursor: pointer"
+           (click)="withdrawFromTransaction(transaction.total, transaction.id)" class="fa fa-sign-out"></i>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</ng-container>

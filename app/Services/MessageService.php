@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Helper;
 use App\Models\Comment;
+use App\Models\OrderItem;
 use App\Repositories\Interfaces\IMessageRepository;
 use App\Services\Interfaces\IMessageService;
+use Illuminate\Support\Facades\Log;
 
 class MessageService implements IMessageService
 {
@@ -13,18 +16,85 @@ class MessageService implements IMessageService
     {
 
     }
-    public function createMessage(array $data) {
-        return $this->repository->create($data);
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function createMessage(array $data)
+    {
+        $sellerId = $data['sellerId'] ?? null;
+
+        if (empty($sellerId) && !empty($data['orderItemId'])) {
+            $orderItem = OrderItem::whereId($data['orderItemId'])->first();
+            $sellerId = $orderItem->seller_id;
+        }
+
+        if (!empty($data['images'])) {
+            $counter = 0;
+            $gallery_arr = [];
+            foreach ($data['images'] as $file) {
+                $gextension = $file->getClientOriginalExtension();
+                $check = in_array($gextension, ['png', 'jpg', 'jpeg', 'gif']);
+                if ($check) {
+                    $gfilename = time() . "-" . $counter . "." . $gextension;
+                    $file->storeAs('messages', $gfilename, 'public');
+                    Helper::generateThumbnailImage($file, $gfilename, 'messages');
+                    array_push($gallery_arr, $gfilename);
+                    $counter = $counter + 1;
+                }
+
+                $counter++;
+            }
+            $gallery_images = implode(',', $gallery_arr);
+        }
+
+        return $this->repository->create([
+            'user_id' => auth()->id(),
+            'title' => $data['title'],
+            'message' => $data['comment'],
+            'seller_id' => $sellerId,
+            'order_item_id' => $data['orderItemId'] ?? null,
+            'images' => $gallery_images ?? null
+        ]);
     }
-    public function updateMessage(array $data, int $id) {
+
+    public function updateMessage(array $data, int $id)
+    {
 
         return $this->repository->update($id, $data);
     }
-    public function deleteMessage(int $id) {
+
+    public function deleteMessage(int $id)
+    {
         return $this->repository->delete($id);
     }
 
-    public function createComment(array $data) {
-        return Comment::create($data);
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function createComment(array $data)
+    {
+        if (!empty($data['images'])) {
+            $counter = 0;
+            $gallery_arr = [];
+            foreach ($data['images'] as $file) {
+                $gextension = $file->getClientOriginalExtension();
+                $check = in_array($gextension, ['png', 'jpg', 'jpeg', 'gif']);
+                if ($check) {
+                    $gfilename = time() . "-" . $counter . "." . $gextension;
+                    $file->storeAs('messages', $gfilename, 'public');
+                    Helper::generateThumbnailImage($file, $gfilename, 'messages');
+                    array_push($gallery_arr, $gfilename);
+                    $counter = $counter + 1;
+                }
+
+                $counter++;
+            }
+            $gallery_images = implode(',', $gallery_arr);
+        }
+
+        return Comment::create(array_merge($data, ['images' => $gallery_images ?? null]));
     }
 }

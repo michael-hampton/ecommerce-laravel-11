@@ -1,0 +1,38 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title">Balance</h5>
+    </div>
+
+    <div class="card-body">
+      <h3>{{ vm.balance?.current?.balance | currency }}</h3>
+
+      <form [formGroup]="form">
+        <div class="mb-3">
+          <label class="form-label">Amount to withdraw</label>
+          <input type="text" class="form-control" id="amount" name="amount" formControlName="amount">
+        </div>
+      </form>
+    </div>
+
+    <div class="card-footer text-end">
+      <button class="btn btn-primary" (click)="withdraw()">Withdraw</button>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-header">
+      <h5 class="card-title">Withdrawals</h5>
+    </div>
+
+    <div class="card-body">
+      <ul class="list-group">
+        <li *ngFor="let withdrawal of vm.withdrawals"
+            class="list-group-item d-flex justify-content-between align-items-start">
+          <span>{{ withdrawal.created_at | date }}</span>
+          <span class="">{{ withdrawal.amount }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-container>

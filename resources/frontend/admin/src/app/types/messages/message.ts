@@ -8,6 +8,7 @@ export type Message = {
   message: string
   title: string
   comments: Comment[]
+  images: string
 }
 
 export type Comment = Message & {
@@ -17,4 +18,5 @@ export type Comment = Message & {
 export type SaveMessage = {
   postId: number;
   message: string;
+  images?: FileList
 }

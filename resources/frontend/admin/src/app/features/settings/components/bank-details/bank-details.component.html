@@ -1,0 +1,33 @@
+<!-- Bank Details -->
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title">Bank Details</h5>
+  </div>
+
+  <div class="card-body">
+    <form admin-form [formGroup]="form">
+      <div class="mb-3">
+        <label for="accountHolderName" class="form-label">Account Holder Name</label>
+        <input type="text" class="form-control" id="accountHolderName" placeholder="Full Name"
+               formControlName="accountHolderName">
+      </div>
+      <div class="mb-3">
+        <label for="accountNumber" class="form-label">Account Number</label>
+        <input type="text" class="form-control" id="accountNumber" placeholder="Account Number"
+               formControlName="accountNumber">
+      </div>
+      <div class="mb-3">
+        <label for="routingNumber" class="form-label">Sort Code</label>
+        <input type="text" class="form-control" id="routingNumber" placeholder="Sort Code"
+               formControlName="routingNumber">
+      </div>
+      <div class="mb-3">
+        <label for="bankName" class="form-label">Bank Name</label>
+        <input type="text" class="form-control" id="bankName" placeholder="Bank Name"
+               formControlName="bankName">
+      </div>
+
+      <button class="btn btn-primary" (click)="saveBankDetails()">Save</button>
+    </form>
+  </div>
+</div>

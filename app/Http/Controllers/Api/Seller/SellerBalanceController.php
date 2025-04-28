@@ -26,7 +26,7 @@ class SellerBalanceController
 
         return response()->json([
             'balances' => SellerBalanceResource::collection($sellerBalance),
-            'current' => SellerBalanceResource::make($sellerBalance->sortBy('balance')->first())
+            'current' => SellerBalanceResource::make($sellerBalance->sortByDesc('created_at')->first())
         ]);
     }
 

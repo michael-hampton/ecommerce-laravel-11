@@ -22,7 +22,9 @@ export class MessageApi {
   }
 
   create(payload: Partial<SaveMessage>) {
-    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload);
+    const formData = this.baseHttpClient.getFormData(payload)
+    Array.from(payload.images).forEach((file: File) => { formData.append('images[]', file); });
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, formData);
   }
 
   update(id: number, payload: Partial<Attribute>) {

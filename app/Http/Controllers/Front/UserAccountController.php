@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostCommentRequest;
 use App\Http\Requests\PostReplyRequest;
 use App\Http\Requests\StoreCustomerAddressRequest;
 use App\Models\Comment;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Post;
+use App\Models\SellerBalance;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
+use App\Services\Interfaces\IMessageService;
 use App\Services\Interfaces\IOrderService;
 use function auth;
 
@@ -20,6 +25,7 @@ class UserAccountController extends Controller
         private IOrderRepository   $orderRepository,
         private IOrderService      $orderService,
         private IAddressRepository $addressRepository,
+        private IMessageService   $messageService,
     )
     {
 
@@ -47,6 +53,20 @@ class UserAccountController extends Controller
     {
         $this->orderService->updateOrder(['status' => 'cancelled'], $orderId);
         return back()->with('success', 'Order cancelled');
+    }
+
+    public function approveOrder(int $orderId)
+    {
+        $this->orderService->approveOrder($orderId);
+        return back()->with('success', 'Order cancelled');
+    }
+
+    public function reportOrder(int $orderItemId)
+    {
+        $orderItem = OrderItem::whereId($orderItemId)->first();
+        $posts = Post::where('user_id', auth()->id())->get();
+
+        return view('front.user.account-ask-a-question', compact('posts', 'orderItemId', 'orderItem'));
     }
 
     public function address()
@@ -124,12 +144,7 @@ class UserAccountController extends Controller
 
     public function createQuestion(PostCommentRequest $request)
     {
-        Post::create([
-            'user_id' => auth()->id(),
-            'title' => $request->input('title'),
-            'message' => $request->input('comment'),
-            'seller_id' => $request->input('sellerId')
-        ]);
+        $result = $this->messageService->createMessage($request->all());
 
         return back()->with('success', 'Question posted');
     }

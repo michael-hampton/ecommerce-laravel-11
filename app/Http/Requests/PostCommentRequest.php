@@ -24,9 +24,9 @@ class PostCommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:5|max:100|string',
-            'comment' => 'required|min:5|max:300|string',
-            'sellerId'=> 'required|integer|exists:users,id'
+            'title' => 'required|min:3|max:100|string',
+            'comment' => 'required|min:3|max:300|string',
+            'sellerId'=> 'sometimes|integer|exists:users,id'
         ];
     }
 }

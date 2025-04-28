@@ -9,9 +9,10 @@ import {UiError} from '../../core/services/exception.service';
 import {tap} from 'rxjs/operators';
 import {AccountDetails} from '../../types/seller/account-details';
 import {Transaction} from '../../types/orders/transaction';
-import {Balance, BalanceCollection} from '../../types/seller/balance';
+import {BalanceCollection} from '../../types/seller/balance';
 import {Withdrawal} from '../../types/seller/withdrawal';
 import {Billing} from '../../types/seller/billing';
+import {switchMap} from 'rxjs';
 
 export interface ProfileFormState {
   imagePreview: string;
@@ -58,7 +59,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     return request$.pipe(
       tap(() => this._globalStore.setLoading(true)),
       tapResponse({
-        next: (users) =>  this._globalStore.setSuccess('Saved successfully'),
+        next: (users) => this._globalStore.setSuccess('Saved successfully'),
         error: (error: HttpErrorResponse) => {
           this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))
@@ -74,7 +75,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     return this._api.saveBilling(payload).pipe(
       tap(() => this._globalStore.setLoading(true)),
       tapResponse({
-        next: (users) =>  this._globalStore.setSuccess('Saved successfully'),
+        next: (users) => this._globalStore.setSuccess('Saved successfully'),
         error: (error: HttpErrorResponse) => {
           this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))
@@ -151,32 +152,46 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   getData(sellerId: number) {
     return this._api.getSeller(sellerId).pipe(
       tapResponse({
-        next: (data) => this.patchState({data: data as Seller}),
+        next: (data) => {
+          this.patchState({data: data as Seller})
+        },
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this._globalStore.setLoading(false),
       })
     )
   }
 
-  getTransactions() {
-    return this._api.getTransactions().pipe(
-      tapResponse({
-        next: (data) => this.patchState({transactions: data as Transaction[]}),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
-      })
+  readonly getTransactions = this.effect<void>(
+    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
+    // names. We encourage to choose one of these and use them consistently in your codebase.
+    (trigger$) => trigger$.pipe(
+      switchMap(() =>
+        this._api.getTransactions().pipe(
+          tapResponse({
+            next: (data) => this.patchState({transactions: data as Transaction[]}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            finalize: () => this._globalStore.setLoading(false),
+          })
+        )
+      )
     )
-  }
+  );
 
-  getBalance() {
-    return this._api.getBalance().pipe(
-      tapResponse({
-        next: (data) => this.patchState({balance: data as BalanceCollection}),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
-      })
+  readonly getBalance = this.effect<void>(
+    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
+    // names. We encourage to choose one of these and use them consistently in your codebase.
+    (trigger$) => trigger$.pipe(
+      switchMap(() =>
+        this._api.getBalance().pipe(
+          tapResponse({
+            next: (data) => this.patchState({balance: data as BalanceCollection}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            finalize: () => this._globalStore.setLoading(false),
+          })
+        )
+      )
     )
-  }
+  );
 
   getSellerBankAccountDetails() {
     return this._api.getSellerBankAccountDetails().pipe(
@@ -188,18 +203,24 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     )
   }
 
-  getWithdrawals() {
-    return this._api.getWithdrawals().pipe(
-      tapResponse({
-        next: (data) => this.patchState({withdrawals: data as Withdrawal[]}),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
-      })
+  readonly getWithdrawals = this.effect<void>(
+    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
+    // names. We encourage to choose one of these and use them consistently in your codebase.
+    (trigger$) => trigger$.pipe(
+      switchMap(() =>
+        this._api.getWithdrawals().pipe(
+          tapResponse({
+            next: (data) => this.patchState({withdrawals: data as Withdrawal[]}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            finalize: () => this._globalStore.setLoading(false),
+          })
+        )
+      )
     )
-  }
+  );
 
   getBilling() {
-    return this._api.getWithdrawals().pipe(
+    return this._api.getBilling().pipe(
       tapResponse({
         next: (data) => this.patchState({billing: data as Billing}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),

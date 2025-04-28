@@ -6,6 +6,7 @@ import { ListComponent } from './components/list/list.component';
 import { DetailsComponent } from './components/details/details.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { PaginationComponent } from './components/pagination/pagination.component';
+import {SharedModule} from "../../shared/shared.module";
 
 
 @NgModule({
@@ -14,10 +15,11 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     DetailsComponent,
     PaginationComponent
   ],
-  imports: [
-    CommonModule,
-    MessagesRoutingModule,
-    ReactiveFormsModule
-  ]
+    imports: [
+        CommonModule,
+        MessagesRoutingModule,
+        ReactiveFormsModule,
+        SharedModule
+    ]
 })
 export class MessagesModule { }

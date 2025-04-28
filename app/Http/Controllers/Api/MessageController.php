@@ -8,6 +8,7 @@ use App\Http\Resources\MessageResource;
 use App\Repositories\Interfaces\IMessageRepository;
 use App\Services\Interfaces\IMessageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends ApiController
 {
@@ -36,10 +37,13 @@ class MessageController extends ApiController
      */
     public function store(PostReplyRequest $request)
     {
+        Log::info($request->hasFile('images'));
+
         $result = $this->messageService->createComment([
             'user_id' => auth('sanctum')->user()->id,
             'post_id' => $request->integer('postId'),
-            'message' => $request->string('message')
+            'message' => $request->string('message'),
+            'images' => $request->file('images')
         ]);
 
         return response()->json($result);

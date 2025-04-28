@@ -8,18 +8,20 @@ import {defaultPaging, FilterModel, FilterState, PagedData} from '../../types/fi
 import {MessageApi} from '../../apis/message.api';
 import {Message, SaveMessage} from '../../types/messages/message';
 import {ComponentStore} from '@ngrx/component-store';
-import {SaveOrderLine} from '../../types/orders/save-order';
 
 type MessageState = FilterState<Message> & {
   message: Message,
-  loading: boolean
+  loading: boolean,
+  selectedFiles?: FileList;
+  previews?: string[];
 }
 
 const defaultState: MessageState = {
   data: {} as PagedData<Message>,
   filter: {...defaultPaging, ...{sortBy: 'created_at', sortAsc: false}},
   message: {} as Message,
-  loading: false
+  loading: false,
+  previews: []
 };
 
 @Injectable()
@@ -31,6 +33,8 @@ export class MessageStore extends ComponentStore<MessageState> {
   readonly data$ = this.select(({data}) => data);
   readonly message$ = this.select(({message}) => message);
   readonly filter$ = this.select(({filter}) => filter);
+  readonly files$ = this.select(state => state.selectedFiles);
+  readonly galleryImages$ = this.select(({previews}) => previews);
 
   readonly vm$ = this.select(
     {
@@ -89,5 +93,27 @@ export class MessageStore extends ComponentStore<MessageState> {
 
   updatePage(page: number) {
     this.patchState({filter: {...defaultPaging, ...{page: page, sortBy: 'created_at', sortAsc: false,}}})
+  }
+
+  bulkUpload(event: any): void {
+    const selectedFiles = event.target.files
+    this.patchState({selectedFiles: selectedFiles})
+
+    let previews = [];
+    if (selectedFiles && selectedFiles[0]) {
+      const numberOfFiles = selectedFiles.length;
+      for (let i = 0; i < numberOfFiles; i++) {
+        const reader = new FileReader();
+
+        reader.onload = (e: any) => {
+          console.log(e.target.result);
+          previews.push(e.target.result);
+        };
+
+        reader.readAsDataURL(selectedFiles[i]);
+      }
+
+      this.patchState({previews: previews})
+    }
   }
 }

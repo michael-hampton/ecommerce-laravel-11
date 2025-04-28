@@ -19,6 +19,9 @@ class CommentResource extends JsonResource
             'user' => UserResource::make($this->user),
             'created_at' => $this->created_at->diffForHumans(),
             'message' => $this->message,
+            'images' => collect(explode(',', $this->images))->map(function ($image) {
+                return asset('images/messages/' . $image);
+            })
         ];
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderLog;
 use App\Models\DeliveryMethod;
+use App\Models\SellerBalance;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
@@ -242,6 +244,28 @@ class OrderService implements IOrderService
         ]);
 
         return $orderItem;
+    }
+
+    public function approveOrder(int $orderId) {
+        $order = Order::whereId($orderId)->firstOrFail();
+        $transactionsBySeller = $order->transaction->groupBy('seller_id');
+
+        foreach ($transactionsBySeller as $sellerId => $transactions) {
+            $sellerBalance = SellerBalance::where('seller_id', $sellerId)
+                ->orderBy('balance')
+                ->firstOrFail()
+            ;
+
+            SellerBalance::create([
+                'seller_id' => $sellerId,
+                'balance' => $sellerBalance->balance + $transactions->sum('total'),
+                'previous_balance' => $sellerBalance->balance,
+            ]);
+
+            OrderItem::where('seller_id', $sellerId)
+                ->where('order_id', $orderId)
+                ->update(['approved_date' => now()]);
+        }
     }
 
     public function deleteOrder(array $data)

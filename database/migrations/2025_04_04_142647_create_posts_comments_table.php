@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('message');
             $table->unsignedBigInteger('seller_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('order_item_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('seller_id')->references('id')->on('users');
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('post_id')->index();
             $table->unsignedBigInteger('parent_id')->index()->nullable();
+            $table->text('images')->nullable();
             $table->text('message');
             $table->timestamps();
             $table->softDeletes();
