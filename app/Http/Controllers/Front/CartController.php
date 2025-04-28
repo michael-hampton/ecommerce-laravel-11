@@ -9,6 +9,7 @@ use App\Models\DeliveryMethod;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Services\Cart\Facade\Cart;
 use App\Services\Interfaces\ICouponService;
+use App\Services\Interfaces\IDeliveryMethodService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -17,7 +18,7 @@ class CartController extends Controller
 {
     public function __construct(
         private ICouponService    $couponService,
-        private ICouponRepository $couponRepository
+        private IDeliveryMethodService $deliveryMethodService
     )
     {
 
@@ -26,10 +27,10 @@ class CartController extends Controller
     public function index()
     {
         $items = Cart::instance('cart')->content();
-        $shippings = DeliveryMethod::all();
+        $shippingMethods = $this->deliveryMethodService->getAvailiableMethods($items);
         $currency = config('shop.currency');
         $productAttributes = ProductAttributeValue::all();
-        return view('front.cart', compact('items', 'currency', 'shippings', 'productAttributes'));
+        return view('front.cart', compact('items', 'currency', 'shippingMethods', 'productAttributes'));
     }
 
     public function addToCart(Request $request)
@@ -108,6 +109,11 @@ class CartController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function updateShippingId(int $shippingId)
+    {
+
     }
 
     public function applyCoupon(ApplyCouponCodeRequest $request)

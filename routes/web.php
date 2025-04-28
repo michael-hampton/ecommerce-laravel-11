@@ -102,6 +102,8 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
 Route::post('/cart/applyCoupon', [\App\Http\Controllers\Front\CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
 Route::delete('/cart/removeCoupon', [\App\Http\Controllers\Front\CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
 
+Route::post('/checkout', [\App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.post');
+
 //checkout
 Route::get('/checkout', [\App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.index');
 Route::get('/checkout/card', [\App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.card');

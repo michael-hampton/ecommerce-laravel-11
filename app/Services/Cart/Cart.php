@@ -24,6 +24,11 @@ class Cart
     protected $session;
 
     /**
+     * @var int
+     */
+    private int $shippingId = 0;
+
+    /**
      * The address id of the user placing the order used to get the country for the delivery method
      * @var int
      */
@@ -313,6 +318,11 @@ class Cart
         $this->session->put($this->instance, $content);
     }
 
+    public function setShippingId(int $shippingId)
+    {
+        $this->shippingId = $shippingId;
+    }
+
     /**
      * Set the tax rate for the cart item with the given rowId.
      *
@@ -598,7 +608,6 @@ class Cart
 
         $bySellers = [];
         $this->shippingSet = [];
-
         foreach ($content as $item) {
             $bySellers[$item->model->seller_id][] = $item->model->id;
         }
@@ -610,10 +619,10 @@ class Cart
 
             if (isset($bySellers[$cartItem->model->seller_id]) && count($bySellers[$cartItem->model->seller_id]) > 1) {
                 $this->shippingSet[$cartItem->model->seller_id] = true;
-                return $shipping + $cartItem->shipping(true, $this->addressId);
+                return $shipping + $cartItem->shipping(true, $this->addressId, $this->shippingId);
             }
 
-            return $shipping + $cartItem->shipping(false, $this->addressId);
+            return $shipping + $cartItem->shipping(false, $this->addressId, $this->shippingId);
         }, 0);
 
         return $this->numberFormat($shipping, $decimals, $decimalPoint, $thousandSeperator);

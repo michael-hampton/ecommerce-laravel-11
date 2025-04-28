@@ -52,6 +52,12 @@ class CartItem implements Arrayable, Jsonable
      * @var int
      */
     private $addressId = 0;
+
+    /**
+     * The selected delivery method
+     * @var DeliveryMethod
+     */
+    private DeliveryMethod $deliveryMethod;
     /**
      * The FQN of the associated model.
      *
@@ -222,36 +228,60 @@ class CartItem implements Arrayable, Jsonable
      * @param string $thousandSeperator
      * @return string
      */
-    public function shipping($hasBulk = false, $addressId = 0, $decimals = null, $decimalPoint = null, $thousandSeperator = null): float
+    public function shipping(bool $hasBulk = false, int $addressId = 0, int $deliveryMethodId = 0, $decimals = null, $decimalPoint = null, $thousandSeperator = null): float
     {
         $this->addressId = $addressId;
-        $shipping = $this->getShippingId($hasBulk);
 
-        $shippingPrice = $shipping->price;
+        if ($hasBulk) {
+            $shippingPrice = config('shop.bulk_price');
+        } else {
+            $this->deliveryMethod = $this->getShippingId($hasBulk, $deliveryMethodId);
+
+            if (empty($this->deliveryMethod)) {
+                throw new InvalidArgumentException('Please supply a valid delivery method.');
+            }
+
+            $shippingPrice = $this->deliveryMethod->price;
+        }
 
         return $this->numberFormat($shippingPrice, $decimals, $decimalPoint, $thousandSeperator);
     }
 
-    public function getShippingId($hasBulk = false)
+    public function getDeliveryMethod(): DeliveryMethod
+    {
+        return $this->deliveryMethod;
+    }
+
+    public function getShippingId($hasBulk = false, int $deliveryMethodId = 0)
     {
         $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
-
         $address = !empty($this->addressId) ? Address::whereId($this->addressId)->first() : auth()->user()->defaultAddress();
 
-        if (empty($address)) {
-            return DeliveryMethod::all()
-                ->where('name', $packageSize)
-                ->first()
-            ;
+        $query = DeliveryMethod::query()
+            ->with('courier')
+            ->where('name', $packageSize)
+        ;
+
+        if (!empty($address)) {
+            $query = $query->where('country_id', $address->country_id);
         }
 
-        $countryId = $address->country_id;
+        if (!empty($deliveryMethodId)) {
+            $deliveryMethod = DeliveryMethod::whereId($deliveryMethodId)->first();
+            $deliveryMethod->name = 'Small';
 
-        return DeliveryMethod::all()
-            ->where('country_id', $countryId)
-            ->where('name', $packageSize)
-            ->first()
-        ;
+            if (!empty($deliveryMethod)) {
+                // if the package size and the selected delivery method match use that
+                if ($deliveryMethod->name == $packageSize) {
+                    return $deliveryMethod;
+                }
+
+                // otherwise check to see if we have a match for the same courier and package size
+                $query = $query->where('courier_id', $deliveryMethod->courier_id);
+            }
+        }
+
+        return $query->first();
     }
 
     public function getPackageSize()

@@ -22,15 +22,15 @@ class OrderDetailResource extends JsonResource
             'transactions' => $this->transaction->where('seller_id', auth('sanctum')->user()->id)->map(function ($transaction) {
                 return TransactionResource::make($transaction);
             }),
-            'orderItems' => $this->orderItems->map(function ($item) {
+            'orderItems' => $this->orderItems->where('seller_id', auth('sanctum')->id())->map(function ($item) {
                 return OrderItemResource::make($item);
-            }),
+            })->flatten(),
             'orderLogs' => $this->logs->map(function ($item) {
                 return OrderLogResource::make($item);
             }),
-            'totals' => (new OrderTotals())->toArray($this->transaction),
-            'subtotal' => $this->subtotal(),
-            'shipping' => $this->shipping(),
+            'totals' => (new OrderTotals())->toArray($this->transaction, $this->orderItems),
+            'subtotal' => $this->subtotal,
+            'shipping' => $this->shipping,
             'discount' => $this->discount,
             'tax' => $this->tax,
             'status' => $this->status,

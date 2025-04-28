@@ -20,7 +20,8 @@
                                     @foreach($addresses as $address)
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="address"
-                                                   id="address-{{$address->id}}" value="{{$address->id}}">
+                                                   id="address-{{$address->id}}" value="{{$address->id}}"
+                                                   @if(old('address') === $address->id) checked="checked" @endif>
                                             <label class="form-check-label" for="address-{{$address->id}}">
                                         <span class="my-account__address-item__detail">
                                             <p>{{$address->name}}</p>
@@ -188,7 +189,8 @@
                                         <div class="form-check">
                                             <input class="form-check-input form-check-input_fill" type="radio"
                                                    name="mode"
-                                                   id="mode2" value="card">
+                                                   id="mode2" value="card"
+                                                   @if(old('mode') === 'card')checked="checked" @endif>
                                             <label class="form-check-label" for="checkout_payment_method_2">
                                                 Credit or debit card
                                             </label>
@@ -196,29 +198,38 @@
                                         <div class="form-check">
                                             <input class="form-check-input form-check-input_fill" type="radio"
                                                    name="mode"
-                                                   id="mode3" value="cash">
+                                                   id="mode3" value="cash"
+                                                   @if(old('mode') === 'cash')checked="checked" @endif>
                                             <label class="form-check-label" for="checkout_payment_method_3">
                                                 Cash on delivery
                                             </label>
                                         </div>
                                         @if(in_array(auth()->user()->utype, ['SUPER', 'ADM']))
-                                        <div class="form-check">
-                                            <input class="form-check-input form-check-input_fill" type="radio"
-                                                   name="mode"
-                                                   id="mode3" value="seller_balance">
-                                            <label class="form-check-label" for="checkout_payment_method_3">
-                                               Use Seller balance
-                                            </label>
-                                        </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input form-check-input_fill" type="radio"
+                                                       name="mode"
+                                                       id="mode3" value="seller_balance"
+                                                       @if(old('mode') === 'seller_balance')checked="checked" @endif>
+                                                <label class="form-check-label" for="checkout_payment_method_3">
+                                                    Use Seller balance
+                                                </label>
+                                            </div>
                                         @endif
                                         <div class="form-check">
                                             <input class="form-check-input form-check-input_fill" type="radio"
                                                    name="mode"
-                                                   id="mode4" value="paypal">
+                                                   id="mode4" value="paypal"
+                                                   @if(old('mode') === 'paypal')checked="checked" @endif>
                                             <label class="form-check-label" for="checkout_payment_method_4">
                                                 Paypal
                                             </label>
                                         </div>
+
+                                        @error('mode')
+                                        <div class="invalid-feedback d-block">
+                                            Please select an option
+                                        </div>
+                                        @enderror
                                     </div>
 
                                     <div class="p-3 text-center">

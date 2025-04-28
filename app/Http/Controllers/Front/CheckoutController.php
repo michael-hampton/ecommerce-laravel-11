@@ -7,8 +7,10 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Models\Country;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
+use App\Services\Cart\Cart;
 use App\Services\Interfaces\IAddressService;
 use App\Services\Interfaces\IOrderService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -24,10 +26,14 @@ class CheckoutController extends Controller
 
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if (!Auth::check()) {
             return redirect()->route('login');
+        }
+
+        if (!empty($request->integer('shipping_id'))) {
+            \App\Services\Cart\Facade\Cart::instance('cart')->setShippingId($request->integer('shipping_id'));
         }
 
         $countries = Country::orderBy('name', 'asc')->get();
@@ -74,7 +80,7 @@ class CheckoutController extends Controller
         $customerId = auth()->user()->id;
         $addressData = $request->except(['_token']);
         $addressData['customer_id'] = $customerId;
-        $addressData['address_id'] = $request->integer('address');;
+        $addressData['address_id'] = $request->integer('address');
 
         $order = $this->orderService->createOrder($addressData);
 

@@ -57,6 +57,10 @@ class OrderController extends ApiController
     {
         $order = Order::with(['logs', 'transaction', 'orderItems', 'customer', 'address'])->whereId($orderId)->firstOrFail();
 
+//        echo '<pre>';
+//        print_r($order->orderItems->where('seller_id', auth('sanctum')->id())->sum('shipping_price'));
+//        die;
+
         $resource = OrderDetailResource::make($order);
 
         return response()->json($resource);

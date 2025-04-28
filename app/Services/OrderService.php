@@ -70,22 +70,24 @@ class OrderService implements IOrderService
             }
 
             foreach ($cartItems as $key => $item) {
-
+                $deliveryMethod = $item->getDeliveryMethod();
+                $shippingPrice = empty($deliveryMethod) ? $bulkPrice / $groupBySeller[$item->model->seller_id] : $deliveryMethod->price;
                 $isBulk = isset($groupBySeller[$item->model->seller_id]) && $groupBySeller[$item->model->seller_id] > 1;
 
-                $shippingPrice = $isBulk ? $bulkPrice / $groupBySeller[$item->model->seller_id] : $item->shipping();
                 $commission = $isBulk ? Session::get('checkout.commission') / $groupBySeller[$item->model->seller_id] : Session::get('checkout.commission');
 
                 $item->setShippingPrice(round($shippingPrice, 4));
 
                 $orderItemData = [
+                    'commission' => $commission,
                     'product_id' => $item->id,
                     'quantity' => $item->qty,
                     'price' => $item->price,
                     'seller_id' => $item->model->seller_id,
                     'order_id' => $order->id,
-                    'shipping_id' => $item->getShippingId($isBulk)->id,
+                    'shipping_id' => !empty($deliveryMethod) ? $deliveryMethod->id : null,
                     'shipping_price' => round($shippingPrice, 4),
+                    'courier_id' => !empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
                 ];
 
                 $result = OrderItem::create($orderItemData);

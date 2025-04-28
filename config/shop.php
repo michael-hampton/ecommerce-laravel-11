@@ -5,5 +5,6 @@ return [
     'commission' => 8,
     'currency_code' => 'GBP',
     'show_commission' => true,
-    'featured_product_charge' => 15
+    'featured_product_charge' => 15,
+    'bulk_price' => 10.99
 ];
