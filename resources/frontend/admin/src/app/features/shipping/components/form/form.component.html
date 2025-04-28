@@ -1,0 +1,62 @@
+<app-modal [title]="title" [saveButtonDisabled]="form?.invalid || false" [child]="child"
+           (closeMeEvent)="close()" (confirmEvent)="onSubmit()">
+  <ng-template #child>
+
+    <form [formGroup]="form">
+      <button type="button" (click)="addMethod()" class="btn btn-primary btn-topic">Add Method</button>
+
+      <div class="mcqsection">
+        <div formArrayName="methods" *ngIf="vm$ | async as vm">
+          <div *ngFor="let methodControl of getMethodControls().controls; let methodIndex = index"
+               [formGroupName]="methodIndex" class="topic border-bottom border-secondary pb-3 pt-3">
+            <!--        <h3>Topic {{ methodIndex + 1 }}</h3>-->
+
+            <div class="form-group">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <select class="form-control" id="name" formControlName="name">
+                    <option value="">Package Size</option>
+                    <option *ngFor="let featured of PackageSizeEnum | keyvalue"
+                            value="{{featured.key}}">{{ featured.value }}
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <select class="form-control" id="courier" formControlName="courier">
+                    <option value="">Courier</option>
+                    <option *ngFor="let courier of vm.couriers" [value]="courier.id">{{ courier.name }}</option>
+                  </select>
+                </div>
+
+                <div>
+                  <input class="form-control" type="text" formControlName="price" placeholder="Price">
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="exampleCheck1" formControlName="tracking">
+                  <label class="form-check-label" for="exampleCheck1">Allow tracking</label>
+                </div>
+
+                <div>
+                  <button type="button" (click)="removeMethod(methodIndex)" class="btn btn-danger btn-mcq mt-3">Remove
+                    Method
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
+        <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
+                (click)="onSubmit()">{{ saveButtonText }}
+        </button>
+      </div>
+    </form>
+  </ng-template>
+</app-modal>

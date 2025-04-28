@@ -2,25 +2,25 @@ import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from 
 import { Config } from 'datatables.net';
 import { Subscription } from 'rxjs';
 import {ModalService} from '../../../../services/modal.service';
-import {CouponStore} from '../../../../store/coupons/list.store';
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
 import {FormComponent} from '../form/form.component';
-import {defaultPaging, FilterModel} from '../../../../types/filter.model';
+import { FilterModel} from '../../../../types/filter.model';
+import {ShippingStore} from '../../../../store/shipping/list.store';
 
 @Component({
-  selector: 'app-coupon-list',
+  selector: 'app-list',
   standalone: false,
-  templateUrl: './coupon-list.component.html',
-  styleUrl: './coupon-list.component.scss',
-  providers: [CouponStore]
+  templateUrl: './list.component.html',
+  styleUrl: './list.component.scss',
+  providers: [ShippingStore]
 })
-export class CouponListComponent implements OnInit {
+export class ListComponent implements OnInit {
   dtOptions: Config = {};
   @ViewChild('modal', {read: ViewContainerRef})
   entry!: ViewContainerRef;
   sub!: Subscription;
 
-  private _store: CouponStore = inject(CouponStore)
+  private _store: ShippingStore = inject(ShippingStore)
   vm$ = this._store.vm$
 
   constructor(
@@ -46,7 +46,7 @@ export class CouponListComponent implements OnInit {
 
   edit(data: any) {
     this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Coupon'})
+      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Shipping'})
       .subscribe((v) => {
         this._store.reset();
       });
@@ -55,7 +55,7 @@ export class CouponListComponent implements OnInit {
   add(event: Event) {
     event.preventDefault()
     this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Coupon'})
+      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Shipping'})
       .subscribe((v) => {
         this._store.reset();
       });

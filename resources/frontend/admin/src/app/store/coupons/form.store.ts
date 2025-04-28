@@ -6,6 +6,7 @@ import {CouponApi} from '../../apis/coupon.api';
 import {GlobalStore} from '../global.store';
 import {Coupon} from "../../types/coupons/coupon";
 import {UiError} from '../../core/services/exception.service';
+import {tap} from 'rxjs/operators';
 
 
 export interface CouponFormState {
@@ -23,9 +24,9 @@ export class CouponFormStore extends ComponentStore<CouponFormState> {
   saveData = (payload: Partial<Coupon>) => {
     const {id, ...dataCreate} = payload
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
-    this.patchState({loading: true})
 
     return request$.pipe(
+      tap(() => this.patchState({loading: true})),
       tapResponse({
         next: (users) => {
           this._globalStore.setSuccess('Saved successfully');

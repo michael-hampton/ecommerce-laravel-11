@@ -15,6 +15,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'shipping',
+    loadChildren: () => import('./features/shipping/shipping.module').then(m => m.ShippingModule),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'sellers',
     loadChildren: () => import('./features/sellers/sellers.module').then(m => m.SellersModule),
     canActivate: [AuthGuard],
