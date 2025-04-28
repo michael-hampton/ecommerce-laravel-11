@@ -69,12 +69,13 @@ class OrderService implements IOrderService
                 $groupBySeller[$item->model->seller_id]++;
             }
 
-            foreach ($cartItems as $key => $item) {
+            $test = [];
+
+            foreach ($cartItems as $item) {
                 $deliveryMethod = $item->getDeliveryMethod();
                 $shippingPrice = empty($deliveryMethod) ? $bulkPrice / $groupBySeller[$item->model->seller_id] : $deliveryMethod->price;
-                $isBulk = isset($groupBySeller[$item->model->seller_id]) && $groupBySeller[$item->model->seller_id] > 1;
 
-                $commission = $isBulk ? Session::get('checkout.commission') / $groupBySeller[$item->model->seller_id] : Session::get('checkout.commission');
+                $commission = count($groupBySeller) > 1 ? Session::get('checkout.commission') / count($groupBySeller) : Session::get('checkout.commission');
 
                 $item->setShippingPrice(round($shippingPrice, 4));
 
@@ -90,29 +91,39 @@ class OrderService implements IOrderService
                     'courier_id' => !empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
                 ];
 
+                $test[$item->model->seller_id][] = [
+                    'price' => $item->price,
+                    'commission' => $commission,
+                    'quantity' => $item->qty,
+                    'shipping_price' => round($shippingPrice, 4), //TODO Need to allow for coupons
+                    'discount' => Session::has('checkout.discount') ? Session::get('checkout.discount') : 0,
+                ];
+
                 $result = OrderItem::create($orderItemData);
 
                 if (!$result) {
                     DB::rollBack();
                     break;
                 }
+            }
 
-                if ($data['mode'] === 'seller_balance') {
-                    $itemTotal = ($item->price * $item->qty) + $shippingPrice;
-                    if (!empty(Session::has('coupon'))) {
-                        $itemTotal -= Session::get('coupon')['value'];
-                    }
+            if ($data['mode'] === 'seller_balance') {
+                foreach ($test as $sellerId => $seller) {
+                    $items = collect($seller);
+                    $total = $items->map(function ($item) {
+                        return $item['discount'] > 0 ? (($item['price'] * $item['quantity']) + $item['shipping_price']) - $item['discount'] : ($item['price'] * $item['quantity']) + $item['shipping_price'];
+                    })->first();
 
                     $transactionData = [
                         'order_id' => $order->id,
-                        'seller_id' => $item->model->seller_id,
+                        'seller_id' => $sellerId,
                         'status' => 'in-progress',
                         'payment_method' => 'seller_balance',
                         'customer_id' => Auth::id(),
-                        'total' => $itemTotal,
-                        'commission' => $commission,
-                        'shipping' => $shippingPrice,
-                        'discount' => Session::has('coupon') ? Session::get('coupon')['value'] : 0,
+                        'total' => $total,
+                        'commission' => $items->sum('commission'),
+                        'shipping' => $items->sum('shipping_price'),
+                        'discount' => $items->sum('discount'),
                     ];
 
                     $result = Transaction::create($transactionData);
@@ -121,9 +132,7 @@ class OrderService implements IOrderService
                         DB::rollBack();
                     }
                 }
-            }
 
-            if ($data['mode'] === 'seller_balance') {
                 (new WithdrawalService(
                     auth()->id(),
                     Session::get('checkout.total'),
