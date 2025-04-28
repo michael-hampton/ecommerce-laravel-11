@@ -367,29 +367,6 @@
 
         });
 
-
-        function refreshTopbar() {
-            let formData = Array
-                .from(new FormData(document.getElementById('frmfilter')))
-                .filter(function ([k, v]) {
-                    return v
-                });
-            const params = new URLSearchParams(formData);
-
-            $.ajax({
-                url: "{{route('shop.refreshShopBreadcrumbs')}}" + '?' + params,
-                type: "get",
-                datatype: "html",
-            })
-                .done(function (data) {
-                    $(".shop-topbar").empty().html(data);
-                    //location.hash = page;
-                })
-                .fail(function (jqXHR, ajaxOptions, thrownError) {
-                    alert('No response from server');
-                });
-        }
-
         function getData() {
             let formData = Array
                 .from(new FormData(document.getElementById('frmfilter')))
@@ -406,7 +383,8 @@
                 datatype: "html",
             })
                 .done(function (data) {
-                    $("#product-list").empty().html(data);
+                    $("#product-list").empty().html(data.list);
+                    $('.shop-topbar').html(data.breadcrumbs)
                     refreshTopbar();
                     //location.hash = page;
                 })

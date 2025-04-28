@@ -227,6 +227,7 @@
                 })
                     .done(function (data) {
                         $('.quantity-input').val(data.quantity)
+                        $('.cart-sidebar').html(data.view)
                         //$("#product-list").empty().html(data);
                         //location.hash = page;
                     })
@@ -245,6 +246,7 @@
                 })
                     .done(function (data) {
                         $('.quantity-input').val(data.quantity)
+                        $('.cart-sidebar').html(data.view)
                     })
                     .fail(function (jqXHR, ajaxOptions, thrownError) {
                         alert('No response from server');

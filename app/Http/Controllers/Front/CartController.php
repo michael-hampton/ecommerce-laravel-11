@@ -11,6 +11,7 @@ use App\Services\Cart\Facade\Cart;
 use App\Services\Interfaces\ICouponService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 
 class CartController extends Controller
 {
@@ -41,7 +42,13 @@ class CartController extends Controller
         )->associate('App\Models\Product');
 
         if ($request->ajax()) {
-            return response()->json(['count' => Cart::instance('cart')->content()->count()]);
+            return response()->json([
+                'count' => Cart::instance('cart')->content()->count(),
+                'view' => View::make('front.partials.cart-header', [
+                    'items' => Cart::instance('cart')->content(),
+                    'currency' => config('shop.currency'),
+                ])->render()
+            ]);
         }
 
         return redirect()->back();
@@ -84,7 +91,7 @@ class CartController extends Controller
         Cart::instance('cart')->update($rowId, $qty);
 
         if (\request()->ajax()) {
-            return response()->json(['success' => true, 'quantity' => $qty]);
+            return response()->json(['success' => true, 'quantity' => $qty, 'view' => View::make('front/partials/cart-sidebar', ['currency' => config('shop.currency')])->render()]);
         }
 
         return redirect()->back();
@@ -97,7 +104,7 @@ class CartController extends Controller
         Cart::instance('cart')->update($rowId, $qty);
 
         if (\request()->ajax()) {
-            return response()->json(['success' => true, 'quantity' => $qty]);
+            return response()->json(['success' => true, 'quantity' => $qty, 'view' => View::make('front/partials/cart-sidebar', ['currency' => config('shop.currency')])->render()]);
         }
 
         return redirect()->back();

@@ -1363,6 +1363,8 @@ function pureFadeOut(e) {
                 } else {
                     $('.cart-count-container').append(`<span class="cart-amount d-block position-absolute js-cart-items-count">${data.count}</span>`)
                 }
+
+                $('#shoppingCart').html(data.view)
             })
             .fail(function (jqXHR, ajaxOptions, thrownError) {
                 alert('No response from server');
