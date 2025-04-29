@@ -200,24 +200,6 @@
                     </div>
 
                     <div class="filter-group">
-                        <h6 class="mb-3">Sizes</h6>
-                        <div class="d-flex flex-wrap">
-                            <a href="#"
-                               class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">XS</a>
-                            <a href="#"
-                               class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">S</a>
-                            <a href="#"
-                               class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">M</a>
-                            <a href="#"
-                               class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">L</a>
-                            <a href="#"
-                               class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">XL</a>
-                            <a href="#"
-                               class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">XXL</a>
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
                         <h6 class="mb-3">Price Range</h6>
                         <input type="range" class="form-range" min="1" max="5000" step="5" value="500"
                                name="price_range">
@@ -227,15 +209,21 @@
                         </div>
                     </div>
 
+                    @foreach ($categoryAttributes as $attribute )
                     <div class="filter-group">
-                        <h6 class="mb-3">Colors</h6>
-                        <div class="d-flex gap-2">
-                            <div class="color-option selected" style="background: #000000;"></div>
-                            <div class="color-option" style="background: #dc2626;"></div>
-                            <div class="color-option" style="background: #2563eb;"></div>
-                            <div class="color-option" style="background: #16a34a;"></div>
+                        <h6 class="mb-3">{{$attribute->attribute->name}}</h6>
+                        @foreach($attribute->attribute->attributeValues as $value)
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio"  value="{{$value->id}}" name="{{$attribute->attribute->name}}" id="rating4">
+                            <label class="form-check-label" for="rating4">
+                                {{ $value->name }}
+                            </label>
                         </div>
+                        @endforeach
                     </div>
+                    @endforeach
+
+                    
 
                     <div class="filter-group">
                         <h6 class="mb-3">Brands</h6>

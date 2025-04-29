@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\CategoryAttributes;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
@@ -84,8 +85,11 @@ class ShopController extends Controller
 
         Cart::instance('wishlist')->loadWishlistProducts();
 
+        $categoryAttributes = !empty($category) ? CategoryAttributes::with('attribute')->where('category_id', $category->id)->get() : [];
+
         $viewData = [
             'products' => $products,
+            'categoryAttributes' => $categoryAttributes,
             'category' => $category,
             'brand' => $brand,
             'brands' => $brands,

@@ -92,4 +92,5 @@ interface IBaseRepository
      * @return bool
      */
     public function delete($id);
+    public function insert(array $data): bool;
 }

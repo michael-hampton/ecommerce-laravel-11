@@ -19,6 +19,8 @@ class DeliveryMethodResource extends JsonResource
             'name' => $this->name,
             'price' => $this->price,
             'country_id' => $this->country_id,
+            'tracking' => $this->tracking,
+            'courier_id' => $this->courier_id,
             'courier' => CourierResource::make($this->courier)
         ];
     }

@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Helper;
+use App\Models\Category;
+use App\Models\CategoryAttributes;
+use App\Models\ProductAttribute;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Services\Interfaces\ICategoryService;
 use Illuminate\Support\Facades\File;
@@ -21,6 +24,7 @@ class CategoryService implements ICategoryService
         if (empty($data['parent_id'])) {
             $data['parent_id'] = 0;
         }
+
         $image = $data['image'];
         $filename = time() . '.' . $image->getClientOriginalExtension();
 
@@ -30,12 +34,30 @@ class CategoryService implements ICategoryService
         Helper::generateThumbnailImage($data['image'], $filename, 'categories');
 
         $data['image'] = $filename;
-        return $this->repository->create($data);
+        $category = $this->repository->create($data);
+
+        if(!empty($data['attributes'])) {
+            $this->saveAttributes($data['attributes'], $category);
+         }
+
+         return $category;
+    }
+
+    private function saveAttributes($attributes, Category $category) {
+        $attributeIds = explode(',', $attributes);
+        $productAttributes = ProductAttribute::whereIn('id', $attributeIds)->get();
+       
+        foreach( $productAttributes as $productAttribute ) {
+            $flight = CategoryAttributes::firstOrCreate(
+                ['category_id' => $category->id, 'attribute_id' => $productAttribute->id],
+                ['category_id' => $category->id,  'attribute_id' => $productAttribute->id]
+            );
+        }
     }
 
     public function updateCategory(array $data, int $id)
     {
-        $product = $this->repository->getById($id);
+        $category = $this->repository->getById($id);
         $data['slug'] = Str::slug($data['name']);
 
         if (empty($data['parent_id'])) {
@@ -43,8 +65,8 @@ class CategoryService implements ICategoryService
         }
 
         if (!empty($data['image'])) {
-            if (File::exists(public_path('uploads/categories/' . $product->image))) {
-                File::delete(public_path('uploads/categories/' . $product->image));
+            if (File::exists(public_path('uploads/categories/' . $category->image))) {
+                File::delete(public_path('uploads/categories/' . $category->image));
             }
 
             $image = $data['image'];
@@ -57,6 +79,11 @@ class CategoryService implements ICategoryService
 
             $data['image'] = $filename;
         }
+
+        if(!empty($data['attributes'])) {
+            $this->saveAttributes($data['attributes'], $category);
+            unset($data['attributes']);
+         }
 
         return $this->repository->update($id, $data);
     }

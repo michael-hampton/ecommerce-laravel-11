@@ -29,6 +29,15 @@ return new class extends Migration
             $table->boolean('menu_status')->default(1);
             $table->timestamps();
         });
+
+        Schema::create('category_attributes', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('attribute_id');
+            $table->unsignedBigInteger('category_id');
+            $table->boolean('active')->default(true);
+            $table->foreign('attribute_id')->references('id')->on('product_attributes');
+            $table->foreign('category_id')->references('id')->on('categories');
+        });
     }
 
     /**

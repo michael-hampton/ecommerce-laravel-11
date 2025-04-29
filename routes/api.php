@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AttributeValueController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CourierController;
 use App\Http\Controllers\Api\DashboardController;
@@ -47,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('brands', BrandController::class);
 // Categories
     Route::apiResource('categories', CategoryController::class);
+
+    Route::get('/countries', [CountryController::class,'index'])->name('getCountries');
 
 // products
     Route::apiResource('products', ProductController::class);

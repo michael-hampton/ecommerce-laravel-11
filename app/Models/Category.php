@@ -40,4 +40,8 @@ class Category extends Model
     {
       return !empty($this->parent_id) && $this->subcategories()->count() > 0;
     }
+
+    public function attributes() {
+        return $this->hasMany(CategoryAttributes::class, 'category_id');
+    }
 }

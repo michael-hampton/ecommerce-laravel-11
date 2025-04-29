@@ -1,5 +1,5 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ShippingFormStore} from '../../../../store/shipping/form.store';
 import {PackageSizeEnum} from '../../../../types/shipping/package-size.enum';
 import {Shipping} from '../../../../types/shipping/shipping';
@@ -23,16 +23,21 @@ export class FormComponent extends ModalComponent implements OnInit {
   ngOnInit() {
     this.initForm()
     this._store.getCouriers()
+    this._store.getCountries()
 
     if (this.formData?.id) {
-      this._store.loadDataForCountry(1).subscribe((results: Shipping[]) => {
+      this._store.loadDataForCountry(this.formData?.id).subscribe((results: Shipping[]) => {
         console.log('res', results)
+
+        this.form.patchValue({country_id: this.formData.id})
+
         const methodFormArray = this.form.get('methods') as FormArray;
 
         results.forEach(result => {
           const topicFormGroup = this.formBuilder.group({
             name: result.name,
-            courier: result.courier_id,
+            id: result.id,
+            courier_id: result.courier_id,
             price: result.price,
             tracking: result.tracking
           });
@@ -46,7 +51,7 @@ export class FormComponent extends ModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       id: [''],
       //name: [''],
-      //country_id: [0, Validators.required],
+      country_id: [0, Validators.required],
       // subCategory: ['', Validators.required],
       methods: this.formBuilder.array([]),
       // image: [''],
@@ -61,10 +66,11 @@ export class FormComponent extends ModalComponent implements OnInit {
   addMethod() {
     const methodFormArray = this.form.get('methods') as FormArray;
     const topicFormGroup = this.formBuilder.group({
+      id: 0,
       name: '',
-      courier: '',
+      courier_id: '',
       price: 0,
-      tracking: false
+      tracking: true
     });
     methodFormArray.push(topicFormGroup);
   }
@@ -85,24 +91,27 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
 
     const quizFormData = new FormData();
-
+    if(this.formData?.id) {
+      quizFormData.append('id', this.formData.id);
+    }
+    
     // Append basic quiz data to FormData
     Object.keys(this.form.value).forEach((key) => {
-      if (key !== 'topics') {
+      if (key !== 'methods') {
         quizFormData.append(key, this.form.value[key]);
       }
     });
 
     // Append Topics data to FormData
     const methods = this.form.value.methods.map((method: any) => {
-      return {name: method.name, courier: method.courier, price: method.price, tracking: method.tracking};
+      return {name: method.name, id: method.id ,courier_id: method.courier_id, price: method.price, tracking: method.tracking};
     });
 
     quizFormData.append('methods', JSON.stringify(methods));
 
     console.log(Object.fromEntries(quizFormData)) // Works if all fields are uniq
 
-    this._store.saveData(quizFormData).subscribe()
+    this._store.saveData(quizFormData, this.formData?.id).subscribe()
 
   }
 

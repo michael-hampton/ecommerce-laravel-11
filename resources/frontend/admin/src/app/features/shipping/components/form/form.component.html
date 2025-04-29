@@ -2,11 +2,15 @@
            (closeMeEvent)="close()" (confirmEvent)="onSubmit()">
   <ng-template #child>
 
-    <form [formGroup]="form">
+    <form [formGroup]="form"  *ngIf="vm$ | async as vm">
+      <select formControlName="country_id" class="form-control">
+        <option value="">Select Country</option>
+        <option *ngFor="let country of vm.countries" [value]="country.id">{{country.name}}</option>
+      </select>
       <button type="button" (click)="addMethod()" class="btn btn-primary btn-topic">Add Method</button>
 
       <div class="mcqsection">
-        <div formArrayName="methods" *ngIf="vm$ | async as vm">
+        <div formArrayName="methods">
           <div *ngFor="let methodControl of getMethodControls().controls; let methodIndex = index"
                [formGroupName]="methodIndex" class="topic border-bottom border-secondary pb-3 pt-3">
             <!--        <h3>Topic {{ methodIndex + 1 }}</h3>-->
@@ -23,7 +27,7 @@
                 </div>
 
                 <div>
-                  <select class="form-control" id="courier" formControlName="courier">
+                  <select class="form-control" id="courier_id" formControlName="courier_id">
                     <option value="">Courier</option>
                     <option *ngFor="let courier of vm.couriers" [value]="courier.id">{{ courier.name }}</option>
                   </select>

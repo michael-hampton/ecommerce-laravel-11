@@ -15,7 +15,11 @@ use Illuminate\Http\Request;
 
 class DeliveryMethodController extends ApiController
 {
-    public function __construct(private IDeliveryMethodService $deliveryMethodService, private ICountryRepository $countryRepository) {
+    public function __construct(
+        private IDeliveryMethodService $deliveryMethodService, 
+        private ICountryRepository $countryRepository,
+        private DeliveryMethodRepository $deliveryMethodRepository,
+    ) {
 
     }
 
@@ -55,7 +59,9 @@ class DeliveryMethodController extends ApiController
      */
     public function show($id)
     {
-        //
+        $delivery = $this->deliveryMethodRepository->getAll(null, 'country_id', 'desc', ['country_id' => $id]);
+    
+       return response()->json(DeliveryMethodResource::collection($delivery));
     }
 
     /**

@@ -43,6 +43,14 @@
                    formControlName="meta_keywords">
             <p class="text-danger"></p>
           </div>
+          <div class="mb-3" *ngIf="lookupVm$ | async as lookupVm">
+            <label for="attributes" class="form-label">Attributes</label>
+            <select class="form-control" id="attributes" name="attributes" multiple
+                   formControlName="attributes">
+                  <option *ngFor="let attribute of lookupVm.attributes" [value]="attribute.id">{{attribute.name}}</option>
+                  </select>
+            <p class="text-danger"></p>
+          </div>
           <div>
             <label for="exampleInputEmail1" class="form-label">Upload Image</label>
           </div>

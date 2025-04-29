@@ -24,10 +24,15 @@ class StoreDeliveryMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [Rule::enum(PackageSizeEnum::class)],
-            'price' => 'required|numeric|min:1|max:10000',
+            'name.*' => [Rule::enum(PackageSizeEnum::class)],
+            'price.*' => 'required|numeric|min:1|max:10000',
             'country_id' => 'required|exists:countries,id',
-            'courier_id' => 'required|exists:couriers,id',
+            'courier_id.*' => 'required|exists:couriers,id',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        return $this->merge(['methods' => json_decode($this->methods, true)]);
     }
 }

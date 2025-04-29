@@ -239,6 +239,16 @@ class BaseRepository implements IBaseRepository
     }
 
     /**
+     * Used for bulk insertion
+     * @param array $data
+     * @return bool
+     */
+    public function insert(array $data): bool
+    {
+        return $this->model->insert($data);
+    }
+
+    /**
      * Delete a record by the primary key.
      *
      * @param $id

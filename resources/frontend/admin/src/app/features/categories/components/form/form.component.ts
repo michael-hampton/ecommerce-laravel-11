@@ -19,6 +19,8 @@ export class FormComponent extends ModalComponent implements OnInit {
   form?: FormGroup;
 
   _store = inject(CategoryFormStore)
+  _lookupStore = inject(LookupStore)
+  lookupVm$ = this._lookupStore.vm$
   formVm$ = this._store.vm$;
   protected readonly input = input;
 
@@ -30,6 +32,8 @@ export class FormComponent extends ModalComponent implements OnInit {
     super.ngOnInit();
 
     this.initializeForm();
+
+    this._lookupStore.getAttributes()
 
     if (this.formData?.id) {
       this.patchForm();
@@ -51,7 +55,8 @@ export class FormComponent extends ModalComponent implements OnInit {
         meta_title: this.form.value.meta_title,
         meta_description: this.form.value.meta_description,
         meta_keywords: this.form.value.meta_keywords,
-        description: this.form.value.description
+        description: this.form.value.description,
+        attributes: this.form.value.attributes
       } as Category;
 
       if (file) {
@@ -62,6 +67,8 @@ export class FormComponent extends ModalComponent implements OnInit {
         model.id = this.form.value.id
       }
 
+      console.log('model', model)
+
       this._store.saveData(model).subscribe(result => {
         this.confirm();
       });
@@ -69,6 +76,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   }
 
   patchForm() {
+    console.log('attributes', this.formData.attributes)
     this.form?.patchValue({
       id: this.formData.id,
       name: this.formData.name,
@@ -78,7 +86,8 @@ export class FormComponent extends ModalComponent implements OnInit {
       meta_title: this.formData.meta_title,
       meta_description: this.formData.meta_description,
       meta_keywords: this.formData.meta_keywords,
-      description: this.formData.description
+      description: this.formData.description,
+      attributes: this.formData.attributes
     })
 
     this._store.addImage(this.formData.image)
@@ -95,6 +104,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       meta_description: new FormControl(''),
       meta_keywords: new FormControl(''),
       description: new FormControl(''),
+      attributes: new FormControl('')
     });
   }
 

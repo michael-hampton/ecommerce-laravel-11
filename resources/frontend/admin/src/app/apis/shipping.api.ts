@@ -7,7 +7,7 @@ import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Country} from '../types/countries/country';
 
-export const MODULE = 'shipping'
+export const MODULE = 'delivery-methods'
 
 @Injectable({
   providedIn: 'root'
@@ -22,83 +22,24 @@ export class ShippingApi {
   }
 
   getCouriers() {
-    const data = {
-      data: [
-        {id: 1, name: 'Test 1', active: true},
-        {id: 2, name: 'Test 2', active: true},
-        {id: 3, name: 'Test 3', active: true},
-        {id: 4, name: 'Test 4', active: true}
-      ]
-    }
+    return this.httpClient.get(`${environment.apiUrl}/couriers`);
+  }
 
-    return of(data)
+  getCountries() {
+    return this.httpClient.get(`${environment.apiUrl}/countries`);
   }
 
   getDataForCountry(countryId: number) {
-    const data: Shipping[] = [
-      {
-        courier_id: 1,
-        name: 'Large',
-        price: 12.99,
-        tracking: true,
-        country_id: 422
-      },
-      {
-        courier_id: 2,
-        name: 'Large',
-        price: 12.99,
-        tracking: true,
-        country_id: 422
-      },
-      {
-        courier_id: 2,
-        name: 'Medium',
-        price: 12.99,
-        tracking: true,
-        country_id: 422
-      },
-      {
-        courier_id: 3,
-        name: 'Small',
-        price: 12.99,
-        tracking: true,
-        country_id: 422
-      },
-      {
-        courier_id: 4,
-        name: 'Medium',
-        price: 12.99,
-        tracking: true,
-        country_id: 422
-      }
-    ];
-
-    return of(data)
+    return this.httpClient.get(`${environment.apiUrl}/${MODULE}/${countryId}`);
   }
 
   getData(filter: FilterModel) {
-    const data: PagedData<Country> = {
-      current_page: 1,
-      total: 10,
-      per_page: 10,
-      data: [
-        {
-          name: 'United States',
-          code: 'USA',
-          id: 1
-        },
-        {
-          name: 'United Kingdom',
-          code: 'UK',
-          id: 2
-        }
-      ]};
-
-    return of(data)
+   return this.baseHttpClient.get(filter, MODULE);
   }
 
-  update(id: number, payload: Partial<Shipping>) {
-    return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
+  update(id: number, payload: any) {
+   payload.append('_method', 'put');
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }
 
   delete(id: number) {

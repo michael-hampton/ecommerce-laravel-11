@@ -26,7 +26,7 @@ class StoreCategoryRequest extends FormRequest
         return [
             'name'=>'required|unique:categories,name',
             'slug'=>'required|unique:categories,slug',
-            'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            //'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }
