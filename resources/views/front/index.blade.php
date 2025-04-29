@@ -7,53 +7,45 @@
                 top: 0px !important;
             }
         </style>
-        <section class="swiper-container js-swiper-slider swiper-number-pagination slideshow" data-settings='{
-        "autoplay": {
-          "delay": 5000
-        },
-        "slidesPerView": 1,
-        "effect": "fade",
-        "loop": true
-      }'>
-            <div class="swiper-wrapper">
-                @foreach($slides as $slide)
-                    <div class="swiper-slide">
-                        <div class="overflow-hidden position-relative h-100">
-                            <div class="slideshow-character position-absolute bottom-0 pos_right-center">
-                                <img loading="lazy" src="{{asset('images/slides')}}/{{$slide->image}}" width="542"
-                                     height="733"
-                                     alt="{{$slide->title}}"
-                                     class="slideshow-character__img animate animate_fade animate_btt animate_delay-9 w-auto h-auto"/>
-                                <div class="character_markup type2">
-                                    <p
-                                        class="text-uppercase font-sofia mark-grey-color animate animate_fade animate_btt animate_delay-10 mb-0">
-                                        {{$slide->tags}}</p>
-                                </div>
-                            </div>
-                            <div class="slideshow-text container position-absolute start-50 top-50 translate-middle">
-                                <h6 class="text_dash text-uppercase fs-base fw-medium animate animate_fade animate_btt animate_delay-3">
-                                    New Arrivals
-                                </h6>
-                                <h2 class="h1 fw-normal mb-0 animate animate_fade animate_btt animate_delay-5">
-                                    {{$slide->title}}
-                                </h2>
-                                <h2 class="h1 fw-bold animate animate_fade animate_btt animate_delay-5">
-                                    {{$slide->subtitle}}
-                                </h2>
-                                <a href="{{$slide->link}}"
-                                   class="btn-link btn-link_lg default-underline fw-medium animate animate_fade animate_btt animate_delay-7">{{$slide->link_title}}</a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
 
-            <div class="container">
-                <div
-                    class="slideshow-pagination slideshow-number-pagination d-flex align-items-center position-absolute bottom-0 mb-5">
-                </div>
-            </div>
-        </section>
+        <div class="container col-8">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+  @foreach($slides as $count => $slide)
+  @if($count == 0)
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{$count++}}"aria-label="{{$slide->title}}" class="active" aria-current="true"></button>
+@else
+<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{$count++}}"aria-label="{{$slide->title}}"></button>
+
+  @endif
+    @endforeach
+  </div>
+  <div class="carousel-inner">
+    @foreach($slides as $count => $slide)
+    <div class="carousel-item @if($count === 0) active @endif">
+        <div class="card text-center">
+      <img style="max-height:350px" src="{{asset('images/slides')}}/{{$slide->image}}" class="d-block w-100" alt="...">
+      <div class="card-body text-center"> <h5 class="card-title">{{$slide->title}}</h5>
+      <p class="card-text">{{$slide->subtitle}}</p>
+      <a href="{{$slide->link}}" class="btn btn-primary">{{$slide->link_text}}</a>
+
+    </div>
+        </div>
+    </div>
+        @endforeach
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+        </div>
+    
+
         <div class="container mw-1620 bg-white border-radius-10">
             <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
 

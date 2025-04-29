@@ -292,15 +292,19 @@
 @push('scripts')
     <script>
         $(function () {
-            $('#pagesize').on('change', function () {
+            $(document).off('change', '#pagesize');
+            $(document).on('change', '#pagesize', function (event) {
                 $('#size').val($('#pagesize option:selected').val());
                 getData();
             });
 
-            $('#total-number').on('change', function () {
+            $(document).off('change', '#total-number');
+            $(document).on('change', '#total-number', function (event) {
+                 alert('here')
                 $('#orderBy').val($('#total-number option:selected').val());
                 getData();
-            });
+             });
+
 
             $('input[name="brands"]').on('change', function () {
                 var brands = [];
@@ -385,7 +389,6 @@
                 .done(function (data) {
                     $("#product-list").empty().html(data.list);
                     $('.shop-topbar').html(data.breadcrumbs)
-                    refreshTopbar();
                     //location.hash = page;
                 })
                 .fail(function (jqXHR, ajaxOptions, thrownError) {

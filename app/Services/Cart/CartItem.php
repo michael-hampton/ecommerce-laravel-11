@@ -255,7 +255,7 @@ class CartItem implements Arrayable, Jsonable
     public function getShippingId($hasBulk = false, int $deliveryMethodId = 0)
     {
         $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
-        $address = !empty($this->addressId) ? Address::whereId($this->addressId)->first() : auth()->user()->defaultAddress();
+        $address = (!empty($this->addressId)) ? Address::whereId($this->addressId)->first() : ((auth()->check()) ? auth()->user()->defaultAddress() : null);
 
         $query = DeliveryMethod::query()
             ->with('courier')

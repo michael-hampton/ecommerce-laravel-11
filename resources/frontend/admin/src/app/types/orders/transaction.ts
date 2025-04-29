@@ -11,4 +11,5 @@ export type Transaction = {
   payment_method: string
   created_at: string
   withdrawn: boolean
+  status: string
 }

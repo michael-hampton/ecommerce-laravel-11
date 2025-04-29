@@ -14,7 +14,7 @@ export class ModalService {
   openModal(type: Type<ModalComponent>, entry: ViewContainerRef, formData: any, config: ModalConfig) {
     let factory = this.resolver.resolveComponentFactory(type);
     this.componentRef = entry.createComponent(factory);
-    console.log(this.componentRef.instance)
+    console.log('test5', this.componentRef.instance.child)
     this.componentRef.instance.title = config.modalTitle;
     this.componentRef.instance.formData = formData;
     this.componentRef.instance.modalService = this;
@@ -29,13 +29,13 @@ export class ModalService {
   openConfirmationModal(type: Type<ModalComponent>, entry: ViewContainerRef, formData: any, config: ModalConfig) {
     let factory = this.resolver.resolveComponentFactory(type);
     this.componentRef = entry.createComponent(factory);
-    console.log(this.componentRef.instance)
     this.componentRef.instance.title = config.modalTitle;
     this.componentRef.instance.body = config.modalBody ?? '';
     this.componentRef.instance.size = config.size ?? '';
     this.componentRef.instance.saveButtonText = 'Delete';
     this.componentRef.instance.saveButtonClass = 'btn-danger';
-    this.componentRef.instance.showFooter = true;
+    this.componentRef.instance.showFooter = config.showFooter ??  true;
+    this.componentRef.instance.template = config.template;
     this.componentRef.instance.formData = formData;
     this.componentRef.instance.closeMeEvent.subscribe(() => this.closeModal());
     this.componentRef.instance.confirmEvent.subscribe(() => this.confirm());

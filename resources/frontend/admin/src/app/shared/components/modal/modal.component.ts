@@ -1,6 +1,8 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
+  inject,
   Input,
   Output, TemplateRef, ViewChild,
 } from '@angular/core';
@@ -30,9 +32,23 @@ export class ModalComponent {
   @Input() formData: any;
   @Input() modalService: ModalService | undefined
   @Input() showFooter: boolean = false;
+  @Input() contentRef: ElementRef;
+  @Input() template: TemplateRef<any>;
+
+
+  private el = inject(ElementRef)
+
+
+  ngAfterViewInit() {
+    const hostElem = this.el.nativeElement;
+    console.log(hostElem.children);
+    console.log(hostElem.parentNode);
+  }
+
+
   ngOnInit(): void {
     console.log('child', this.child)
-    console.log('Modal init');
+    console.log('Modal init', this.template);
   }
 
   closeMe() {

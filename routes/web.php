@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/order-details/{orderId}', [\App\Http\Controllers\Front\UserAccountController::class, 'orderDetails'])->name('orders.orderDetailsCustomer');
     Route::put('/order/cancel/{orderId}', [\App\Http\Controllers\Front\UserAccountController::class, 'cancelOrder'])->name('orders.cancelOrder');
     Route::get('/order/approve/{orderId}', [\App\Http\Controllers\Front\UserAccountController::class, 'approveOrder'])->name('orders.approveOrder');
+    Route::get('/order-item/approve/{orderItemId}', [\App\Http\Controllers\Front\UserAccountController::class, 'approveOrderItem'])->name('orders.approveOrderItem');
     Route::get('/order/report/{orderItemId}', [\App\Http\Controllers\Front\UserAccountController::class, 'reportOrder'])->name('orders.reportOrder');
     Route::get('/review/{orderItemId}', [\App\Http\Controllers\Front\ReviewController::class, 'create'])->name('createReview');
     Route::post('/review/{productId}/create', [\App\Http\Controllers\Front\ReviewController::class, 'store'])->name('storeReview');

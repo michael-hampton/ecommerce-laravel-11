@@ -28,8 +28,22 @@ class DeliveryMethodService implements IDeliveryMethodService
         $this->repository->delete($id);
     }
 
+    private function isBulk($items) {
+        $bySellers = [];
+        $this->shippingSet = [];
+        foreach ($items as $item) {
+            $bySellers[$item->model->seller_id][] = $item->model->id;
+        }
+
+        return count(value: $bySellers) === 1;
+    }
+
     public function getAvailiableMethods($items)
     {
+        if($this->isBulk($items)) {
+            return [];
+        }
+
         $availiableMethods = $items->map(function ($item) {
             return $item->getShippingId();
         })->flatten();
@@ -53,6 +67,14 @@ class DeliveryMethodService implements IDeliveryMethodService
             return [];
         }
 
-        return $orderedBySize->first();
+        $methods = $orderedBySize->first()->unique();
+
+        if ($items->count() > 1 && $methods->count() === 1) {
+            $method = $methods->first();
+           $method->price *= $items->count();
+           return collect([$method]);
+        }
+
+        return $methods;
     }
 }

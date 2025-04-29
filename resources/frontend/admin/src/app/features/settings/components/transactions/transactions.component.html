@@ -26,7 +26,7 @@
       <td>{{ transaction.commission | currency }}</td>
       <td>{{ transaction.created_at | date }}</td>
       <td>
-        <i *ngIf="!transaction.withdrawn" style="cursor: pointer"
+        <i *ngIf="!transaction.withdrawn && transaction.payment_status === 'approved'" style="cursor: pointer"
            (click)="withdrawFromTransaction(transaction.total, transaction.id)" class="fa fa-sign-out"></i>
       </td>
     </tr>

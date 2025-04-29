@@ -6,5 +6,9 @@ return [
     'currency_code' => 'GBP',
     'show_commission' => true,
     'featured_product_charge' => 15,
-    'bulk_price' => 10.99
+    'bulk_price' => 10.99,
+    'bump' => [
+        3 => 1,
+        7 => 1.50,
+    ]
 ];

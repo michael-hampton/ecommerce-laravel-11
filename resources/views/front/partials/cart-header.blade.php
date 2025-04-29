@@ -21,7 +21,7 @@
                 <h5 class="d-flex animate-underline mb-2 de-flex justify-content-between">
                     <a class="d-block fs-sm fw-medium text-truncate animate-target"
                        href="shop-product-marketplace.html">{{$item->name}}</a>
-                    <div class="h6 pb-1 mb-2">{{$currency}}{{$item->price}}</div>
+                    <div class="h6 pb-1 mb-2">{{config('shop.currency')}}{{$item->price}}</div>
                 </h5>
 
                 <p>{{$item->model->short_description}}</p>

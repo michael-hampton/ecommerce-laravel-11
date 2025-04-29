@@ -1,7 +1,11 @@
+import { ElementRef, TemplateRef } from "@angular/core"
+
 export interface ModalConfig {
   modalTitle: string
   modalBody?: string
+  template?: TemplateRef<any>
   saveButtonLabel?: string
+  showFooter?: boolean
   closeButtonLabel?: string
   size?: string;
   shouldClose?(): Promise<boolean> | boolean

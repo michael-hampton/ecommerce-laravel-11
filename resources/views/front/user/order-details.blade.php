@@ -91,9 +91,14 @@
                                     <td class="text-center"></td>
                                     <td class="text-center">{{$item->status == 0 ? 'No' : 'Yes'}}</td>
                                     <td class="text-center">
-                                        {{$item->approved_date}}
+                                        @if(empty($item->approved_date))
                                         <a href="{{route('orders.reportOrder', ['orderItemId' => $item->id])}}"
                                            class="btn btn-warning btn-lg">Report an issue</a>
+                                           <a href="{{route('orders.approveOrderItem', ['orderItemId' => $item->id])}}"
+                                            class="btn btn-success btn-sm">I'm happy with the item</a>
+                                            @else
+                                            <span class="badge bg-success">Approved</span
+                                            @endif
                                         @if($order->status === 'delivered')
                                             <a href="{{route('createReview', ['orderItemId' => $item->id])}}">
                                                 Review Product

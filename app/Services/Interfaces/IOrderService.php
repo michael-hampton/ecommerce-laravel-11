@@ -9,4 +9,5 @@ interface IOrderService
     public function deleteOrder(array $data);
     public function updateOrderLine(array $data, int $id);
     public function approveOrder(int $orderId);
+    public function approveOrderItem(int $orderItemId);
 }

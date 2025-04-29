@@ -16,7 +16,7 @@ class WithdrawalService implements IWithdrawalService
         private float              $amount,
         private WithdrawalTypeEnum $type,
         private WithdrawalEnum     $withdrawalType,
-        private int                $id
+        private int | null                $id
     )
     {
 
@@ -47,6 +47,11 @@ class WithdrawalService implements IWithdrawalService
         if ($this->type === WithdrawalTypeEnum::OrderReceived) {
             $withdrawalData['transaction_id'] = $this->id;
             $data['transaction_id'] = $this->id;
+        }
+
+        if ($this->type === WithdrawalTypeEnum::BumpProduct) {
+            $withdrawalData['product_id'] = $this->id;
+            $data['product_id'] = $this->id;
         }
 
         if ($this->type === WithdrawalTypeEnum::OrderSpent) {

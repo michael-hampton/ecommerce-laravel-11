@@ -5,15 +5,15 @@ namespace App\Services;
 use App\Helper;
 use App\Models\AttributeValue;
 use App\Models\Product;
-use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Models\SellerBalance;
+use App\Models\WithdrawalEnum;
+use App\Models\WithdrawalTypeEnum;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Interfaces\IProductService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Log;
 
 class ProductService implements IProductService
 {
@@ -65,9 +65,9 @@ class ProductService implements IProductService
         }
         $data['images'] = $gallery_images;
 
-        $this->updateSellerBalance($data);
-
         $product = $this->repository->create($data);
+
+        $this->updateSellerBalance($data, $product);
 
         if (!empty($data['attribute_values'])) {
             $this->saveAttributes($data['attribute_values'], $product);
@@ -167,19 +167,19 @@ class ProductService implements IProductService
         return $this->repository->delete($id);
     }
 
-    private function updateSellerBalance(array $data)
+    private function updateSellerBalance(array $data, Product $product):bool
     {
-        if (empty($data['charge_featured'])) {
+        if (empty($data['bump_days'])) {
             return false;
         }
 
-        $sellerBalance = SellerBalance::where('seller_id', auth()->id())->first();
+        $costs = config('shop.bump');
 
-        if ($sellerBalance) {
-            SellerBalance::where('seller_id', auth()->id())->decrement('balance', $data['charge_featured']);
-        } else {
-            SellerBalance::create(['balance' => $data['charge_featured'], 'seller_id' => auth()->id()]);
-        }
+        $price = $costs[$data['bump_days']];
+
+       Log::info('deducting '.$price.' from seller');
+
+       (new WithdrawalService(auth()->id(), $price, WithdrawalTypeEnum::BumpProduct, WithdrawalEnum::Decrease, $product->id))->updateBalance($price, $data);
 
         return true;
     }

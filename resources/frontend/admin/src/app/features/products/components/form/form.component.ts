@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {firstValueFrom, forkJoin} from 'rxjs';
 import {ModalComponent} from '../../../../shared/components/modal/modal.component';
@@ -11,6 +11,7 @@ import {AuthService} from '../../../../core/auth/auth.service';
 import {AttributeValue} from '../../../../types/attribute-values/attribute-value';
 import {PackageSizeEnum} from '../../../../types/products/package-size.enum';
 
+
 @Component({
   selector: 'app-form',
   standalone: false,
@@ -20,7 +21,13 @@ import {PackageSizeEnum} from '../../../../types/products/package-size.enum';
 })
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;
+  @ViewChild('username') input: TemplateRef<any>;
+  @ViewChild('child') child2: TemplateRef<any>;
+
   form?: FormGroup;
+  @ViewChild('featureModal', { static: true, read: ViewContainerRef })
+  featureModal!: ViewContainerRef;
+  days: number
 
   private _lookupStore = inject(LookupStore);
   lookupVm$ = this._lookupStore.vm$;
@@ -28,6 +35,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   formVm$ = this._formStore.vm$;
   private _authService = inject(AuthService)
   private attributeValues: AttributeValue[] = [];
+  testModal: any;
 
   public constructor(private fb: FormBuilder) {
     super();
@@ -68,6 +76,22 @@ export class FormComponent extends ModalComponent implements OnInit {
 
     this.form?.controls['name'].valueChanges.subscribe(value => {
       this.stringToSlug(value)
+    }); 
+  }
+
+  ngAfterViewInit() {
+    this.form?.controls['featured'].valueChanges.subscribe(value => {
+     if(value === 'yes') {
+      this.modalService
+      .openConfirmationModal(ModalComponent, this.featureModal, {}, {
+        modalTitle: 'Make this product featured?',
+        template: this.input,
+        showFooter: false
+      })
+      .subscribe((v) => {
+        this.form.controls['bump_days'].setValue(this.days);
+      });
+     }
     });
   }
 
@@ -93,7 +117,8 @@ export class FormComponent extends ModalComponent implements OnInit {
         stock_status: this.form.value.stock_status,
         featured: this.form.value.featured === 'yes' ? 1 : 0,
         seller_id: Number(user.payload.id),
-        images: this.form.value.imagesSource
+        images: this.form.value.imagesSource,
+        bump_days: this.form.value.bump_days
       } as Product;
 
       if (file) {
@@ -165,8 +190,17 @@ export class FormComponent extends ModalComponent implements OnInit {
       featured: new FormControl('', [Validators.required]),
       image: new FormControl(''),
       images: new FormControl(''),
-      imagesSource: new FormControl('')
+      imagesSource: new FormControl(''),
+      bump_days: new FormControl(''),
     })
+  }
+
+  public changeBumpDays = ($event: Event) => {
+    const input = $event.target as HTMLInputElement
+
+    if(input.checked) {
+      this.days = Number(input.value)
+    }
   }
 
   stringToSlug(text: string) {

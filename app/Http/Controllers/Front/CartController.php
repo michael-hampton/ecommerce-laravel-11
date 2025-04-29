@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplyCouponCodeRequest;
 use App\Models\ProductAttributeValue;
-use App\Models\DeliveryMethod;
-use App\Repositories\Interfaces\ICouponRepository;
 use App\Services\Cart\Facade\Cart;
 use App\Services\Interfaces\ICouponService;
 use App\Services\Interfaces\IDeliveryMethodService;

@@ -61,6 +61,12 @@ class UserAccountController extends Controller
         return back()->with('success', 'Order cancelled');
     }
 
+    public function approveOrderItem(int $orderItemId)
+    {
+        $this->orderService->approveOrderItem($orderItemId);
+        return back()->with('success', 'Order cancelled');
+    }
+
     public function reportOrder(int $orderItemId)
     {
         $orderItem = OrderItem::whereId($orderItemId)->first();

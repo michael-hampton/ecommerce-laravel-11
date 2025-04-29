@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderLog;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\WithdrawalEnum;
 use App\Models\WithdrawalTypeEnum;
 use App\Repositories\Interfaces\IAddressRepository;
@@ -327,18 +328,92 @@ class OrderService implements IOrderService
                 $transactions->first()->id
             ))->updateBalance();
 
-            OrderItem::where('seller_id', $sellerId)
-                ->where('order_id', $orderId)
-                ->update(['approved_date' => now()])
-            ;
+            $orderItems =  OrderItem::where('seller_id', $sellerId)->where('order_id', $orderId);
+
+            $orderItems->update(['approved_date' => now()]);
 
             Transaction::where('seller_id', $sellerId)
                 ->where('order_id', $orderId)
                 ->update(['payment_status' => 'approved'])
             ;
+
+            $this->sendOrderApprovedNotification($order, $orderItems, $sellerId);
         }
 
         $order->update(['status' => 'complete']);
+
+        return true;
+    }
+
+    public function approveOrderItem(int $orderItemId) {
+        $orderItem = OrderItem::whereId($orderItemId)->firstOrFail();
+        $order = $orderItem->order;
+        $transaction = $order->transaction->where('seller_id', $orderItem->seller_id)->first();
+
+        if(empty($transaction)) {
+            return false;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $sellerId = $orderItem->seller_id;
+
+        (new WithdrawalService(
+            $sellerId,
+            $transaction->total,
+            WithdrawalTypeEnum::OrderReceived,
+            WithdrawalEnum::Increase,
+            $transaction->id
+        ))->updateBalance();
+
+        $orderItem->update(['approved_date' => now()]);
+       
+        Transaction::where('seller_id', $sellerId)
+            ->where('order_id', $order->id)
+            ->update(['payment_status' => 'approved'])
+        ;
+    
+
+        $allApproved = true;
+
+        foreach($order->orderItems as $item) {
+            if(empty($item->approved_date)) {
+                $allApproved = false;
+                break;
+            }
+        }
+
+        if($allApproved) {
+            $order->update(['status' => 'complete']);
+        }
+
+        DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
+
+        $this->sendOrderApprovedNotification($order, $orderItem, $sellerId);
+
+        return true;
+    }
+
+    private function sendOrderApprovedNotification(Order $order, $orderItems, int $sellerId) {
+        $user = User::whereId($sellerId)->firstOrFail();
+        $email = $user->email;
+        $messageData = [
+            'email' => $email,
+            'name' => $order->customer->name,
+            'order_id' => $order->id,
+            'order' => $order,
+            'orderItems' => $orderItems,
+            'currency' => config('shop.currency'),
+        ];
+
+        Mail::send('emails.order-approved', $messageData, function ($message) use ($email, $order) {
+            $message->to($email)->subject('Order #' . $order->id);
+        });
     }
 
     public function deleteOrder(array $data)

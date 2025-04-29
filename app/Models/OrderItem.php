@@ -25,7 +25,8 @@ class OrderItem extends Model
         'courier_id',
         'delivery_date',
         'cancelled_date',
-        'commission'
+        'commission',
+        'approved_date'
     ];
 
     public function product() {

@@ -17,6 +17,7 @@ class SellerBalance extends Model
         'previous_balance',
         'transaction_id',
         'order_id',
-        'type'
+        'type',
+        'product_id'
     ];
 }

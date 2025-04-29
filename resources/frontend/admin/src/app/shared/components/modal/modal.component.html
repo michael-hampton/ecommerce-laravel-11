@@ -7,10 +7,13 @@
       </div>
       <div class="modal-body">
         @if (body && body?.length) {
-          {{ body }}
+         <div [innerHTML]="body"></div>
         } @else {
           <ng-container *ngTemplateOutlet="child"></ng-container>
         }
+
+        <ng-container *ngTemplateOutlet="template"></ng-container>
+
       </div>
 
       <div *ngIf="showFooter === true" class="modal-footer">

@@ -10,6 +10,7 @@ class SellerWithdrawal extends Model
         'amount',
         'seller_id',
         'transaction_id',
-        'order_id'
+        'order_id',
+        'product_id'
     ];
 }
