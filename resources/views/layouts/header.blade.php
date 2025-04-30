@@ -67,7 +67,7 @@
                 <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0" id="myDropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Brands </a>
                     <ul class="dropdown-menu">
-                        @foreach(\App\Models\Brand::where('menu_status', 1)->orderBy('name', 'asc')->get() as $allBrand)
+                        @foreach(\App\Models\Brand::where('active', true)->where('menu_status', 1)->orderBy('name', 'asc')->get() as $allBrand)
                             <li><a class="dropdown-item" href="{{route('shop.index', ['brandId' => $allBrand->id])}}"> {{$allBrand->name}} </a></li>
                         @endforeach
                     </ul>

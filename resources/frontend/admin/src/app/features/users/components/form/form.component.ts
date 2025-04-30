@@ -85,7 +85,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       password: new FormControl('', [Validators.required]),
       confirm: new FormControl('', [Validators.required]),
       utype: new FormControl('', [Validators.required]),
-      active: new FormControl('', [Validators.required]),
+      active: new FormControl(true, [Validators.required]),
       image: new FormControl(''),
     })
 

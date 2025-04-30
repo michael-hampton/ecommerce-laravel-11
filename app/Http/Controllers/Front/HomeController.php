@@ -26,11 +26,11 @@ class HomeController extends Controller
 
     public function index()
     {
-        $categories = $this->categoryRepository->getPaginated(20, 'name', 'asc', ['is_featured' => true]);
+        $categories = $this->categoryRepository->getAll(null,  'name', 'asc', ['is_featured' => true]);
         $products = $this->productRepository->getHotDeals();
         $featuredProducts = $this->productRepository->getFeaturedProducts();
         $currency = config('shop.currency');
-        $slides = $this->slideRepository->getPaginated(20, 'created_at', 'desc');
+        $slides = $this->slideRepository->getAll(null, 'created_at', 'desc');
 
         if (Auth::check()) {
             Cart::instance('cart')->restore(Auth::user()->email);

@@ -56,4 +56,11 @@ class SlideService implements ISlideService
 
         return $this->repository->delete($id);
     }
+
+    public function toggleActive(int $id)
+    {
+        $slide = $this->repository->getById($id);
+        $data = ['active' => $slide->active === true ? false : true];
+        return $slide->update($data);
+    }
 }

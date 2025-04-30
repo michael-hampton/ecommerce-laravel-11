@@ -36,16 +36,23 @@ export class CategoryStore extends FilterStore<Category> {
       switchMap((id) => this._api.delete(id).pipe(
           tapResponse({
             next: (users) => this._globalStore.setSuccess('Deleted successfully'),
-            error: (error: HttpErrorResponse) => {
-              this._globalStore.setLoading(false)
-              this._globalStore.setError(UiError(error))
-            },
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this._globalStore.setLoading(false),
           })
         )
       )
     )
   );
+
+  makeActive(id: number) {
+    return this._api.toggleActive(id).pipe(
+      tapResponse({
+        next: (data) => this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
 
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(

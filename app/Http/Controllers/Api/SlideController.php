@@ -80,4 +80,10 @@ class SlideController extends ApiController
 
         return response()->json($result);
     }
+
+    public function toggleActive(int $id)
+    {
+       $result = $this->slideService->toggleActive($id);
+       return response()->json($result);
+    }
 }

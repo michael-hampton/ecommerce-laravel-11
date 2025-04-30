@@ -37,21 +37,24 @@ export class UserStore extends FilterStore<User> {
       tap(() => this._globalStore.setLoading(true)),
       switchMap((id) => this._api.delete(id).pipe(
           tapResponse({
-            next: (users) => {
-              this._globalStore.setSuccess('Deleted successfully');
-              //this.patchState({loading: false, saveSuccess: true})
-            },
-            error: (error: HttpErrorResponse) => {
-              //this.patchState({loading: false, saveSuccess: false})
-              this._globalStore.setLoading(false)
-              this._globalStore.setError(UiError(error))
-            },
+            next: (users) => this._globalStore.setSuccess('Deleted successfully'),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this._globalStore.setLoading(false),
           })
         )
       )
     )
   );
+
+  makeActive(id: number) {
+    return this._api.toggleActive(id).pipe(
+      tapResponse({
+        next: (data) => this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
 
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(

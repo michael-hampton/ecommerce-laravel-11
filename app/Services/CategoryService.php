@@ -98,4 +98,11 @@ class CategoryService implements ICategoryService
 
         return $this->repository->delete($id);
     }
+
+    public function toggleActive(int $id)
+    {
+        $category = $this->repository->getById($id);
+        $data = ['active' => $category->active === true ? false : true];
+        return $category->update($data);
+    }
 }

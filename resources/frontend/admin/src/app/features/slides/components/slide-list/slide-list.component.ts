@@ -68,5 +68,11 @@ export class SlideListComponent implements OnInit {
   reload() {
     this._store.reset();
   }
+
+  makeActive(id: number) {
+    this._store.makeActive(id).subscribe(result => {
+      this._store.loadData(this._store.filter$);
+    })
+  }
 }
 

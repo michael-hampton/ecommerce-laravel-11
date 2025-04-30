@@ -52,6 +52,12 @@ export class UserListComponent implements OnInit {
       });
   }
 
+  makeActive(id: number) {
+    this._store.makeActive(id).subscribe(result => {
+      this._store.loadData(this._store.filter$);
+    })
+  }
+
   add(event: Event) {
     event.preventDefault()
     this.sub = this.modalService

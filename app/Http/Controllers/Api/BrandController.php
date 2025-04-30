@@ -81,4 +81,10 @@ class BrandController extends ApiController
         return response()->json($result);
 
     }
+
+    public function toggleActive(int $id)
+    {
+       $result = $this->brandService->toggleActive($id);
+       return response()->json($result);
+    }
 }

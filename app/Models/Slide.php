@@ -18,4 +18,8 @@ class Slide extends Model
         'active',
         'link_text'
     ];
+
+    protected $casts = [
+        'active' => 'boolean'
+    ];
 }

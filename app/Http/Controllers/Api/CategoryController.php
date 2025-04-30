@@ -83,4 +83,10 @@ class CategoryController extends ApiController
 
         return response()->json($result);
     }
+
+    public function toggleActive(int $id)
+    {
+       $result = $this->categoryService->toggleActive($id);
+       return response()->json($result);
+    }
 }

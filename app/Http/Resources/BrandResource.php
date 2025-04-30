@@ -19,6 +19,7 @@ class BrandResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'active' => $this->active,
             'image' => asset('images/brands') . '/' . $this->image,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,

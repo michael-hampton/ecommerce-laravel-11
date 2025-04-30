@@ -8,4 +8,5 @@ export type Brand = {
   meta_description: string;
   meta_keywords: string;
   description: string
+  active: boolean
 }

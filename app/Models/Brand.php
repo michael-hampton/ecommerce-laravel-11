@@ -17,7 +17,12 @@ class Brand extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
-        'description'
+        'description',
+        'active'
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     public function products()

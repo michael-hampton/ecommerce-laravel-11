@@ -21,6 +21,10 @@ export class UserApi {
     return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
+  toggleActive(id: number) {
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}/active`)
+  }
+
   create(payload: Partial<User>) {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, this.baseHttpClient.getFormData(payload));
   }

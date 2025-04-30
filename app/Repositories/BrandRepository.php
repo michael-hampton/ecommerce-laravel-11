@@ -18,6 +18,8 @@ class BrandRepository extends BaseRepository implements IBrandRepository
     {
         $query = $this->getQuery();
 
+        $query->where('active', true);
+
         $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('name', 'like', "%{$searchParams['name']}%");
         });

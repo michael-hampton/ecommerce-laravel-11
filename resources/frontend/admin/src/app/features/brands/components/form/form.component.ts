@@ -48,7 +48,8 @@ export class FormComponent extends ModalComponent implements OnInit {
         meta_title: this.form.value.meta_title,
         meta_description: this.form.value.meta_description,
         meta_keywords: this.form.value.meta_keywords,
-        description: this.form.value.description
+        description: this.form.value.description,
+        active: this.form.value.active
       } as Brand;
 
       if (file) {
@@ -73,7 +74,8 @@ export class FormComponent extends ModalComponent implements OnInit {
       meta_title: this.formData.meta_title,
       meta_description: this.formData.meta_description,
       meta_keywords: this.formData.meta_keywords,
-      description: this.formData.description
+      description: this.formData.description,
+      active: this.formData.active
     })
 
     this._formStore.addImage(this.formData.image)
@@ -89,6 +91,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       meta_description: new FormControl(''),
       meta_keywords: new FormControl(''),
       description: new FormControl(''),
+      active: new FormControl(true)
     })
   }
 

@@ -152,93 +152,92 @@
             <!-- Filters Sidebar -->
             <div class="col-lg-3">
                 <div class="filter-sidebar p-4 shadow-sm">
-                    <div class="filter-group">
-                        <h6 class="mb-3">Categories</h6>
-                        @foreach($categories->where('parent_id', 0) as $category)
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="{{$category->name}}"
-                                       value="{{$category->id}}" name="categories"
-                                       @if(in_array($category->id, explode(',', $categoryId))) checked="checked" @endif>
-                                <label class="form-check-label" for="{{$category->name}}">
-                                    {{$category->name}}
-                                    ({{$category->products->count()}})
-                                </label>
-                            </div>
+                    @if($categories->count() > 0)
+                        <div class="filter-group">
+                            <h6 class="mb-3">Categories</h6>
+                            @foreach($categories->where('parent_id', 0) as $category)
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="{{$category->name}}"
+                                        value="{{$category->id}}" name="categories" @if(in_array($category->id, explode(',', $categoryId))) checked="checked" @endif>
+                                    <label class="form-check-label" for="{{$category->name}}">
+                                        {{$category->name}}
+                                        ({{$category->products->count()}})
+                                    </label>
+                                </div>
 
-                            <!-- subcategory -->
-                            @if($category->subcategories->count() > 0)
-                                @foreach($category->subcategories as $subcategory)
-                                    <div class="form-check mb-2 ms-5">
-                                        <input class="form-check-input" type="checkbox" id="{{$subcategory->name}}"
-                                               value="{{$subcategory->id}}" name="categories"
-                                               @if(in_array($subcategory->id, explode(',', $categoryId))) checked="checked" @endif>
-                                        <label class="form-check-label" for="{{$subcategory->name}}">
-                                            {{$subcategory->name}}
-                                            ({{$subcategory->products->count()}})
-                                        </label>
-                                    </div>
+                                <!-- subcategory -->
+                                @if($category->subcategories->count() > 0)
+                                    @foreach($category->subcategories as $subcategory)
+                                        <div class="form-check mb-2 ms-5">
+                                            <input class="form-check-input" type="checkbox" id="{{$subcategory->name}}"
+                                                value="{{$subcategory->id}}" name="categories" @if(in_array($subcategory->id, explode(',', $categoryId))) checked="checked" @endif>
+                                            <label class="form-check-label" for="{{$subcategory->name}}">
+                                                {{$subcategory->name}}
+                                                ({{$subcategory->products->count()}})
+                                            </label>
+                                        </div>
 
-                                    @if($subcategory->subcategories->count() > 0)
-                                        @foreach($subcategory->subcategories as $grandparent)
-                                            <div class="form-check mb-2" style="margin-left: 70px">
-                                                <input class="form-check-input" type="checkbox"
-                                                       id="{{$grandparent->name}}"
-                                                       value="{{$grandparent->id}}" name="categories"
-                                                       @if(in_array($grandparent->id, explode(',', $categoryId))) checked="checked" @endif>
-                                                <label class="form-check-label" for="{{$grandparent->name}}">
-                                                    {{$grandparent->name}}
-                                                    ({{$grandparent->products->count()}})
-                                                </label>
-                                            </div>
-                                        @endforeach
-                                    @endif
-                                @endforeach
+                                        @if($subcategory->subcategories->count() > 0)
+                                            @foreach($subcategory->subcategories as $grandparent)
+                                                <div class="form-check mb-2" style="margin-left: 70px">
+                                                    <input class="form-check-input" type="checkbox" id="{{$grandparent->name}}"
+                                                        value="{{$grandparent->id}}" name="categories" @if(in_array($grandparent->id, explode(',', $categoryId))) checked="checked" @endif>
+                                                    <label class="form-check-label" for="{{$grandparent->name}}">
+                                                        {{$grandparent->name}}
+                                                        ({{$grandparent->products->count()}})
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    @endforeach
 
-                            @endif
+                                @endif
 
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
+                    @endif
 
                     <div class="filter-group">
                         <h6 class="mb-3">Price Range</h6>
-                        <input type="range" class="form-range" min="1" max="5000" step="5" value="500"
-                               name="price_range">
+                        <input type="range" class="form-range" min="1" max="5000" step="5" value="500" name="price_range">
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">{{$currency}}{{$minPrice}}</span>
                             <span class="text-muted">{{$currency}}{{$maxPrice}}</span>
                         </div>
                     </div>
 
-                    @foreach ($categoryAttributes as $attribute )
-                    <div class="filter-group">
-                        <h6 class="mb-3">{{$attribute->attribute->name}}</h6>
-                        @foreach($attribute->attribute->attributeValues as $value)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio"  value="{{$value->id}}" name="{{$attribute->attribute->name}}" id="rating4">
-                            <label class="form-check-label" for="rating4">
-                                {{ $value->name }}
-                            </label>
+                    @foreach ($categoryAttributes as $attribute)
+                        <div class="filter-group">
+                            <h6 class="mb-3">{{$attribute->attribute->name}}</h6>
+                            @foreach($attribute->attribute->attributeValues as $value)
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" value="{{$value->id}}"
+                                        name="{{$attribute->attribute->name}}" id="rating4">
+                                    <label class="form-check-label" for="rating4">
+                                        {{ $value->name }}
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
-                        @endforeach
-                    </div>
                     @endforeach
 
-                    
 
-                    <div class="filter-group">
-                        <h6 class="mb-3">Brands</h6>
-                        @foreach($brands->where('parent_id', 0) as $brand)
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="{{$brand->name}}"
-                                       value="{{$brand->id}}" name="brands"
-                                       @if(in_array($brand->id, explode(',', $brandId))) checked="checked" @endif>
-                                <label class="form-check-label" for="{{$brand->name}}">
-                                    {{$brand->name}}
-                                   ({{$brand->products->count()}})
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
+
+                    @if(!empty($brands))
+                        <div class="filter-group">
+                            <h6 class="mb-3">Brands</h6>
+                            @foreach($brands->where('parent_id', 0) as $brand)
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="{{$brand->name}}" value="{{$brand->id}}"
+                                        name="brands" @if(in_array($brand->id, explode(',', $brandId))) checked="checked" @endif>
+                                    <label class="form-check-label" for="{{$brand->name}}">
+                                        {{$brand->name}}
+                                        ({{$brand->products->count()}})
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
 
                     <div class="filter-group">
                         <h6 class="mb-3">Rating</h6>
@@ -288,10 +287,10 @@
 
             $(document).off('change', '#total-number');
             $(document).on('change', '#total-number', function (event) {
-                 alert('here')
+                alert('here')
                 $('#orderBy').val($('#total-number option:selected').val());
                 getData();
-             });
+            });
 
 
             $('input[name="brands"]').on('change', function () {

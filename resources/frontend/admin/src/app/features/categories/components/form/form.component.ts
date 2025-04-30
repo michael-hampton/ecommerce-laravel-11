@@ -56,6 +56,7 @@ export class FormComponent extends ModalComponent implements OnInit {
         meta_description: this.form.value.meta_description,
         meta_keywords: this.form.value.meta_keywords,
         description: this.form.value.description,
+        active: this.form.value.active,
         attributes: this.form.value.attributes
       } as Category;
 
@@ -87,6 +88,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       meta_description: this.formData.meta_description,
       meta_keywords: this.formData.meta_keywords,
       description: this.formData.description,
+      active: this.formData.active,
       attributes: this.formData.attributes
     })
 
@@ -104,7 +106,8 @@ export class FormComponent extends ModalComponent implements OnInit {
       meta_description: new FormControl(''),
       meta_keywords: new FormControl(''),
       description: new FormControl(''),
-      attributes: new FormControl('')
+      attributes: new FormControl(''),
+      active: new FormControl(true)
     });
   }
 

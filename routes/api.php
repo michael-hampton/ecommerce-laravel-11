@@ -44,24 +44,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 
 
-//Brands
+    //Brands
     Route::apiResource('brands', BrandController::class);
-// Categories
+    Route::delete('/brands/{id}/active', [BrandController::class, 'toggleActive'])->name('brands.active');
+
+    // Categories
     Route::apiResource('categories', CategoryController::class);
+    Route::delete('/categories/{id}/active', [CategoryController::class, 'toggleActive'])->name('categories.active');
 
-    Route::get('/countries', [CountryController::class,'index'])->name('getCountries');
+    Route::get('/countries', [CountryController::class, 'index'])->name('getCountries');
 
-// products
+    // products
     Route::apiResource('products', ProductController::class);
     Route::post('products/subcategories', [ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
 
-// users
+    // users
     Route::apiResource('users', UserController::class);
+    Route::delete('/users/{id}/active', [UserController::class, 'toggleActive'])->name('users.active');
+
 
     Route::put('users/updateActive/{id}', [UserController::class, 'updateActive'])->name('admin.users.updateActive');
 
-// slides
+    // slides
     Route::apiResource('slides', SlideController::class);
+    Route::delete('/slides/{id}/active', [SlideController::class, 'toggleActive'])->name('slides.active');
+
 
     // messages
     Route::apiResource('messages', MessageController::class);
@@ -74,12 +81,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('delivery-methods', DeliveryMethodController::class);
 
 
-//orders
+    //orders
     Route::apiResource('orders', OrderController::class);
     Route::put('orders/details/{orderItemId}', [OrderController::class, 'updateItemDetails'])->name('admin.orders.updateItemDetails');
     Route::get('orders/logs/{orderId}', [OrderController::class, 'logs'])->name('admin.orders.updateItemDetails');
 
-//attributes
+    //attributes
     Route::apiResource('attributes', AttributeController::class);
 
     //lookup
@@ -92,11 +99,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // dashboard
     Route::get('dashboard', [DashboardController::class, 'get'])->name('admin.dashboard');
 
-//attribute values
+    //attribute values
     Route::apiResource('attribute-values', AttributeValueController::class);
 
 
-//coupons
+    //coupons
     Route::apiResource('coupons', CouponController::class);
 
     //seller

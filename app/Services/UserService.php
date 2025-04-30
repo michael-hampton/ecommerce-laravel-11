@@ -67,4 +67,11 @@ class UserService implements IUserService
 
         return $this->repository->delete($id);
     }
+
+    public function toggleActive(int $id)
+    {
+        $user = $this->repository->getById($id);
+        $data = ['active' => $user->active === true ? false : true];
+        return $user->update($data);
+    }
 }

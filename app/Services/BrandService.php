@@ -64,4 +64,11 @@ class BrandService implements IBrandService
 
         return $this->repository->delete($id);
     }
+
+    public function toggleActive(int $id)
+    {
+        $brand = $this->repository->getById($id);
+
+        return $brand->update(['active' => $brand->active === true ? false : true]);
+    }
 }

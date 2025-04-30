@@ -53,7 +53,6 @@ export class FormComponent extends ModalComponent implements OnInit {
       }
 
       this._formStore.saveData(model).subscribe(result => {
-        alert('good')
         this.confirm();
       })
     }
@@ -76,14 +75,14 @@ export class FormComponent extends ModalComponent implements OnInit {
 
   initializeForm() {
     this.form = this.fb.group({
-      id: new FormControl<number | null>(null),
-      title: new FormControl<string>('', [Validators.required]),
-      subtitle: new FormControl<string>('', [Validators.required]),
-      tags: new FormControl<string>('', [Validators.required]),
-      link: new FormControl<string>('', [Validators.required]),
-      link_text: new FormControl<string>('', [Validators.required]),
-      active: new FormControl<string>('', [Validators.required]),
-      image: new FormControl<string>(''),
+      id: new FormControl(null),
+      title: new FormControl('', [Validators.required]),
+      subtitle: new FormControl('', [Validators.required]),
+      tags: new FormControl('', [Validators.required]),
+      link: new FormControl('', [Validators.required]),
+      link_text: new FormControl('', [Validators.required]),
+      active: new FormControl(true, [Validators.required]),
+      image: new FormControl(''),
     })
   }
 }

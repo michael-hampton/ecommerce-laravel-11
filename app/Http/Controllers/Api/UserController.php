@@ -89,4 +89,10 @@ class UserController extends ApiController
     {
 
     }
+
+    public function toggleActive(int $id)
+    {
+        $result = $this->userService->toggleActive($id);
+        return response()->json($result);
+    }
 }
