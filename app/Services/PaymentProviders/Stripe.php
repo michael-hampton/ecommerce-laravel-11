@@ -85,7 +85,7 @@ class Stripe extends BaseProvider
                     'total' => $total - $commission,
                     'commission' => $commission,
                     'shipping' => $shipping,
-                    'discount' => Session::has('coupon') ? Session::get('coupon')['value'] : 0,
+                    'discount' => !empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
                 ];
 
                 Transaction::create($transactionData);
