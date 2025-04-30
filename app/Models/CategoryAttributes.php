@@ -13,4 +13,7 @@ class CategoryAttributes extends Model
         return $this->belongsTo(ProductAttribute::class);
     }
 
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
 }

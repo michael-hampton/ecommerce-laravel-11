@@ -28,11 +28,10 @@ class ShopController extends Controller
     ];
 
     public function __construct(
-        private IProductRepository  $productRepository,
-        private IBrandRepository    $brandRepository,
+        private IProductRepository $productRepository,
+        private IBrandRepository $brandRepository,
         private ICategoryRepository $categoryRepository,
-    )
-    {
+    ) {
         //
     }
 
@@ -45,18 +44,19 @@ class ShopController extends Controller
 
         $brands = $this->brandRepository->setRequiredRelationships(['products'])->getAll(null, 'name', 'asc');
         $brandIds = $request->get('brandId') ?? '';
-        $brand = $showBrand  ? $brands->where('id', (int)$brandIds)->first() : null;
+        $brand = $showBrand ? $brands->where('id', (int) $brandIds)->first() : null;
 
         $categories = $this->categoryRepository->setRequiredRelationships(['products'])->getAll(null, 'name', 'asc');
         $categoryIds = $request->get('categoryId') ?? '';
-        $category = $showCategory ? $categories->where('id', (int)$categoryIds)->first() : null;
+        $category = $showCategory ? $categories->where('id', (int) $categoryIds)->first() : null;
 
-        $size = (int)$request->get('size', 12) ?? 12;
+        $size = (int) $request->get('size', 12) ?? 12;
         $orderBy = $request->get('orderBy') ?? -1;
         $orderByColumn = 'created_at';
         $orderDir = 'desc';
         $minPrice = $request->get('minPrice') ?? 1;
         $maxPrice = $request->get('maxPrice') ?? 5000;
+        $attributeValueIds = $request->get('attributeValueIds');
 
         foreach ($this->sortOptions as $sortOption) {
             if ($sortOption['name'] == $orderBy) {
@@ -75,6 +75,7 @@ class ShopController extends Controller
                 'categoryIds' => $categoryIds,
                 'minPrice' => $minPrice,
                 'maxPrice' => $maxPrice,
+                'attributeValueIds' => $attributeValueIds
             ]
         );
 
@@ -85,14 +86,24 @@ class ShopController extends Controller
 
         Cart::instance('wishlist')->loadWishlistProducts();
 
-        $categoryAttributes = !empty($category) ? CategoryAttributes::with('attribute')->where('category_id', $category->id)->get() : [];
+        $categoryAttributes = [];
+        $categoryAttributeValues = [];
+
+        if (!empty($category)) {
+            $categoryAttributes = CategoryAttributes::with('attribute')->where('category_id', $category->id)->get();
+
+            $categoryAttributeValues = $this->categoryRepository->getCategoryAttributeValues($category);
+        }
+
 
         $viewData = [
             'products' => $products,
             'categoryAttributes' => $categoryAttributes,
+            'categoryAttributeValues' => $categoryAttributeValues,
             'category' => $category,
             'brand' => $brand,
             'brands' => $brands,
+            'attributeValueIds' => $attributeValueIds,
             'categories' => $categories,
             'brandId' => $brandIds,
             'categoryId' => $categoryIds,
@@ -115,7 +126,7 @@ class ShopController extends Controller
         return view('front.shop', $viewData);
     }
 
-//    public function refreshShopBreadcrumbs(Request $request)
+    //    public function refreshShopBreadcrumbs(Request $request)
 //    {
 //        $brandIds = $request->get('brandId') ?? '';
 //        $categoryIds = $request->get('categoryId') ?? '';

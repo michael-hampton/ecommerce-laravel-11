@@ -33,7 +33,7 @@ class ProductService implements IProductService
 
         unset($data['subcategory_id']);
 
-        $current_timestamp = Carbon::now()->timestamp;
+        $currentTimestamp = Carbon::now()->timestamp;
         if (!empty($data['image'])) {
 
             $filename = time() . '.' . $data['image']->getClientOriginalExtension();
@@ -44,8 +44,8 @@ class ProductService implements IProductService
             $data['image'] = $filename;
         }
 
-        $gallery_arr = array();
-        $gallery_images = "";
+        $galleryArr = [];
+        $galleryImages = "";
         $counter = 1;
         if ($data['images']) {
             $allowedfileExtension = ['jpg', 'png', 'jpeg'];
@@ -54,20 +54,27 @@ class ProductService implements IProductService
                 $gextension = $file->getClientOriginalExtension();
                 $check = in_array($gextension, $allowedfileExtension);
                 if ($check) {
-                    $gfilename = $current_timestamp . "-" . $counter . "." . $gextension;
+                    $gfilename = $currentTimestamp . "-" . $counter . "." . $gextension;
                     $file->storeAs('products', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'products');
-                    array_push($gallery_arr, $gfilename);
-                    $counter = $counter + 1;
+                    array_push($galleryArr, $gfilename);
+                    $counter++;
                 }
             }
-            $gallery_images = implode(',', $gallery_arr);
+
+            $galleryImages = implode(',', $galleryArr);
         }
-        $data['images'] = $gallery_images;
+
+        $data['images'] = $galleryImages;
+
+        $bumpDays = $data['bump_days'];
+        unset($data['bump_days']);
 
         $product = $this->repository->create($data);
 
-        $this->updateSellerBalance($data, $product);
+        if (!empty($bumpDays) && $product->featured === false) {
+            $this->updateSellerBalance($bumpDays, $product);
+        }
 
         if (!empty($data['attribute_values'])) {
             $this->saveAttributes($data['attribute_values'], $product);
@@ -101,7 +108,7 @@ class ProductService implements IProductService
         $product = $this->repository->getById($id);
         $product->fill($data);
         $data['slug'] = Str::slug($data['name']);
-        $current_timestamp = Carbon::now()->timestamp;
+        $currentTimestamp = Carbon::now()->timestamp;
 
         if (!empty($data['subcategory_id'])) {
             $data['category_id'] = $data['subcategory_id'];
@@ -114,18 +121,18 @@ class ProductService implements IProductService
         }
 
         if (!empty($data['image'])) {
-            $file_extention = $data['image']->getClientOriginalExtension();
-            $file_name = $current_timestamp . '.' . $file_extention;
+            $fileExtension = $data['image']->getClientOriginalExtension();
+            $filename = $currentTimestamp . '.' . $fileExtension;
 
-            $data['image']->storeAs('products', $file_name, 'public');
+            $data['image']->storeAs('products', $filename, 'public');
 
             // Thumbnail
-            Helper::generateThumbnailImage($data['image'], $file_name, 'products');
+            Helper::generateThumbnailImage($data['image'], $filename, 'products');
 
-            $data['image'] = $file_name;
+            $data['image'] = $filename;
         }
-        $gallery_arr = array();
-        $gallery_images = "";
+        $galleryArr = [];
+        $galleryImages = "";
         $counter = 1;
         if (!empty($data['images'])) {
             $allowedfileExtension = ['jpg', 'png', 'jpeg'];
@@ -134,16 +141,23 @@ class ProductService implements IProductService
                 $gextension = $file->getClientOriginalExtension();
                 $check = in_array($gextension, $allowedfileExtension);
                 if ($check) {
-                    $gfilename = $current_timestamp . "-" . $counter . "." . $gextension;
+                    $gfilename = $currentTimestamp . "-" . $counter . "." . $gextension;
                     $file->storeAs('products', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'products');
-                    array_push($gallery_arr, $gfilename);
-                    $counter = $counter + 1;
+                    array_push($galleryArr, $gfilename);
+                    $counter++;
                 }
             }
-            $gallery_images = implode(', ', $gallery_arr);
+            $galleryImages = implode(', ', $galleryArr);
         }
-        $data['images'] = $gallery_images;
+        $data['images'] = $galleryImages;
+
+        $bumpDays = $data['bump_days'];
+        unset($data['bump_days']);
+
+        if (!empty($bumpDays)) {
+            $this->updateSellerBalance($bumpDays, $product);
+        }
 
         $this->repository->update($id, $data);
 
@@ -167,19 +181,23 @@ class ProductService implements IProductService
         return $this->repository->delete($id);
     }
 
-    private function updateSellerBalance(array $data, Product $product):bool
+    private function updateSellerBalance(int $bumpDays, Product $product): bool
     {
-        if (empty($data['bump_days'])) {
+        if (empty($bumpDays)) {
             return false;
         }
 
         $costs = config('shop.bump');
 
-        $price = $costs[$data['bump_days']];
+        $price = $costs[$bumpDays];
 
-       Log::info('deducting '.$price.' from seller');
-
-       (new WithdrawalService(auth()->id(), $price, WithdrawalTypeEnum::BumpProduct, WithdrawalEnum::Decrease, $product->id))->updateBalance($price, $data);
+        (new WithdrawalService(
+            auth()->id(),
+            $price,
+            WithdrawalTypeEnum::BumpProduct,
+            WithdrawalEnum::Decrease,
+            $product->id
+        ))->updateBalance();
 
         return true;
     }

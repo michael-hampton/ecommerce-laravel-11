@@ -33,7 +33,7 @@ class ProductResource extends JsonResource
             'featured' => $this->featured,
             'quantity' => $this->quantity,
             'seller_id' => $this->seller_id,
-            'category_id' => $this->category->has('parent') ? $this->category->parent_id : $this->category_id,
+            'category_id' => $this->category_id,
             'subcategory_id' => $this->category_id,
             'brand_id' => $this->brand_id,
             'created_at' => $this->created_at,

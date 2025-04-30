@@ -1,15 +1,15 @@
-import {Component, ElementRef, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {firstValueFrom, forkJoin} from 'rxjs';
-import {ModalComponent} from '../../../../shared/components/modal/modal.component';
-import {LookupStore} from "../../../../store/lookup.store";
-import {ProductFormStore} from "../../../../store/products/form.store";
-import {Product} from "../../../../types/products/product";
-import {StockStatusEnum} from '../../../../types/products/stock-status.enum';
-import {FeaturedEnum} from '../../../../types/products/featured.enum';
-import {AuthService} from '../../../../core/auth/auth.service';
-import {AttributeValue} from '../../../../types/attribute-values/attribute-value';
-import {PackageSizeEnum} from '../../../../types/products/package-size.enum';
+import { Component, ElementRef, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { firstValueFrom, forkJoin } from 'rxjs';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { LookupStore } from "../../../../store/lookup.store";
+import { ProductFormStore } from "../../../../store/products/form.store";
+import { Product } from "../../../../types/products/product";
+import { StockStatusEnum } from '../../../../types/products/stock-status.enum';
+import { FeaturedEnum } from '../../../../types/products/featured.enum';
+import { AuthService } from '../../../../core/auth/auth.service';
+import { AttributeValue } from '../../../../types/attribute-values/attribute-value';
+import { PackageSizeEnum } from '../../../../types/products/package-size.enum';
 
 
 @Component({
@@ -76,22 +76,22 @@ export class FormComponent extends ModalComponent implements OnInit {
 
     this.form?.controls['name'].valueChanges.subscribe(value => {
       this.stringToSlug(value)
-    }); 
+    });
   }
 
   ngAfterViewInit() {
     this.form?.controls['featured'].valueChanges.subscribe(value => {
-     if(value === 'yes') {
-      this.modalService
-      .openConfirmationModal(ModalComponent, this.featureModal, {}, {
-        modalTitle: 'Make this product featured?',
-        template: this.input,
-        showFooter: false
-      })
-      .subscribe((v) => {
-        this.form.controls['bump_days'].setValue(this.days);
-      });
-     }
+      if (value === 'yes') {
+        this.modalService
+          .openConfirmationModal(ModalComponent, this.featureModal, {}, {
+            modalTitle: 'Make this product featured?',
+            template: this.input,
+            showFooter: false
+          })
+          .subscribe((v) => {
+            this.form.controls['bump_days'].setValue(this.days);
+          });
+      }
     });
   }
 
@@ -117,9 +117,12 @@ export class FormComponent extends ModalComponent implements OnInit {
         stock_status: this.form.value.stock_status,
         featured: this.form.value.featured === 'yes' ? 1 : 0,
         seller_id: Number(user.payload.id),
-        images: this.form.value.imagesSource,
         bump_days: this.form.value.bump_days
       } as Product;
+
+      if (this.form.value.imagesSource) {
+        model.images = this.form.value.imagesSource
+      }
 
       if (file) {
         model.image = file
@@ -198,7 +201,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   public changeBumpDays = ($event: Event) => {
     const input = $event.target as HTMLInputElement
 
-    if(input.checked) {
+    if (input.checked) {
       this.days = Number(input.value)
     }
   }
@@ -208,7 +211,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       .replace(/[^\w ]+/g, "")
       .replace(/ +/g, "-");
 
-    this.form?.patchValue({slug: value})
+    this.form?.patchValue({ slug: value })
   }
 
   protected readonly StockStatus = StockStatusEnum;

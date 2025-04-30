@@ -207,18 +207,20 @@
                     </div>
 
                     @foreach ($categoryAttributes as $attribute)
-                        <div class="filter-group">
-                            <h6 class="mb-3">{{$attribute->attribute->name}}</h6>
-                            @foreach($attribute->attribute->attributeValues as $value)
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" value="{{$value->id}}"
-                                        name="{{$attribute->attribute->name}}" id="rating4">
-                                    <label class="form-check-label" for="rating4">
-                                        {{ $value->name }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
+                        @if($categoryAttributeValues->has($attribute->attribute->id))
+                            <div class="filter-group">
+                                <h6 class="mb-3">{{$attribute->attribute->name}}</h6>
+                                @foreach($categoryAttributeValues->get($attribute->attribute->id) as $value)
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input attribute-value" type="radio" value="{{$value->productAttributeValue->id}}"
+                                            name="{{$attribute->attribute->name}}" id="rating4" @if (in_array($value->productAttributeValue->id, explode(',', $attributeValueIds))) checked="checked" @endif>
+                                        <label class="form-check-label" for="rating4">
+                                            {{ $value->productAttributeValue->name }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     @endforeach
 
 
@@ -273,6 +275,7 @@
         <input type="hidden" name="categoryId" id="categoryId" value="{{$categoryId}}">
         <input type="hidden" name="minPrice" id="minPrice" value="{{$minPrice}}">
         <input type="hidden" name="maxPrice" id="maxPrice" value="{{$maxPrice}}">
+        <input type="hidden" name="attributeValueIds" id="attributeValueIds" value="{{ $attributeValueIds }}">
     </form>
 @endsection
 
@@ -325,6 +328,24 @@
                 })
 
                 $('#categoryId').val(categories.join(','));
+                getData();
+
+            });
+
+            $('.attribute-value').on('change', function () {
+                var attributeValues = [];
+                $('.attribute-value').each(function () {
+                    var attributeValueId = $(this).val()
+                    if ($(this).is(':checked')) {
+                        attributeValues.push($(this).val())
+                    } else {
+                        attributeValues = attributeValues.filter(function (elem) {
+                            return elem !== attributeValueId
+                        });
+                    }
+                })
+
+                $('#attributeValueIds').val(attributeValues.join(','));
                 getData();
 
             });

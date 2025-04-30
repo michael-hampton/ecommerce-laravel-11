@@ -38,4 +38,15 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository
 
         return $query;
     }
+
+    public function getCategoryAttributeValues(Category $category)
+    {
+        $values = $category->products->map(function ($product) {
+            return $product->productAttributes()
+                ->with('productAttributeValue')
+                ->get();
+        })->flatten();
+
+        return $values->groupBy('product_attribute_id');
+    }
 }

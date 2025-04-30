@@ -52,6 +52,12 @@ class ProductRepository extends BaseRepository implements IProductRepository
             $query->whereIn('brand_id', explode(',', $searchParams['brandIds']));
         });
 
+        $query->when(!empty($searchParams['attributeValueIds']), function (Builder $query) use ($searchParams) {
+            $query->whereHas('productAttributes', function ($query) use($searchParams) { 
+                $query->whereIn('attribute_value_id', explode(',', $searchParams['attributeValueIds'])); 
+          });
+        });
+
         $query->when(!empty($searchParams['categoryIds']), function (Builder $query) use ($searchParams) {
             // get children
             $children = Category::whereIn('parent_id', explode(',', $searchParams['categoryIds']))->get();
