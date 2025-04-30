@@ -1,5 +1,6 @@
 <?php
 return [
+    'show_multiple_delivery_methods' => false,
     'currency' => '£',
     'shipping_calculation' => 'per_item',
     'commission' => 8,
@@ -10,5 +11,5 @@ return [
     'bump' => [
         3 => 1,
         7 => 1.50,
-    ]
+    ],
 ];

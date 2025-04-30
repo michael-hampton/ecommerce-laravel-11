@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->string('profile_picture');
-            $table->string('biography');
+            $table->string('profile_picture')->nullable();
+            $table->string('biography')->nullable();
             $table->text('allowed_shipping_methods')->nullable();
             $table->string('city')->nullable();
             $table->string('zip')->nullable();

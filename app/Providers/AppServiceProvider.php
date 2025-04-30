@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Repositories\AddressRepository;
 use App\Repositories\AttributeRepository;
 use App\Repositories\AttributeValueRepository;
@@ -60,6 +61,9 @@ use App\Services\ProductService;
 use App\Services\SellerService;
 use App\Services\SlideService;
 use App\Services\UserService;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -132,6 +136,34 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            return (new MailMessage)
+                ->subject('Verify Email Address')
+                ->line('Click the button below to verify your email address.')
+                ->action('Verify Email Address', $url);
+        });
+
+        ResetPassword::createUrlUsing(function (User $user, string $token) {
+            return url(route('password.reset', [
+                'token' => $token,
+                'email' => $user->getEmailForPasswordReset(),
+            ], false));
+        });
+
+        ResetPassword::toMailUsing(function (User $user, string $token) {
+            $url = url(route('password.reset', [
+                'token' => $token,
+                'email' => $user->getEmailForPasswordReset(),
+            ], false));
+    
+            return (new MailMessage)
+                ->subject(config('app.name') . ': ' . __('Reset Password Request'))
+                ->greeting(__('Hello!'))
+                ->line(__('You are receiving this email because we received a password reset request for your account.'))
+                ->action(__('Reset Password'), $url)
+                ->line(__('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
+                ->line(__('If you did not request a password reset, no further action is required.'))
+                ->salutation(__('Regards,') . "\n" . config('app.name') . " Team");
+        });
     }
 }

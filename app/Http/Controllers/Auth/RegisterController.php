@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,7 +24,6 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
 
     /**
      * Where to redirect users after registration.
@@ -62,16 +64,32 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    protected function create(Request $request): RedirectResponse
     {
 
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'mobile' => $data['mobile'],
-            'password' => Hash::make($data['password']),
-            'active' => false,
-            'utype' => !empty($data['seller_account']) ? 'ADM' : 'USR'
+        $user = User::create([
+            'name' => $request->string('name'),
+            'email' => $request->string('email'),
+            'mobile' => $request->string('mobile'),
+            'password' => Hash::make($request->string('password')),
+            'active' => true,
+            'utype' => !empty($request->get('seller_account')) ? 'ADM' : 'USR'
         ]);
+
+        $token = $user->createToken('MyAppToken')->plainTextToken;
+
+        if(!empty($request->get('seller_account'))) {
+            Profile::create([
+                'name' => $request->string('name'),
+                'email' => $request->string('email'),
+                'phone' => $request->string('mobile'),
+                'user_id' => $user->id,
+                'active' => false
+            ]);
+        }
+
+        event(new Registered($user));
+
+        return redirect(route('verification.notice'));
     }
 }

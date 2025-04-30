@@ -6,6 +6,7 @@ use App\Models\Country;
 use App\Models\DeliveryMethod;
 use App\Repositories\DeliveryMethodRepository;
 use App\Services\Interfaces\IDeliveryMethodService;
+use function PHPUnit\Framework\returnArgument;
 
 class DeliveryMethodService implements IDeliveryMethodService
 {
@@ -97,11 +98,20 @@ class DeliveryMethodService implements IDeliveryMethodService
         }
 
         $availiableMethods = $items->map(function ($item) {
-            return $item->getShippingId();
+            $shipping = $item->getShippingId();
+            if(config('shop.show_multiple_delivery_methods') === true) {
+                 $shipping->courier->name = $item->model->name . ' - ' . $shipping->courier->name;
+            }
+           
+            return $shipping;
         })->flatten();
 
         if ($availiableMethods->count() === 0) {
             return [];
+        }
+
+        if(config('shop.show_multiple_delivery_methods') === true) {
+            return $availiableMethods;
         }
 
 //        echo '<pre>';

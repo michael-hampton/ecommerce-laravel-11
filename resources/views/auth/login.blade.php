@@ -83,7 +83,7 @@ border-bottom-right-radius: 15px;
             
                                 <div class="col">
                                     <!-- Simple link -->
-                                    <a href="#!">Forgot password?</a>
+                                    <a href="{{ route('password.request') }}">Forgot password?</a>
                                 </div>
                             </div>
             

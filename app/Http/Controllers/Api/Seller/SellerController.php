@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class SellerController extends ApiController
 {
-    function __construct(
+    public function __construct(
         private ISellerRepository $sellerRepository,
         private IUserRepository $userRepository,
         private ISellerService $sellerService

@@ -55,6 +55,11 @@
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Users</span> </a>
     </li>
 
+    <li *hasRole="RoleEnum['Super User']">
+      <a href="#" class="nav-link px-0 align-middle" routerLink="shipping">
+        <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Shipping</span> </a>
+    </li>
+
     <li *hasRole="[RoleEnum['Admin'], RoleEnum['Super User']]">
       <a href="#" class="nav-link px-0 align-middle" routerLink="settings">
         <i class="fs-4 fa-grid"></i> <span class="ms-1 d-none d-sm-inline">Settings</span> </a>

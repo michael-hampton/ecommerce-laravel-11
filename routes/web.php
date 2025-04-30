@@ -1,10 +1,16 @@
 <?php
 
 use App\Http\Controllers\AngularController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PaymentProviders\PaypalController;
 use App\Http\Middleware\AuthAdmin;
+use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +28,34 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+Route::get('/reset-password/{token}', function (string $token) {
+    return view('auth.passwords.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'handleForgotPassword'])->middleware('guest')->name('password.email');
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'handleResetPassword'])->middleware('guest')->name('password.update');
+
+Route::get('/email/verify', function () {
+    return view('auth.verify');
+})->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+ 
+    return redirect('/account-dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+ 
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 //Route::get('/test', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
 
 
@@ -31,7 +65,9 @@ Route::get('paypal/payment/success/{orderId}', [PayPalController::class, 'paymen
 Route::get('paypal/payment/cancel', [PayPalController::class, 'paymentCancel'])->name('paypal.payment/cancel');
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->name('login.authenticate');
+Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->name(name: 'login.authenticate');
+Route::post('register', [RegisterController::class, 'create'])->name(name: 'register');
+
 
 
 Route::get('/', [\App\Http\Controllers\Front\HomeController::class, 'index'])->name('home.index');
@@ -62,7 +98,7 @@ Route::put('/cart/update-shipping/{rowId}', [\App\Http\Controllers\Front\CartCon
 Route::delete('/cart/remove/{rowId}', [\App\Http\Controllers\Front\CartController::class, 'removeFromCart'])->name('cart.removeFromCart');
 Route::delete('/cart/clear', [\App\Http\Controllers\Front\CartController::class, 'emptyCart'])->name('cart.emptyCart');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/account-dashboard', [\App\Http\Controllers\Front\UserAccountController::class, 'index'])->name('user.index');
     Route::get('/orders', [\App\Http\Controllers\Front\UserAccountController::class, 'orders'])->name('orders.ordersCustomer');
     Route::get('/order-details/{orderId}', [\App\Http\Controllers\Front\UserAccountController::class, 'orderDetails'])->name('orders.orderDetailsCustomer');
