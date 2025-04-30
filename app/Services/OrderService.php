@@ -38,6 +38,7 @@ class OrderService implements IOrderService
 
         $coupon = Session::has('coupon') ? Coupon::where('code', Session::get('coupon')['code'])->first() : null;
 
+
         DB::beginTransaction();
 
         try {
@@ -85,8 +86,15 @@ class OrderService implements IOrderService
 
                 $discount = 0;
 
-                if (!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
-                    $discount = $groupBySeller[$item->model->seller_id] > 1 ? $coupon->value / $groupBySeller[$item->model->seller_id] : $coupon->value;
+                if(!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
+                    if( $groupBySeller[$item->model->seller_id] === 1) {
+                        $discount = $coupon->value;
+                    } elseif(Session::has('coupon')) {
+                        $matched = Session::get('coupon')['matched'];
+                        $discount = in_array($item->id, $matched) ? $coupon->value : 0;
+                    } else {
+                        $discount = $coupon->value / $groupBySeller[$item->model->seller_id];
+                    }
                 }
 
                 $orderItemData = [

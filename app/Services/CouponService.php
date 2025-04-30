@@ -28,6 +28,8 @@ class CouponService implements ICouponService
         $cartItems = Cart::instance('cart')->content();
         $filtersRequired = !empty($coupon->categories) || !empty($coupon->brands);
 
+        $matched = [];
+
         foreach ($cartItems as $cartItem) {
             if (!empty($coupon->categories) && in_array($cartItem->model->category_id, explode(',', $coupon->categories))) {
                 $categoryValid = true;
@@ -39,6 +41,10 @@ class CouponService implements ICouponService
 
             if ($cartItem->model->seller_id === $coupon->seller_id) {
                 $hasSeller = true;
+            }
+
+            if($filtersRequired && ($categoryValid || $brandValid)) {
+                $matched[] = $cartItem->model->id;
             }
         }
 
@@ -64,7 +70,8 @@ class CouponService implements ICouponService
             'code' => $coupon->code,
             'type' => $coupon->type,
             'value' => $coupon->value,
-            'cart_value' => $coupon->cart_value
+            'cart_value' => $coupon->cart_value,
+            'matched' => $matched
         ]);
 
         $this->calculateDiscount();
