@@ -26,6 +26,7 @@ return new class extends Migration
             $table->decimal('commission', 8, 4)->default(0);
             $table->foreign('customer_id')->references('id')->on('users');
             $table->foreign('order_id')->references('id')->on('orders');
+            $table->boolean('withdrawn')->default(false);
             $table->foreign('seller_id')->references('id')->on('users');
             $table->timestamps();
         });

@@ -32,8 +32,8 @@ class Paypal extends BaseProvider
 
             $total = $subtotal + $shipping + $commission;
 
-            if (Session::has('coupon')) { //TODO Needs to be done by seller
-                $total -= Session::get('coupon')['value'];
+            if (!empty($orderData['coupon']) && $orderData['coupon']->seller_id === $sellerId) {
+                $total -= $orderData['coupon']->value;
             }
 
             $products = $products->map(function ($item) {
@@ -60,10 +60,10 @@ class Paypal extends BaseProvider
                 ]
             ];
 
-            if (Session::has('coupon')) {
+            if (!empty($orderData['coupon'])) {
                 $amounts['breakdown']['discount'] = [
                     'currency_code' => config('shop.currency_code', 'GBP'),
-                    'value' => (float)Session::get('coupon')['value'],
+                    'value' => (float)$orderData['coupon']->value,
                 ];
             }
 
@@ -84,7 +84,7 @@ class Paypal extends BaseProvider
                 'total' => $total - $commission,
                 'commission' => $commission,
                 'shipping' => $shipping,
-                'discount' => Session::has('coupon') ? Session::get('coupon')['value'] : 0,
+                'discount' => !empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
             ];
 
             Transaction::create($transactionData);

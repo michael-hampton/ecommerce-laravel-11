@@ -35,9 +35,9 @@ class PaypalController extends Controller
         $order->transaction()->update(['payment_status' => 'pending']);
 
         if($success){
-            return view('order-confirmation', ['order' => $order]);
+            return view('front.order-confirmation', ['order' => $order]);
         }
 
-        return view('order-failed', ['order' => $order]);
+        return view('front.order-failed', ['order' => $order]);
     }
 }

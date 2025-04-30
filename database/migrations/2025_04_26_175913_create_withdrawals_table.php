@@ -15,7 +15,13 @@ return new class extends Migration
             $table->id();
             $table->decimal('amount', 15, 2);
             $table->unsignedBigInteger('seller_id');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('seller_id')->references('id')->on('users');
+            $table->unsignedBigInteger('order_id')->nullable();
+            $table->foreign('order_id')->references('id')->on('orders');
+            $table->unsignedBigInteger('transaction_id')->nullable();
+            $table->foreign('transaction_id')->references('id')->on('transactions');
             $table->timestamps();
         });
     }

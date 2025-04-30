@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Coupon;
 use App\Models\DeliveryMethod;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -35,6 +36,8 @@ class OrderService implements IOrderService
         Cart::instance('cart')->setAddressId($data['address_id']);
         $this->setAmountForCheckout();
 
+        $coupon = Session::has('coupon') ? Coupon::where('code', Session::get('coupon')['code'])->first() : null;
+
         DB::beginTransaction();
 
         try {
@@ -52,7 +55,7 @@ class OrderService implements IOrderService
             $cartItems = Cart::instance('cart')->content();
             $address = $this->addressRepository->getById($data['address_id']);
             $shipping = DeliveryMethod::where('country_id', $address->country_id)->get();
-            $bulkPrice = $shipping->where('name', 'Bulk')->first()->price;
+            $bulkPrice = config('shop.bulk_price');
 
             $order = $this->repository->create($orderData);
 
@@ -80,6 +83,12 @@ class OrderService implements IOrderService
 
                 $item->setShippingPrice(round($shippingPrice, 4));
 
+                $discount = 0;
+
+                if (!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
+                    $discount = $groupBySeller[$item->model->seller_id] > 1 ? $coupon->value / $groupBySeller[$item->model->seller_id] : $coupon->value;
+                }
+
                 $orderItemData = [
                     'commission' => $commission,
                     'product_id' => $item->id,
@@ -92,12 +101,17 @@ class OrderService implements IOrderService
                     'courier_id' => !empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
                 ];
 
+                if ($discount > 0) {
+                    $orderItemData['coupon_id'] = $coupon->id;
+                    $orderItemData['discount'] = $discount;
+                }
+
                 $test[$item->model->seller_id][] = [
                     'price' => $item->price,
                     'commission' => $commission,
                     'quantity' => $item->qty,
                     'shipping_price' => round($shippingPrice, 4), //TODO Need to allow for coupons
-                    'discount' => Session::has('checkout.discount') ? Session::get('checkout.discount') : 0,
+                    'discount' => $discount > 0 ? $discount : 0
                 ];
 
                 $result = OrderItem::create($orderItemData);
@@ -165,15 +179,17 @@ class OrderService implements IOrderService
             });
 
             if ($data['mode'] === 'paypal') {
-                (new Paypal())->capture($cartItems, ['orderId' => $order->id, 'commission' => $orderData['commission']]);
+                (new Paypal())->capture($cartItems, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]);
             } elseif ($data['mode'] === 'card') {
-                (new Stripe())->capture($cartItems, array_merge($data, ['orderId' => $order->id, 'commission' => $orderData['commission']]));
+                (new Stripe())->capture($cartItems, array_merge($data, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]));
             }
 
             DB::commit();
 
             return $order;
-        } catch (Exception) {
+        } catch (Exception $ex) {
+            print_r($ex->getMessage());
+            die;
             DB::rollBack();
         }
     }
@@ -193,6 +209,7 @@ class OrderService implements IOrderService
                 'shipping' => Session::get('discounts')['shipping'],
                 'commission' => Session::get('discounts')['commission'],
                 'total' => Session::get('discounts')['total'],
+                'coupon' => Session::get('discounts')
             ]);
 
             return;
@@ -328,7 +345,7 @@ class OrderService implements IOrderService
                 $transactions->first()->id
             ))->updateBalance();
 
-            $orderItems =  OrderItem::where('seller_id', $sellerId)->where('order_id', $orderId);
+            $orderItems = OrderItem::where('seller_id', $sellerId)->where('order_id', $orderId);
 
             $orderItems->update(['approved_date' => now()]);
 
@@ -345,12 +362,13 @@ class OrderService implements IOrderService
         return true;
     }
 
-    public function approveOrderItem(int $orderItemId) {
+    public function approveOrderItem(int $orderItemId)
+    {
         $orderItem = OrderItem::whereId($orderItemId)->firstOrFail();
         $order = $orderItem->order;
         $transaction = $order->transaction->where('seller_id', $orderItem->seller_id)->first();
 
-        if(empty($transaction)) {
+        if (empty($transaction)) {
             return false;
         }
 
@@ -359,36 +377,36 @@ class OrderService implements IOrderService
         try {
             $sellerId = $orderItem->seller_id;
 
-        (new WithdrawalService(
-            $sellerId,
-            $transaction->total,
-            WithdrawalTypeEnum::OrderReceived,
-            WithdrawalEnum::Increase,
-            $transaction->id
-        ))->updateBalance();
+            (new WithdrawalService(
+                $sellerId,
+                $transaction->total,
+                WithdrawalTypeEnum::OrderReceived,
+                WithdrawalEnum::Increase,
+                $transaction->id
+            ))->updateBalance();
 
-        $orderItem->update(['approved_date' => now()]);
-       
-        Transaction::where('seller_id', $sellerId)
-            ->where('order_id', $order->id)
-            ->update(['payment_status' => 'approved'])
-        ;
-    
+            $orderItem->update(['approved_date' => now()]);
 
-        $allApproved = true;
+            Transaction::where('seller_id', $sellerId)
+                ->where('order_id', $order->id)
+                ->update(['payment_status' => 'approved'])
+            ;
 
-        foreach($order->orderItems as $item) {
-            if(empty($item->approved_date)) {
-                $allApproved = false;
-                break;
+
+            $allApproved = true;
+
+            foreach ($order->orderItems as $item) {
+                if (empty($item->approved_date)) {
+                    $allApproved = false;
+                    break;
+                }
             }
-        }
 
-        if($allApproved) {
-            $order->update(['status' => 'complete']);
-        }
+            if ($allApproved) {
+                $order->update(['status' => 'complete']);
+            }
 
-        DB::commit();
+            DB::commit();
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -399,7 +417,8 @@ class OrderService implements IOrderService
         return true;
     }
 
-    private function sendOrderApprovedNotification(Order $order, $orderItems, int $sellerId) {
+    private function sendOrderApprovedNotification(Order $order, $orderItems, int $sellerId)
+    {
         $user = User::whereId($sellerId)->firstOrFail();
         $email = $user->email;
         $messageData = [

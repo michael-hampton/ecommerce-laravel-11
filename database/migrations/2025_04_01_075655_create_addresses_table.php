@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('type')->default('home');
             $table->boolean('is_default')->default(false);
             $table->bigInteger('customer_id')->unsigned();
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('customer_id')->references('id')->on('users');
             $table->timestamps();
         });

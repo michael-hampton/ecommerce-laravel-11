@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('image')->nullable();
+            $table->boolean('active')->default(value: true);
             $table->text("description")->nullable();
             $table->string("meta_title")->nullable();
             $table->string("meta_description")->nullable();

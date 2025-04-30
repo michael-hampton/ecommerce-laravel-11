@@ -23,6 +23,8 @@ return new class extends Migration
             $table->text('categories')->nullable();
             $table->integer('seller_id')->nullable();
             $table->integer('usages')->nullable();
+            $table->unsignedBigInteger('coupon_id')->nullable();
+            $table->foreign('coupon_id')->references('id')->on('coupons');
             $table->date('expires_at')->default(\Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
         });

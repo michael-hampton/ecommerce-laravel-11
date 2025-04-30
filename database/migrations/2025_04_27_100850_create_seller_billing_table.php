@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
+            $table->unsignedBigInteger('seller_id');
+            $table->foreign('seller_id')->references('id')->on('users');
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->foreign('country_id')->references('id')->on('countries');
             $table->timestamps();
         });
     }

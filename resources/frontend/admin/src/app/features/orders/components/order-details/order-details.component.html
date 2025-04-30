@@ -6,6 +6,7 @@
         <div class="card-header">Order Totals</div>
         <div class="card-body">
           <ul class="list-unstyled">
+            <li><span class="fw-bold">Subtotal</span> {{ vm.order.totals?.subtotal | currency }}</li>
             <li><span class="fw-bold">Shipping</span> {{ vm.order.totals?.shipping | currency }}</li>
             <li><span class="fw-bold">Discount</span> {{ vm.order.totals?.discount | currency }}</li>
             <li><span class="fw-bold">Total</span> {{ vm.order.totals?.total | currency }}</li>

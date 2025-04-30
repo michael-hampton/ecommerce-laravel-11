@@ -16,8 +16,11 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('order_id')->unsigned();
+            $table->decimal('commission', 10, 4)->nullable();
             $table->bigInteger('product_id')->unsigned();
+            $table->date('approved_date')->nullable();
             $table->decimal('price', 8, 2);
+            $table->decimal('discount',10,4)->nullable();
             $table->integer('quantity');
             $table->longText('options')->nullable();
             $table->boolean('status')->default(false);

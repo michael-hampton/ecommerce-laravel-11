@@ -21,10 +21,6 @@ class CouponService implements ICouponService
     {
         $coupon = $this->repository->getAll(null, 'id', 'desc', ['code' => $couponCode, 'expiry_date' => Carbon::today(), 'cart_value' => Cart::instance('cart')->subtotal()])->first();
 
-        if (!$coupon) {
-            return false;
-        }
-
         $hasSeller = false;
 
         $categoryValid = false;

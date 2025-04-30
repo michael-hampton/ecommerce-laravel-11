@@ -63,8 +63,8 @@ class Stripe extends BaseProvider
                 $commission = $items->count() > 1 ? $orderData['commission'] / $items->count() : $orderData['commission'];
                 $total = $subtotal + $shipping + $commission;
 
-                if (Session::has('coupon')) { //TODO Needs to be done by seller
-                    $total -= Session::get('coupon')['value'];
+                if (!empty($orderData['coupon']) && $orderData['coupon']->seller_id === $sellerId) {
+                    $total -= $orderData['coupon']->value;
                 }
 
                 Log::info('subtotal: ' . $subtotal . ' shipping: ' . $shipping . ' comission: ' . $commission . ' total: ' . $total);
