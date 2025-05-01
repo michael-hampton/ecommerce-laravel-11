@@ -43,12 +43,12 @@ class CouponService implements ICouponService
                 $hasSeller = true;
             }
 
-            if($filtersRequired && ($categoryValid || $brandValid)) {
+            if ($filtersRequired && ($categoryValid || $brandValid)) {
                 $matched[] = $cartItem->model->id;
             }
         }
 
-        if($filtersRequired && (!$brandValid || !$categoryValid)) {
+        if ($filtersRequired && (!$brandValid || !$categoryValid)) {
             return false;
         }
 
@@ -60,7 +60,7 @@ class CouponService implements ICouponService
             return false;
         }
 
-        if($coupon->usages === 0) {
+        if ($coupon->usages === 0) {
             return false;
         }
 

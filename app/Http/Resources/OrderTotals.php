@@ -6,13 +6,18 @@ use Illuminate\Support\Collection;
 
 class OrderTotals
 {
-    public function toArray(Collection $transactions, $orderItems)
+    public function toArray(Collection $transactions, $orderItems, int $sellerId = null)
     {
-        $sellerOrderItems = $orderItems->where('seller_id', auth('sanctum')->id());
+        if($sellerId === null) {
+            $sellerId = auth('sanctum')->id();
+        }
+
+        $sellerOrderItems = $orderItems->where('seller_id', $sellerId);
+        $sellerTransactions = $transactions->where('seller_id', $sellerId);
 
         return [
             'shipping' => $sellerOrderItems->sum('shipping_price'),
-            'tax' => $transactions->sum('tax'),
+            'tax' => $sellerTransactions->sum('tax'),
             'commission' => $transactions->sum('commission'),
             'subtotal' => $sellerOrderItems->sum(function ($item) {
                 return ($item->price * $item->quantity);
@@ -20,9 +25,9 @@ class OrderTotals
             'total' => $sellerOrderItems->sum(function ($item) {
                 return $item->discount > 0 ? ($item->price * $item->quantity + $item->tax + $item->shipping_price) - $item->discount : $item->price * $item->quantity + $item->tax + $item->shipping_price;
             }),
-            'discount' => $transactions->sum('discount'),
-            'payment_method' => $transactions->first()->payment_method,
-            'payment_status' => $transactions->first()->payment_status,
+            'discount' => $sellerOrderItems->sum('discount'),
+            'payment_method' => $sellerTransactions->first()->payment_method,
+            'payment_status' => $sellerTransactions->first()->payment_status,
         ];
     }
 }

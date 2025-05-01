@@ -10,7 +10,15 @@
 
 <body>
     <p>Hi {{$mailData['order']->customer->name}}</p>
-    <p>Your order has been successfully placed.</p>
+    @if ($mailData['order']->status === 'delivered')
+        <p>Congratulations, Your order has been sent out for delivery</p>
+        <p><strong>Tracking Number:</strong> {{ $mailData['order']['tracking_number'] }} <strong>Courier:</strong>
+    @else
+        <p>Your order #{{$mailData['order']->id}} status has been updated to {{$mailData['order']->status}}</p>
+
+    @endif
+
+    {{ $mailData['order']->courier->name }}
     <table style="width: 600px; text-align:right">
         <thead>
             <tr>
@@ -33,31 +41,38 @@
             <tr>
                 <td colspan="3" style="border-top:1px solid #ccc;"></td>
                 <td style="font-size:15px;font-weight:bold;border-top:1px solid #ccc;">Subtotal :
-                    {{$mailData['currency']}}{{$mailData['order']->subtotal}}</td>
+                    {{$mailData['currency']}}{{$mailData['order']->subtotal}}
+                </td>
             </tr>
             <tr>
                 <td colspan="3"></td>
-                <td style="font-size:15px;font-weight:bold;">Tax : {{$mailData['currency']}}{{$mailData['order']->tax}}</td>
+                <td style="font-size:15px;font-weight:bold;">Tax : {{$mailData['currency']}}{{$mailData['order']->tax}}
+                </td>
             </tr>
             <tr>
                 <td colspan="3"></td>
                 <td style="font-size:15px;font-weight:bold;">Shipping :
-                    {{$mailData['currency']}}{{$mailData['order']->shipping}}</td>
+                    {{$mailData['currency']}}{{$mailData['order']->shipping}}
+                </td>
             </tr>
             <tr>
                 <td colspan="3"></td>
                 <td style="font-size:15px;font-weight:bold;">Commission :
-                    {{$mailData['currency']}}{{$mailData['order']->commission}}</td>
+                    {{$mailData['currency']}}{{$mailData['order']->commission}}
+                </td>
             </tr>
 
             <tr>
                 <td colspan="3"></td>
                 <td style="font-size:15px;font-weight:bold;">Discount :
-                    {{$mailData['currency']}}{{$mailData['order']->discount}}</td>
+                    {{$mailData['currency']}}{{$mailData['order']->discount}}
+                </td>
             </tr>
             <tr>
                 <td colspan="3"></td>
-                <td style="font-size:22px;font-weight:bold;">Total : {{$mailData['currency']}}{{$mailData['order']->total}}</td>
+                <td style="font-size:22px;font-weight:bold;">Total :
+                    {{$mailData['currency']}}{{$mailData['order']->total}}
+                </td>
             </tr>
         </tbody>
     </table>

@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Http\Resources\OrderTotals;
+use App\Mail\OrderApproved;
+use App\Mail\OrderConfirmation;
+use App\Mail\OrderShipped;
 use App\Models\Coupon;
 use App\Models\DeliveryMethod;
 use App\Models\Order;
@@ -86,10 +90,10 @@ class OrderService implements IOrderService
 
                 $discount = 0;
 
-                if(!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
-                    if( $groupBySeller[$item->model->seller_id] === 1) {
+                if (!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
+                    if ($groupBySeller[$item->model->seller_id] === 1) {
                         $discount = $coupon->value;
-                    } elseif(Session::has('coupon')) {
+                    } elseif (Session::has('coupon') && !empty(Session::get('coupon')['matched'])) {
                         $matched = Session::get('coupon')['matched'];
                         $discount = in_array($item->id, $matched) ? $coupon->value : 0;
                     } else {
@@ -173,18 +177,16 @@ class OrderService implements IOrderService
             Session::forget('coupon');
 
             $email = $order->customer->email;
-            $messageData = [
+
+
+            Mail::to($email)->send(new OrderConfirmation([
                 'email' => $email,
                 'name' => $order->customer->name,
                 'order_id' => $order->id,
                 'order' => $order,
                 'orderItems' => $order->orderItems,
                 'currency' => config('shop.currency'),
-            ];
-
-            Mail::send('emails.order', $messageData, function ($message) use ($email, $order) {
-                $message->to($email)->subject('Order #' . $order->id . ' was successfully created!');
-            });
+            ]));
 
             if ($data['mode'] === 'paypal') {
                 (new Paypal())->capture($cartItems, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]);
@@ -263,18 +265,15 @@ class OrderService implements IOrderService
 
         $order = $this->repository->getById($id);
         $email = $order->customer->email;
-        $messageData = [
+
+        Mail::to($email)->send(new OrderShipped([
             'email' => $email,
             'name' => $order->customer->name,
             'order_id' => $order->id,
             'order' => $order,
             'orderItems' => $order->orderItems,
             'currency' => config('shop.currency'),
-        ];
-
-        Mail::send('emails.order_status', $messageData, function ($message) use ($email, $order) {
-            $message->to($email)->subject('Order #' . $order->id);
-        });
+        ]));
 
         OrderLog::create([
             'order_id' => $id,
@@ -316,18 +315,15 @@ class OrderService implements IOrderService
         }
 
         $email = $order->customer->email;
-        $messageData = [
+
+        Mail::to($email)->send(new OrderShipped([
             'email' => $email,
             'name' => $order->customer->name,
             'order_id' => $order->id,
             'order' => $order,
             'orderItems' => $order->orderItems->where('id', $id)->all(),
             'currency' => config('shop.currency'),
-        ];
-
-        Mail::send('emails.order_status', $messageData, function ($message) use ($email, $order) {
-            $message->to($email)->subject('Order #' . $order->id);
-        });
+        ]));
 
         OrderLog::create([
             'order_item_id' => $id,
@@ -341,28 +337,32 @@ class OrderService implements IOrderService
 
     public function approveOrder(int $orderId)
     {
-        $order = Order::whereId($orderId)->firstOrFail();
-        $transactionsBySeller = $order->transaction->groupBy('seller_id');
+        try {
+            $order = Order::whereId($orderId)->firstOrFail();
+            $transactionsBySeller = $order->transaction->groupBy('seller_id');
 
-        foreach ($transactionsBySeller as $sellerId => $transactions) {
-            (new WithdrawalService(
-                $sellerId,
-                $transactions->sum('total'),
-                WithdrawalTypeEnum::OrderReceived,
-                WithdrawalEnum::Increase,
-                $transactions->first()->id
-            ))->updateBalance();
+            foreach ($transactionsBySeller as $sellerId => $transactions) {
+                (new WithdrawalService(
+                    $sellerId,
+                    $transactions->sum('total'),
+                    WithdrawalTypeEnum::OrderReceived,
+                    WithdrawalEnum::Increase,
+                    $transactions->first()->id
+                ))->updateBalance();
 
-            $orderItems = OrderItem::where('seller_id', $sellerId)->where('order_id', $orderId);
+                $orderItems = OrderItem::where('seller_id', $sellerId)->where('order_id', $orderId);
 
-            $orderItems->update(['approved_date' => now()]);
+                $orderItems->update(['approved_date' => now()]);
 
-            Transaction::where('seller_id', $sellerId)
-                ->where('order_id', $orderId)
-                ->update(['payment_status' => 'approved'])
-            ;
+                Transaction::where('seller_id', $sellerId)
+                    ->where('order_id', $orderId)
+                    ->update(['payment_status' => 'approved']);
 
-            $this->sendOrderApprovedNotification($order, $orderItems, $sellerId);
+                $this->sendOrderApprovedNotification($order, $orderItems->get(), $sellerId);
+            }
+        } catch (Exception $e) {
+            echo '' . $e->getMessage();
+            die;
         }
 
         $order->update(['status' => 'complete']);
@@ -379,6 +379,7 @@ class OrderService implements IOrderService
         if (empty($transaction)) {
             return false;
         }
+
 
         DB::beginTransaction();
 
@@ -427,20 +428,18 @@ class OrderService implements IOrderService
 
     private function sendOrderApprovedNotification(Order $order, $orderItems, int $sellerId)
     {
-        $user = User::whereId($sellerId)->firstOrFail();
+        $user = User::whereId($sellerId)->first();
         $email = $user->email;
-        $messageData = [
+
+        Mail::to($email)->send(new OrderApproved([
             'email' => $email,
             'name' => $order->customer->name,
             'order_id' => $order->id,
             'order' => $order,
             'orderItems' => $orderItems,
             'currency' => config('shop.currency'),
-        ];
-
-        Mail::send('emails.order-approved', $messageData, function ($message) use ($email, $order) {
-            $message->to($email)->subject('Order #' . $order->id);
-        });
+            'totals' => (new OrderTotals())->toArray($order->transaction, $order->orderItems, $sellerId),
+        ]));
     }
 
     public function deleteOrder(array $data)
