@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends ApiController
 {
@@ -43,21 +44,21 @@ class LoginController extends ApiController
         $this->middleware('auth')->only('logout');
     }
 
-    public function login() {
+    public function login()
+    {
         return view('auth.login');
     }
 
     public function loginApi(Request $request): JsonResponse
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-            $success['name'] =  $user->name;
+            $success['token'] = $user->createToken('MyApp')->plainTextToken;
+            $success['name'] = $user->name;
 
             return $this->sendResponse($success, 'User login successfully.');
-        }
-        else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        } else {
+            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
     }
 
@@ -74,7 +75,12 @@ class LoginController extends ApiController
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if(\auth()->user()->utype === 'ADM') {
+            if (auth()->user()->active === false) {
+                Auth::logout();
+                return Redirect::back()->withErrors(['msg' => 'Your account appears to be inactive. Please contact support']);
+            }
+
+            if (\auth()->user()->utype === 'ADM') {
                 return redirect()->intended('admin');
             }
 
