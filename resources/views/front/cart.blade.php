@@ -27,16 +27,14 @@
         <div class="row">
             <div class="col-lg-8">
                 <!-- Cart Items -->
-                @if($items->count() > 0)
-                    <div class="card mb-4">
-                        <div class="card-body">
+                <div class="card mb-4">
+                    <div class="card-body cart-items-container">
+                        @if($items->count() > 0)
                             @foreach($items as $item)
                                 <div class="row cart-item mb-3">
                                     <div class="col-md-3">
-                                        <img
-                                            src="{{asset('images/products/thumbnails')}}/{{$item->model->image}}"
-                                            alt="{{$item->name}}"
-                                            class="img-fluid rounded">
+                                        <img src="{{asset('images/products/thumbnails')}}/{{$item->model->image}}"
+                                            alt="{{$item->name}}" class="img-fluid rounded">
                                     </div>
                                     <div class="col-md-4">
                                         <h5 class="card-title">{{$item->name}}</h5>
@@ -51,31 +49,28 @@
                                     <div class="col-md-3">
                                         <div class="input-group">
                                             <form method="post"
-                                                  action="{{route('cart.decreaseCartQuantity', ['rowId' => $item->rowId])}}">
+                                                action="{{route('cart.decreaseCartQuantity', ['rowId' => $item->rowId])}}">
                                                 @csrf
                                                 @method('put')
-                                                <button class="btn btn-outline-secondary btn-sm qty-reduce"
-                                                        type="button">-
+                                                <button class="btn btn-outline-secondary btn-sm qty-reduce" type="button">-
                                                 </button>
                                             </form>
                                             <input style="max-width:100px" type="text" name="quantity"
-                                                   class="form-control  form-control-sm text-center quantity-input"
-                                                   value="{{$item->qty}}">
+                                                class="form-control  form-control-sm text-center quantity-input"
+                                                value="{{$item->qty}}">
 
                                             <form method="post"
-                                                  action="{{route('cart.increaseCartQuantity', ['rowId' => $item->rowId])}}">
+                                                action="{{route('cart.increaseCartQuantity', ['rowId' => $item->rowId])}}">
                                                 @csrf
                                                 @method('put')
-                                                <button class="btn btn-outline-secondary btn-sm qty-increase"
-                                                        type="button">+
+                                                <button class="btn btn-outline-secondary btn-sm qty-increase" type="button">+
                                                 </button>
                                             </form>
                                         </div>
                                     </div>
                                     <div class="col-md-2 text-end">
                                         <p class="fw-bold">{{$item->subTotal()}}</p>
-                                        <form method="post"
-                                              action="{{route('cart.removeFromCart', ['rowId' => $item->rowId])}}">
+                                        <form method="post" action="{{route('cart.removeFromCart', ['rowId' => $item->rowId])}}">
                                             @csrf
                                             @method('delete')
                                             <button class="btn btn-sm btn-outline-danger remove-cart">
@@ -85,10 +80,13 @@
                                     </div>
                                 </div>
                             @endforeach
-                            <hr>
-                        </div>
+                        @else
+                            <h2>There are no items in your cart </h2>
+                        @endif
+                        <hr>
                     </div>
-                @endif
+                </div>
+
                 <div class="d-flex">
                     <!-- Continue Shopping Button -->
                     <div class="text-start mb-4">
@@ -101,8 +99,7 @@
                             <form method="post" action="{{route('cart.emptyCart')}}">
                                 @csrf
                                 @method('delete')
-                                <button id="clear-cart-button" href="{{route('shop.index')}}"
-                                        class="btn btn-outline-primary">
+                                <button id="clear-cart-button" href="{{route('shop.index')}}" class="btn btn-outline-primary">
                                     <i class="bi bi-arrow-left me-2"></i>Empty Cart
                                 </button>
                             </form>
@@ -119,16 +116,14 @@
                 <!-- Promo Code -->
                 <div class="card mt-4">
                     <div class="card-body">
-                        <div id="apply-coupon"
-                             style="<?= !Session::has('coupon') ? 'display: block' : 'display: none' ?>">
+                        <div id="apply-coupon" style="<?= !Session::has('coupon') ? 'display: block' : 'display: none' ?>">
                             <h5 class="card-title mb-3">Apply Promo Code</h5>
-                            <form method="post" action="{{route('cart.applyCoupon')}}"
-                                  class="position-relative bg-body">
+                            <form method="post" action="{{route('cart.applyCoupon')}}" class="position-relative bg-body">
                                 @csrf
 
                                 <div class="input-group mb-3">
                                     <input name="coupon_code" type="text" class="form-control"
-                                           placeholder="Enter promo code">
+                                        placeholder="Enter promo code">
                                     <button id="apply-coupon-button" class="btn btn-outline-secondary" type="button">
                                         Apply
                                     </button>
@@ -137,11 +132,9 @@
                         </div>
 
 
-                        <div id="remove-coupon"
-                             style="<?= Session::has('coupon') ? 'display: block' : 'display: none' ?>">
+                        <div id="remove-coupon" style="<?= Session::has('coupon') ? 'display: block' : 'display: none' ?>">
                             <h5 class="card-title mb-3">Remove Promo Code</h5>
-                            <form method="post" action="{{route('cart.removeCoupon')}}"
-                                  class="position-relative bg-body">
+                            <form method="post" action="{{route('cart.removeCoupon')}}" class="position-relative bg-body">
                                 @csrf
                                 @method('delete')
                                 <button id="remove-coupon-button" class="btn btn-outline-secondary" type="button">
@@ -256,6 +249,7 @@
             $('.remove-cart').on('click', function (event) {
                 event.preventDefault();
                 var form = $(this).closest('form')
+                var element = $(this).parent().parent().parent()
                 $.ajax({
                     url: form.attr('action'),
                     type: "post",
@@ -263,7 +257,11 @@
                     datatype: "json",
                 })
                     .done(function (data) {
-                        $('.remove-cart').parent().parent().parent().remove();
+                        element.remove();
+
+                        if ($('.row.cart-item').length === 0) {
+                            $('.cart-items-container').html('<h2>There are no items in your cart </h2>')
+                        }
                     })
                     .fail(function (jqXHR, ajaxOptions, thrownError) {
                         alert('No response from server');
