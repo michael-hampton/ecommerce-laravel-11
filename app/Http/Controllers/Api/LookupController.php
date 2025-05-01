@@ -62,8 +62,18 @@ class LookupController
     public function getAttributes()
     {
         $attributes = ProductAttribute::orderBy('name', 'asc')
-            ->get()
-        ;
+            ->get();
+
+        return response()->json(AttributeResource::collection($attributes), 200);
+    }
+
+    public function getAttributesForCategory(int $categoryId)
+    {
+        $categoryAttributes = $phone = Category::find($categoryId)->attributes()->with('attribute')->get();
+
+        $attributes = $categoryAttributes->map(function ($item) {
+            return $item->attribute;
+        });
 
         return response()->json(AttributeResource::collection($attributes), 200);
     }

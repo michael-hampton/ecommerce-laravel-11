@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ComponentStore} from '@ngrx/component-store';
 import {tapResponse} from '@ngrx/operators'
-import {pipe, switchMap, tap} from 'rxjs';
+import {Observable, pipe, switchMap, tap} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {GlobalStore} from './global.store';
 import {Category} from '../types/categories/category';
@@ -114,11 +114,26 @@ export class LookupStore extends ComponentStore<GlobalState> {
     )
   }
 
-  getAttributes = this.effect<void>(
-    // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
-    pipe(
+  readonly getAttributesForCategory = this.effect((categoryId$: Observable<number>) => {
+    return categoryId$.pipe(
       tap(() => this.patchState({loading: true})),
-      switchMap(filter =>
+      switchMap(categoryId =>
+        this._lookupService.getAttributesForCategory(categoryId).pipe(
+          tapResponse({
+            next: (attributes) => this.patchState({attributes: attributes as Attribute[]}),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            finalize: () => this.patchState({loading: false}),
+          })
+        )
+      )
+    );
+  });
+
+  readonly getAttributes = this.effect<void>(
+    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good 
+    // names. We encourage to choose one of these and use them consistently in your codebase.
+    (trigger$) => trigger$.pipe(
+      switchMap(() =>
         this._lookupService.getAttributes().pipe(
           tapResponse({
             next: (attributes) => this.patchState({attributes: attributes as Attribute[]}),
@@ -127,5 +142,6 @@ export class LookupStore extends ComponentStore<GlobalState> {
           })
         )
       )
-    ));
+    )
+  );
 }

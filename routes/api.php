@@ -94,6 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('lookup/categories/{parentOnly?}', [LookupController::class, 'getCategories'])->name('admin.dashboard');
     Route::get('lookup/brands', [LookupController::class, 'getBrands'])->name('admin.dashboard');
     Route::get('lookup/attributes', [LookupController::class, 'getAttributes'])->name('admin.dashboard');
+    Route::get('lookup/attributes/{id}', [LookupController::class, 'getAttributesForCategory'])->name('admin.dashboard');
     Route::get('lookup/subcategories/{categoryId}', [LookupController::class, 'getSubcategories'])->name('admin.dashboard');
 
     // dashboard

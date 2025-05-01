@@ -77,6 +77,10 @@ export class FormComponent extends ModalComponent implements OnInit {
     this.form?.controls['name'].valueChanges.subscribe(value => {
       this.stringToSlug(value)
     });
+
+    this.form?.controls['category_id'].valueChanges.subscribe(value => {
+      this._lookupStore.getAttributesForCategory(value)
+    });
   }
 
   ngAfterViewInit() {

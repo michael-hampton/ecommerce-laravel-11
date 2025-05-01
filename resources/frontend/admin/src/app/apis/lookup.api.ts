@@ -35,6 +35,10 @@ export class LookupApi {
     return this.baseHttpClient.getAll('lookup/attributes');
   }
 
+  getAttributesForCategory(categoryId: number) {
+    return this.baseHttpClient.getAll(`lookup/attributes/${categoryId}`);
+  }
+
   getSubcategories(category_id: number) {
     return this.baseHttpClient.getAll(`lookup/subcategories/${category_id}`);
   }
