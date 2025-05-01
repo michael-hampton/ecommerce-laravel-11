@@ -50,16 +50,8 @@ export class FormComponent extends ModalComponent implements OnInit {
   initForm() {
     this.form = this.formBuilder.group({
       id: [''],
-      //name: [''],
-      country_id: [0, Validators.required],
-      // subCategory: ['', Validators.required],
+      country_id: [this.formData?.id || '', Validators.required],
       methods: this.formBuilder.array([]),
-      // image: [''],
-      // type: [''],
-      // description: [''],
-      // richdescription: [''],
-      // isFeatured: [false],
-      // isHomeFeatured: [false],
     });
   }
 
@@ -111,7 +103,9 @@ export class FormComponent extends ModalComponent implements OnInit {
 
     console.log(Object.fromEntries(quizFormData)) // Works if all fields are uniq
 
-    this._store.saveData(quizFormData, this.formData?.id).subscribe()
+    this._store.saveData(quizFormData, this.formData?.id).subscribe(result => {
+      this.confirm();
+    })
 
   }
 

@@ -7,7 +7,7 @@ import {GlobalStore} from '../global.store';
 import {Shipping} from "../../types/shipping/shipping";
 import {UiError} from '../../core/services/exception.service';
 import {tap} from 'rxjs/operators';
-import {of, switchMap} from 'rxjs';
+import {of, pipe, switchMap} from 'rxjs';
 import {Courier} from '../../types/couriers/courier';
 import { Country } from '../../types/countries/country';
 
@@ -34,7 +34,8 @@ export class ShippingFormStore extends ComponentStore<ShippingFormState> {
 
   vm$ = this.select(state => ({
     couriers: state.couriers,
-    countries: state.countries
+    countries: state.countries,
+    loading: state.loading
   }))
 
   saveData = (payload: any, id: number) => {
@@ -47,22 +48,17 @@ export class ShippingFormStore extends ComponentStore<ShippingFormState> {
           this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))
         },
-        finalize: () => this._globalStore.setLoading(false),
+        finalize: () => this.patchState({loading: false}),
       })
     )
   }
 
   readonly getCountries = this.effect<void>(
-      // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
-      // names. We encourage to choose one of these and use them consistently in your codebase.
-      (trigger$) => trigger$.pipe(
+      pipe(
         switchMap(() =>
           this._api.getCountries().pipe(
             tapResponse({
-              next: (data) => {
-                 const countries = (data as Array<any>).filter(x => x.shipping_active === false)
-                 this.patchState({countries: countries})
-              },
+              next: (data) => this.patchState({countries: data as Country[]}),
               error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
               finalize: () => this._globalStore.setLoading(false),
             })
@@ -72,8 +68,6 @@ export class ShippingFormStore extends ComponentStore<ShippingFormState> {
     );
 
   readonly getCouriers = this.effect<void>(
-    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
-    // names. We encourage to choose one of these and use them consistently in your codebase.
     (trigger$) => trigger$.pipe(
       switchMap(() =>
         this._api.getCouriers().pipe(
@@ -88,11 +82,13 @@ export class ShippingFormStore extends ComponentStore<ShippingFormState> {
   );
 
   loadDataForCountry(countryId: number) {
+    this.patchState({loading: true})
     return this._api.getDataForCountry(countryId).pipe(
+      tap(() => this.patchState({loading: true})),
       tapResponse({
         next: (data) => this.patchState({shippings: data as Shipping[]}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
+        finalize: () => this.patchState({loading: false}),
       })
     )
   }
