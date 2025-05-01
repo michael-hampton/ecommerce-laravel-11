@@ -61,4 +61,24 @@ class HomeController extends Controller
 
         return back()->with("status", "Password changed successfully!");
     }
+
+    public function about() {
+        return view('front.about');
+    }
+
+    public function contact() {
+        return view('front.contact');
+    }
+
+    public function help() {
+        return view('front.help');
+    }
+
+    public function helpTopic() {
+        return view('front.help-topic');
+    }
+
+    public function terms() {
+        return view('front.terms');
+    }
 }

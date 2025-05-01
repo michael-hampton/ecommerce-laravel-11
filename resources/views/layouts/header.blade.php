@@ -79,10 +79,10 @@
                     <a class="nav-link" href="{{route('cart.index')}}">Cart</a>
                 </li>
                 <li class="nav-item py-lg-2 me-lg-n1 me-xl-0">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="{{ route('about') }}">About</a>
                 </li>
                 <li class="nav-item py-lg-2 me-lg-n1 me-xl-0">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="{{ route('contact') }}">Contact</a>
                 </li>
             </ul>
         </div>

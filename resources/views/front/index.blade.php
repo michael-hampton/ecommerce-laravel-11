@@ -23,7 +23,7 @@
   <div class="carousel-inner">
     @foreach($slides as $count => $slide)
     <div class="carousel-item @if($count === 0) active @endif">
-        <div class="card text-center">
+        <div class="card text-center mb-3">
       <img style="max-height:350px" src="{{asset('images/slides')}}/{{$slide->image}}" class="d-block w-100" alt="...">
       <div class="card-body text-center"> <h5 class="card-title">{{$slide->title}}</h5>
       <p class="card-text">{{$slide->subtitle}}</p>

@@ -66,7 +66,7 @@
                                 <div class="accordion-collapse collapse d-sm-block" id="categoriesLinks" aria-labelledby="categoriesHeading" data-bs-parent="#footerLinks">
                                     <ul class="nav flex-column gap-2 pt-sm-3 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
                                         <li class="d-flex w-100 pt-1">
-                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="#!">About Us</a>
+                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="{{ route('about') }}">About Us</a>
                                         </li>
                                         <li class="d-flex w-100 pt-1">
                                             <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="#!">Careers</a>
@@ -75,7 +75,7 @@
                                             <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="#!">Blog</a>
                                         </li>
                                         <li class="d-flex w-100 pt-1">
-                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="#!">Contact Us</a>
+                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="{{ route('contact') }}">Contact Us</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -105,13 +105,13 @@
                                 <div class="accordion-collapse collapse d-sm-block" id="supportLinks" aria-labelledby="supportHeading" data-bs-parent="#footerLinks">
                                     <ul class="nav flex-column gap-2 pt-sm-3 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
                                         <li class="d-flex w-100 pt-1">
-                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="#!">FAQs</a>
+                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="{{ route('help') }}">FAQs</a>
                                         </li>
                                         <li class="d-flex w-100 pt-1">
-                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="#!">Search guide</a>
+                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="{{ route('help') }}">Search guide</a>
                                         </li>
                                         <li class="d-flex w-100 pt-1">
-                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="#!">Contact</a>
+                                            <a class="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="{{ route('contact') }}">Contact</a>
                                         </li>
                                     </ul>
                                 </div>

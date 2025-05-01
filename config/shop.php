@@ -2,6 +2,7 @@
 return [
     'show_multiple_delivery_methods' => false,
     'currency' => '£',
+    'shop_name' => 'ShopPinoy',
     'shipping_calculation' => 'per_item',
     'commission' => 8,
     'currency_code' => 'GBP',
