@@ -45,18 +45,22 @@ export class FormComponent extends ModalComponent implements OnInit {
   }
 
   async save() {
-    if (this.form?.valid) {
-      const file = await firstValueFrom(this._store.file$)
+    const file = await firstValueFrom(this._store.file$)
+    if (file || this.formData?.image.length) {
+      this.form.controls['image'].setErrors(null);
+    }
 
+    if (this.form?.valid) {
+      
       const model: Category = {
         name: this.form.value.name,
         slug: this.form.value.slug,
         parent_id: this.form.value.parent_id,
-        meta_title: this.form.value.meta_title,
-        meta_description: this.form.value.meta_description,
-        meta_keywords: this.form.value.meta_keywords,
-        description: this.form.value.description,
-        active: this.form.value.active,
+        meta_title: this.form.value.meta_title ?? '',
+        meta_description: this.form.value.meta_description ?? '',
+        meta_keywords: this.form.value.meta_keywords ?? '',
+        description: this.form.value.description ?? '',
+        active: this.form.value.active === true ? 1 : 0,
         attributes: this.form.value.attributes
       } as Category;
 
@@ -84,10 +88,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       slug: this.formData.slug,
       //image: this.formData.image,
       parent_id: this.formData.parent_id,
-      meta_title: this.formData.meta_title,
-      meta_description: this.formData.meta_description,
-      meta_keywords: this.formData.meta_keywords,
-      description: this.formData.description,
+      meta_title: this.formData.meta_title ?? '',
+      meta_description: this.formData.meta_description ?? '',
+      meta_keywords: this.formData.meta_keywords ?? '',
+      description: this.formData.description ?? '',
       active: this.formData.active,
       attributes: this.formData.attributes
     })
@@ -100,7 +104,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       id: new FormControl(null),
       name: new FormControl('', [Validators.required]),
       slug: new FormControl('', [Validators.required]),
-      image: new FormControl(''),
+      image: new FormControl('', [Validators.required]),
       parent_id: new FormControl(''),
       meta_title: new FormControl(''),
       meta_description: new FormControl(''),

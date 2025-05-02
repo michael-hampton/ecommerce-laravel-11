@@ -20,7 +20,7 @@ class FaqQuestionController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
-            ['title' => $request->get('searchText')]
+            ['name' => $request->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($values, QuestionResource::collection($values));

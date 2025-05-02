@@ -11,5 +11,5 @@ export type Category = {
   products?: number
   subcategories?: Category[]
   attributes?: number[]
-  active: boolean
+  active: number
 }

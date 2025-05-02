@@ -18,7 +18,9 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository
     {
         $query = $this->getQuery();
 
-        $query->where('active', true);
+        if (empty($searchParams['ignore_active'])) {
+            $query->where('active', true);
+        }
 
         $query->when(!empty($searchParams['ignore_children']), function (Builder $query) use ($searchParams) {
             $query->where('parent_id', '=', 0)->orWhere('parent_id', '=', null);

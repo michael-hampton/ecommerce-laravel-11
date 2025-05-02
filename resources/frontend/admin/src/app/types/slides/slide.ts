@@ -5,6 +5,6 @@ export type Slide = {
   image?: File
   link: string
   tags: string
-  active: boolean
+  active: number
   link_text: string
 }

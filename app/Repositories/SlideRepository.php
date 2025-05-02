@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SlideRepository extends BaseRepository implements ISlideRepository
 {
-    public function __construct(Slide $slide) {
+    public function __construct(Slide $slide)
+    {
         parent::__construct($slide);
     }
 
@@ -16,7 +17,9 @@ class SlideRepository extends BaseRepository implements ISlideRepository
     {
         $query = $this->getQuery();
 
-        $query->where('active', true);
+        if (empty($searchParams['ignore_active'])) {
+            $query->where('active', true);
+        }
 
         $query->when(!empty($searchParams['title']), function (Builder $query) use ($searchParams) {
             $query->where('title', 'like', "%{$searchParams['name']}%");

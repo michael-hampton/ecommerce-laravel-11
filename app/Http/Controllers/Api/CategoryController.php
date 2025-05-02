@@ -31,7 +31,7 @@ class CategoryController extends ApiController
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->boolean('sortAsc') === true ? 'asc' : 'desc',
-            ['name' => $request->get('searchText')]
+            ['name' => $request->get('searchText'), 'ignore_active' => true]
         );
 
         return $this->sendPaginatedResponse($categories, CategoryResource::collection($categories));

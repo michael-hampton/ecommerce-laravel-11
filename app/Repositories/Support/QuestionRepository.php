@@ -17,8 +17,8 @@ class QuestionRepository extends BaseRepository implements IQuestionRepository
     {
         $query = $this->getQuery();
 
-        $query->when(!empty($searchParams['customer_id']), function (Builder $query) use ($searchParams) {
-            $query->where('customer_id', $searchParams['customer_id']);
+        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
+            $query->where('question', 'like', "%{$searchParams['name']}%");
         });
 
         return $query;

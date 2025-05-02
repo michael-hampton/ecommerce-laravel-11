@@ -17,8 +17,8 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository
     {
         $query = $this->getQuery();
 
-        $query->when(!empty($searchParams['customer_id']), function (Builder $query) use ($searchParams) {
-            $query->where('customer_id', $searchParams['customer_id']);
+        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
+            $query->where('name', 'like', "%{$searchParams['name']}%");
         });
 
         return $query;

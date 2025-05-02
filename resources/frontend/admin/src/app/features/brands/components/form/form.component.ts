@@ -1,10 +1,10 @@
-import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ModalComponent} from '../../../../shared/components/modal/modal.component';
-import {LookupStore} from "../../../../store/lookup.store";
-import {BrandFormStore} from "../../../../store/brands/form.store";
-import {Brand} from '../../../../types/brands/brand';
-import {firstValueFrom} from 'rxjs';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { LookupStore } from "../../../../store/lookup.store";
+import { BrandFormStore } from "../../../../store/brands/form.store";
+import { Brand } from '../../../../types/brands/brand';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -40,16 +40,21 @@ export class FormComponent extends ModalComponent implements OnInit {
   }
 
   async save() {
+    const file = await firstValueFrom(this._formStore.file$)
+    if (file || this.formData?.image.length) {
+      this.form.controls['image'].setErrors(null);
+
+    }
+
     if (this.form?.valid) {
-      const file = await firstValueFrom(this._formStore.file$)
       const model: Brand = {
         name: this.form.value.name,
         slug: this.form.value.slug,
-        meta_title: this.form.value.meta_title,
-        meta_description: this.form.value.meta_description,
-        meta_keywords: this.form.value.meta_keywords,
-        description: this.form.value.description,
-        active: this.form.value.active
+        meta_title: this.form.value.meta_title ?? '',
+        meta_description: this.form.value.meta_description ?? '',
+        meta_keywords: this.form.value.meta_keywords ?? '',
+        description: this.form.value.description ?? '',
+        active: this.form.value.active === true ? 1 : 0
       } as Brand;
 
       if (file) {
@@ -71,10 +76,10 @@ export class FormComponent extends ModalComponent implements OnInit {
       id: this.formData.id,
       name: this.formData.name,
       slug: this.formData.slug,
-      meta_title: this.formData.meta_title,
-      meta_description: this.formData.meta_description,
-      meta_keywords: this.formData.meta_keywords,
-      description: this.formData.description,
+      meta_title: this.formData.meta_title ?? '',
+      meta_description: this.formData.meta_description ?? '',
+      meta_keywords: this.formData.meta_keywords ?? '',
+      description: this.formData.description ?? '',
       active: this.formData.active
     })
 
@@ -86,7 +91,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       id: new FormControl<number | null>(null),
       name: new FormControl<string>('', [Validators.required]),
       slug: new FormControl<string>('', [Validators.required]),
-      image: new FormControl<string>(''),
+      image: new FormControl<string>('', [Validators.required]),
       meta_title: new FormControl(''),
       meta_description: new FormControl(''),
       meta_keywords: new FormControl(''),
@@ -100,7 +105,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       .replace(/[^\w ]+/g, "")
       .replace(/ +/g, "-");
 
-    this.form?.patchValue({slug: value})
+    this.form?.patchValue({ slug: value })
   }
 
   async getImageUrl() {

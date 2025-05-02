@@ -27,7 +27,7 @@ class CreateSlideRequest extends FormRequest
             'tags' => 'required|string',
             'title' => 'required|string',
             'subtitle' => 'required|string',
-            'link' => 'required|string',
+            'link' => 'required|string|url:http,https',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

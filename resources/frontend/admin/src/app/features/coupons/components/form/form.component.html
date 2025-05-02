@@ -37,7 +37,6 @@
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Categories</label>
             <select class="form-select" multiple name="categories[]" formControlName="categories">
-              <option value="">Choose Category</option>
               <option *ngFor="let category of vm.categories"
                       [value]="category.id">
                 {{ category.name }}
@@ -47,7 +46,6 @@
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Brands</label>
             <select class="form-select" multiple name="brands[]" formControlName="brands">
-              <option value="">Choose Brand</option>
               <option *ngFor="let brand of vm.brands"
                       [value]="brand.id">
                 {{ brand.name }}

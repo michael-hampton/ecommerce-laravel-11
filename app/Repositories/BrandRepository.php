@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
 class BrandRepository extends BaseRepository implements IBrandRepository
 {
 
-    public function __construct(Brand $brand) {
+    public function __construct(Brand $brand)
+    {
         parent::__construct($brand);
     }
 
@@ -18,7 +19,9 @@ class BrandRepository extends BaseRepository implements IBrandRepository
     {
         $query = $this->getQuery();
 
-        $query->where('active', true);
+        if (empty($searchParams['ignore_active'])) {
+            $query->where('active', true);
+        }
 
         $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('name', 'like', "%{$searchParams['name']}%");

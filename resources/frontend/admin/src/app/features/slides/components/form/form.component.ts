@@ -1,10 +1,10 @@
-import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ModalComponent} from "../../../../shared/components/modal/modal.component";
-import {SlideFormStore} from "../../../../store/slides/form.store";
-import {Slide} from "../../../../types/slides/slide";
-import {firstValueFrom} from 'rxjs';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ModalComponent } from "../../../../shared/components/modal/modal.component";
+import { SlideFormStore } from "../../../../store/slides/form.store";
+import { Slide } from "../../../../types/slides/slide";
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -33,15 +33,20 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
   }
   async save() {
+    const file = await firstValueFrom(this._formStore.file$)
+    if (file || this.formData?.image.length) {
+      this.form.controls['image'].setErrors(null);
+    }
+
     if (this.form?.valid) {
-      const file = await firstValueFrom(this._formStore.file$)
+
       const model: Slide = {
         title: this.form.value.title,
         subtitle: this.form.value.subtitle,
         tags: this.form.value.tags,
         link: this.form.value.link,
         link_text: this.form.value.link_text,
-        active: this.form.value.active,
+        active: this.form.value.active === true ? 1 : 0
       } as Slide;
 
       if (file) {
@@ -82,7 +87,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       link: new FormControl('', [Validators.required]),
       link_text: new FormControl('', [Validators.required]),
       active: new FormControl(true, [Validators.required]),
-      image: new FormControl(''),
+      image: new FormControl('', [Validators.required]),
     })
   }
 }
