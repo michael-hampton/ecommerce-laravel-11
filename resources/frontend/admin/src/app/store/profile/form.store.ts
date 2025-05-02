@@ -23,7 +23,8 @@ export interface ProfileFormState {
   transactions: Transaction[],
   balance: BalanceCollection,
   withdrawals: Withdrawal[],
-  billing: Billing
+  billing: Billing,
+  loading: boolean
 }
 
 const defaultState: ProfileFormState = {
@@ -35,7 +36,8 @@ const defaultState: ProfileFormState = {
   transactions: [],
   balance: {} as BalanceCollection,
   withdrawals: [],
-  billing: {} as Billing
+  billing: {} as Billing,
+  loading: false
 };
 
 @Injectable()
@@ -49,7 +51,8 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     data: state.data,
     transactions: state.transactions,
     balance: state.balance,
-    withdrawals: state.withdrawals
+    withdrawals: state.withdrawals,
+    loading: state.loading
   }))
 
   saveData = (payload: Partial<Seller>) => {
@@ -150,13 +153,14 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   }
 
   getData(sellerId: number) {
+    this.patchState({loading: true})
     return this._api.getSeller(sellerId).pipe(
       tapResponse({
         next: (data) => {
           this.patchState({data: data as Seller})
         },
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
+        finalize: () => this.patchState({loading: false}),
       })
     )
   }
@@ -167,10 +171,11 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     (trigger$) => trigger$.pipe(
       switchMap(() =>
         this._api.getTransactions().pipe(
+          tap(() => this.patchState({loading: true})),
           tapResponse({
             next: (data) => this.patchState({transactions: data as Transaction[]}),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this._globalStore.setLoading(false),
+            finalize: () => this.patchState({loading: false}),
           })
         )
       )
@@ -181,12 +186,13 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
     // names. We encourage to choose one of these and use them consistently in your codebase.
     (trigger$) => trigger$.pipe(
+      tap(() => this.patchState({loading: true})),
       switchMap(() =>
         this._api.getBalance().pipe(
           tapResponse({
             next: (data) => this.patchState({balance: data as BalanceCollection}),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this._globalStore.setLoading(false),
+            finalize: () => this.patchState({loading: false}),
           })
         )
       )
@@ -195,10 +201,11 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
 
   getSellerBankAccountDetails() {
     return this._api.getSellerBankAccountDetails().pipe(
+      tap(() => this.patchState({loading: true})),
       tapResponse({
         next: (data) => this.patchState({bank_account_details: data as AccountDetails}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
+        finalize: () => this.patchState({loading: false}),
       })
     )
   }
@@ -207,12 +214,13 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
     // names. We encourage to choose one of these and use them consistently in your codebase.
     (trigger$) => trigger$.pipe(
+      tap(() => this.patchState({loading: true})),
       switchMap(() =>
         this._api.getWithdrawals().pipe(
           tapResponse({
             next: (data) => this.patchState({withdrawals: data as Withdrawal[]}),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this._globalStore.setLoading(false),
+            finalize: () => this.patchState({loading: false}),
           })
         )
       )
@@ -221,20 +229,22 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
 
   getBilling() {
     return this._api.getBilling().pipe(
+      tap(() => this.patchState({loading: true})),
       tapResponse({
         next: (data) => this.patchState({billing: data as Billing}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
+        finalize: () => this.patchState({loading: false}),
       })
     )
   }
 
   getSellerCardDetails() {
     return this._api.getSellerCardDetails().pipe(
+      tap(() => this.patchState({loading: true})),
       tapResponse({
         next: (data) => this.patchState({card_details: data as AccountDetails}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
+        finalize: () => this.patchState({loading: false}),
       })
     )
   }

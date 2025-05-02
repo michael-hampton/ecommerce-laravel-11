@@ -1,5 +1,10 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <table class="table table-bordered table-striped">
+  <div class="d-flex justify-content-center overlay" *ngIf="vm.loading">
+    <div class="spinner-border" role="status" style="width: 6rem; height: 6rem">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <table *ngIf="!vm.loading" class="table table-bordered table-striped">
     <thead>
     <tr>
       <th>Id</th>

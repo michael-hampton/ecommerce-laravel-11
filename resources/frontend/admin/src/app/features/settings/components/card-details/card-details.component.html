@@ -1,11 +1,16 @@
 <!-- Bank Details -->
-<div class="card mt-3">
+<div class="card mt-3" *ngIf="vm$ | async as vm">
   <div class="card-header">
     <h5 class="card-title">Card Details</h5>
   </div>
 
   <div class="card-body">
-    <form admin-form [formGroup]="form">
+    <div class="d-flex justify-content-center overlay" *ngIf="vm.loading">
+      <div class="spinner-border" role="status" style="width: 6rem; height: 6rem">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <form *ngIf="!vm.loading" admin-form [formGroup]="form">
       <div class="mb-3">
         <label for="nameOnCard" class="form-label">Name On Card</label>
         <input type="text" class="form-control" id="nameOnCard" placeholder="Full Name"

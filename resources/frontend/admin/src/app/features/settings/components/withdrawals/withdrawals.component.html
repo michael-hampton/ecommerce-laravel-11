@@ -5,14 +5,27 @@
     </div>
 
     <div class="card-body">
-      <h3>{{ vm.balance?.current?.balance | currency }}</h3>
-
-      <form [formGroup]="form">
-        <div class="mb-3">
-          <label class="form-label">Amount to withdraw</label>
-          <input type="text" class="form-control" id="amount" name="amount" formControlName="amount">
+      <div class="d-flex justify-content-center overlay" *ngIf="vm.loading">
+        <div class="spinner-border" role="status" style="width: 6rem; height: 6rem">
+          <span class="visually-hidden">Loading...</span>
         </div>
-      </form>
+      </div>
+      <ng-container *ngIf="!vm.loading">
+        <h3>{{ vm.balance?.current?.balance | currency }}</h3>
+
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label class="form-label">Amount to withdraw</label>
+            <input
+              type="text"
+              class="form-control"
+              id="amount"
+              name="amount"
+              formControlName="amount"
+            />
+          </div>
+        </form>
+      </ng-container>
     </div>
 
     <div class="card-footer text-end">
@@ -26,9 +39,16 @@
     </div>
 
     <div class="card-body">
-      <ul class="list-group">
-        <li *ngFor="let withdrawal of vm.withdrawals"
-            class="list-group-item d-flex justify-content-between align-items-start">
+      <div class="d-flex justify-content-center overlay" *ngIf="vm.loading">
+        <div class="spinner-border" role="status" style="width: 6rem; height: 6rem">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <ul class="list-group" *ngIf="!vm.loading">
+        <li
+          *ngFor="let withdrawal of vm.withdrawals"
+          class="list-group-item d-flex justify-content-between align-items-start"
+        >
           <span>{{ withdrawal.created_at | date }}</span>
           <span class="">{{ withdrawal.amount }}</span>
         </li>
