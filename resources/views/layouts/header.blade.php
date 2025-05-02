@@ -50,7 +50,7 @@
         <a class="navbar-brand py-1 py-md-2 py-xl-1" href="{{route('home.index')}}">
             <img src="{{asset('assets/images/logo.png')}}" width="30" height="30" class="d-inline-block align-top"
                  alt="">
-            Shop Pinoy
+            {{ config('shop.shop_name') }}
         </a>
 
         <div class="collapse navbar-collapse pt-3 pb-4 py-lg-0 mx-lg-auto" id="navbarSupportedContent">

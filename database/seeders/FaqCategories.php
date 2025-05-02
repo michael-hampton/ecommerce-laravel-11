@@ -13,7 +13,28 @@ class FaqCategories extends Seeder
      */
     public function run(): void
     {
-        $categories = [['name' => 'General', 'slug' => 'general'], ['name' => 'Sellers', 'slug' => 'sellers'], ['name' => 'Buyers', 'slug' => 'buyers'], ['name' => 'Delivery', 'slug' => 'delivery']];
+        $categories = [
+            [
+                'name' => 'General',
+                'slug' => 'general',
+                'icon' => 'fa-question',
+            ],
+            [
+                'name' => 'Sellers',
+                'slug' => 'sellers',
+                'icon' => 'fa-store',
+            ],
+            [
+                'name' => 'Buyers',
+                'slug' => 'buyers',
+                'icon' => 'fa-cart-shopping',
+            ],
+            [
+                'name' => 'Delivery',
+                'slug' => 'delivery',
+                'icon'=> 'fa-truck',
+            ]
+        ];
 
         foreach ($categories as $category) {
             FaqCategory::create($category);
