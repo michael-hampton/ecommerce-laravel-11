@@ -4,6 +4,7 @@ use App\Http\Controllers\AngularController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\PaymentProviders\PaypalController;
 use App\Http\Middleware\AuthAdmin;
 use App\Models\User;
@@ -88,12 +89,14 @@ Route::post('/wishlist/move-to-cart/{rowId}', [\App\Http\Controllers\Front\WishL
 Route::get('seller/{id}', [\App\Http\Controllers\Front\SellerController::class, 'index'])->name('seller.details');
 Route::post('/seller/review/{sellerId}', [\App\Http\Controllers\Front\SellerController::class, 'store'])->name('storeSellerReview');
 
-//About Page
-Route::get('/about', [\App\Http\Controllers\Front\HomeController::class, 'about'])->name('about');
-Route::get('/contact', [\App\Http\Controllers\Front\HomeController::class, 'contact'])->name('contact');
-Route::get('/help', [\App\Http\Controllers\Front\HomeController::class, 'help'])->name('help');
-Route::get('/help-topic', [\App\Http\Controllers\Front\HomeController::class, 'helpTopic'])->name('help-topic');
-Route::get('/terms', [\App\Http\Controllers\Front\HomeController::class, 'terms'])->name('terms');
+//cms Pages
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('contact-us', [HomeController::class, 'store'])->name('contact.store');
+
+Route::get('/help', [HomeController::class, 'help'])->name('help');
+Route::get('/help-topic/{slug}', [HomeController::class, 'helpTopic'])->name('help-topic');
+Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
 
 
 

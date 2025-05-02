@@ -11,6 +11,10 @@ use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CourierController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DeliveryMethodController;
+use App\Http\Controllers\Api\FaqArticleController;
+use App\Http\Controllers\Api\FaqCategoryController;
+use App\Http\Controllers\Api\FaqQuestionController;
+use App\Http\Controllers\Api\FaqTagController;
 use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OrderController;
@@ -120,6 +124,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sellers/account/balance/withdraw', [SellerBalanceController::class, 'getWithdrawals'])->name('sellers.getWithdrawals');
     Route::post('sellers/billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'store'])->name('sellers.billing');
     Route::get('billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'show'])->name('sellers.billing');
+
+       // Faq Articles
+       Route::apiResource('faq-articles', FaqArticleController::class);
+
+       // Faq Categories
+       Route::apiResource('faq-categories', FaqCategoryController::class);
+   
+       // Faq Questions
+       Route::apiResource('faq-questions', FaqQuestionController::class);
+
+       // Faq Tags
+       Route::apiResource('faq-tags', FaqTagController::class);
 
 });
 

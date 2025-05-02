@@ -4,10 +4,13 @@ namespace App\Providers;
 
 use App\Models\User;
 use App\Repositories\AddressRepository;
+use App\Repositories\Support\ArticleRepository;
 use App\Repositories\AttributeRepository;
 use App\Repositories\AttributeValueRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\CategoryRepository;
+use App\Repositories\Interfaces\Support\IQuestionRepository;
+use App\Repositories\Support\CategoryRepository as SupportCategoryRepository;
 use App\Repositories\CountryRepository;
 use App\Repositories\CouponRepository;
 use App\Repositories\CourierRepository;
@@ -17,6 +20,7 @@ use App\Repositories\Interfaces\IAttributeRepository;
 use App\Repositories\Interfaces\IAttributeValueRepository;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
+use App\Repositories\Interfaces\Support\ICategoryRepository as ISupportCategoryRepository;
 use App\Repositories\Interfaces\ICountryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Repositories\Interfaces\ICourierRepository;
@@ -28,11 +32,13 @@ use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\ISlideRepository;
 use App\Repositories\Interfaces\ITransactionRepository;
 use App\Repositories\Interfaces\IUserRepository;
+use App\Repositories\Interfaces\Support\IArticleRepository;
 use App\Repositories\MessageRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\SellerRepository;
 use App\Repositories\SlideRepository;
+use App\Repositories\Support\QuestionRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
 use App\Services\AddressService;
@@ -88,6 +94,9 @@ class AppServiceProvider extends ServiceProvider
         IMessageRepository::class => MessageRepository::class,
         ICountryRepository::class => CountryRepository::class,
         ITransactionRepository::class => TransactionRepository::class,
+        IArticleRepository::class => ArticleRepository::class,
+        ISupportCategoryRepository::class => SupportCategoryRepository::class,
+        IQuestionRepository ::class => QuestionRepository::class
     ];
 
     /**

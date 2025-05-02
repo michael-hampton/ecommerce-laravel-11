@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ContactUsRequest;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Models\Contact;
+use App\Models\FaqCategory;
+use App\Models\FaqQuestion;
 use App\Models\User;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Repositories\Interfaces\ISlideRepository;
 use App\Services\Cart\Facade\Cart;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,16 +22,16 @@ class HomeController extends Controller
 {
     public function __construct(
         private ICategoryRepository $categoryRepository,
-        private IProductRepository  $productRepository,
-        private ISlideRepository    $slideRepository,
-        private IBrandRepository    $brandRepository)
-    {
+        private IProductRepository $productRepository,
+        private ISlideRepository $slideRepository,
+        private IBrandRepository $brandRepository
+    ) {
 
     }
 
     public function index()
     {
-        $categories = $this->categoryRepository->getAll(null,  'name', 'asc', ['is_featured' => true]);
+        $categories = $this->categoryRepository->getAll(null, 'name', 'asc', ['is_featured' => true]);
         $products = $this->productRepository->getHotDeals();
         $featuredProducts = $this->productRepository->getFeaturedProducts();
         $currency = config('shop.currency');
@@ -62,23 +67,55 @@ class HomeController extends Controller
         return back()->with("status", "Password changed successfully!");
     }
 
-    public function about() {
+    public function about()
+    {
         return view('front.about');
     }
 
-    public function contact() {
+    public function contact()
+    {
         return view('front.contact');
     }
 
-    public function help() {
-        return view('front.help');
+    public function help()
+    {
+        $categories = FaqCategory::all();
+        //$questions = FaqQuestion::all()->groupBy('category_id');
+
+        return view('front.help', compact('categories'));
     }
 
-    public function helpTopic() {
-        return view('front.help-topic');
+    public function helpTopic(string $slug)
+    {
+        $questions = FaqQuestion::with('category')
+            ->whereHas('category', function (Builder $query) use ($slug) {
+                $query->where('slug', '=', $slug);
+            })
+            ->get();
+        return view('front.help-topic', compact('questions'));
     }
 
-    public function terms() {
+    public function terms()
+    {
         return view('front.terms');
+    }
+
+
+    /**
+
+     * Write code on Method
+
+     *
+
+     * @return response()
+
+     */
+
+    public function store(ContactUsRequest $request)
+    {
+        Contact::create($request->all());
+
+        return redirect()->back()->with(['success' => 'Thank you for contact us. we will contact you shortly.']);
+
     }
 }

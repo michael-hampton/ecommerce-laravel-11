@@ -1,0 +1,58 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <app-table
+    (addButton)="add($event)"
+    [indexColumn]="false"
+    headerTitle="Articles"
+    (reload)="reload()"
+    [sortBy]="vm.filter.sortBy"
+    [sortAsc]="vm.filter.sortAsc"
+    [itemCount]="vm.data.total"
+    [items]="vm.data.data"
+    (changePage)="pageChanged($event)"
+    [page]="vm.filter.page"
+  >
+    <data-table-column
+      header="#"
+      property="id"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Title"
+      property="title"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Slug"
+      property="slug"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Short Text"
+      property="short_text"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column header="Tags" property="tags" [sortable]="true"
+      ><ng-template #dataTableCell let-item="item">
+        <div class="d-flex align-items-center justify-content-between">
+          <span *ngFor="let tag of item.tags">{{ tag.name }}</span>
+        </div>
+      </ng-template></data-table-column
+    >
+    <data-table-column header="Action" [sortable]="false">
+      <ng-template #dataTableCell let-item="item">
+        <div class="d-flex align-items-center">
+          <a href="javascript:void(0)" class="edit" (click)="edit(item)">
+            <i class="fa fa-eye me-3"></i>
+          </a>
+          <a href="javascript:void(0)" class="delete" (click)="delete(item)">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
+      </ng-template>
+    </data-table-column>
+  </app-table>
+</ng-container>
+
+<div #confirmationModal></div>
+
+<div #modal></div>
