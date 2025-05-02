@@ -335,93 +335,49 @@ class OrderService implements IOrderService
         return $orderItem;
     }
 
-    public function approveOrder(int $orderId)
+    public function approveOrder(int $orderId, array $ids)
     {
         try {
-            $order = Order::whereId($orderId)->firstOrFail();
-            $transactionsBySeller = $order->transaction->groupBy('seller_id');
+            $orderItems = OrderItem::with('order')->whereIn('id', $ids)->get();
+            $order = $orderItems->first()->order;
+            $transactions = $order->transaction;
+            $groupedBySeller = $orderItems->groupBy('seller_id');
 
-            foreach ($transactionsBySeller as $sellerId => $transactions) {
+            foreach ($groupedBySeller as $sellerId => $items) {
+                $transaction = $transactions->where('seller_id', $sellerId)->first();
+
+                $totals = $items->map(function (OrderItem $item) {
+                    $total = $item->price * $item->quantity + $item->shipping_price;
+
+                    if ($item->discount > 0) {
+                        $total -= $item->discount;
+                    }
+
+                    return $total;
+                });
+
                 (new WithdrawalService(
                     $sellerId,
-                    $transactions->sum('total'),
+                    $totals->sum(),
                     WithdrawalTypeEnum::OrderReceived,
                     WithdrawalEnum::Increase,
-                    $transactions->first()->id
+                    $transaction->id
                 ))->updateBalance();
 
-                $orderItems = OrderItem::where('seller_id', $sellerId)->where('order_id', $orderId);
+               $transaction->update(['payment_status' => 'approved']);
 
-                $orderItems->update(['approved_date' => now()]);
+               $this->sendOrderApprovedNotification($order, $items, $sellerId);
 
-                Transaction::where('seller_id', $sellerId)
-                    ->where('order_id', $orderId)
-                    ->update(['payment_status' => 'approved']);
-
-                $this->sendOrderApprovedNotification($order, $orderItems->get(), $sellerId);
             }
+
+            OrderItem::whereIn('id', $ids)->update(['approved_date' => now()]);
+
         } catch (Exception $e) {
             echo '' . $e->getMessage();
             die;
         }
 
         $order->update(['status' => 'complete']);
-
-        return true;
-    }
-
-    public function approveOrderItem(int $orderItemId)
-    {
-        $orderItem = OrderItem::whereId($orderItemId)->firstOrFail();
-        $order = $orderItem->order;
-        $transaction = $order->transaction->where('seller_id', $orderItem->seller_id)->first();
-
-        if (empty($transaction)) {
-            return false;
-        }
-
-
-        DB::beginTransaction();
-
-        try {
-            $sellerId = $orderItem->seller_id;
-
-            (new WithdrawalService(
-                $sellerId,
-                $transaction->total,
-                WithdrawalTypeEnum::OrderReceived,
-                WithdrawalEnum::Increase,
-                $transaction->id
-            ))->updateBalance();
-
-            $orderItem->update(['approved_date' => now()]);
-
-            Transaction::where('seller_id', $sellerId)
-                ->where('order_id', $order->id)
-                ->update(['payment_status' => 'approved'])
-            ;
-
-
-            $allApproved = true;
-
-            foreach ($order->orderItems as $item) {
-                if (empty($item->approved_date)) {
-                    $allApproved = false;
-                    break;
-                }
-            }
-
-            if ($allApproved) {
-                $order->update(['status' => 'complete']);
-            }
-
-            DB::commit();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-        }
-
-        $this->sendOrderApprovedNotification($order, $orderItem, $sellerId);
 
         return true;
     }

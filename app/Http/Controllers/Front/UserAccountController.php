@@ -17,6 +17,7 @@ use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
 use App\Services\Interfaces\IMessageService;
 use App\Services\Interfaces\IOrderService;
+use Illuminate\Http\Request;
 use function auth;
 
 class UserAccountController extends Controller
@@ -55,15 +56,9 @@ class UserAccountController extends Controller
         return back()->with('success', 'Order cancelled');
     }
 
-    public function approveOrder(int $orderId)
+    public function approveOrder(Request $request, int $orderId)
     {
-        $this->orderService->approveOrder($orderId);
-        return back()->with('success', 'Order cancelled');
-    }
-
-    public function approveOrderItem(int $orderItemId)
-    {
-        $this->orderService->approveOrderItem($orderItemId);
+        $this->orderService->approveOrder($orderId, $request->array('values'));
         return back()->with('success', 'Order cancelled');
     }
 
