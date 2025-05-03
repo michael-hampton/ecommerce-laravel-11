@@ -3,8 +3,17 @@
     <div class="col-lg-3">
       <div class="text-center">
         <div class="position-relative d-inline-block">
-          <img style="width: 100px" src="{{vm.data.profile_picture}}" class="rounded-circle profile-pic" alt="Profile Picture" id="output">
-          <button id="upload-button" class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle">
+          <img
+            style="width: 100px"
+            src="{{ vm.data.profile_picture }}"
+            class="rounded-circle profile-pic"
+            alt="Profile Picture"
+            id="output"
+          />
+          <button
+            id="upload-button"
+            class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle"
+          >
             <i class="fas fa-camera"></i>
           </button>
         </div>
@@ -15,42 +24,127 @@
 
     <div class="col-lg-9">
       <nav>
-        <div class="nav nav-pills nav-justified nav-fill" id="nav-tab" role="tablist">
-          <a class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab"
-             aria-controls="nav-profile" aria-selected="true">Profile</a>
-          <a class="nav-link" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab"
-             aria-controls="nav-home" aria-selected="false">Account/Bank Details</a>
-          <a class="nav-link" id="nav-payment-tab" data-bs-toggle="tab" href="#nav-payment" role="tab"
-             aria-controls="nav-payment" aria-selected="false">Payments In</a>
-          <a class="nav-link" id="balance-tab" data-bs-toggle="tab" href="#nav-balance" role="tab"
-             aria-controls="nav-balance" aria-selected="false">Withdrawals</a>
-          <a class="nav-link" id="billing-tab" data-bs-toggle="tab" href="#nav-billing" role="tab"
-             aria-controls="nav-billing" aria-selected="false">Billing Information</a>
-
+        <div
+          class="nav nav-pills nav-justified nav-fill"
+          id="nav-tab"
+          role="tablist"
+        >
+          <a
+            class="nav-link active"
+            id="nav-profile-tab"
+            data-bs-toggle="tab"
+            href="#nav-profile"
+            role="tab"
+            aria-controls="nav-profile"
+            aria-selected="true"
+            >Profile</a
+          >
+          <a
+            class="nav-link"
+            id="nav-home-tab"
+            data-bs-toggle="tab"
+            href="#nav-home"
+            role="tab"
+            aria-controls="nav-home"
+            aria-selected="false"
+            >Account/Bank Details</a
+          >
+          <a
+            class="nav-link"
+            id="nav-payment-tab"
+            data-bs-toggle="tab"
+            href="#nav-payment"
+            role="tab"
+            aria-controls="nav-payment"
+            aria-selected="false"
+            >Payments In</a
+          >
+          <a
+            class="nav-link"
+            id="balance-tab"
+            data-bs-toggle="tab"
+            href="#nav-balance"
+            role="tab"
+            aria-controls="nav-balance"
+            aria-selected="false"
+            >Withdrawals</a
+          >
+          <a
+            class="nav-link"
+            id="billing-tab"
+            data-bs-toggle="tab"
+            href="#nav-billing"
+            role="tab"
+            aria-controls="nav-billing"
+            aria-selected="false"
+            >Billing Information</a
+          >
+          <a
+            class="nav-link"
+            id="reviews-tab"
+            data-bs-toggle="tab"
+            href="#nav-reviews"
+            role="tab"
+            aria-controls="nav-reviews"
+            aria-selected="false"
+            >Reviews</a
+          >
         </div>
       </nav>
       <div class="tab-content mt-5" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-         <app-shop-details></app-shop-details>
+        <div
+          class="tab-pane fade show active"
+          id="nav-profile"
+          role="tabpanel"
+          aria-labelledby="nav-profile-tab"
+        >
+          <app-shop-details></app-shop-details>
         </div>
-        <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div
+          class="tab-pane fade"
+          id="nav-home"
+          role="tabpanel"
+          aria-labelledby="nav-home-tab"
+        >
           <!-- Bank Details -->
           <app-bank-details></app-bank-details>
 
           <!-- Card Details -->
           <app-card-details></app-card-details>
         </div>
-        <div class="tab-pane fade" id="nav-payment" role="tabpanel" aria-labelledby="nav-payment-tab">
+        <div
+          class="tab-pane fade"
+          id="nav-payment"
+          role="tabpanel"
+          aria-labelledby="nav-payment-tab"
+        >
           <app-transactions></app-transactions>
         </div>
 
-        <div class="tab-pane fade" id="nav-balance" role="tabpanel" aria-labelledby="nav-balance-tab">
+        <div
+          class="tab-pane fade"
+          id="nav-balance"
+          role="tabpanel"
+          aria-labelledby="nav-balance-tab"
+        >
           <app-withdrawals></app-withdrawals>
         </div>
 
-        <div class="tab-pane fade" id="nav-billing" role="tabpanel" aria-labelledby="nav-billing-tab">
-         <app-billing></app-billing>
+        <div
+          class="tab-pane fade"
+          id="nav-billing"
+          role="tabpanel"
+          aria-labelledby="nav-billing-tab"
+        >
+          <app-billing></app-billing>
         </div>
+
+        <div
+          class="tab-pane fade"
+          id="nav-reviews"
+          role="tabpanel"
+          aria-labelledby="nav-reviews-tab"
+        ><app-reviews></app-reviews></div>
       </div>
     </div>
   </div>

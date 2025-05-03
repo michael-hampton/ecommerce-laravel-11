@@ -126,6 +126,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sellers/account/balance/withdraw', [SellerBalanceController::class, 'getWithdrawals'])->name('sellers.getWithdrawals');
     Route::post('sellers/billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'store'])->name('sellers.billing');
     Route::get('billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'show'])->name('sellers.billing');
+    Route::get('reviews', [\App\Http\Controllers\Api\Seller\ReviewController::class, 'index'])->name('sellers.reviews');
+    Route::post('reviews/reply', [\App\Http\Controllers\Api\Seller\ReviewController::class, 'createReply'])->name('sellers.reviews');
+
 
     // Faq Articles
     Route::apiResource('faq-articles', FaqArticleController::class);

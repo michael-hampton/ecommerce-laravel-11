@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Seller} from '../types/seller/seller';
 import {BaseHttpClient} from './base.http-client';
 import {environment} from '../../environments/environment';
 import {FilterModel} from '../types/filter.model';
+import { Review } from '../types/seller/review';
 
 export const MODULE = 'sellers'
 
@@ -34,6 +35,10 @@ export class SellerApi {
 
   saveCardDetails(payload: Partial<any>) {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/card`, payload);
+  }
+
+  saveReviewReply(payload: Partial<any>) {
+    return this.httpClient.post(`${environment.apiUrl}/reviews/reply`, payload);
   }
 
   saveWithdrawal(payload: Partial<any>) {
@@ -66,6 +71,10 @@ export class SellerApi {
 
   getTransactions() {
     return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/transactions`);
+  }
+
+  getReviews() {
+    return this.httpClient.get(`${environment.apiUrl}/reviews`);
   }
 
   getBalance() {

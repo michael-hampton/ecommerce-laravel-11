@@ -54,7 +54,6 @@ export class FieldValidationFlagDirective implements OnInit {
       const controlErrors = this.control.errors;
       if (controlErrors) {
         const firstKey = Object.keys(controlErrors)[0];
-        alert(firstKey)
         const getError = this.errors[firstKey];
         const text = getError(controlErrors[firstKey]);
 

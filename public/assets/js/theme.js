@@ -1125,7 +1125,9 @@ function pureFadeOut(e) {
 
         // Click event
         star.addEventListener('click', (e) => {
+          console.log('stars', stars, e.target)
           const selected_index = stars.indexOf(e.target);
+          alert(selected_index)
           user_selected_star.value = selected_index + 1;
           stars.forEach((item, current_index) => {
             if (current_index <= stars.indexOf(e.target)) {

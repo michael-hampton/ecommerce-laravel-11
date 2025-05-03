@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('commentable_id');
             $table->string('commentable_type');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('reviews');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });

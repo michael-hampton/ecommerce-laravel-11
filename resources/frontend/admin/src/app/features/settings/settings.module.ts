@@ -12,6 +12,7 @@ import { CardDetailsComponent } from './components/card-details/card-details.com
 import { WithdrawalsComponent } from './components/withdrawals/withdrawals.component';
 import { ShopDetailsComponent } from './components/shop-details/shop-details.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
+import { ReviewsComponent } from './components/reviews/reviews.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { TransactionsComponent } from './components/transactions/transactions.co
     CardDetailsComponent,
     WithdrawalsComponent,
     ShopDetailsComponent,
-    TransactionsComponent
+    TransactionsComponent,
+    ReviewsComponent
   ],
     imports: [
         CommonModule,

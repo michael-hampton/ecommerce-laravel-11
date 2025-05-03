@@ -13,6 +13,7 @@ import {BalanceCollection} from '../../types/seller/balance';
 import {Withdrawal} from '../../types/seller/withdrawal';
 import {Billing} from '../../types/seller/billing';
 import {switchMap} from 'rxjs';
+import { Review } from '../../types/seller/review';
 
 export interface ProfileFormState {
   imagePreview: string;
@@ -24,7 +25,8 @@ export interface ProfileFormState {
   balance: BalanceCollection,
   withdrawals: Withdrawal[],
   billing: Billing,
-  loading: boolean
+  loading: boolean,
+  reviews: Review[]
 }
 
 const defaultState: ProfileFormState = {
@@ -37,7 +39,8 @@ const defaultState: ProfileFormState = {
   balance: {} as BalanceCollection,
   withdrawals: [],
   billing: {} as Billing,
-  loading: false
+  loading: false,
+  reviews: []
 };
 
 @Injectable()
@@ -52,7 +55,8 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     transactions: state.transactions,
     balance: state.balance,
     withdrawals: state.withdrawals,
-    loading: state.loading
+    loading: state.loading,
+    reviews: state.reviews
   }))
 
   saveData = (payload: Partial<Seller>) => {
@@ -181,6 +185,36 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
       )
     )
   );
+
+  getReviews() {
+    return this._api.getReviews().pipe(
+      tap(() => this.patchState({loading: true})),
+      tapResponse({
+        next: (data) => this.patchState({reviews: data as Review[]}),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this.patchState({loading: false}),
+      })
+    )
+  }
+
+  saveReviewReply = (payload: Partial<any>) => {
+    return this._api.saveReviewReply(payload).pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (data: any) => {
+          this._globalStore.setSuccess('Saved successfully')
+          this.patchState((state) => ({
+            reviews: state.reviews.map((t) => (Number(t.id) === Number(data.data.id) ? { ...data.data } : t)),
+          }));
+        },
+        error: (error: HttpErrorResponse) => {
+          this._globalStore.setLoading(false)
+          this._globalStore.setError(UiError(error))
+        },
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
 
   readonly getBalance = this.effect<void>(
     // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good

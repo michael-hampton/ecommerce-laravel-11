@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use App\Models\User;
 use App\Repositories\Interfaces\IProductRepository;
+use Auth;
 use Illuminate\Http\Request;
 
 class SellerController extends Controller
@@ -17,7 +18,7 @@ class SellerController extends Controller
 
     public function index(int $sellerId)
     {
-        $seller = auth()->user();
+        $seller = User::findOrFail($sellerId);
 
         $profile = Profile::where('user_id', $sellerId)->first();
 
@@ -26,16 +27,20 @@ class SellerController extends Controller
         $sellerProducts = $this->productRepository->getPaginated(10, 'created_at', 'desc', ['seller_id' => auth()->id()]);
 
 
-        return view('seller.index', compact('seller', 'profile', 'sellerProducts', 'currency'));
+        return view('front.seller.index', compact('seller', 'profile', 'sellerProducts', 'currency'));
     }
 
     public function store(Request $request, int $sellerId)
     {
+        if (!Auth::check()) {
+            return redirect()->back()->with('error', 'Not logged in');
+        }
+
         $seller = User::whereId($sellerId)->first();
         $seller->reviews()->create([
             'comment' => $request->input("review"),
             'rating' => $request->input("rating"),
-            'user_id' => auth()->id()
+            'user_id' => auth()->user()->id
         ]);
 
         return redirect()->back()->with('message', 'Review was added successfully!');

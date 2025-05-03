@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -49,12 +51,16 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         'active' => 'boolean'
     ];
 
-    public function reviews()
+    public function reviews(): MorphMany
     {
         return $this->morphMany(Review::class, 'commentable');
     }
 
-    public function defaultAddress()
+    public function products(): HasMany {
+        return $this->hasMany(Product::class, 'seller_id');
+    }
+
+    public function defaultAddress(): Address|null
     {
         return $this->hasOne(Address::class, 'customer_id', 'id')->first();
     }

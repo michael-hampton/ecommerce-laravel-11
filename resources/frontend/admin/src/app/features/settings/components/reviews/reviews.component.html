@@ -1,0 +1,41 @@
+<div class="col-12" *ngIf="vm$ | async as vm">
+  <div *ngFor="let review of vm.reviews">
+    <div class="review d-flex">
+      <div class="flex-shrink-0 text-center me-4 me-xl-5">
+        <img
+          class="review-image"
+          [src]="review.user.image"
+          alt="Han Solo"
+        /><span class="text-uppercase text-muted">{{review.created_at}}</span>
+      </div>
+      <div class="w-100">
+        <h5 class="mt-2 mb-1">{{ review.user.name }}</h5>
+        <div class="mb-2">
+          <i
+            *ngFor="let item of [].constructor(review.rating); let i = index"
+            class="fa fa-xs fa-star text-warning"
+          ></i>
+        </div>
+        <p class="text-muted">
+          {{ review.comment }}
+        </p>
+
+        <span *ngIf="review.replies"><strong>You Replied:</strong> {{review.replies.comment}}</span>
+
+        <form *ngIf="!review.replies" [formGroup]="getFormGroupAtIndex(review.id)">
+          <textarea class="form-control" formControlName="reply"></textarea>
+          <div class="text-end">
+            <button
+              class="btn btn-success mt-3 text-end"
+              (click)="submitReview(review.id)"
+            >
+              Reply
+            </button>
+          </div>
+        </form>
+
+        <hr>
+      </div>
+    </div>
+  </div>
+</div>
