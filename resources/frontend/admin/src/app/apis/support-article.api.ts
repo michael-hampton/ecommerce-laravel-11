@@ -32,7 +32,7 @@ export class SupportArticleApi {
     }
 
     getCategories() {
-        return this.httpClient.get(`${environment.apiUrl}/faq-categories?sortBy=name&sortAsc=true`);
+        return this.httpClient.get(`${environment.apiUrl}/faq-categories?sortBy=name&sortDir=asc`);
       }
 
     getTags() {

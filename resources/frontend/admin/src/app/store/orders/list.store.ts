@@ -12,7 +12,7 @@ import {FilterStore} from '../filter.store';
 
 const defaultState: FilterState<Order> = {
   data: {} as PagedData<Order>,
-  filter: {...defaultPaging, ...{sortBy: 'id', sortAsc: false}}
+  filter: {...defaultPaging, ...{sortBy: 'id', sortDir: 'desc'}}
 };
 
 @Injectable()

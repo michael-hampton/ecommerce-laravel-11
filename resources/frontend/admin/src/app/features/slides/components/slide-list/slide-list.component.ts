@@ -62,6 +62,7 @@ export class SlideListComponent implements OnInit {
   }
 
   pageChanged(filter: FilterModel) {
+    console.log('filter', filter)
     this._store.updateFilter(filter)
   }
 

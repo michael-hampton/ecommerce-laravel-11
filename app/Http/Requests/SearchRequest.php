@@ -24,7 +24,7 @@ class SearchRequest extends FormRequest
         return [
             'limit' => 'required|integer',
             'sortBy' => 'required|string',
-            'sortAsc' => 'required|string',
+            'sortDir' => 'required|string',
             //'searchText' => 'sometimes|string',
         ];
     }

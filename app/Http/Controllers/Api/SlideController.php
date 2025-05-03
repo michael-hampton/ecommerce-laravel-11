@@ -30,7 +30,7 @@ class SlideController extends ApiController
         $slides = $this->slideRepository->getPaginated(
             $request->integer('limit'),
             $request->string('sortBy'),
-            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            $request->string('sortDir'),
             ['name' => $request->get('searchText'), 'ignore_active' => true]
         );
 

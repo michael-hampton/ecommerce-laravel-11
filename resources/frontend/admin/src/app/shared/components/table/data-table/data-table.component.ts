@@ -108,6 +108,12 @@ export class DataTableComponent implements DataTableParams, OnInit {
     return this._sortAsc;
   }
 
+  @Input()
+  set sortDir(value: string) {
+    this._sortAsc = value === 'asc';
+    //this._triggerReload();
+  }
+
   set sortAsc(value) {
     this._sortAsc = value;
     //this._triggerReload();
@@ -229,7 +235,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
     this._displayParams = {
       sortBy: this.sortBy,
       customSort: this.customSort,
-      sortAsc: this.sortAsc,
+      sortDir: this.sortAsc === true ? 'asc' : 'desc',
       offset: this.offset,
       limit: this.limit
     };
@@ -252,7 +258,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
       page: this.page,
       limit: this.limit,
       sortBy: this.sortBy,
-      sortAsc: this.sortAsc,
+      sortDir: this.sortAsc === true ? 'asc' : 'desc',
       searchText: this.search ?? ''
     } as FilterModel)
   }
@@ -288,7 +294,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   headerClicked(column: ColumnComponent, event: MouseEvent) {
     if (!this._resizeInProgress && column.sortable) {
       let ascending = this.sortBy === column.property ? !this.sortAsc : true;
-      this.changePage.emit({page: this.page, limit: this.limit, sortBy: column.property, sortAsc: ascending})
+      this.changePage.emit({page: this.page, limit: this.limit, sortBy: column.property, sortDir: ascending === true ? 'asc' : 'desc'})
     } else {
       this._resizeInProgress = false; // this is because I can't prevent click from mousup of the drag end
     }
@@ -306,7 +312,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
     if (this.sortBy) {
       params.sortBy = this.sortBy;
       params.customSort = this.customSort;
-      params.sortAsc = this.sortAsc;
+      params.sortDir = this.sortAsc === true ? 'asc' : 'desc';
     }
     if (this.pagination) {
       params.offset = this.offset;

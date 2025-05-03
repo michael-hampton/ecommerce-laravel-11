@@ -20,7 +20,7 @@ class FaqCategoryController extends ApiController
         $values = $this->categoryRepository->getPaginated(
             $request->integer('limit'),
             $request->string('sortBy'),
-            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            $request->string('sortDir'),
             ['name' => $request->get('searchText')]
         );
 

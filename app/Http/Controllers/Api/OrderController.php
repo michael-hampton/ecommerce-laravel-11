@@ -27,7 +27,7 @@ class OrderController extends ApiController
         $orders = $this->orderRepository->getPaginated(
             $request->integer('limit'),
             $request->string('sortBy'),
-            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            $request->string('sortDir'),
             ['seller_id' => auth('sanctum')->user()->id, 'name' => $request->get('searchText')]
         );
 

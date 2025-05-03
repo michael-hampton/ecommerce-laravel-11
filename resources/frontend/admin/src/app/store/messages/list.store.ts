@@ -18,7 +18,7 @@ type MessageState = FilterState<Message> & {
 
 const defaultState: MessageState = {
   data: {} as PagedData<Message>,
-  filter: {...defaultPaging, ...{sortBy: 'created_at', sortAsc: false}},
+  filter: {...defaultPaging, ...{sortBy: 'created_at', sortDir: 'desc'}},
   message: {} as Message,
   loading: false,
   previews: []
@@ -92,7 +92,7 @@ export class MessageStore extends ComponentStore<MessageState> {
   }
 
   updatePage(page: number) {
-    this.patchState({filter: {...defaultPaging, ...{page: page, sortBy: 'created_at', sortAsc: false,}}})
+    this.patchState({filter: {...defaultPaging, ...{page: page, sortBy: 'created_at', sortDir: 'desc',}}})
   }
 
   bulkUpload(event: any): void {

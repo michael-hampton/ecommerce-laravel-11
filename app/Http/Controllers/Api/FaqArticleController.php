@@ -25,7 +25,7 @@ class FaqArticleController extends ApiController
         $values = $this->iArticleRepository->getPaginated(
             $request->integer('limit'),
             $request->string('sortBy'),
-            $request->boolean('sortAsc') === true ? 'asc' : 'desc',
+            $request->string('sortDir'),
             ['title' => $request->get('searchText')]
         );
 

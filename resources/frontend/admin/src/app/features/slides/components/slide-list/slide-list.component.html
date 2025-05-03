@@ -1,7 +1,7 @@
 <ng-container *ngIf="vm$ | async as vm">
   <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Slides" (reload)="reload()"
-             [sortBy]="vm.filter.sortBy" [sortAsc]="vm.filter.sortAsc"
-             [itemCount]="vm.data.total" [items]="vm.data.data"
+             [sortBy]="vm.filter.sortBy" [sortDir]="vm.filter.sortDir"
+             [itemCount]="vm.data?.total" [items]="vm.data?.data"
              (changePage)="pageChanged($event)" [page]="vm.filter.page">
     <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
     <data-table-column header="Image" property="image" [sortable]="true">
