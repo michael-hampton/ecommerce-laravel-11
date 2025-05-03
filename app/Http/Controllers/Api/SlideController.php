@@ -70,7 +70,7 @@ class SlideController extends ApiController
      */
     public function update(UpdateSlideRequest $request, $id)
     {
-        $result = $this->slideService->updateSlide($request->validated(), $id);
+        $result = $this->slideService->updateSlide($request->except(['_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Slide');
