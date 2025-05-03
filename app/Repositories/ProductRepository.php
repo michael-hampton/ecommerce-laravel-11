@@ -14,22 +14,31 @@ class ProductRepository extends BaseRepository implements IProductRepository
         parent::__construct($product);
     }
 
-    public function getHotDeals() {
+    public function getHotDeals()
+    {
         return $this->model->onSale()
             ->whereRelation('seller', function (Builder $query) {
                 $query->where('approved', true);
             })
             ->where('quantity', '>', 0)
+            ->where('active', true)
             ->orderBy('name')
             ->limit(4)
             ->inRandomOrder()
             ->get();
     }
 
-    public function getFeaturedProducts() {
-        return $this->model->featured()->whereRelation('seller', function (Builder $query) {
-            $query->where('approved', true);
-        })->where('quantity', '>', 0)->orderBy('name')->inRandomOrder()->limit(4)->get();
+    public function getFeaturedProducts()
+    {
+        return $this->model->featured()
+            ->whereRelation('seller', function (Builder $query) {
+                $query->where('approved', true);
+            })->where('quantity', '>', 0)
+            ->where('active', true)
+            ->orderBy('name')
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
     }
 
     /**
@@ -40,11 +49,15 @@ class ProductRepository extends BaseRepository implements IProductRepository
     {
         $query = $this->getQuery();
 
+        if (empty($searchParams['ignore_active'])) {
+            $query->where('active', true);
+        }
+
         $query->when(!empty($searchParams['seller_id']), function (Builder $query) use ($searchParams) {
             $query->where('seller_id', '=', $searchParams['seller_id']);
         });
 
-        $query->whereRelation('seller', function(Builder $query) use ($searchParams) {
+        $query->whereRelation('seller', function (Builder $query) use ($searchParams) {
             $query->where('approved', true);
         });
 
@@ -53,9 +66,9 @@ class ProductRepository extends BaseRepository implements IProductRepository
         });
 
         $query->when(!empty($searchParams['attributeValueIds']), function (Builder $query) use ($searchParams) {
-            $query->whereHas('productAttributes', function ($query) use($searchParams) { 
-                $query->whereIn('attribute_value_id', explode(',', $searchParams['attributeValueIds'])); 
-          });
+            $query->whereHas('productAttributes', function ($query) use ($searchParams) {
+                $query->whereIn('attribute_value_id', explode(',', $searchParams['attributeValueIds']));
+            });
         });
 
         $query->when(!empty($searchParams['categoryIds']), function (Builder $query) use ($searchParams) {

@@ -24,12 +24,12 @@ class StoreProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required|unique:brands,name',
+            'name'=>'required|unique:brands,name|max:100',
             'slug'=>'required|unique:products,slug',
             'category_id'=>'required',
             'brand_id'=>'required',
-            'short_description'=>'required',
-            'description'=>'required',
+            'short_description'=>'required|max:100',
+            'description'=>'required|max:250',
             'regular_price'=>'required',
             'sale_price'=>'required',
             'SKU'=>'required',

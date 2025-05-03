@@ -79,7 +79,9 @@ export class FormComponent extends ModalComponent implements OnInit {
     });
 
     this.form?.controls['category_id'].valueChanges.subscribe(value => {
-      this._lookupStore.getAttributesForCategory(value)
+      if (value) {
+        this._lookupStore.getAttributesForCategory(value)
+      }
     });
   }
 
@@ -121,7 +123,8 @@ export class FormComponent extends ModalComponent implements OnInit {
         stock_status: this.form.value.stock_status,
         featured: this.form.value.featured === 'yes' ? 1 : 0,
         seller_id: Number(user.payload.id),
-        bump_days: this.form.value.bump_days
+        bump_days: this.form.value.bump_days,
+        active: this.form.value.active === true ? 0 : 1,
       } as Product;
 
       if (this.form.value.imagesSource) {
@@ -168,6 +171,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       package_size: this.formData.package_size,
       stock_status: this.formData.has_stock === true ? 'instock' : 'outofstock',
       featured: this.formData.featured === 0 ? 'no' : 'yes',
+      active: this.formData.active === true ? false : true,
     })
 
     if (this.formData.category_id) {
@@ -199,6 +203,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       images: new FormControl(''),
       imagesSource: new FormControl(''),
       bump_days: new FormControl(''),
+      active: new FormControl(false)
     })
   }
 

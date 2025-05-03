@@ -201,4 +201,11 @@ class ProductService implements IProductService
 
         return true;
     }
+
+    public function toggleActive(int $id)
+    {
+        $product = $this->repository->getById($id);
+        $data = ['active' => $product->active === true ? false : true];
+        return $product->update($data);
+    }
 }

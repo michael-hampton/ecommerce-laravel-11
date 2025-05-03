@@ -24,6 +24,7 @@ export type Product = {
   has_stock?: boolean,
   attributes?: SelectedAttributes[],
   product_attributes?: ProductAttribute[]
+  active: number
 }
 
 export type SelectedAttributes = {

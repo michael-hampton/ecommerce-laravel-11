@@ -56,4 +56,8 @@ export class ProductApi {
   getData(filter: FilterModel): Observable<any> {
     return this.baseHttpClient.get(filter, MODULE);
   }
+
+  toggleActive(id: number) {
+      return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}/active`)
+    }
 }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->enum('package_size', ['Small', 'Medium', 'Large'])->nullable();
             $table->string('image')->nullable();
+            $table->boolean('active')->default(true);
             $table->integer('category_id')->default(0);
             $table->integer('brand_id')->default(0);
             $table->string('short_description')->nullable();

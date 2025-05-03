@@ -47,6 +47,16 @@ export class ProductStore extends FilterStore<Product> {
     )
   );
 
+  makeActive(id: number) {
+    return this._api.toggleActive(id).pipe(
+      tapResponse({
+        next: (data) => this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),

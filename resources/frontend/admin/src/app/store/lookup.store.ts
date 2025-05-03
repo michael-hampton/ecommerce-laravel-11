@@ -120,7 +120,10 @@ export class LookupStore extends ComponentStore<GlobalState> {
       switchMap(categoryId =>
         this._lookupService.getAttributesForCategory(categoryId).pipe(
           tapResponse({
-            next: (attributes) => this.patchState({attributes: attributes as Attribute[]}),
+            next: (attributes) => {
+              console.log('attr', attributes)
+              this.patchState({attributes: attributes as Attribute[]})
+            },
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this.patchState({loading: false}),
           })

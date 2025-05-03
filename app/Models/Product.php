@@ -29,8 +29,11 @@ class Product extends Model
         'category_id',
         'SKU',
         'seller_id',
-        'package_size'
+        'package_size',
+        'active'
     ];
+
+    protected $casts = ['active' => 'bool'];
 
     public function category()
     {

@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
-use App\Http\Resources\BrandResource;
 use App\Http\Resources\CategoryResource;
-use App\Models\Category;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Services\Interfaces\ICategoryService;
-use Illuminate\Http\Request;
-use Psy\Util\Str;
-use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends ApiController
 {

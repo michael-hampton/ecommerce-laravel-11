@@ -18,6 +18,7 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'active' => $this->active,
             'image' => asset('images/products') . '/' . $this->image,
             'images' => collect(explode(',', $this->images))->map(function ($image) {
                 return asset('images/products') . '/' . $image;

@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/brands/{id}/active', [BrandController::class, 'toggleActive'])->name('brands.active');
 
     // Categories
-    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('categories', controller: CategoryController::class);
     Route::delete('/categories/{id}/active', [CategoryController::class, 'toggleActive'])->name('categories.active');
 
     Route::get('/countries', [CountryController::class, 'index'])->name('getCountries');
@@ -61,6 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // products
     Route::apiResource('products', ProductController::class);
     Route::post('products/subcategories', [ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
+    Route::delete('/products/{id}/active', [ProductController::class, 'toggleActive'])->name('categories.active');
+
 
     // users
     Route::apiResource('users', UserController::class);
@@ -125,17 +127,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('sellers/billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'store'])->name('sellers.billing');
     Route::get('billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'show'])->name('sellers.billing');
 
-       // Faq Articles
-       Route::apiResource('faq-articles', FaqArticleController::class);
+    // Faq Articles
+    Route::apiResource('faq-articles', FaqArticleController::class);
 
-       // Faq Categories
-       Route::apiResource('faq-categories', FaqCategoryController::class);
-   
-       // Faq Questions
-       Route::apiResource('faq-questions', FaqQuestionController::class);
+    // Faq Categories
+    Route::apiResource('faq-categories', FaqCategoryController::class);
 
-       // Faq Tags
-       Route::apiResource('faq-tags', FaqTagController::class);
+    // Faq Questions
+    Route::apiResource('faq-questions', FaqQuestionController::class);
+
+    // Faq Tags
+    Route::apiResource('faq-tags', FaqTagController::class);
 
 });
 

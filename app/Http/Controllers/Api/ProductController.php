@@ -16,10 +16,9 @@ use Illuminate\Http\Response;
 class ProductController extends ApiController
 {
     public function __construct(
-        private IProductService     $productService,
-        private IProductRepository  $productRepository
-    )
-    {
+        private IProductService $productService,
+        private IProductRepository $productRepository
+    ) {
 
     }
 
@@ -35,7 +34,8 @@ class ProductController extends ApiController
             $request->string('sortDir'),
             [
                 'seller_id' => auth('sanctum')->user()->id,
-                'name' => $request->get('searchText')
+                'name' => $request->get('searchText'),
+                'ignore_active' => true
             ]
         );
 
@@ -112,5 +112,14 @@ class ProductController extends ApiController
         $products = $this->productRepository->getAll(null, 'name', 'asc', ['name' => $request->input('query')]);
 
         return response()->json($products);
+    }
+
+    public function toggleActive(int $id)
+    {
+        $result = $this->productService->toggleActive($id);
+
+        if (!$result) {
+            return $this->error('Unable to update Category');
+        }
     }
 }
