@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProductResource;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 
 class ApiController extends Controller
 {
@@ -16,7 +14,7 @@ class ApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendResponse($result, $message)
+    public function success($result, string $message, int $code = Response::HTTP_OK)
     {
         $response = [
             'success' => true,
@@ -24,7 +22,7 @@ class ApiController extends Controller
             'message' => $message,
         ];
 
-        return response()->json($response, 200);
+        return response()->json($response, $code);
     }
 
     /**
@@ -32,11 +30,12 @@ class ApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendError($error, $errorMessages = [], $code = 404)
+    public function error(string $error, array $errorMessages = [], int $code = Response::HTTP_BAD_REQUEST)
     {
         $response = [
             'success' => false,
             'message' => $error,
+            'errors' => $errorMessages
         ];
 
         if(!empty($errorMessages)){

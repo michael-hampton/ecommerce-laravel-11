@@ -56,9 +56,9 @@ class LoginController extends ApiController
             $success['token'] = $user->createToken('MyApp')->plainTextToken;
             $success['name'] = $user->name;
 
-            return $this->sendResponse($success, 'User login successfully.');
+            return $this->success($success, 'User login successfully.');
         } else {
-            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
+            return $this->error('Unauthorised.', ['error' => 'Unauthorised']);
         }
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostReplyRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Resources\MessageResource;
 use App\Repositories\Interfaces\IMessageRepository;
 use App\Services\Interfaces\IMessageService;
@@ -20,7 +21,7 @@ class MessageController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $messages = $this->messageRepository->getPaginated(
             $request->integer('limit'),
@@ -46,7 +47,11 @@ class MessageController extends ApiController
             'images' => $request->file('images')
         ]);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Message');
+        }
+
+        return $this->success($result, 'Message created');
     }
 
     /**
@@ -65,7 +70,12 @@ class MessageController extends ApiController
     public function update(Request $request, string $id)
     {
         $result = $this->messageRepository->update($id, $request->all());
-        return response()->json($result);
+
+        if (!$result) {
+            return $this->error('Unable to update Message');
+        }
+
+        return $this->success($result, 'Message updated');
     }
 
     /**
@@ -74,6 +84,11 @@ class MessageController extends ApiController
     public function destroy(string $id)
     {
         $result = $this->messageService->deleteMessage($id);
-        return response()->json($result);
+        
+        if (!$result) {
+            return $this->error('Unable to delete Message');
+        }
+
+        return $this->success($result, 'Message deleted');
     }
 }

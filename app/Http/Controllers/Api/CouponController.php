@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreCouponRequest;
-use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CouponResource;
-use App\Repositories\Interfaces\IBrandRepository;
-use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Services\Interfaces\ICouponService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Yajra\DataTables\Facades\DataTables;
 
 class CouponController extends ApiController
 {
@@ -28,7 +23,7 @@ class CouponController extends ApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $coupons = $this->couponRepository->getPaginated(
             $request->integer('limit'),
@@ -42,12 +37,17 @@ class CouponController extends ApiController
 
     /**
      * @param StoreCouponRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(StoreCouponRequest $request)
     {
         $result = $this->couponService->createCoupon($request->all());
-        return response()->json($result);
+
+        if (!$result) {
+            return $this->error('Unable to create Coupon');
+        }
+
+        return $this->success($result, 'Coupon created');
 
     }
 
@@ -65,23 +65,31 @@ class CouponController extends ApiController
     /**
      * @param Request $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $result = $this->couponService->updateCoupon($request->except(['_token', '_method']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Coupon');
+        }
+
+        return $this->success($result, 'Coupon updated');
     }
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $result = $this->couponService->deleteCoupon($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Coupon');
+        }
+
+        return $this->success($result, 'Coupon deleted');
     }
 }

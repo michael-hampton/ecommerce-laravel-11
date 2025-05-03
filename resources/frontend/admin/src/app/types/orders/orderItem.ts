@@ -1,6 +1,7 @@
 import {OrderLog} from './orderLog';
 import {Category} from '../categories/category';
 import {Brand} from '../brands/brand';
+import { Message } from '../messages/message';
 
 export type OrderItem = {
   id: number,
@@ -12,6 +13,7 @@ export type OrderItem = {
   orderLogs: OrderLog[],
   product: Product
   status: string
+  messages: Message[]
 }
 
 export type Product = {

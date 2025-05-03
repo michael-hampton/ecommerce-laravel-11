@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\MassDestroyArticleRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\StoreFaqArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
@@ -19,7 +20,7 @@ class FaqArticleController extends ApiController
     public function __construct(private IArticleRepository $iArticleRepository) {
     }
 
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $values = $this->iArticleRepository->getPaginated(
             $request->integer('limit'),
@@ -36,7 +37,11 @@ class FaqArticleController extends ApiController
         $article = FaqArticle::create($request->all());
         $article->tags()->sync($request->input('tags', []));
 
-        return response()->json($article);
+        if (!$article) {
+            return $this->error('Unable to create Article');
+        }
+
+        return $this->success($article, 'Article created');
     }
 
     public function update(UpdateFaqArticleRequest $request)
@@ -45,14 +50,22 @@ class FaqArticleController extends ApiController
         $article->update($request->all());
         $article->tags()->sync($request->input('tags', []));
 
-        return response()->json($article);
+        if (!$article) {
+            return $this->error('Unable to update Article');
+        }
+
+        return $this->success($article, 'Article updated');
     }
 
     public function destroy(FaqArticle $article)
     {
         $result = $article->delete();
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Article');
+        }
+
+        return $this->success($result, 'Article deleted');
     }
 
     public function massDestroy(MassDestroyArticleRequest $request)

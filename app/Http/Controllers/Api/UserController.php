@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\SlideResource;
 use App\Http\Resources\UserResource;
@@ -24,7 +25,7 @@ class UserController extends ApiController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|object
      * @throws \Exception
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $users = $this->userRepository->getPaginated(
             $request->integer('limit'),
@@ -38,12 +39,17 @@ class UserController extends ApiController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $result = $this->userService->createUser($request->all());
-        return response()->json($result);
+        
+        if (!$result) {
+            return $this->error('Unable to create User');
+        }
+
+        return $this->success($result, 'User created');
     }
 
     /**
@@ -60,29 +66,43 @@ class UserController extends ApiController
     /**
      * @param UpdateUserRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateUserRequest $request, $id)
     {
         $result = $this->userService->updateUser($request->except(['_token', '_method']), $id);
-        return response()->json($result);
+        
+        if (!$result) {
+            return $this->error('Unable to update User');
+        }
+
+        return $this->success($result, 'User updated');
     }
 
     public function updateActive(Request $request, $id)
     {
-        $this->userService->updateUser(['active' => $request->boolean('active')], $id);
-        return response()->json(['status' => 'success']);
+        $result = $this->userService->updateUser(['active' => $request->boolean('active')], $id);
+        
+        if (!$result) {
+            return $this->error('Unable to update User');
+        }
+
+        return $this->success($result, 'User updated');
     }
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $result = $this->userService->deleteUser($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete User');
+        }
+
+        return $this->success($result, 'User deleted');
     }
 
     public function changeStatus(bool $status, $id)
@@ -93,6 +113,11 @@ class UserController extends ApiController
     public function toggleActive(int $id)
     {
         $result = $this->userService->toggleActive($id);
-        return response()->json($result);
+        
+        if (!$result) {
+            return $this->error('Unable to update User');
+        }
+
+        return $this->success($result, 'User updated');
     }
 }

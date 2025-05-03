@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\MassDestroyFaqQuestionRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreFaqQuestionRequest;
 use App\Http\Requests\UpdateFaqQuestionRequest;
 use App\Http\Resources\Support\QuestionResource;
@@ -14,7 +15,7 @@ class FaqQuestionController extends ApiController
 {
     public function __construct(private IQuestionRepository $questionRepository) {
     }
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $values = $this->questionRepository->getPaginated(
             $request->integer('limit'),
@@ -30,21 +31,33 @@ class FaqQuestionController extends ApiController
     {
         $faqQuestion = FaqQuestion::create($request->all());
 
-        return response()->json($faqQuestion);
+        if (!$faqQuestion) {
+            return $this->error('Unable to create Question');
+        }
+
+        return $this->success($faqQuestion, 'Question created');
     }
 
     public function update(UpdateFaqQuestionRequest $request, FaqQuestion $faqQuestion)
     {
         $result = $faqQuestion->update($request->all());
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Question');
+        }
+
+        return $this->success($result, 'Question updated');
     }
 
     public function destroy(FaqQuestion $faqQuestion)
     {
         $result = $faqQuestion->delete();
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Question');
+        }
+
+        return $this->success($result, 'Question deleted');
     }
 
     public function massDestroy(MassDestroyFaqQuestionRequest $request)

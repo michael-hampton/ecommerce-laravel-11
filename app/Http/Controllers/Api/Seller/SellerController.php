@@ -44,7 +44,11 @@ class SellerController extends ApiController
     {
         $result = $this->sellerService->createSeller($request->all());
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Seller');
+        }
+
+        return $this->success($result, 'Seller created');
     }
 
     /**
@@ -68,17 +72,25 @@ class SellerController extends ApiController
     {
         $result = $this->sellerService->updateSeller($request->all(), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Seller');
+        }
+
+        return $this->success($result, 'Seller updated');
     }
 
     /**
      * @param UpdateSellerActive $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function toggleActive(UpdateSellerActive $request) {
         $result = Profile::whereId($request->integer('sellerId'))->update(['active' => $request->boolean('active')]);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Seller');
+        }
+
+        return $this->success($result, 'Seller deleted');
     }
 
     /**
@@ -88,6 +100,10 @@ class SellerController extends ApiController
     {
         $result = $this->sellerService->deleteSeller($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Seller');
+        }
+
+        return $this->success($result, 'Seller deleted');
     }
 }

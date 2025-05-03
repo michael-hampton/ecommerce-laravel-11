@@ -12,13 +12,12 @@
     <p>Hi {{$mailData['order']->customer->name}}</p>
     @if ($mailData['order']->status === 'delivered')
         <p>Congratulations, Your order has been sent out for delivery</p>
-        <p><strong>Tracking Number:</strong> {{ $mailData['order']['tracking_number'] }} <strong>Courier:</strong>
+        <p><strong>Tracking Number:</strong> {{ $mailData['order']['tracking_number'] }} <strong>Courier:</strong> {{ $mailData['order']->courier->name }}
     @else
         <p>Your order #{{$mailData['order']->id}} status has been updated to {{$mailData['order']->status}}</p>
 
     @endif
 
-    {{ $mailData['order']->courier->name }}
     <table style="width: 600px; text-align:right">
         <thead>
             <tr>

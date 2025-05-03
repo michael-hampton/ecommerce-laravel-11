@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\BrandResource;
@@ -25,7 +26,7 @@ class CategoryController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $categories = $this->categoryRepository->getPaginated(
             $request->integer('limit'),
@@ -40,13 +41,17 @@ class CategoryController extends ApiController
 
     /**
      * @param StoreCategoryRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(StoreCategoryRequest $request)
     {
         $result = $this->categoryService->createCategory($request->all());
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Category');
+        }
+
+        return $this->success($result, 'Category created');
 
     }
 
@@ -64,29 +69,42 @@ class CategoryController extends ApiController
     /**
      * @param UpdateCategoryRequest $request
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateCategoryRequest $request, int $id)
     {
         $result = $this->categoryService->updateCategory($request->except(['_token', '_method']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Category');
+        }
+
+        return $this->success($result, 'Category updated');
     }
 
     /**
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
     {
         $result = $this->categoryService->deleteCategory($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Category');
+        }
+
+        return $this->success($result, 'Category deleted');
     }
 
     public function toggleActive(int $id)
     {
        $result = $this->categoryService->toggleActive($id);
-       return response()->json($result);
+
+       if (!$result) {
+        return $this->error('Unable to update Category');
+    }
+
+    return $this->success($result, 'Category updated');
     }
 }

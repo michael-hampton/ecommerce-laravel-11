@@ -23,16 +23,16 @@ use function auth;
 class UserAccountController extends Controller
 {
     public function __construct(
-        private IOrderRepository   $orderRepository,
-        private IOrderService      $orderService,
+        private IOrderRepository $orderRepository,
+        private IOrderService $orderService,
         private IAddressRepository $addressRepository,
-        private IMessageService   $messageService,
-    )
-    {
+        private IMessageService $messageService,
+    ) {
 
     }
 
-    public function index() {
+    public function index()
+    {
         return view('front.user.index');
     }
 
@@ -58,16 +58,33 @@ class UserAccountController extends Controller
 
     public function approveOrder(Request $request, int $orderId)
     {
-        $this->orderService->approveOrder($orderId, $request->array('values'));
-        return back()->with('success', 'Order cancelled');
+        $result = $this->orderService->approveOrder($orderId, $request->array('values'));
+        return response()->json($result);
     }
 
-    public function reportOrder(int $orderItemId)
+    public function reportOrder(int $orderItemId, Request $request)
     {
-        $orderItem = OrderItem::whereId($orderItemId)->first();
-        $posts = Post::where('user_id', auth()->id())->get();
 
-        return view('front.user.account-ask-a-question', compact('posts', 'orderItemId', 'orderItem'));
+        $reason = trim($request->string('reason'));
+        $orderItem = OrderItem::whereId($orderItemId);
+        $title = $reason === 'returnRefund' ? 'Refund Requested from buyer. Items should be returned' : 'Refund Requested from buyer. They do not wish to return the items';
+       
+        if ($reason === 'returnRefund' || $reason === 'refundNoReturn') {
+            $orderItem->update(['status' => 'refund_requested']);
+        }
+
+        $orderItem = $orderItem->first();
+
+        $result = $this->messageService->createMessage([
+            'title' => $title,
+            'images' => $request->file('images'),
+            'comment' => $request->string('message'),
+            'sellerId' => $orderItem->seller_id,
+            'order_item_id' => $orderItem->id,
+            'user_id' => auth()->user()->id
+        ]);
+
+        return response()->json($result);
     }
 
     public function address()
@@ -84,20 +101,20 @@ class UserAccountController extends Controller
 
     public function storeAddress(StoreCustomerAddressRequest $request)
     {
-       $this->addressRepository->create([
-           'customer_id' => auth()->id(),
-           'name' => $request->get('name'),
-           'address1' => $request->get('address1'),
-           'address2' => $request->get('address2'),
-           'city' => $request->get('city'),
-           'zip' => $request->get('zip'),
-           'phone' => $request->get('phone'),
-           'state' => $request->get('state'),
-           'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
-           'country' => $request->get('country') ?? 'United Kingdom',
-       ]);
+        $this->addressRepository->create([
+            'customer_id' => auth()->id(),
+            'name' => $request->get('name'),
+            'address1' => $request->get('address1'),
+            'address2' => $request->get('address2'),
+            'city' => $request->get('city'),
+            'zip' => $request->get('zip'),
+            'phone' => $request->get('phone'),
+            'state' => $request->get('state'),
+            'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
+            'country' => $request->get('country') ?? 'United Kingdom',
+        ]);
 
-       return back()->with('success', 'Address added');
+        return back()->with('success', 'Address added');
     }
 
     public function editAddress(int $addressId)
@@ -106,23 +123,23 @@ class UserAccountController extends Controller
         return view('front.user.account-address-edit', compact('address'));
     }
 
-     public function updateAddress(StoreCustomerAddressRequest $request, int $addressId)
-     {
-         $this->addressRepository->update($addressId, [
-             'customer_id' => auth()->id(),
-             'name' => $request->get('name'),
-             'address1' => $request->get('address1'),
-             'address2' => $request->get('address2'),
-             'city' => $request->get('city'),
-             'zip' => $request->get('zip'),
-             'phone' => $request->get('phone'),
-             'state' => $request->get('state'),
-             'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
-             'country' => $request->get('country') ?? 'United Kingdom',
-         ]);
+    public function updateAddress(StoreCustomerAddressRequest $request, int $addressId)
+    {
+        $this->addressRepository->update($addressId, [
+            'customer_id' => auth()->id(),
+            'name' => $request->get('name'),
+            'address1' => $request->get('address1'),
+            'address2' => $request->get('address2'),
+            'city' => $request->get('city'),
+            'zip' => $request->get('zip'),
+            'phone' => $request->get('phone'),
+            'state' => $request->get('state'),
+            'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
+            'country' => $request->get('country') ?? 'United Kingdom',
+        ]);
 
-         return back()->with('success', 'Address updated');
-     }
+        return back()->with('success', 'Address updated');
+    }
 
     public function wishlist()
     {

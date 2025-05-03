@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreAttributeValueRequest;
 use App\Http\Requests\UpdateAttributeValueRequest;
 use App\Http\Resources\AttributeValueResource;
@@ -26,7 +27,7 @@ class AttributeValueController extends ApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $attributeValues = $this->attributeValueRepository->getPaginated(
             $request->integer('limit'),
@@ -40,13 +41,17 @@ class AttributeValueController extends ApiController
 
     /**
      * @param StoreAttributeValueRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(StoreAttributeValueRequest $request)
     {
         $result = $this->attributeValueService->createAttributeValue($request->except(['_token', '_method']));
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Attribute Value');
+        }
+
+        return $this->success($result, 'Attribute Value created');
     }
 
     /**
@@ -63,23 +68,31 @@ class AttributeValueController extends ApiController
     /**
      * @param UpdateAttributeValueRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateAttributeValueRequest $request, $id)
     {
         $result = $this->attributeValueService->updateAttributeValue($request->except(['_token', '_method']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Attribute Value');
+        }
+
+        return $this->success($result, 'Attribute Value updated');
     }
 
     /**
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
     {
         $result = $this->attributeValueService->deleteAttributeValue($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Attribute Value');
+        }
+
+        return $this->success($result, 'Attribute Value deleted');
     }
 }

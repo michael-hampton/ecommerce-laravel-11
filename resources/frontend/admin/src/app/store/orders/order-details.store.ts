@@ -8,17 +8,19 @@ import {OrderApi} from '../../apis/order.api';
 import {SaveOrder, SaveOrderLine} from '../../types/orders/save-order';
 import {OrderDetail} from '../../types/orders/order-detail';
 import {OrderLog} from '../../types/orders/orderLog';
-import {tap} from 'rxjs/operators';
+import {combineLatestWith, tap} from 'rxjs/operators';
 import {Courier} from '../../types/couriers/courier';
-import {pipe, switchMap} from 'rxjs';
+import {Observable, pipe, switchMap} from 'rxjs';
 import {Category} from '../../types/categories/category';
+import { Message } from '../../types/messages/message';
 
 export interface OrderDetailsState {
   order: OrderDetail;
   orderLogs: OrderLog[],
   loading: boolean
   orderUpdated: boolean
-  orderLineUpdated: boolean
+  orderLineUpdated: boolean,
+  messages: Message[]
 }
 
 const defaultState: OrderDetailsState = {
@@ -27,6 +29,7 @@ const defaultState: OrderDetailsState = {
   loading: false,
   orderUpdated: false,
   orderLineUpdated: false,
+  messages: []
 };
 
 @Injectable()
@@ -35,6 +38,9 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
     super(defaultState);
   }
 
+  orderLines$ = this.select(state => state.order.orderItems)
+  messages$ = this.select(state => state.messages)
+
 
   vm$ = this.select(state => ({
     order: state.order,
@@ -42,6 +48,7 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
     loading: state.loading,
     orderUpdated: state.orderUpdated,
     orderLineUpdated: state.orderLineUpdated,
+    messages: state.messages
   }))
 
   saveOrderStatus = (payload: Partial<SaveOrder>) => {
@@ -89,6 +96,22 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
       })
     )
   }
+
+
+  readonly filterMessages = this.effect<number>((orderItemId$) =>
+    orderItemId$.pipe(
+      tap(() => console.log('fetch books')),
+      combineLatestWith(this.orderLines$),
+      switchMap(([orderItemId, orderLines]) => {
+        console.log('inst', orderLines, orderItemId)
+        if (orderLines && orderItemId) {
+          const messages = orderLines.filter(x => x.id === orderItemId).flatMap(y => y.messages)
+          this.patchState({messages: messages})
+        }
+        return [];
+      })
+    )
+  );
 
   getOrderLogs(orderId: number) {
     return this._api.getOrderLogs(orderId).pipe(

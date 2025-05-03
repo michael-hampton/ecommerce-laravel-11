@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OrderItem extends Model
 {
@@ -31,15 +33,15 @@ class OrderItem extends Model
         'approved_date'
     ];
 
-    public function product() {
+    public function product(): BelongsTo {
         return $this->belongsTo(Product::class, 'product_id');
     }
 
-    public function seller() {
+    public function seller(): BelongsTo {
         return $this->belongsTo(User::class, 'seller_id');
     }
 
-    public function order() {
+    public function order(): BelongsTo {
         return $this->belongsTo(Order::class, 'order_id');
     }
 
@@ -48,13 +50,17 @@ class OrderItem extends Model
         $query->where('seller_id', '=', $sellerId);
     }
 
-    public function logs()
+    public function logs(): HasMany
     {
         return $this->hasMany(OrderLog::class , 'order_item_id');
     }
 
-    public function courier()
+    public function courier(): BelongsTo
     {
         return $this->belongsTo(Courier::class, 'courier_id');
+    }
+
+    public function messages(): HasMany {
+        return $this->hasMany(Post::class, 'order_item_id');
     }
 }

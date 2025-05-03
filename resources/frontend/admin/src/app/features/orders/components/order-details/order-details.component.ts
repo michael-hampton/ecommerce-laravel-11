@@ -1,13 +1,15 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {OrderDetailsStore} from '../../../../store/orders/order-details.store';
-import {SaveOrder} from '../../../../types/orders/save-order';
-import {ActivatedRoute} from '@angular/router';
-import {OrderStatusEnum} from '../../../../types/orders/orderStatus.enum';
-import {OrderDetail} from '../../../../types/orders/order-detail';
-import {OrderItem} from '../../../../types/orders/orderItem';
-import {LookupStore} from '../../../../store/lookup.store';
-import {Courier} from '../../../../types/couriers/courier';
+import { Component, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { OrderDetailsStore } from '../../../../store/orders/order-details.store';
+import { SaveOrder } from '../../../../types/orders/save-order';
+import { ActivatedRoute } from '@angular/router';
+import { OrderStatusEnum } from '../../../../types/orders/orderStatus.enum';
+import { OrderDetail } from '../../../../types/orders/order-detail';
+import { OrderItem } from '../../../../types/orders/orderItem';
+import { LookupStore } from '../../../../store/lookup.store';
+import { Courier } from '../../../../types/couriers/courier';
+import { ModalService } from '../../../../services/modal.service';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 
 @Component({
   selector: 'app-order-details',
@@ -19,8 +21,13 @@ import {Courier} from '../../../../types/couriers/courier';
 export class OrderDetailsComponent implements OnInit {
 
   orderStatusForm: FormGroup;
+  modalService: ModalService = inject(ModalService);
+  @ViewChild('featureModal', { static: true, read: ViewContainerRef })
+  featureModal!: ViewContainerRef;
+  @ViewChild('username') input: TemplateRef<any>;
   private _store = inject(OrderDetailsStore)
   vm$ = this._store.vm$
+  messages$ = this._store.messages$
   private _lookupStore = inject(LookupStore)
   lookupVm$ = this._lookupStore.vm$
   private fb = inject(FormBuilder)
@@ -33,7 +40,7 @@ export class OrderDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm()
     this._lookupStore.getCouriers().subscribe((result: Courier[]) => {
-     this.couriers = result
+      this.couriers = result
     })
 
     this.activatedRoute.params.subscribe(params => {
@@ -100,5 +107,22 @@ export class OrderDetailsComponent implements OnInit {
 
   trackCourierItem(orderItemId: number, courierId: number) {
     return `${orderItemId}-${courierId}`
+  }
+
+  showMessages(orderItemId: number) {
+    this._store.filterMessages(orderItemId)
+    this.modalService
+      .openConfirmationModal(ModalComponent, this.featureModal, {}, {
+        modalTitle: 'Message',
+        template: this.input,
+        showFooter: false
+      })
+      .subscribe((v) => {
+        //this.form.controls['bump_days'].setValue(this.days);
+      });
+  }
+
+  getMessages(orderItemId: number) {
+    this.orderLines.filter(x => x.id === orderItemId).messages
   }
 }

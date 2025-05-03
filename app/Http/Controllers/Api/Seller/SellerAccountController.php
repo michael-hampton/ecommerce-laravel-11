@@ -16,7 +16,11 @@ class SellerAccountController extends Controller
             array_merge($request->all(), ['seller_id' => auth('sanctum')->user()->id, 'type' => 'bank'])
         );
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to save bank details');
+        }
+
+        return $this->success($result, 'bank details updated');
     }
 
     public function saveCardDetails(UpdateSellerCardDetails $request)
@@ -26,7 +30,11 @@ class SellerAccountController extends Controller
             array_merge($request->all(), ['seller_id' => auth('sanctum')->user()->id, 'type' => 'card'])
         );
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to save card');
+        }
+
+        return $this->success($result, 'card updated');
     }
 
     public function getSellerBankAccountDetails() {

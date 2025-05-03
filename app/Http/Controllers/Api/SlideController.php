@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateSlideRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateSlideRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\SlideResource;
@@ -24,7 +25,7 @@ class SlideController extends ApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $slides = $this->slideRepository->getPaginated(
             $request->integer('limit'),
@@ -38,13 +39,17 @@ class SlideController extends ApiController
 
     /**
      * @param CreateSlideRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(CreateSlideRequest $request)
     {
         $result = $this->slideService->createSlide($request->all());
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Slide');
+        }
+
+        return $this->success($result, 'Slide created');
     }
 
     /**
@@ -61,29 +66,42 @@ class SlideController extends ApiController
     /**
      * @param UpdateSlideRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateSlideRequest $request, $id)
     {
         $result = $this->slideService->updateSlide($request->validated(), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Slide');
+        }
+
+        return $this->success($result, 'Slide updated');
     }
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $result = $this->slideService->deleteSlide($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Slide');
+        }
+
+        return $this->success($result, 'Slide deleted');
     }
 
     public function toggleActive(int $id)
     {
-       $result = $this->slideService->toggleActive($id);
-       return response()->json($result);
+        $result = $this->slideService->toggleActive($id);
+
+        if (!$result) {
+            return $this->error('Unable to update Slide');
+        }
+
+        return $this->success($result, 'Slide updated');
     }
 }

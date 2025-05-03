@@ -28,7 +28,11 @@ class SellerBillingInformationController extends Controller
         );
 
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update billing details');
+        }
+
+        return $this->success($result, 'billing details updated');
     }
 
     /**

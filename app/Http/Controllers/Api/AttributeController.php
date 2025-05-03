@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreAttributeRequest;
 use App\Http\Requests\UpdateAttributeRequest;
 use App\Http\Resources\AttributeResource;
@@ -13,7 +14,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AttributeController extends ApiController
 {
-    public function __construct(private IAttributeService $attributeService, private IAttributeRepository $attributeRepository) {
+    public function __construct(private IAttributeService $attributeService, private IAttributeRepository $attributeRepository)
+    {
 
     }
 
@@ -22,7 +24,7 @@ class AttributeController extends ApiController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|object
      * @throws \Exception
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $attributes = $this->attributeRepository->getPaginated(
             $request->integer('limit'),
@@ -36,13 +38,17 @@ class AttributeController extends ApiController
 
     /**
      * @param StoreAttributeRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(StoreAttributeRequest $request)
     {
         $result = $this->attributeService->createAttribute($request->all());
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Attribute');
+        }
+
+        return $this->success($result, 'Attribute created');
 
     }
 
@@ -60,23 +66,31 @@ class AttributeController extends ApiController
     /**
      * @param UpdateAttributeRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateAttributeRequest $request, $id)
     {
         $result = $this->attributeService->updateAttribute($request->except(['_token', '_method']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Attribute');
+        }
+
+        return $this->success($result, 'Attribute updated');
     }
 
     /**
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
     {
         $result = $this->attributeService->deleteAttribute($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Attribute');
+        }
+
+        return $this->success($result, 'Attribute deleted');
     }
 }

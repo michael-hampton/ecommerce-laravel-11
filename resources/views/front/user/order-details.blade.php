@@ -90,8 +90,8 @@
                                         <td class="text-center">{{$item->status == 0 ? 'No' : 'Yes'}}</td>
                                         <td class="text-center">
                                             @if(empty($item->approved_date))
-                                                <a href="{{route('orders.reportOrder', ['orderItemId' => $item->id])}}"
-                                                    class="btn btn-warning btn-lg">Report an issue</a>
+                                                <a data-id="{{ $item->id }}" id="reportOrder" class="btn btn-warning btn-lg">Report
+                                                    an issue</a>
                                             @else
                                             <span class="badge bg-success">Approved</span @endif
                                                 @if($order->status === 'delivered') <a
@@ -174,7 +174,7 @@
         </div>
 @endsection
 
-    <!-- Modal -->
+    <!-- Approve Order Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -186,8 +186,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <button class="btn btn-success" id="deleteSelected" disabled>Approve Selected Items</button>
+                    <div class="alert alert-success alert-dismissable d-none" id="bulkSuccess">
+                        Thankyou for approving the items. The seller has been notified. Please feel free to leave a
+                        review
                     </div>
                     <table class="table table-bordered table-hover">
                         <thead class="table-light">
@@ -214,7 +215,47 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="exampleModal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button class="btn btn-success" id="deleteSelected" disabled>Approve Selected Items</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Order Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Report Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success alert-dismissable d-none" id="bulkSuccess">
+                        Thankyou for approving the items. The seller has been notified. Please feel free to leave a
+                        review
+                    </div>
+
+                    <form id="reportForm">
+                        <input type="hidden" id="itemId">
+                        <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="6"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="formFileMultiple" class="form-label">Upload images to show issue</label>
+                            <input class="form-control" type="file" name="images[]" id="formFileMultiple" multiple>
+                        </div>
+                    </form>
+
+                    How can the issue be resolved?
+                    <div class="d-grid gap-2">
+                        <button id="returnRefund" class="btn btn-primary" type="button">Return Item and Refund</button>
+                        <button id="refundNoReturn" class="btn btn-primary" type="button">Refund No return</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -223,6 +264,28 @@
 
     @push('scripts')
         <script>
+            const reportButton = document.getElementById('reportOrder')
+
+            reportButton.addEventListener('click', (e) => {
+                const itemId = e.currentTarget.getAttribute('data-id')
+                document.getElementById('itemId').value = itemId
+                e.preventDefault()
+                var myModal = new bootstrap.Modal(document.getElementById("reportModal"), {});
+                myModal.show();
+            })
+
+            const submitReportBtn = document.getElementById('refundNoReturn');
+
+            submitReportBtn.addEventListener('click', () => {
+                submitOrderReport('refundNoReturn')
+            });
+
+            const submitReportBtn2 = document.getElementById('returnRefund');
+
+            submitReportBtn2.addEventListener('click', () => {
+                submitOrderReport('returnRefund')
+            });
+
             const approveButton = document.getElementById('approve-order')
             approveButton.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -240,11 +303,37 @@
                 fetch("{{ route('orders.approveOrder', ['orderId' => $order->id]) }}", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({values: values, _token: "{{ csrf_token() }}"})
+                    body: JSON.stringify({ values: values, _token: "{{ csrf_token() }}" })
                 }).then(res => {
-                    console.log("Request complete! response:", res);
+                    var successMessage = document.getElementById('bulkSuccess')
+                    successMessage.classList.remove('d-none')
+                    var myModalEl = document.getElementById('reportModal');
+                    var modal = bootstrap.Modal.getInstance(myModalEl)
+                    modal.hide();
                 });
             });
+
+            function submitOrderReport(reason) {
+                var form = document.getElementById('reportForm')
+                var postData = new FormData(form);
+                postData.append('_token', "{{ csrf_token() }}")
+                postData.append('reason', reason.trim())
+
+
+                $.ajax({
+                    url: "{{ route('orders.reportOrder', ['orderItemId' => 'test']) }}".replace('test', document.getElementById('itemId').value),
+                    type: "POST",
+                    data: postData,
+                    processData: false,
+                    contentType: false
+                }).done(function (msg) {
+                    console.log(msg);
+                    var myModalEl = document.getElementById('reportModal');
+                    var modal = bootstrap.Modal.getInstance(myModalEl)
+                    modal.hide();
+                });
+
+            }
 
             function updateSelectAll() {
                 selectAll.checked = Array.from(checkboxes).every(cb => cb.checked);

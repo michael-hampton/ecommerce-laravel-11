@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\MassDestroyFaqCategoryRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreFaqCategoryRequest;
 use App\Http\Requests\UpdateFaqCategoryRequest;
 use App\Http\Resources\Support\CategoryResource;
@@ -14,7 +15,7 @@ class FaqCategoryController extends ApiController
 {
     public function __construct(private ICategoryRepository $categoryRepository){}
 
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $values = $this->categoryRepository->getPaginated(
             $request->integer('limit'),
@@ -30,21 +31,33 @@ class FaqCategoryController extends ApiController
     {
         $faqCategory = FaqCategory::create($request->all());
 
-        return response()->json($faqCategory);
+        if (!$faqCategory) {
+            return $this->error('Unable to create Category');
+        }
+
+        return $this->success($faqCategory, 'Category created');
     }
 
     public function update(UpdateFaqCategoryRequest $request, FaqCategory $faqCategory)
     {
         $faqCategory->update($request->all());
 
-        return response()->json($faqCategory);
+        if (!$faqCategory) {
+            return $this->error('Unable to update Category');
+        }
+
+        return $this->success($faqCategory, 'Category updated');
     }
 
     public function destroy(FaqCategory $faqCategory)
     {
         $result = $faqCategory->delete();
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Category');
+        }
+
+        return $this->success($result, 'Category deleted');
     }
 
     public function massDestroy(MassDestroyFaqCategoryRequest $request)

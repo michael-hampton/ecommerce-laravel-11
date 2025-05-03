@@ -1,17 +1,34 @@
 <ng-container *ngIf="vm$ | async as vm">
   <div class="p-4">
-
     <div class="d-flex align-items-center justify-content-between mb-3">
       <div class="card col-lg-6 me-3">
         <div class="card-header">Order Totals</div>
         <div class="card-body">
           <ul class="list-unstyled">
-            <li><span class="fw-bold">Subtotal</span> {{ vm.order.totals?.subtotal | currency }}</li>
-            <li><span class="fw-bold">Shipping</span> {{ vm.order.totals?.shipping | currency }}</li>
-            <li><span class="fw-bold">Discount</span> {{ vm.order.totals?.discount | currency }}</li>
-            <li><span class="fw-bold">Total</span> {{ vm.order.totals?.total | currency }}</li>
-            <li><span class="fw-bold">Status</span> {{ vm.order.totals?.payment_status }}</li>
-            <li><span class="fw-bold">Payment Method</span> {{ vm.order.totals?.payment_method }}</li>
+            <li>
+              <span class="fw-bold">Subtotal</span>
+              {{ vm.order.totals?.subtotal | currency }}
+            </li>
+            <li>
+              <span class="fw-bold">Shipping</span>
+              {{ vm.order.totals?.shipping | currency }}
+            </li>
+            <li>
+              <span class="fw-bold">Discount</span>
+              {{ vm.order.totals?.discount | currency }}
+            </li>
+            <li>
+              <span class="fw-bold">Total</span>
+              {{ vm.order.totals?.total | currency }}
+            </li>
+            <li>
+              <span class="fw-bold">Status</span>
+              {{ vm.order.totals?.payment_status }}
+            </li>
+            <li>
+              <span class="fw-bold">Payment Method</span>
+              {{ vm.order.totals?.payment_method }}
+            </li>
           </ul>
         </div>
       </div>
@@ -20,8 +37,12 @@
         <div class="card-header">Customer Details</div>
         <div class="card-body">
           <ul class="list-unstyled">
-            <li><span class="fw-bold">Name</span> {{ vm.order?.customer?.name }}</li>
-            <li><span class="fw-bold">Email</span> {{ vm.order?.customer?.email }}</li>
+            <li>
+              <span class="fw-bold">Name</span> {{ vm.order?.customer?.name }}
+            </li>
+            <li>
+              <span class="fw-bold">Email</span> {{ vm.order?.customer?.email }}
+            </li>
           </ul>
         </div>
       </div>
@@ -33,8 +54,13 @@
         <div class="card-body">
           <ul class="list-unstyled">
             <li>{{ vm.order?.address?.name }}</li>
-            <li>{{ vm.order?.address?.address1 }} {{ vm.order?.address?.address2 }}</li>
-            <li>{{ vm.order?.address?.city }}, {{ vm.order?.address?.state }}</li>
+            <li>
+              {{ vm.order?.address?.address1 }}
+              {{ vm.order?.address?.address2 }}
+            </li>
+            <li>
+              {{ vm.order?.address?.city }}, {{ vm.order?.address?.state }}
+            </li>
             <li>{{ vm.order?.address?.zip }}</li>
             <li>{{ vm.order?.address?.country }}</li>
             <li>Phone : {{ vm.order?.address?.phone }}</li>
@@ -45,55 +71,87 @@
         <div class="card-header">History</div>
         <div class="card-body">
           <form [formGroup]="orderStatusForm">
-            <div *ngIf="vm.orderUpdated" class="alert alert-success alert-dismissible">Order was updated successfully
+            <div
+              *ngIf="vm.orderUpdated"
+              class="alert alert-success alert-dismissible"
+            >
+              Order was updated successfully
             </div>
             <div class="row">
               <div class="col-md-3">
                 <label class="form-label">Status</label>
-                <select id="status" name="status" class="form-control" formControlName="status">
-                  <option *ngFor="let status of OrderStatusEnum | keyvalue" [value]="status.value">{{ status.key }}
+                <select
+                  id="status"
+                  name="status"
+                  class="form-control"
+                  formControlName="status"
+                >
+                  <option
+                    *ngFor="let status of OrderStatusEnum | keyvalue"
+                    [value]="status.value"
+                  >
+                    {{ status.key }}
                   </option>
                 </select>
               </div>
 
               <div class="col-sm-3">
                 <label class="form-label">Tracking No</label>
-                <input type="text" class="form-control" name="tracking_number"
-                       formControlName="tracking_number">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="tracking_number"
+                  formControlName="tracking_number"
+                />
               </div>
 
               <div class="col-sm-4">
                 <label class="form-label">Courier</label>
-                <select class="form-control" name="courier_id"
-                        formControlName="courier_id">
+                <select
+                  class="form-control"
+                  name="courier_id"
+                  formControlName="courier_id"
+                >
                   <option value="">Select Courier</option>
-                  <option *ngFor="let courier of couriers" value="{{courier.id}}"
-                          [selected]="vm.order.courier_id === courier.id">{{ courier.name }}
+                  <option
+                    *ngFor="let courier of couriers"
+                    value="{{ courier.id }}"
+                    [selected]="vm.order.courier_id === courier.id"
+                  >
+                    {{ courier.name }}
                   </option>
                 </select>
               </div>
 
               <div class="col-md-2">
-                <button [disabled]="vm.loading" type="button" class="btn btn-success" (click)="saveOrderForm()">Update
+                <button
+                  [disabled]="vm.loading"
+                  type="button"
+                  class="btn btn-success"
+                  (click)="saveOrderForm()"
+                >
+                  Update
                 </button>
               </div>
             </div>
-
           </form>
 
           <div style="max-height: 300px; overflow-y: auto">
             <ul class="list-group mt-3">
-              <li *ngFor="let orderLog of vm.orderLogs"
-                  class="list-group-item d-flex justify-content-between align-items-center">
+              <li
+                *ngFor="let orderLog of vm.orderLogs"
+                class="list-group-item d-flex justify-content-between align-items-center"
+              >
                 Order {{ orderLog.status_to | titlecase }}
-                <span>{{ orderLog.created_at | date:'MMM dd yyyy HH:mm' }}</span>
+                <span>{{
+                  orderLog.created_at | date : "MMM dd yyyy HH:mm"
+                }}</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-
 
     <div class="wg-box">
       <div class="flex items-center justify-between gap10 flex-wrap">
@@ -106,74 +164,118 @@
       <div class="table-responsive">
         <table class="table table-striped table-bvm.ordered">
           <thead>
-          <tr>
-            <th style="width: 35%">Name</th>
-            <th style="width: 10%" class="text-center">Price</th>
-            <th style="width: 10%" class="text-center">Quantity</th>
-            <th class="text-center">Action</th>
-          </tr>
+            <tr>
+              <th style="width: 35%">Name</th>
+              <th style="width: 10%" class="text-center">Price</th>
+              <th style="width: 10%" class="text-center">Quantity</th>
+              <th class="text-center">Action</th>
+            </tr>
           </thead>
           <tbody>
-
-          <tr *ngFor="let orderItem of vm.order.orderItems">
-            <td class="">
-              <div class="d-flex align-items-center justify-content-between">
-                <img style="width: 100px" src="{{orderItem.product.image}}" alt=""
-                     class="image">
-                <div>
-                  <div class="fw-bold">
-                    <a href="#" target="_blank"
-                       class="body-title-2">{{ orderItem.product.name }}</a>
+            <tr *ngFor="let orderItem of vm.order.orderItems">
+              <td class="">
+                <div class="d-flex align-items-center justify-content-between">
+                  <img
+                    style="width: 100px"
+                    src="{{ orderItem.product.image }}"
+                    alt=""
+                    class="image"
+                  />
+                  <div>
+                    <div class="fw-bold">
+                      <a href="#" target="_blank" class="body-title-2">{{
+                        orderItem.product.name
+                      }}</a>
+                    </div>
+                    <ul class="list-unstyled">
+                      <li>Category: {{ orderItem.product.category.name }}</li>
+                      <li>Brand: {{ orderItem.product.brand.name }}</li>
+                      <li>SKU: {{ orderItem.product.SKU }}</li>
+                    </ul>
                   </div>
-                  <ul class="list-unstyled">
-                    <li>Category: {{ orderItem.product.category.name }}</li>
-                    <li>Brand: {{ orderItem.product.brand.name }}</li>
-                    <li>SKU: {{ orderItem.product.SKU }}</li>
-                  </ul>
                 </div>
-              </div>
-            </td>
-            <td class="text-center">{{ orderItem.price | currency }}</td>
-            <td class="text-center">{{ orderItem.quantity }}</td>
-            <td>
-              <div *ngIf="vm.orderLineUpdated" class="alert alert-success alert-dismissible">Order line was updated
-                successfully
-              </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <label class="form-label">Status</label>
-                  <select name="status"
-                          class="form-control" (change)="handleOrderItemForm($event, orderItem.id)">
-                    <option *ngFor="let status_item of OrderStatusEnum | keyvalue" [value]="status_item.value"
-                            [selected]="orderItem.status === status_item.value">{{ status_item.key }}
-                    </option>
-                  </select>
+              </td>
+              <td class="text-center">{{ orderItem.price | currency }}</td>
+              <td class="text-center">{{ orderItem.quantity }}</td>
+              <td>
+                <div
+                  *ngIf="vm.orderLineUpdated"
+                  class="alert alert-success alert-dismissible"
+                >
+                  Order line was updated successfully
                 </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select
+                      name="status"
+                      class="form-control"
+                      (change)="handleOrderItemForm($event, orderItem.id)"
+                    >
+                      <option
+                        *ngFor="let status_item of OrderStatusEnum | keyvalue"
+                        [value]="status_item.value"
+                        [selected]="orderItem.status === status_item.value"
+                      >
+                        {{ status_item.key }}
+                      </option>
+                    </select>
+                  </div>
 
-                <div class="col-sm-4" id="tracking-number-container">
-                  <label class="form-label">Tracking No</label>
-                  <input type="text" class="form-control"
-                         id="tracking_number" name="tracking_number" (keyup)="handleOrderItemForm($event, orderItem.id)"
-                         value="{{orderItem.tracking_number}}">
-                </div>
+                  <div class="col-sm-4" id="tracking-number-container">
+                    <label class="form-label">Tracking No</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="tracking_number"
+                      name="tracking_number"
+                      (keyup)="handleOrderItemForm($event, orderItem.id)"
+                      value="{{ orderItem.tracking_number }}"
+                    />
+                  </div>
 
-                <div class="col-sm-4" id="courier-name-container">
-                  <label class="form-label">Courier</label>
-                  <select class="form-control" name="courier_id" (change)="handleOrderItemForm($event, orderItem.id)">
-                    <option value="">Select Courier</option>
-                    <option *ngFor="let courier_item of couriers" value="{{courier_item.id}}"
-                            [selected]="orderItem.courier_id === courier_item.id">{{ courier_item.name }}
-                    </option>
-                  </select>
-                </div>
+                  <div class="col-sm-4" id="courier-name-container">
+                    <label class="form-label">Courier</label>
+                    <select
+                      class="form-control"
+                      name="courier_id"
+                      (change)="handleOrderItemForm($event, orderItem.id)"
+                    >
+                      <option value="">Select Courier</option>
+                      <option
+                        *ngFor="let courier_item of couriers"
+                        value="{{ courier_item.id }}"
+                        [selected]="orderItem.courier_id === courier_item.id"
+                      >
+                        {{ courier_item.name }}
+                      </option>
+                    </select>
+                  </div>
 
-                <div class="col-md-2 mt-3">
-                  <button type="button" class="btn btn-success" (click)="handleSaveOrderLineForm(orderItem.id)">Update
-                  </button>
+                  <div
+                    *ngIf="orderItem.status === 'refund_requested'"
+                    class="d-block text-danger"
+                  >
+                    A refund was requested from the buyer
+                    <a
+                      href="javacript:void()"
+                      (click)="showMessages(orderItem.id)"
+                      >Show Message</a
+                    >
+                  </div>
+
+                  <div class="col-md-2 mt-3">
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      (click)="handleSaveOrderLineForm(orderItem.id)"
+                    >
+                      Update
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </td>
-          </tr>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -181,3 +283,31 @@
   </div>
 </ng-container>
 
+<!-- Feature Modal -->
+<ng-template #username *ngIf="messages$ | async as messages">
+  <div *ngFor="let message of messages">
+    <div class="d-flex gap-3">
+      <img style="width: 100px" [src]="message.user.image" alt="User Avatar"
+           class="user-avatar">
+      <div class="flex-grow-1">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <a href="javscript:void(0)"><h6
+            class="mb-0">{{message.user.name}}</h6></a>
+          <span class="comment-time">{{message.created_at}}</span>
+        </div>
+        <span class="text-muted">{{message.title}}</span>
+        <p class="mb-2">{{message.message}}</p>
+      </div>
+    </div>
+
+    <div *ngIf="message.images" class="d-flex justify-content-between mt-3">
+      <img
+        style="width: 100px"
+        *ngFor="let image of message.images"
+        [src]="image"
+      />
+    </div>
+  </div>
+</ng-template>
+
+<div class="modal" tabindex="-1" #featureModal id="testModal">...</div>

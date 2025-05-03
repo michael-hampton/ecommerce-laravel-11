@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
 use App\Http\Resources\AttributeValueResource;
@@ -23,7 +24,7 @@ class BrandController extends ApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $brands = $this->brandRepository->getPaginated(
             $request->integer('limit'),
@@ -38,13 +39,17 @@ class BrandController extends ApiController
 
     /**
      * @param StoreBrandRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(StoreBrandRequest $request)
     {
         $result = $this->brandService->createBrand($request->all());
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Brand');
+        }
+
+        return $this->success($result, 'Brand created');
     }
 
     /**
@@ -61,30 +66,43 @@ class BrandController extends ApiController
     /**
      * @param UpdateBrandRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateBrandRequest $request, $id)
     {
         $result = $this->brandService->updateBrand($request->except(['_token', '_method']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Brand');
+        }
+
+        return $this->success($result, 'Brand updated');
     }
 
     /**
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
     {
         $result = $this->brandService->deleteBrand($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Brand');
+        }
+
+        return $this->success($result, 'Brand deleted');
 
     }
 
     public function toggleActive(int $id)
     {
        $result = $this->brandService->toggleActive($id);
-       return response()->json($result);
+
+       if (!$result) {
+        return $this->error('Unable to update Brand');
+    }
+
+    return $this->success($result, 'Brand updated');
     }
 }

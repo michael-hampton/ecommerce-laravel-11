@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
-use App\Http\Resources\CouponResource;
 use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use App\Models\OrderLog;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Interfaces\IOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
-use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends ApiController
 {
@@ -26,7 +22,7 @@ class OrderController extends ApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $orders = $this->orderRepository->getPaginated(
             $request->integer('limit'),
@@ -57,10 +53,6 @@ class OrderController extends ApiController
     {
         $order = Order::with(['logs', 'transaction', 'orderItems', 'customer', 'address'])->whereId($orderId)->firstOrFail();
 
-//        echo '<pre>';
-//        print_r($order->orderItems->where('seller_id', auth('sanctum')->id())->sum('shipping_price'));
-//        die;
-
         $resource = OrderDetailResource::make($order);
 
         return response()->json($resource);
@@ -69,25 +61,33 @@ class OrderController extends ApiController
     /**
      * @param UpdateOrderStatusRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateOrderStatusRequest $request, $id)
     {
         $result = $this->orderService->updateOrder($request->except(['_token', '_method']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Order');
+        }
+
+        return $this->success($result, 'Order updated');
     }
 
     /**
      * @param UpdateOrderStatusRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function updateItemDetails(UpdateOrderStatusRequest $request, $id)
     {
         $result = $this->orderService->updateOrderLine($request->except(['_token', '_method']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Order');
+        }
+
+        return $this->success($result, 'Order updated');
     }
 
     /**

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('discount',10,4)->nullable();
             $table->integer('quantity');
             $table->longText('options')->nullable();
-            $table->boolean('status')->default(false);
+            $table->enum('status', ['refund_requested', 'refund_approved', 'ordered', 'delivered', 'cancelled'])->default('ordered');
             $table->bigInteger('seller_id')->unsigned();
             $table->integer('shipping_id')->nullable();
             $table->decimal('shipping_price', 8, 4)->nullable();

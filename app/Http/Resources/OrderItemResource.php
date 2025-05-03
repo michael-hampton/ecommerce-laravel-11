@@ -25,6 +25,7 @@ class OrderItemResource extends JsonResource
                 return OrderLogResource::make($item);
             }),
             'product' => ProductResource::make($this->product),
+            'messages' => MessageResource::collection($this->messages)
         ];
     }
 }

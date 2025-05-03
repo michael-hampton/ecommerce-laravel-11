@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
-use App\Models\AttributeValue;
 use App\Models\Category;
-use App\Models\Product;
-use App\Models\ProductAttribute;
-use App\Models\ProductAttributeValue;
-use App\Repositories\BrandRepository;
-use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Interfaces\IProductService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends ApiController
 {
@@ -34,7 +27,7 @@ class ProductController extends ApiController
      * @param Request $request
      * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $products = $this->productRepository->getPaginated(
             $request->integer('limit'),
@@ -52,13 +45,17 @@ class ProductController extends ApiController
 
     /**
      * @param StoreProductRequest $request
-     * @return JsonResponse
+     * @return Response
      */
     public function store(StoreProductRequest $request)
     {
         $result = $this->productService->createProduct($request->all());
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to create Product');
+        }
+
+        return $this->success($result, 'Product created');
     }
 
     /**
@@ -75,24 +72,32 @@ class ProductController extends ApiController
     /**
      * @param UpdateProductRequest $request
      * @param $id
-     * @return JsonResponse
+     * @return Response
      */
     public function update(UpdateProductRequest $request, $id)
     {
         $result = $this->productService->updateProduct($request->except(['_token', '_method', 'attr', 'charge_featured']), $id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to update Product');
+        }
+
+        return $this->success($result, 'Product updated');
     }
 
     /**
      * @param int $id
-     * @return JsonResponse
+     * @return Response
      */
     public function destroy(int $id)
     {
         $result = $this->productService->deleteProduct($id);
 
-        return response()->json($result);
+        if (!$result) {
+            return $this->error('Unable to delete Product');
+        }
+
+        return $this->success($result, 'Product deleted');
     }
 
     public function getSubcategories(Request $request)
