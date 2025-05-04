@@ -18,7 +18,7 @@ class SellerController extends Controller
 
     public function index(int $sellerId)
     {
-        $seller = User::findOrFail($sellerId);
+        $seller = User::with(['reviews', 'reviews.replies'])->findOrFail($sellerId);
 
         $profile = Profile::where('user_id', $sellerId)->first();
 

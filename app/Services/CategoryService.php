@@ -25,32 +25,37 @@ class CategoryService implements ICategoryService
             $data['parent_id'] = 0;
         }
 
-        $image = $data['image'];
-        $filename = time() . '.' . $image->getClientOriginalExtension();
+        if (!empty($data['image'])) {
 
-        $image->storeAs('categories', $filename, 'public');
+            $image = $data['image'];
+            $filename = time() . '.' . $image->getClientOriginalExtension();
 
-        // Thumbnail
-        Helper::generateThumbnailImage($data['image'], $filename, 'categories');
+            $image->storeAs('categories', $filename, 'public');
 
-        $data['image'] = $filename;
+            // Thumbnail
+            Helper::generateThumbnailImage($data['image'], $filename, 'categories');
+
+            $data['image'] = $filename;
+        }
+        
         $category = $this->repository->create($data);
 
-        if(!empty($data['attributes'])) {
+        if (!empty($data['attributes'])) {
             $this->saveAttributes($data['attributes'], $category);
-         }
+        }
 
-         return $category;
+        return $category;
     }
 
-    private function saveAttributes($attributes, Category $category) {
+    private function saveAttributes($attributes, Category $category)
+    {
         $attributeIds = explode(',', $attributes);
         $productAttributes = ProductAttribute::whereIn('id', $attributeIds)->get();
-       
-        foreach( $productAttributes as $productAttribute ) {
+
+        foreach ($productAttributes as $productAttribute) {
             $flight = CategoryAttributes::firstOrCreate(
                 ['category_id' => $category->id, 'attribute_id' => $productAttribute->id],
-                ['category_id' => $category->id,  'attribute_id' => $productAttribute->id]
+                ['category_id' => $category->id, 'attribute_id' => $productAttribute->id]
             );
         }
     }
@@ -80,10 +85,10 @@ class CategoryService implements ICategoryService
             $data['image'] = $filename;
         }
 
-        if(!empty($data['attributes'])) {
+        if (!empty($data['attributes'])) {
             $this->saveAttributes($data['attributes'], $category);
             unset($data['attributes']);
-         }
+        }
 
         return $this->repository->update($id, $data);
     }

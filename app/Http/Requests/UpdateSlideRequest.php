@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Slide;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateSlideRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class UpdateSlideRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::user()->can('update', Slide::class);
     }
 
     /**

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreCategoryRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        return true; //TODO
+        return Auth::user()->can('create', Category::class);
     }
 
     /**
@@ -26,7 +28,7 @@ class StoreCategoryRequest extends FormRequest
         return [
             'name'=>'required|unique:categories,name',
             'slug'=>'required|unique:categories,slug',
-            'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            //'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

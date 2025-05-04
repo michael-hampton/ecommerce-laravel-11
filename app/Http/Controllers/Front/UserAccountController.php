@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Events\IssueReported;
 use App\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApproveOrderRequest;
 use App\Http\Requests\PostCommentRequest;
 use App\Http\Requests\PostReplyRequest;
+use App\Http\Requests\ReportIssueRequest;
 use App\Http\Requests\StoreCustomerAddressRequest;
 use App\Models\Comment;
 use App\Models\Order;
@@ -56,13 +59,13 @@ class UserAccountController extends Controller
         return back()->with('success', 'Order cancelled');
     }
 
-    public function approveOrder(Request $request, int $orderId)
+    public function approveOrder(ApproveOrderRequest $request, int $orderId)
     {
         $result = $this->orderService->approveOrder($orderId, $request->array('values'));
         return response()->json($result);
     }
 
-    public function reportOrder(int $orderItemId, Request $request)
+    public function reportOrder(int $orderItemId, ReportIssueRequest $request)
     {
 
         $reason = trim($request->string('reason'));
@@ -83,6 +86,13 @@ class UserAccountController extends Controller
             'order_item_id' => $orderItem->id,
             'user_id' => auth()->user()->id
         ]);
+
+        event(new IssueReported(auth()->user()->email, [
+            'item' => $orderItem, 
+            'message' => $request->string('message'), 
+            'resolution' => $title, 
+            'customer' => auth()->user()->name
+        ]));
 
         return response()->json($result);
     }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\DeliveryMethod;
 use App\Models\PackageSizeEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UpdateDeliveryMethodRequest extends FormRequest
@@ -13,7 +15,7 @@ class UpdateDeliveryMethodRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->can('update', DeliveryMethod::class);
     }
 
     /**

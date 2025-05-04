@@ -33,7 +33,7 @@ class Helper
     public static function truncateNumber($number, $precision = 2)
     {
         // Zero causes issues, and no need to truncate
-        if (0 == (int)$number) {
+        if (0 == (int) $number) {
             return $number;
         }
         // Are we negative?
@@ -48,10 +48,27 @@ class Helper
 
     public static function generateThumbnailImage($image, $filename, $type)
     {
-        $thumbnailPath = public_path('images/' . $type. '/thumbnails');
+        $thumbnailPath = public_path('images/' . $type . '/thumbnails');
 
         $image = Image::read($image->path())
             ->resize(100, 100)
             ->save($thumbnailPath . '/' . $filename);
+    }
+
+    /**
+     * @param string $email
+     * @return string
+     */
+    public static function obfuscateEmail(string $email): string
+    {
+        $em = explode("@", $email);
+
+        $firstPart = '';
+
+        for ($x = 0; $x <= strlen($em[0]); $x++) {
+            $firstPart .= '*';
+        }
+
+        return $firstPart . '@' . $em[1];
     }
 }

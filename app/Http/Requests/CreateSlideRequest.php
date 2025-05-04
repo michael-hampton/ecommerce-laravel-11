@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Slide;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CreateSlideRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class CreateSlideRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::user()->can('create', Slide::class);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Seller;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReviewReplyRequest;
 use App\Http\Resources\ProductReviewResource;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\SellerReviewResource;
@@ -61,7 +62,7 @@ class ReviewController extends ApiController
         );
     }
 
-    public function createReply(Request $request)
+    public function createReply(ReviewReplyRequest $request)
     {
         $parent = Review::findOrFail($request->integer('reviewId'));
 

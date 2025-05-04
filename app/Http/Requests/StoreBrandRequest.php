@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Brand;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreBrandRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class StoreBrandRequest extends FormRequest
      */
     public function authorize()
     {
-        return true; //TODO
+        return Auth::user()->can('create', Brand::class);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\OrderCreated;
+use App\Events\OrderStatusUpdated;
 use App\Http\Resources\OrderTotals;
 use App\Mail\OrderApproved;
 use App\Mail\OrderConfirmation;
@@ -176,17 +178,8 @@ class OrderService implements IOrderService
             Session::forget('cart');
             Session::forget('coupon');
 
-            $email = $order->customer->email;
 
-
-            Mail::to($email)->send(new OrderConfirmation([
-                'email' => $email,
-                'name' => $order->customer->name,
-                'order_id' => $order->id,
-                'order' => $order,
-                'orderItems' => $order->orderItems,
-                'currency' => config('shop.currency'),
-            ]));
+            event(new OrderCreated($order));
 
             if ($data['mode'] === 'paypal') {
                 (new Paypal())->capture($cartItems, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]);
@@ -198,8 +191,6 @@ class OrderService implements IOrderService
 
             return $order;
         } catch (Exception $ex) {
-            print_r($ex->getMessage());
-            die;
             DB::rollBack();
         }
     }
@@ -264,23 +255,8 @@ class OrderService implements IOrderService
         }
 
         $order = $this->repository->getById($id);
-        $email = $order->customer->email;
 
-        Mail::to($email)->send(new OrderShipped([
-            'email' => $email,
-            'name' => $order->customer->name,
-            'order_id' => $order->id,
-            'order' => $order,
-            'orderItems' => $order->orderItems,
-            'currency' => config('shop.currency'),
-        ]));
-
-        OrderLog::create([
-            'order_id' => $id,
-            'courier_name' => $data['courier_id'],
-            'tracking_number' => $data['tracking_number'],
-            'status_to' => $data['status'],
-        ]);
+        event(new OrderStatusUpdated($order, $order->orderItems, $data));
     }
 
     public function updateOrderLine(array $data, int $id)
@@ -314,23 +290,7 @@ class OrderService implements IOrderService
             Transaction::whereIn('id', $transactions->pluck('id'))->update(['payment_status' => $data['status'] === 'delivered' ? 'approved' : 'refunded']);
         }
 
-        $email = $order->customer->email;
-
-        Mail::to($email)->send(new OrderShipped([
-            'email' => $email,
-            'name' => $order->customer->name,
-            'order_id' => $order->id,
-            'order' => $order,
-            'orderItems' => $order->orderItems->where('id', $id)->all(),
-            'currency' => config('shop.currency'),
-        ]));
-
-        OrderLog::create([
-            'order_item_id' => $id,
-            'courier_name' => $data['courier_id'],
-            'tracking_number' => $data['tracking_number'],
-            'status_to' => $data['status'],
-        ]);
+        event(new OrderStatusUpdated($order, $order->orderItems->where('id', $id)->all(), $data));
 
         return $orderItem;
     }
@@ -366,7 +326,8 @@ class OrderService implements IOrderService
 
                $transaction->update(['payment_status' => 'approved']);
 
-               $this->sendOrderApprovedNotification($order, $items, $sellerId);
+               $user = User::whereId($sellerId)->first();
+               event(new \App\Events\OrderApproved( $order, $user, $items));
 
             }
 
@@ -380,22 +341,6 @@ class OrderService implements IOrderService
         $order->update(['status' => 'complete']);
 
         return true;
-    }
-
-    private function sendOrderApprovedNotification(Order $order, $orderItems, int $sellerId)
-    {
-        $user = User::whereId($sellerId)->first();
-        $email = $user->email;
-
-        Mail::to($email)->send(new OrderApproved([
-            'email' => $email,
-            'name' => $order->customer->name,
-            'order_id' => $order->id,
-            'order' => $order,
-            'orderItems' => $orderItems,
-            'currency' => config('shop.currency'),
-            'totals' => (new OrderTotals())->toArray($order->transaction, $order->orderItems, $sellerId),
-        ]));
     }
 
     public function deleteOrder(array $data)

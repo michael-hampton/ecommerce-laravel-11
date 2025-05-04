@@ -2,18 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Models\AttributeValue;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class StoreAttributeValueRequest extends FormRequest
+class ReportIssueRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::user()->can('create', AttributeValue::class);
+        return true;
     }
 
     /**
@@ -24,8 +22,8 @@ class StoreAttributeValueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:attribute_values,name',
-            'attribute_id' => 'required|integer|exists:product_attributes,id',
+            'message' => 'required|string|max:1000',
+            'reason' => 'required|string|max:100',
         ];
     }
 }

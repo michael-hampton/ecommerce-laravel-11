@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Brand;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class UpdateBrandRequest extends FormRequest
@@ -14,7 +16,7 @@ class UpdateBrandRequest extends FormRequest
      */
     public function authorize()
     {
-        return true; //TODO
+        return Auth::user()->can('update', Brand::class);
     }
 
     /**
