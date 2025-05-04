@@ -31,7 +31,7 @@ class OrderApprovedListener
             'order' => $event->order,
             'orderItems' => $event->orderItems,
             'currency' => config('shop.currency'),
-            'totals' => (new OrderTotals())->toArray($$event->order->transaction, $$event->order->orderItems, $event->user->id),
+            'totals' => (new OrderTotals())->toArray($event->order->transaction, $event->order->orderItems, $event->user->id),
         ]));
     }
 }

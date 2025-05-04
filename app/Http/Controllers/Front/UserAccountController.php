@@ -89,6 +89,7 @@ class UserAccountController extends Controller
 
         event(new IssueReported(auth()->user()->email, [
             'item' => $orderItem, 
+            'currency' => config('shop.currency'),
             'message' => $request->string('message'), 
             'resolution' => $title, 
             'customer' => auth()->user()->name
