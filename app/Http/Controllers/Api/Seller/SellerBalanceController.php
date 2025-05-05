@@ -2,24 +2,16 @@
 
 namespace App\Http\Controllers\Api\Seller;
 
+use App\Actions\Seller\WithdrawFunds;
 use App\Http\Requests\WithdrawBalanceRequest;
 use App\Http\Resources\SellerBalanceResource;
 use App\Http\Resources\SellerWithdrawalResource;
 use App\Models\SellerBalance;
 use App\Models\SellerWithdrawal;
-use App\Models\Transaction;
-use App\Repositories\Interfaces\ISellerRepository;
-use App\Services\Interfaces\ISellerService;
 use Illuminate\Http\JsonResponse;
 
 class SellerBalanceController
 {
-    public function __construct(private ISellerService $sellerService)
-    {
-
-    }
-
-
     public function show()
     {
         $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->get();
@@ -34,9 +26,9 @@ class SellerBalanceController
      * @param WithdrawBalanceRequest $request
      * @return JsonResponse
      */
-    public function withdraw(WithdrawBalanceRequest $request)
+    public function withdraw(WithdrawBalanceRequest $request, WithdrawFunds $withdrawFunds)
     {
-        $result = $this->sellerService->withdrawFunds($request->all());
+        $result = $withdrawFunds->handle($request->all());
 
         return response()->json(SellerBalanceResource::make($result));
     }

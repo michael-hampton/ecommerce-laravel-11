@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\ActivateUser;
+use App\Actions\CreateUser;
+use App\Actions\DeleteUser;
+use App\Actions\UpdateUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\SlideResource;
 use App\Http\Resources\UserResource;
 use App\Repositories\Interfaces\IUserRepository;
-use App\Services\Interfaces\IUserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends ApiController
 {
-    public function __construct(private IUserRepository $userRepository, private IUserService  $userService)
+    public function __construct(private IUserRepository $userRepository)
     {
 
     }
@@ -41,9 +44,9 @@ class UserController extends ApiController
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, CreateUser $createUser)
     {
-        $result = $this->userService->createUser($request->all());
+        $result = $createUser->handle($request->all());
         
         if (!$result) {
             return $this->error('Unable to create User');
@@ -68,9 +71,9 @@ class UserController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id, UpdateUser $updateUser)
     {
-        $result = $this->userService->updateUser($request->except(['_token', '_method']), $id);
+        $result = $updateUser->handle($request->except(['_token', '_method']), $id);
         
         if (!$result) {
             return $this->error('Unable to update User');
@@ -79,9 +82,9 @@ class UserController extends ApiController
         return $this->success($result, 'User updated');
     }
 
-    public function updateActive(Request $request, $id)
+    public function updateActive(Request $request, $id, UpdateUser $updateUser)
     {
-        $result = $this->userService->updateUser(['active' => $request->boolean('active')], $id);
+        $result = $updateUser->handle(['active' => $request->boolean('active')], $id);
         
         if (!$result) {
             return $this->error('Unable to update User');
@@ -94,9 +97,9 @@ class UserController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, DeleteUser $deleteUser)
     {
-        $result = $this->userService->deleteUser($id);
+        $result = $deleteUser->handle($id);
 
         if (!$result) {
             return $this->error('Unable to delete User');
@@ -110,9 +113,9 @@ class UserController extends ApiController
 
     }
 
-    public function toggleActive(int $id)
+    public function toggleActive(int $id, ActivateUser $activateUser)
     {
-        $result = $this->userService->toggleActive($id);
+        $result = $activateUser->handle($id);
         
         if (!$result) {
             return $this->error('Unable to update User');

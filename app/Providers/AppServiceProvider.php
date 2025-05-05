@@ -41,32 +41,6 @@ use App\Repositories\SlideRepository;
 use App\Repositories\Support\QuestionRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
-use App\Services\AddressService;
-use App\Services\AttributeService;
-use App\Services\AttributeValueService;
-use App\Services\BrandService;
-use App\Services\CategoryService;
-use App\Services\CouponService;
-use App\Services\DeliveryMethodService;
-use App\Services\Interfaces\IAddressService;
-use App\Services\Interfaces\IAttributeService;
-use App\Services\Interfaces\IAttributeValueService;
-use App\Services\Interfaces\IBrandService;
-use App\Services\Interfaces\ICategoryService;
-use App\Services\Interfaces\ICouponService;
-use App\Services\Interfaces\IDeliveryMethodService;
-use App\Services\Interfaces\IMessageService;
-use App\Services\Interfaces\IOrderService;
-use App\Services\Interfaces\IProductService;
-use App\Services\Interfaces\ISellerService;
-use App\Services\Interfaces\ISlideService;
-use App\Services\Interfaces\IUserService;
-use App\Services\MessageService;
-use App\Services\OrderService;
-use App\Services\ProductService;
-use App\Services\SellerService;
-use App\Services\SlideService;
-use App\Services\UserService;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -100,25 +74,6 @@ class AppServiceProvider extends ServiceProvider
     ];
 
     /**
-     * @var string[]
-     */
-    private $services = [
-        IDeliveryMethodService::class => DeliveryMethodService::class,
-        IProductService::class => ProductService::class,
-        IOrderService::class => OrderService::class,
-        ICouponService::class => CouponService::class,
-        IBrandService::class => BrandService::class,
-        ICategoryService::class => CategoryService::class,
-        IAddressService::class => AddressService::class,
-        IUserService::class => UserService::class,
-        ISlideService::class => SlideService::class,
-        IAttributeService::class => AttributeService::class,
-        IAttributeValueService::class => AttributeValueService::class,
-        ISellerService::class => SellerService::class,
-        IMessageService::class => MessageService::class,
-    ];
-
-    /**
      * Register any application services.
      *
      * @return void
@@ -128,11 +83,7 @@ class AppServiceProvider extends ServiceProvider
         foreach ($this->repositories as $interface => $repository) {
             $this->app->bind($interface, $repository);
         }
-
-        foreach ($this->services as $interface => $service) {
-            $this->app->bind($interface, $service);
-        }
-
+        
         $this->app->singleton('Image', function ($app) {
             return new Image();
         });

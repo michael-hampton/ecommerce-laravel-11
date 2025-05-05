@@ -2,30 +2,23 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Actions\Coupon\ApplyCoupon;
+use App\Actions\DeliveryMethod\GetAvailiableDeliveryMethods;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplyCouponCodeRequest;
 use App\Models\ProductAttributeValue;
 use App\Services\Cart\Facade\Cart;
-use App\Services\Interfaces\ICouponService;
-use App\Services\Interfaces\IDeliveryMethodService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
 class CartController extends Controller
 {
-    public function __construct(
-        private ICouponService    $couponService,
-        private IDeliveryMethodService $deliveryMethodService
-    )
-    {
 
-    }
-
-    public function index()
+    public function index(GetAvailiableDeliveryMethods $getAvailiableDeliveryMethods)
     {
         $items = Cart::instance('cart')->content();
-        $shippingMethods = $this->deliveryMethodService->getAvailiableMethods($items);
+        $shippingMethods = $getAvailiableDeliveryMethods->handle($items);
         $currency = config('shop.currency');
         $productAttributes = ProductAttributeValue::all();
         return view('front.cart', compact('items', 'currency', 'shippingMethods', 'productAttributes'));
@@ -114,11 +107,11 @@ class CartController extends Controller
 
     }
 
-    public function applyCoupon(ApplyCouponCodeRequest $request)
+    public function applyCoupon(ApplyCouponCodeRequest $request, ApplyCoupon $applyCoupon)
     {
         $couponCode = $request->get('coupon_code');
 
-        if (!$this->couponService->applyCoupon($couponCode)) {
+        if (!$applyCoupon->handle($couponCode)) {
 
             if ($request->ajax()) {
                 return response()->json(['error' => true]);

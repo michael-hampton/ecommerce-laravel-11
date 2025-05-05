@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Coupon\CreateCoupon;
+use App\Actions\Coupon\DeleteCoupon;
+use App\Actions\Coupon\UpdateCoupon;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreCouponRequest;
 use App\Http\Resources\CouponResource;
 use App\Repositories\Interfaces\ICouponRepository;
-use App\Services\Interfaces\ICouponService;
 use Illuminate\Http\Request;
 
 class CouponController extends ApiController
 {
     public function __construct(
         private ICouponRepository $couponRepository,
-        private ICouponService $couponService,
     )
     {
 
@@ -39,9 +40,9 @@ class CouponController extends ApiController
      * @param StoreCouponRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCouponRequest $request)
+    public function store(StoreCouponRequest $request, CreateCoupon $createCoupon)
     {
-        $result = $this->couponService->createCoupon($request->all());
+        $result = $createCoupon->handle($request->all());
 
         if (!$result) {
             return $this->error('Unable to create Coupon');
@@ -67,9 +68,9 @@ class CouponController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, UpdateCoupon $updateCoupon)
     {
-        $result = $this->couponService->updateCoupon($request->except(['_token', '_method']), $id);
+        $result = $updateCoupon->handle($request->except(['_token', '_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Coupon');
@@ -82,9 +83,9 @@ class CouponController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, DeleteCoupon $deleteCoupon)
     {
-        $result = $this->couponService->deleteCoupon($id);
+        $result = $deleteCoupon->handle($id);
 
         if (!$result) {
             return $this->error('Unable to delete Coupon');

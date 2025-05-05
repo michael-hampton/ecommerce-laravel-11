@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Brand\ActivateBrand;
+use App\Actions\Brand\CreateBrand;
+use App\Actions\Brand\DeleteBrand;
+use App\Actions\Brand\UpdateBrand;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreBrandRequest;
@@ -9,14 +13,13 @@ use App\Http\Requests\UpdateBrandRequest;
 use App\Http\Resources\AttributeValueResource;
 use App\Http\Resources\BrandResource;
 use App\Repositories\Interfaces\IBrandRepository;
-use App\Services\Interfaces\IBrandService;
 use Illuminate\Http\Request;
 use Psy\Util\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class BrandController extends ApiController
 {
-    public function __construct(private IBrandService $brandService, private IBrandRepository $brandRepository) {
+    public function __construct(private IBrandRepository $brandRepository) {
 
     }
 
@@ -41,9 +44,9 @@ class BrandController extends ApiController
      * @param StoreBrandRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreBrandRequest $request)
+    public function store(StoreBrandRequest $request, CreateBrand $createBrand)
     {
-        $result = $this->brandService->createBrand($request->all());
+        $result = $createBrand->handle($request->all());
 
         if (!$result) {
             return $this->error('Unable to create Brand');
@@ -68,9 +71,9 @@ class BrandController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBrandRequest $request, $id)
+    public function update(UpdateBrandRequest $request, $id, UpdateBrand $updateBrand)
     {
-        $result = $this->brandService->updateBrand($request->except(['_token', '_method']), $id);
+        $result = $updateBrand->handle($request->except(['_token', '_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Brand');
@@ -83,9 +86,9 @@ class BrandController extends ApiController
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id)
+    public function destroy(int $id, DeleteBrand $deleteBrand)
     {
-        $result = $this->brandService->deleteBrand($id);
+        $result = $deleteBrand->handle($id);
 
         if (!$result) {
             return $this->error('Unable to delete Brand');
@@ -95,9 +98,9 @@ class BrandController extends ApiController
 
     }
 
-    public function toggleActive(int $id)
+    public function toggleActive(int $id, ActivateBrand $activateBrand)
     {
-       $result = $this->brandService->toggleActive($id);
+       $result = $activateBrand->handle($id);
 
        if (!$result) {
         return $this->error('Unable to update Brand');

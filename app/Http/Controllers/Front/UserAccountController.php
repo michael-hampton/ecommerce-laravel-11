@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Actions\Order\ApproveOrder;
+use App\Actions\Message\CreateMessage;
+use App\Actions\Order\UpdateOrder;
 use App\Events\IssueReported;
 use App\Helper;
 use App\Http\Controllers\Controller;
@@ -18,8 +21,6 @@ use App\Models\SellerBalance;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
-use App\Services\Interfaces\IMessageService;
-use App\Services\Interfaces\IOrderService;
 use Illuminate\Http\Request;
 use function auth;
 
@@ -27,9 +28,7 @@ class UserAccountController extends Controller
 {
     public function __construct(
         private IOrderRepository $orderRepository,
-        private IOrderService $orderService,
         private IAddressRepository $addressRepository,
-        private IMessageService $messageService,
     ) {
 
     }
@@ -53,19 +52,19 @@ class UserAccountController extends Controller
         return view('front.user.order-details', compact('order'));
     }
 
-    public function cancelOrder(int $orderId)
+    public function cancelOrder(int $orderId, UpdateOrder $updateOrder)
     {
-        $this->orderService->updateOrder(['status' => 'cancelled'], $orderId);
+        $updateOrder->handle(['status' => 'cancelled'], $orderId);
         return back()->with('success', 'Order cancelled');
     }
 
-    public function approveOrder(ApproveOrderRequest $request, int $orderId)
+    public function approveOrder(ApproveOrderRequest $request, int $orderId, ApproveOrder $approveOrder)
     {
-        $result = $this->orderService->approveOrder($orderId, $request->array('values'));
+        $result = $approveOrder->handle($orderId, $request->array('values'));
         return response()->json($result);
     }
 
-    public function reportOrder(int $orderItemId, ReportIssueRequest $request)
+    public function reportOrder(int $orderItemId, ReportIssueRequest $request, CreateMessage $createMessage)
     {
 
         $reason = trim($request->string('reason'));
@@ -78,7 +77,7 @@ class UserAccountController extends Controller
 
         $orderItem = $orderItem->first();
 
-        $result = $this->messageService->createMessage([
+        $result = $createMessage->handle([
             'title' => $title,
             'images' => $request->file('images'),
             'comment' => $request->string('message'),
@@ -171,9 +170,9 @@ class UserAccountController extends Controller
         return view('front.user.account-ask-a-question', compact('posts'));
     }
 
-    public function createQuestion(PostCommentRequest $request)
+    public function createQuestion(PostCommentRequest $request, CreateMessage $createMessage)
     {
-        $result = $this->messageService->createMessage($request->all());
+        $result = $createMessage->handle($request->all());
 
         return back()->with('success', 'Question posted');
     }

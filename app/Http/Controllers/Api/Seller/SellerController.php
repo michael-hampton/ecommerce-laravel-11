@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Api\Seller;
 
+use App\Actions\Seller\CreateSeller;
+use App\Actions\Seller\DeleteSeller;
+use App\Actions\Seller\UpdateSeller;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\UpdateSellerActive;
 use App\Http\Resources\SellerResource;
 use App\Models\Profile;
 use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\IUserRepository;
-use App\Services\Interfaces\ISellerService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SellerController extends ApiController
 {
     public function __construct(
         private ISellerRepository $sellerRepository,
         private IUserRepository $userRepository,
-        private ISellerService $sellerService
     )
     {
 
@@ -40,9 +43,9 @@ class SellerController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, CreateSeller $createSeller)
     {
-        $result = $this->sellerService->createSeller($request->all());
+        $result = $createSeller->handle($request->all());
 
         if (!$result) {
             return $this->error('Unable to create Seller');
@@ -54,7 +57,7 @@ class SellerController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $result = $this->sellerRepository->getCollectionByColumn(auth('sanctum')->user()->id, 'user_id', 1)->first();
 
@@ -68,9 +71,9 @@ class SellerController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id, UpdateSeller $updateSeller): Response
     {
-        $result = $this->sellerService->updateSeller($request->all(), $id);
+        $result = $updateSeller->handle($request->all(), $id);
 
         if (!$result) {
             return $this->error('Unable to update Seller');
@@ -83,7 +86,7 @@ class SellerController extends ApiController
      * @param UpdateSellerActive $request
      * @return \Illuminate\Http\Response
      */
-    public function toggleActive(UpdateSellerActive $request) {
+    public function toggleActive(UpdateSellerActive $request): Response {
         $result = Profile::whereId($request->integer('sellerId'))->update(['active' => $request->boolean('active')]);
 
         if (!$result) {
@@ -96,9 +99,9 @@ class SellerController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, DeleteSeller $deleteSeller): Response
     {
-        $result = $this->sellerService->deleteSeller($id);
+        $result = $deleteSeller->handle($id);
 
         if (!$result) {
             return $this->error('Unable to create Seller');

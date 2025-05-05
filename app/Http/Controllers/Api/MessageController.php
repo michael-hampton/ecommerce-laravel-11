@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Message\CreateComment;
+use App\Actions\Message\CreateMessage;
+use App\Actions\Message\DeleteMessage;
+use App\Actions\Message\UpdateMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostReplyRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Resources\MessageResource;
 use App\Repositories\Interfaces\IMessageRepository;
-use App\Services\Interfaces\IMessageService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class MessageController extends ApiController
 {
-    public function __construct(private IMessageRepository $messageRepository, private IMessageService $messageService)
+    public function __construct(private IMessageRepository $messageRepository)
     {
 
     }
@@ -21,7 +26,7 @@ class MessageController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $request): JsonResponse
     {
         $messages = $this->messageRepository->getPaginated(
             $request->integer('limit'),
@@ -36,11 +41,11 @@ class MessageController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostReplyRequest $request)
+    public function store(PostReplyRequest $request, CreateComment $createComment): Response
     {
         Log::info($request->hasFile('images'));
 
-        $result = $this->messageService->createComment([
+        $result = $createComment->handle([
             'user_id' => auth('sanctum')->user()->id,
             'post_id' => $request->integer('postId'),
             'message' => $request->string('message'),
@@ -57,7 +62,7 @@ class MessageController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $result = $this->messageRepository->getById($id);
 
@@ -67,9 +72,9 @@ class MessageController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id, UpdateMessage $updateMessage): Response
     {
-        $result = $this->messageRepository->update($id, $request->all());
+        $result = $updateMessage->handle($request->all(), $id, );
 
         if (!$result) {
             return $this->error('Unable to update Message');
@@ -81,9 +86,9 @@ class MessageController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, DeleteMessage $deleteMessage): Response
     {
-        $result = $this->messageService->deleteMessage($id);
+        $result = $deleteMessage->handle($id);
         
         if (!$result) {
             return $this->error('Unable to delete Message');

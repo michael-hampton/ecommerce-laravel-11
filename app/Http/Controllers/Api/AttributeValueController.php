@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\AttributeValue\CreateAttributeValue;
+use App\Actions\AttributeValue\DeleteAttributeValue;
+use App\Actions\AttributeValue\UpdateAttributeValue;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreAttributeValueRequest;
 use App\Http\Requests\UpdateAttributeValueRequest;
 use App\Http\Resources\AttributeValueResource;
-use App\Repositories\Interfaces\IAttributeRepository;
 use App\Repositories\Interfaces\IAttributeValueRepository;
-use App\Services\Interfaces\IAttributeValueService;
 use Illuminate\Http\Request;
 use Psy\Util\Str;
 use Yajra\DataTables\Facades\DataTables;
@@ -17,7 +18,6 @@ use Yajra\DataTables\Facades\DataTables;
 class AttributeValueController extends ApiController
 {
     public function __construct(
-        private IAttributeValueService $attributeValueService,
         private IAttributeValueRepository $attributeValueRepository
     ) {
 
@@ -43,9 +43,9 @@ class AttributeValueController extends ApiController
      * @param StoreAttributeValueRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAttributeValueRequest $request)
+    public function store(StoreAttributeValueRequest $request, CreateAttributeValue $createAttributeValue)
     {
-        $result = $this->attributeValueService->createAttributeValue($request->except(['_token', '_method']));
+        $result = $createAttributeValue->handle($request->except(['_token', '_method']));
 
         if (!$result) {
             return $this->error('Unable to create Attribute Value');
@@ -70,9 +70,9 @@ class AttributeValueController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAttributeValueRequest $request, $id)
+    public function update(UpdateAttributeValueRequest $request, $id, UpdateAttributeValue $updateAttributeValue)
     {
-        $result = $this->attributeValueService->updateAttributeValue($request->except(['_token', '_method']), $id);
+        $result = $updateAttributeValue->handle($request->except(['_token', '_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Attribute Value');
@@ -85,9 +85,9 @@ class AttributeValueController extends ApiController
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id)
+    public function destroy(int $id, DeleteAttributeValue $deleteAttributeValue)
     {
-        $result = $this->attributeValueService->deleteAttributeValue($id);
+        $result = $deleteAttributeValue->handle($id);
 
         if (!$result) {
             return $this->error('Unable to create Attribute Value');

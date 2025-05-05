@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+
+use App\Actions\Attribute\CreateAttribute;
+use App\Actions\Attribute\DeleteAttribute;
+use App\Actions\Attribute\UpdateAttribute;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreAttributeRequest;
 use App\Http\Requests\UpdateAttributeRequest;
 use App\Http\Resources\AttributeResource;
 use App\Repositories\Interfaces\IAttributeRepository;
-use App\Services\Interfaces\IAttributeService;
 use Illuminate\Http\Request;
-use Psy\Util\Str;
-use Yajra\DataTables\Facades\DataTables;
 
 class AttributeController extends ApiController
 {
-    public function __construct(private IAttributeService $attributeService, private IAttributeRepository $attributeRepository)
+    public function __construct(private IAttributeRepository $attributeRepository)
     {
 
     }
@@ -40,9 +41,9 @@ class AttributeController extends ApiController
      * @param StoreAttributeRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAttributeRequest $request)
+    public function store(StoreAttributeRequest $request, CreateAttribute $createAttribute)
     {
-        $result = $this->attributeService->createAttribute($request->all());
+        $result = $createAttribute->handle($request->all());
 
         if (!$result) {
             return $this->error('Unable to create Attribute');
@@ -68,9 +69,9 @@ class AttributeController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAttributeRequest $request, $id)
+    public function update(UpdateAttributeRequest $request, $id, UpdateAttribute $updateAttribute)
     {
-        $result = $this->attributeService->updateAttribute($request->except(['_token', '_method']), $id);
+        $result = $updateAttribute->handle($request->except(['_token', '_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Attribute');
@@ -83,9 +84,9 @@ class AttributeController extends ApiController
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id)
+    public function destroy(int $id, DeleteAttribute $deleteAttribute)
     {
-        $result = $this->attributeService->deleteAttribute($id);
+        $result = $deleteAttribute->handle($id);
 
         if (!$result) {
             return $this->error('Unable to delete Attribute');

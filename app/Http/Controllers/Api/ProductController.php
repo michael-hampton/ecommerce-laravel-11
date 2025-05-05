@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Product\ActivateProduct;
+use App\Actions\Product\CreateProduct;
+use App\Actions\Product\DeleteProduct;
+use App\Actions\Product\UpdateProduct;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Repositories\Interfaces\IProductRepository;
-use App\Services\Interfaces\IProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,7 +19,6 @@ use Illuminate\Http\Response;
 class ProductController extends ApiController
 {
     public function __construct(
-        private IProductService $productService,
         private IProductRepository $productRepository
     ) {
 
@@ -47,9 +49,9 @@ class ProductController extends ApiController
      * @param StoreProductRequest $request
      * @return Response
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request, CreateProduct $createProduct)
     {
-        $result = $this->productService->createProduct($request->all());
+        $result = $createProduct->handle($request->all());
 
         if (!$result) {
             return $this->error('Unable to create Product');
@@ -74,9 +76,9 @@ class ProductController extends ApiController
      * @param $id
      * @return Response
      */
-    public function update(UpdateProductRequest $request, $id)
+    public function update(UpdateProductRequest $request, $id, UpdateProduct $updateProduct)
     {
-        $result = $this->productService->updateProduct($request->except(['_token', '_method', 'attr', 'charge_featured']), $id);
+        $result = $updateProduct->handle($request->except(['_token', '_method', 'attr', 'charge_featured']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Product');
@@ -89,9 +91,9 @@ class ProductController extends ApiController
      * @param int $id
      * @return Response
      */
-    public function destroy(int $id)
+    public function destroy(int $id, DeleteProduct $deleteProduct)
     {
-        $result = $this->productService->deleteProduct($id);
+        $result = $deleteProduct->handle($id);
 
         if (!$result) {
             return $this->error('Unable to delete Product');
@@ -114,9 +116,9 @@ class ProductController extends ApiController
         return response()->json($products);
     }
 
-    public function toggleActive(int $id)
+    public function toggleActive(int $id, ActivateProduct $activateProduct)
     {
-        $result = $this->productService->toggleActive($id);
+        $result = $activateProduct->handle($id);
 
         if (!$result) {
             return $this->error('Unable to update Category');

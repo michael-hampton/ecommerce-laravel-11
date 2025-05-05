@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Actions\Address\CreateAddress;
+use App\Actions\Order\CreateOrder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateOrderRequest;
 use App\Models\Country;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
-use App\Services\Cart\Cart;
-use App\Services\Interfaces\IAddressService;
-use App\Services\Interfaces\IOrderService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 
 class CheckoutController extends Controller
 {
     public function __construct(
         private IAddressRepository $addressRepository,
-        private IAddressService    $addressService,
-        private IOrderService      $orderService,
         private IOrderRepository   $orderRepository,
     )
     {
@@ -45,7 +44,7 @@ class CheckoutController extends Controller
         ]);
     }
 
-    public function placeOrder(CreateOrderRequest $request)
+    public function placeOrder(CreateOrderRequest $request, CreateAddress $createAddress, CreateOrder $createOrder): RedirectResponse|View
     {
         $customerId = auth()->user()->id;
         $addressId = $request->integer('address');
@@ -56,13 +55,13 @@ class CheckoutController extends Controller
         $adrressData['customer_id'] = $customerId;
 
         if ($request->has('address1')) {
-            $address = $this->addressService->createAddress($adrressData);
+            $address = $createAddress->handle($adrressData);
         }
 
         $adrressData['address_id'] = $address->id;
 
         if ($request->input('mode') !== 'card') {
-            $order = $this->orderService->createOrder($adrressData);
+            $order = $createOrder->handle($adrressData);
 
             Session::put('order_id', $order->id);
 
@@ -75,14 +74,14 @@ class CheckoutController extends Controller
         return view('front.checkout-card', ['addressId' => $addressId, 'addresses' => $addresses, 'currency' => config('shop.currency')]);
     }
 
-    public function placeCardOrder(CreateOrderRequest $request)
+    public function placeCardOrder(CreateOrderRequest $request, CreateOrder $createOrder): RedirectResponse
     {
         $customerId = auth()->user()->id;
         $addressData = $request->except(['_token']);
         $addressData['customer_id'] = $customerId;
         $addressData['address_id'] = $request->integer('address');
 
-        $order = $this->orderService->createOrder($addressData);
+        $order = $createOrder->handle($addressData);
 
         Session::put('order_id', $order->id);
 
@@ -92,7 +91,7 @@ class CheckoutController extends Controller
         ;
     }
 
-    public function orderConfirmation()
+    public function orderConfirmation(): View
     {
         $order = $this->orderRepository->getById(Session::get('order_id'));
         Session::forget('order_id');

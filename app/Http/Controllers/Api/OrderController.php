@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Order\UpdateOrder;
+use App\Actions\Order\UpdateOrderLine;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Repositories\Interfaces\IOrderRepository;
-use App\Services\Interfaces\IOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class OrderController extends ApiController
 {
-    public function __construct(private IOrderRepository $orderRepository, private IOrderService $orderService)
+    public function __construct(private IOrderRepository $orderRepository)
     {
     }
 
@@ -63,9 +64,9 @@ class OrderController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOrderStatusRequest $request, $id)
+    public function update(UpdateOrderStatusRequest $request, $id, UpdateOrder $updateOrder)
     {
-        $result = $this->orderService->updateOrder($request->except(['_token', '_method']), $id);
+        $result = $updateOrder->handle($request->except(['_token', '_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Order');
@@ -79,9 +80,9 @@ class OrderController extends ApiController
      * @param $id
      * @return \Illuminate\Http\Response
      */
-    public function updateItemDetails(UpdateOrderStatusRequest $request, $id)
+    public function updateItemDetails(UpdateOrderStatusRequest $request, $id, UpdateOrderLine $updateOrderLine)
     {
-        $result = $this->orderService->updateOrderLine($request->except(['_token', '_method']), $id);
+        $result = $updateOrderLine->handle($request->except(['_token', '_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Order');

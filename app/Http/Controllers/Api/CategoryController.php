@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Brand\UpdateBrand;
+use App\Actions\Category\ActivateCategory;
+use App\Actions\Category\CreateCategory;
+use App\Actions\Category\DeleteCategory;
+use App\Actions\Category\UpdateCategory;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Repositories\Interfaces\ICategoryRepository;
-use App\Services\Interfaces\ICategoryService;
 
 class CategoryController extends ApiController
 {
-    public function __construct(private ICategoryService $categoryService, private ICategoryRepository $categoryRepository) {
+    public function __construct(private ICategoryRepository $categoryRepository)
+    {
 
     }
 
@@ -37,9 +42,9 @@ class CategoryController extends ApiController
      * @param StoreCategoryRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreCategoryRequest $request, CreateCategory $createCategory)
     {
-        $result = $this->categoryService->createCategory($request->all());
+        $result = $createCategory->handle($request->all());
 
         if (!$result) {
             return $this->error('Unable to create Category');
@@ -65,9 +70,9 @@ class CategoryController extends ApiController
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryRequest $request, int $id)
+    public function update(UpdateCategoryRequest $request, int $id, UpdateCategory $updateCategory)
     {
-        $result = $this->categoryService->updateCategory($request->except(['_token', '_method']), $id);
+        $result = $updateCategory->handle($request->except(['_token', '_method']), $id);
 
         if (!$result) {
             return $this->error('Unable to update Category');
@@ -80,9 +85,9 @@ class CategoryController extends ApiController
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id)
+    public function destroy(int $id, DeleteCategory $deleteCategory)
     {
-        $result = $this->categoryService->deleteCategory($id);
+        $result = $deleteCategory->handle($id);
 
         if (!$result) {
             return $this->error('Unable to delete Category');
@@ -91,14 +96,14 @@ class CategoryController extends ApiController
         return $this->success($result, 'Category deleted');
     }
 
-    public function toggleActive(int $id)
+    public function toggleActive(int $id, ActivateCategory $activateCategory)
     {
-       $result = $this->categoryService->toggleActive($id);
+        $result = $activateCategory->handle($id);
 
-       if (!$result) {
-        return $this->error('Unable to update Category');
-    }
+        if (!$result) {
+            return $this->error('Unable to update Category');
+        }
 
-    return $this->success($result, 'Category updated');
+        return $this->success($result, 'Category updated');
     }
 }
