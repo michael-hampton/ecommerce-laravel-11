@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\FaqCategory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class FaqCategories extends Seeder
@@ -32,8 +33,8 @@ class FaqCategories extends Seeder
             [
                 'name' => 'Delivery',
                 'slug' => 'delivery',
-                'icon'=> 'fa-truck',
-            ]
+                'icon' => 'fa-truck',
+            ],
         ];
 
         foreach ($categories as $category) {

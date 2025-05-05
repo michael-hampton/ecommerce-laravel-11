@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\Brand;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class UpdateBrandRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class UpdateBrandRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:brands,name,'.request()->get('id'),
-            'slug' => 'required|string|max:255|unique:brands,slug,' . request()->get('id'),
+            'slug' => 'required|string|max:255|unique:brands,slug,'.request()->get('id'),
         ];
     }
 }

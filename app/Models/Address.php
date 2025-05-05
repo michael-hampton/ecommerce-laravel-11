@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +22,7 @@ class Address extends Model
         'country_id',
         'is_default',
         'customer_id',
-        'locality'
+        'locality',
     ];
 
     public function customer()

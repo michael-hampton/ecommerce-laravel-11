@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Http\Controllers\Controller;
@@ -16,7 +18,7 @@ class SellerAccountController extends Controller
             array_merge($request->all(), ['seller_id' => auth('sanctum')->user()->id, 'type' => 'bank'])
         );
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to save bank details');
         }
 
@@ -30,21 +32,23 @@ class SellerAccountController extends Controller
             array_merge($request->all(), ['seller_id' => auth('sanctum')->user()->id, 'type' => 'card'])
         );
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to save card');
         }
 
         return $this->success($result, 'card updated');
     }
 
-    public function getSellerBankAccountDetails() {
+    public function getSellerBankAccountDetails()
+    {
         return response()->json(
             SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
                 ->where('type', 'bank')
                 ->first());
     }
 
-    public function getSellerCardAccountDetails() {
+    public function getSellerCardAccountDetails()
+    {
         return response()->json(
             SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
                 ->where('type', 'card')

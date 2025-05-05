@@ -1,10 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Interfaces;
 
-use App\Repositories\BaseRepository;
-
-interface ISellerRepository extends IBaseRepository
-{
-
-}
+interface ISellerRepository extends IBaseRepository {}

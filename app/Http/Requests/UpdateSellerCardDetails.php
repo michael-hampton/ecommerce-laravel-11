@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,8 +28,8 @@ class UpdateSellerCardDetails extends FormRequest
             'card_number' => 'required',
             'card_expiry_date' => 'required',
             'card_cvv' => 'required',
-            //'card_sort_code' => 'required',
-            //'card_type' => 'required',
+            // 'card_sort_code' => 'required',
+            // 'card_type' => 'required',
         ];
     }
 }

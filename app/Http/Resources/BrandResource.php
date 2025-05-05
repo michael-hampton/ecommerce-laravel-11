@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class BrandResource extends JsonResource
 {
@@ -20,7 +21,7 @@ class BrandResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'active' => $this->active,
-            'image' => asset('images/brands') . '/' . $this->image,
+            'image' => asset('images/brands').'/'.$this->image,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
             'description' => $this->description,

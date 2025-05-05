@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Actions\Product;
+declare(strict_types=1);
 
+namespace App\Actions\Product;
 
 use App\Repositories\Interfaces\IProductRepository;
 
 class DeleteProduct
 {
-    public function __construct(private IProductRepository $repository)
-    {
-
-    }
+    public function __construct(private IProductRepository $repository) {}
 
     public function handle(int $id)
     {

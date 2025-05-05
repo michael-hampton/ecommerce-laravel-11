@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +20,6 @@ class SellerBalance extends Model
         'transaction_id',
         'order_id',
         'type',
-        'product_id'
+        'product_id',
     ];
 }

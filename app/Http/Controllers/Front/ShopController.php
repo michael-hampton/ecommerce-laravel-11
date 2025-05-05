@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
@@ -11,11 +13,11 @@ use App\Services\Cart\Facade\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
-use function Termwind\render;
 
 class ShopController extends Controller
 {
     private $showOptions = [12, 24, 48, 102];
+
     private $sortOptions = [
         ['id' => 1, 'name' => 'Featured', 'column' => 'featured', 'direction' => 'desc'],
         ['id' => 2, 'name' => 'Best selling', 'column' => 'featured', 'direction' => 'desc'],
@@ -75,7 +77,7 @@ class ShopController extends Controller
                 'categoryIds' => $categoryIds,
                 'minPrice' => $minPrice,
                 'maxPrice' => $maxPrice,
-                'attributeValueIds' => $attributeValueIds
+                'attributeValueIds' => $attributeValueIds,
             ]
         );
 
@@ -89,12 +91,11 @@ class ShopController extends Controller
         $categoryAttributes = [];
         $categoryAttributeValues = [];
 
-        if (!empty($category)) {
+        if (! empty($category)) {
             $categoryAttributes = CategoryAttributes::with('attribute')->where('category_id', $category->id)->get();
 
             $categoryAttributeValues = $this->categoryRepository->getCategoryAttributeValues($category);
         }
-
 
         $viewData = [
             'products' => $products,
@@ -113,13 +114,13 @@ class ShopController extends Controller
             'orderBy' => $orderBy,
             'showOptions' => $this->showOptions,
             'sortOptions' => $this->sortOptions,
-            'currency' => config('shop.currency')
+            'currency' => config('shop.currency'),
         ];
 
         if ($request->ajax()) {
             return response()->json([
                 'list' => View::make('front.partials.product-search', $viewData)->render(),
-                'breadcrumbs' => View::make('front.partials.shop-topbar', $viewData)->render()
+                'breadcrumbs' => View::make('front.partials.shop-topbar', $viewData)->render(),
             ]);
         }
 
@@ -127,39 +128,39 @@ class ShopController extends Controller
     }
 
     //    public function refreshShopBreadcrumbs(Request $request)
-//    {
-//        $brandIds = $request->get('brandId') ?? '';
-//        $categoryIds = $request->get('categoryId') ?? '';
-//        $showCategory = count(array_filter(explode(',', $categoryIds))) == 1;
-//        $showBrand = count(array_filter(explode(',', $brandIds))) == 1 && $showCategory === false;
-//
-//        $brands = $this->brandRepository->getAll(null, 'name', 'asc');
-//        $brandIds = $request->get('brandId') ?? '';
-//        $brand = $showBrand  ? $brands->where('id', (int)$brandIds)->first() : null;
-//
-//        $categories = $this->categoryRepository->getAll(null, 'name', 'asc');
-//        $categoryIds = $request->get('categoryId') ?? '';
-//        $category = $showCategory ? $categories->where('id', (int)$categoryIds)->first() : null;
-//
-//        $size = (int)$request->get('size', 12) ?? 12;
-//        $orderBy = $request->get('orderBy') ?? -1;
-//
-//        $viewData = [
-//            'category' => $category,
-//            'brand' => $brand,
-//            'brands' => $brands,
-//            'categories' => $categories,
-//            'brandId' => $brandIds,
-//            'categoryId' => $categoryIds,
-//            'size' => $size,
-//            'orderBy' => $orderBy,
-//            'showOptions' => $this->showOptions,
-//            'sortOptions' => $this->sortOptions,
-//            'currency' => config('shop.currency')
-//        ];
-//
-//        return view('front.partials.shop-topbar', $viewData);
-//    }
+    //    {
+    //        $brandIds = $request->get('brandId') ?? '';
+    //        $categoryIds = $request->get('categoryId') ?? '';
+    //        $showCategory = count(array_filter(explode(',', $categoryIds))) == 1;
+    //        $showBrand = count(array_filter(explode(',', $brandIds))) == 1 && $showCategory === false;
+    //
+    //        $brands = $this->brandRepository->getAll(null, 'name', 'asc');
+    //        $brandIds = $request->get('brandId') ?? '';
+    //        $brand = $showBrand  ? $brands->where('id', (int)$brandIds)->first() : null;
+    //
+    //        $categories = $this->categoryRepository->getAll(null, 'name', 'asc');
+    //        $categoryIds = $request->get('categoryId') ?? '';
+    //        $category = $showCategory ? $categories->where('id', (int)$categoryIds)->first() : null;
+    //
+    //        $size = (int)$request->get('size', 12) ?? 12;
+    //        $orderBy = $request->get('orderBy') ?? -1;
+    //
+    //        $viewData = [
+    //            'category' => $category,
+    //            'brand' => $brand,
+    //            'brands' => $brands,
+    //            'categories' => $categories,
+    //            'brandId' => $brandIds,
+    //            'categoryId' => $categoryIds,
+    //            'size' => $size,
+    //            'orderBy' => $orderBy,
+    //            'showOptions' => $this->showOptions,
+    //            'sortOptions' => $this->sortOptions,
+    //            'currency' => config('shop.currency')
+    //        ];
+    //
+    //        return view('front.partials.shop-topbar', $viewData);
+    //    }
 
     public function details(string $slug)
     {

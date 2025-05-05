@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,7 +28,7 @@ class PostCommentRequest extends FormRequest
         return [
             'title' => 'required|min:3|max:100|string',
             'comment' => 'required|min:3|max:300|string',
-            'sellerId'=> 'sometimes|integer|exists:users,id'
+            'sellerId' => 'sometimes|integer|exists:users,id',
         ];
     }
 }

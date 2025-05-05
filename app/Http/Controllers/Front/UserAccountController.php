@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
-use App\Actions\Order\ApproveOrder;
 use App\Actions\Message\CreateMessage;
+use App\Actions\Order\ApproveOrder;
 use App\Actions\Order\UpdateOrder;
 use App\Events\IssueReported;
-use App\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApproveOrderRequest;
 use App\Http\Requests\PostCommentRequest;
@@ -14,14 +15,12 @@ use App\Http\Requests\PostReplyRequest;
 use App\Http\Requests\ReportIssueRequest;
 use App\Http\Requests\StoreCustomerAddressRequest;
 use App\Models\Comment;
-use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Post;
-use App\Models\SellerBalance;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
-use Illuminate\Http\Request;
+
 use function auth;
 
 class UserAccountController extends Controller
@@ -29,9 +28,7 @@ class UserAccountController extends Controller
     public function __construct(
         private IOrderRepository $orderRepository,
         private IAddressRepository $addressRepository,
-    ) {
-
-    }
+    ) {}
 
     public function index()
     {
@@ -55,12 +52,14 @@ class UserAccountController extends Controller
     public function cancelOrder(int $orderId, UpdateOrder $updateOrder)
     {
         $updateOrder->handle(['status' => 'cancelled'], $orderId);
+
         return back()->with('success', 'Order cancelled');
     }
 
     public function approveOrder(ApproveOrderRequest $request, int $orderId, ApproveOrder $approveOrder)
     {
         $result = $approveOrder->handle($orderId, $request->array('values'));
+
         return response()->json($result);
     }
 
@@ -70,7 +69,7 @@ class UserAccountController extends Controller
         $reason = trim($request->string('reason'));
         $orderItem = OrderItem::whereId($orderItemId);
         $title = $reason === 'returnRefund' ? 'Refund Requested from buyer. Items should be returned' : 'Refund Requested from buyer. They do not wish to return the items';
-       
+
         if ($reason === 'returnRefund' || $reason === 'refundNoReturn') {
             $orderItem->update(['status' => 'refund_requested']);
         }
@@ -83,15 +82,15 @@ class UserAccountController extends Controller
             'comment' => $request->string('message'),
             'sellerId' => $orderItem->seller_id,
             'order_item_id' => $orderItem->id,
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
         ]);
 
         event(new IssueReported(auth()->user()->email, [
-            'item' => $orderItem, 
+            'item' => $orderItem,
             'currency' => config('shop.currency'),
-            'message' => $request->string('message'), 
-            'resolution' => $title, 
-            'customer' => auth()->user()->name
+            'message' => $request->string('message'),
+            'resolution' => $title,
+            'customer' => auth()->user()->name,
         ]));
 
         return response()->json($result);
@@ -120,7 +119,7 @@ class UserAccountController extends Controller
             'zip' => $request->get('zip'),
             'phone' => $request->get('phone'),
             'state' => $request->get('state'),
-            'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
+            'is_default' => ! empty($request->get('isdefault')) ? 1 : 0,
             'country' => $request->get('country') ?? 'United Kingdom',
         ]);
 
@@ -130,6 +129,7 @@ class UserAccountController extends Controller
     public function editAddress(int $addressId)
     {
         $address = $this->addressRepository->getById($addressId);
+
         return view('front.user.account-address-edit', compact('address'));
     }
 
@@ -144,7 +144,7 @@ class UserAccountController extends Controller
             'zip' => $request->get('zip'),
             'phone' => $request->get('phone'),
             'state' => $request->get('state'),
-            'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
+            'is_default' => ! empty($request->get('isdefault')) ? 1 : 0,
             'country' => $request->get('country') ?? 'United Kingdom',
         ]);
 
@@ -154,12 +154,14 @@ class UserAccountController extends Controller
     public function wishlist()
     {
         $wishlistItems = Cart::instance('wishlist')->getStoredItems();
+
         return view('front.user.account-wishlist', compact('wishlistItems'));
     }
 
     public function reviews()
     {
         $reviews = auth()->user()->reviews()->get();
+
         return view('front.user.account-review', compact('reviews'));
     }
 
@@ -180,6 +182,7 @@ class UserAccountController extends Controller
     public function askQuestionDetails(int $id)
     {
         $post = Post::whereId($id)->first();
+
         return view('front.user.account-ask-a-question-details', compact('post'));
     }
 
@@ -188,7 +191,7 @@ class UserAccountController extends Controller
         Comment::create([
             'user_id' => auth()->id(),
             'post_id' => $request->input('postId'),
-            'message' => $request->input('message')
+            'message' => $request->input('message'),
         ]);
 
         return back()->with('success', 'Post reply successfully');

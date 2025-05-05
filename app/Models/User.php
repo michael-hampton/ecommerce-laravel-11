@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -28,7 +30,7 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         'mobile',
         'image',
         'utype',
-        'active'
+        'active',
     ];
 
     /**
@@ -48,7 +50,7 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'active' => 'boolean'
+        'active' => 'boolean',
     ];
 
     public function reviews(): MorphMany
@@ -56,11 +58,12 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         return $this->morphMany(Review::class, 'commentable');
     }
 
-    public function products(): HasMany {
+    public function products(): HasMany
+    {
         return $this->hasMany(Product::class, 'seller_id');
     }
 
-    public function defaultAddress(): Address|null
+    public function defaultAddress(): ?Address
     {
         return $this->hasOne(Address::class, 'customer_id', 'id')->first();
     }

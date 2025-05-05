@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +22,7 @@ return new class extends Migration
             $table->bigInteger('product_id')->unsigned();
             $table->date('approved_date')->nullable();
             $table->decimal('price', 8, 2);
-            $table->decimal('discount',10,4)->nullable();
+            $table->decimal('discount', 10, 4)->nullable();
             $table->integer('quantity');
             $table->longText('options')->nullable();
             $table->enum('status', ['refund_requested', 'refund_approved', 'ordered', 'delivered', 'cancelled'])->default('ordered');

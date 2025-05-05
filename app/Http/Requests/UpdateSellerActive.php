@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,7 +25,7 @@ class UpdateSellerActive extends FormRequest
     {
         return [
             'active' => 'required|boolean',
-            'sellerId' => 'required|exists:profiles,id'
+            'sellerId' => 'required|exists:profiles,id',
         ];
     }
 }

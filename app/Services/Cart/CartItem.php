@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Cart;
 
 use App\Models\Address;
@@ -17,47 +19,54 @@ class CartItem implements Arrayable, Jsonable
      * @var string
      */
     public $rowId;
+
     /**
      * The ID of the cart item.
      *
      * @var int|string
      */
     public $id;
+
     /**
      * The quantity for this cart item.
      *
      * @var int|float
      */
     public $qty;
+
     /**
      * The name of the cart item.
      *
      * @var string
      */
     public $name;
+
     /**
      * The price without TAX of the cart item.
      *
      * @var float
      */
     public $price;
+
     /**
      * The options for this cart item.
      *
      * @var array
      */
     public $options;
+
     /**
      * The address id of the user placing the order used to get the country for the delivery method
+     *
      * @var int
      */
     private $addressId = 0;
 
     /**
      * The selected delivery method
-     * @var DeliveryMethod
      */
     private DeliveryMethod $deliveryMethod;
+
     /**
      * The FQN of the associated model.
      *
@@ -85,17 +94,16 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Is item saved for later.
      *
-     * @var boolean
+     * @var bool
      */
     private $isSaved = false;
 
     /**
      * CartItem constructor.
      *
-     * @param int|string $id
-     * @param string $name
-     * @param float $price
-     * @param array $options
+     * @param  int|string  $id
+     * @param  string  $name
+     * @param  float  $price
      */
     public function __construct($id, $name, $price, array $options = [])
     {
@@ -105,7 +113,7 @@ class CartItem implements Arrayable, Jsonable
         if (empty($name)) {
             throw new InvalidArgumentException('Please supply a valid name.');
         }
-        if (strlen($price) < 0 || !is_numeric($price)) {
+        if (strlen($price) < 0 || ! is_numeric($price)) {
             throw new InvalidArgumentException('Please supply a valid price.');
         }
 
@@ -119,21 +127,19 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Generate a unique id for the cart item.
      *
-     * @param string $id
-     * @param array $options
+     * @param  string  $id
      * @return string
      */
     protected function generateRowId($id, array $options)
     {
         ksort($options);
 
-        return md5($id . serialize($options));
+        return md5($id.serialize($options));
     }
 
     /**
      * Create a new instance from a Buyable.
-     * @param Buyable $item
-     * @param array $options
+     *
      * @return self
      */
     public static function fromBuyable(Buyable $item, array $options = [])
@@ -144,7 +150,6 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Create a new instance from the given array.
      *
-     * @param array $attributes
      * @return \Surfsidemedia\Shoppingcart\CartItem
      */
     public static function fromArray(array $attributes)
@@ -157,10 +162,6 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Create a new instance from the given attributes.
      *
-     * @param $id
-     * @param $name
-     * @param $price
-     * @param array $options
      * @return self
      */
     public static function fromAttributes($id, $name, $price, array $options = [])
@@ -171,9 +172,9 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Returns the formatted price without TAX.
      *
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     public function price($decimals = null, $decimalPoint = null, $thousandSeperator = null)
@@ -184,10 +185,10 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Get the formatted number.
      *
-     * @param float $value
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  float  $value
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     private function numberFormat($value, $decimals = null, $decimalPoint = null, $thousandSeperator = null)
@@ -210,9 +211,9 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Returns the formatted price with TAX.
      *
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     public function priceTax($decimals = null, $decimalPoint = null, $thousandSeperator = null)
@@ -223,9 +224,9 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Returns the formatted price with TAX.
      *
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     public function shipping(bool $hasBulk = false, int $addressId = 0, int $deliveryMethodId = 0, $decimals = null, $decimalPoint = null, $thousandSeperator = null): float
@@ -255,22 +256,21 @@ class CartItem implements Arrayable, Jsonable
     public function getShippingId($hasBulk = false, int $deliveryMethodId = 0)
     {
         $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
-        $address = (!empty($this->addressId)) ? Address::whereId($this->addressId)->first() : ((auth()->check()) ? auth()->user()->defaultAddress() : null);
+        $address = (! empty($this->addressId)) ? Address::whereId($this->addressId)->first() : ((auth()->check()) ? auth()->user()->defaultAddress() : null);
 
         $query = DeliveryMethod::query()
             ->with('courier')
-            ->where('name', $packageSize)
-        ;
+            ->where('name', $packageSize);
 
-        if (!empty($address)) {
+        if (! empty($address)) {
             $query = $query->where('country_id', $address->country_id);
         }
 
-        if (!empty($deliveryMethodId)) {
+        if (! empty($deliveryMethodId)) {
             $deliveryMethod = DeliveryMethod::whereId($deliveryMethodId)->first();
             $deliveryMethod->name = 'Small';
 
-            if (!empty($deliveryMethod)) {
+            if (! empty($deliveryMethod)) {
                 // if the package size and the selected delivery method match use that
                 if ($deliveryMethod->name == $packageSize) {
                     return $deliveryMethod;
@@ -297,17 +297,15 @@ class CartItem implements Arrayable, Jsonable
         return $size;
     }
 
-    public function setAddressId(int $addressId)
-    {
-    }
+    public function setAddressId(int $addressId) {}
 
     /**
      * Returns the formatted subtotal.
      * Subtotal is price for whole CartItem without TAX
      *
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
@@ -319,9 +317,9 @@ class CartItem implements Arrayable, Jsonable
      * Returns the formatted total.
      * Total is price for whole CartItem with TAX
      *
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     public function total($decimals = null, $decimalPoint = null, $thousandSeperator = null)
@@ -332,9 +330,9 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Returns the formatted tax.
      *
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     public function tax($decimals = null, $decimalPoint = null, $thousandSeperator = null)
@@ -345,9 +343,9 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Returns the formatted tax.
      *
-     * @param int $decimals
-     * @param string $decimalPoint
-     * @param string $thousandSeperator
+     * @param  int  $decimals
+     * @param  string  $decimalPoint
+     * @param  string  $thousandSeperator
      * @return string
      */
     public function taxTotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
@@ -358,12 +356,13 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Set the quantity for this cart item.
      *
-     * @param int|float $qty
+     * @param  int|float  $qty
      */
     public function setQuantity($qty)
     {
-        if (empty($qty) || !is_numeric($qty))
+        if (empty($qty) || ! is_numeric($qty)) {
             throw new InvalidArgumentException('Please supply a valid quantity.');
+        }
 
         $this->qty = $qty;
     }
@@ -371,7 +370,6 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Update the cart item from a Buyable.
      *
-     * @param Buyable $item
      * @return void
      */
     public function updateFromBuyable(Buyable $item)
@@ -385,7 +383,6 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Update the cart item from an array.
      *
-     * @param array $attributes
      * @return void
      */
     public function updateFromArray(array $attributes)
@@ -403,7 +400,6 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Associate the cart item with the given model.
      *
-     * @param $model
      * @return $this
      */
     public function associate($model)
@@ -416,7 +412,6 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Set the tax rate.
      *
-     * @param $taxRate
      * @return $this
      */
     public function setTaxRate($taxRate)
@@ -430,19 +425,20 @@ class CartItem implements Arrayable, Jsonable
     {
         $this->shippingId = $shippingId;
         $this->shippingPrice = $shippingPrice;
+
         return $this;
     }
 
     public function setShippingPrice($shippingPrice)
     {
         $this->shippingPrice = $shippingPrice;
+
         return $this;
     }
 
     /**
      * Set saved state.
      *
-     * @param $bool
      * @return $this
      */
     public function setSaved($bool)
@@ -455,7 +451,7 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Get an attribute from the cart item or get the associated model.
      *
-     * @param string $attribute
+     * @param  string  $attribute
      * @return mixed
      */
     public function __get($attribute)
@@ -502,7 +498,7 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Convert the object to its JSON representation.
      *
-     * @param int $options
+     * @param  int  $options
      * @return string
      */
     public function toJson($options = 0)
@@ -531,7 +527,7 @@ class CartItem implements Arrayable, Jsonable
             'options' => $this->options->toArray(),
             'tax' => $this->tax,
             'isSaved' => $this->isSaved,
-            'subtotal' => $this->subtotal
+            'subtotal' => $this->subtotal,
         ];
     }
 }

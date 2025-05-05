@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Cart\Facade;
 
 use Illuminate\Support\Facades\Facade;
 
-class Cart extends Facade {
+class Cart extends Facade
+{
     /**
      * Get the registered name of the component.
      *

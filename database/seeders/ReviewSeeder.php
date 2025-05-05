@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Product;
@@ -22,7 +24,7 @@ class ReviewSeeder extends Seeder
                 'commentable_id' => $faker->numberBetween(1, 99),
                 'comment' => $faker->text(),
                 'rating' => $faker->numberBetween(1, 5),
-                'user_id' => 1
+                'user_id' => 1,
             ];
 
             $product = Review::create($product);

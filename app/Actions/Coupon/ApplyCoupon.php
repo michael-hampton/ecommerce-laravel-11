@@ -1,21 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Coupon;
 
-use App\Models\Coupon;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Services\Cart\Facade\Cart;
-use App\Services\Interfaces\ICouponService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class ApplyCoupon
 {
-    public function __construct(private ICouponRepository $repository)
-    {
-
-    }
+    public function __construct(private ICouponRepository $repository) {}
 
     public function handle(string $couponCode): bool
     {
@@ -26,16 +23,16 @@ class ApplyCoupon
         $categoryValid = false;
         $brandValid = false;
         $cartItems = Cart::instance('cart')->content();
-        $filtersRequired = !empty($coupon->categories) || !empty($coupon->brands);
+        $filtersRequired = ! empty($coupon->categories) || ! empty($coupon->brands);
 
         $matched = [];
 
         foreach ($cartItems as $cartItem) {
-            if (!empty($coupon->categories) && in_array($cartItem->model->category_id, explode(',', $coupon->categories))) {
+            if (! empty($coupon->categories) && in_array($cartItem->model->category_id, explode(',', $coupon->categories))) {
                 $categoryValid = true;
             }
 
-            if (!empty($coupon->brands) && in_array($cartItem->model->brand_id, explode(',', $coupon->brands))) {
+            if (! empty($coupon->brands) && in_array($cartItem->model->brand_id, explode(',', $coupon->brands))) {
                 $brandValid = true;
             }
 
@@ -48,11 +45,11 @@ class ApplyCoupon
             }
         }
 
-        if ($filtersRequired && (!$brandValid || !$categoryValid)) {
+        if ($filtersRequired && (! $brandValid || ! $categoryValid)) {
             return false;
         }
 
-        if (!$hasSeller && !empty($coupon->seller_id)) {
+        if (! $hasSeller && ! empty($coupon->seller_id)) {
             return false;
         }
 
@@ -71,7 +68,7 @@ class ApplyCoupon
             'type' => $coupon->type,
             'value' => $coupon->value,
             'cart_value' => $coupon->cart_value,
-            'matched' => $matched
+            'matched' => $matched,
         ]);
 
         $this->calculateDiscount();

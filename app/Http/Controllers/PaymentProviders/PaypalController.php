@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\PaymentProviders;
 
 use App\Http\Controllers\Controller;
@@ -9,10 +11,7 @@ use Illuminate\Http\Request;
 
 class PaypalController extends Controller
 {
-    public function __construct(private IOrderRepository $orderRepository)
-    {
-
-    }
+    public function __construct(private IOrderRepository $orderRepository) {}
 
     public function paymentCancel()
     {
@@ -22,19 +21,18 @@ class PaypalController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int $orderId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     *
      * @throws \Throwable
      */
     public function paymentSuccess(Request $request, int $orderId)
     {
         $order = $this->orderRepository->getById($orderId);
-        $success = (new Paypal())->paymentSuccess($request);
+        $success = (new Paypal)->paymentSuccess($request);
 
         $order->transaction()->update(['payment_status' => 'pending']);
 
-        if($success){
+        if ($success) {
             return view('front.order-confirmation', ['order' => $order]);
         }
 

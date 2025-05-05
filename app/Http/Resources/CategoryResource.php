@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CategoryResource extends JsonResource
 {
@@ -27,7 +28,7 @@ class CategoryResource extends JsonResource
             'parent_id' => $this->parent_id,
             'attributes' => $this->attributes->pluck('attribute_id')->toArray(),
             'has_grandchild' => $this->hasGrandchildren(),
-            'image' => asset('images/categories') . '/' . $this->image,
+            'image' => asset('images/categories').'/'.$this->image,
             'products' => $this->products->count(),
             'subcategories' => $this->subcategories->toArray(),
             'created_at' => $this->created_at,

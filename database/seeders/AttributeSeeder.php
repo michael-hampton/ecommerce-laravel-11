@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\ProductAttribute;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AttributeSeeder extends Seeder
@@ -16,7 +17,7 @@ class AttributeSeeder extends Seeder
         $attributes = [
             ['name' => 'Condition'],
             ['name' => 'Color'],
-            ['name' => 'Size']
+            ['name' => 'Size'],
         ];
 
         foreach ($attributes as $attribute) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,7 +27,7 @@ class Profile extends Model
         'profile_picture',
         'biography',
         'username',
-        'email'
+        'email',
     ];
 
     protected $casts = ['active' => 'boolean'];

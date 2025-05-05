@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,11 +21,11 @@ class Category extends Model
         'meta_description',
         'meta_keywords',
         'description',
-        'active'
+        'active',
     ];
 
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
     ];
 
     public function products()
@@ -43,10 +45,11 @@ class Category extends Model
 
     public function hasGrandchildren()
     {
-      return !empty($this->parent_id) && $this->subcategories()->count() > 0;
+        return ! empty($this->parent_id) && $this->subcategories()->count() > 0;
     }
 
-    public function attributes() {
+    public function attributes()
+    {
         return $this->hasMany(CategoryAttributes::class, 'category_id');
     }
 }

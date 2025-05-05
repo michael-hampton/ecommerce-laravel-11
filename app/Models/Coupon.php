@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,15 +20,18 @@ class Coupon extends Model
         'brands',
         'categories',
         'seller_id',
-        'usages'
+        'usages',
     ];
+
     protected $dates = ['expires_at'];
 
-    public function categories() {
+    public function categories()
+    {
         return Category::whereIn('id', explode(',', $this->categories))->get();
     }
 
-    public function brands() {
+    public function brands()
+    {
         return Brand::whereIn('id', explode(',', $this->brands))->get();
     }
 }

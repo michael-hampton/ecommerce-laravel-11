@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Order;
 
 use App\Events\OrderStatusUpdated;
@@ -10,10 +12,7 @@ use App\Repositories\Interfaces\IOrderRepository;
 
 class UpdateOrderLine
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository)
-    {
-
-    }
+    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
 
     public function handle(array $data, int $id)
     {
@@ -27,7 +26,7 @@ class UpdateOrderLine
             $orderData['cancelled_date'] = now();
         }
 
-        if (!empty($data['tracking_number'])) {
+        if (! empty($data['tracking_number'])) {
             $orderData['tracking_number'] = $data['tracking_number'];
         }
 
@@ -42,7 +41,7 @@ class UpdateOrderLine
 
         if ($data['status'] === 'delivered') {
             $transactions = $order->transaction->where('seller_id', auth('sanctum')->user()->id);
-            //$transaction->payment_status = $data['status'] === 'delivered' ? 'approved' : 'refunded';
+            // $transaction->payment_status = $data['status'] === 'delivered' ? 'approved' : 'refunded';
             Transaction::whereIn('id', $transactions->pluck('id'))->update(['payment_status' => $data['status'] === 'delivered' ? 'approved' : 'refunded']);
         }
 

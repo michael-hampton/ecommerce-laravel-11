@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Seller;
 
 use App\Models\SellerBalance;
@@ -9,16 +11,13 @@ use App\Repositories\Interfaces\ISellerRepository;
 
 class WithdrawFunds
 {
-    public function __construct(private ISellerRepository $repository)
-    {
-
-    }
+    public function __construct(private ISellerRepository $repository) {}
 
     /**
-     * @param array $data
      * @return mixed
      */
-    public function handle(array $data): SellerBalance|null {
+    public function handle(array $data): ?SellerBalance
+    {
         $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->first();
         $affectedRows = SellerBalance::create([
             'balance' => $sellerBalance->balance - $data['amount'],
@@ -27,12 +26,12 @@ class WithdrawFunds
             'seller_id' => auth('sanctum')->id(),
         ]);
 
-        if(!empty($data['transactionId'])) {
+        if (! empty($data['transactionId'])) {
             $transaction = Transaction::whereId($data['transactionId'])->first();
             $transaction->update(['withdrawn' => true]);
         }
 
-        if (!empty($affectedRows)) {
+        if (! empty($affectedRows)) {
             SellerWithdrawal::create([
                 'amount' => $data['amount'],
                 'seller_id' => auth('sanctum')->id(),

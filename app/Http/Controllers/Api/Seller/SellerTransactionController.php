@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Http\Controllers\Api\ApiController;
@@ -8,10 +10,7 @@ use App\Repositories\Interfaces\ITransactionRepository;
 
 class SellerTransactionController extends ApiController
 {
-    public function __construct(private ITransactionRepository $transactionRepository)
-    {
-
-    }
+    public function __construct(private ITransactionRepository $transactionRepository) {}
 
     public function index()
     {

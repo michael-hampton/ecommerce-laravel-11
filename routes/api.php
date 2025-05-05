@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\AttributeValueController;
@@ -41,14 +43,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
     Route::put('/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 
-
-    //Brands
+    // Brands
     Route::apiResource('brands', BrandController::class);
     Route::delete('/brands/{id}/active', [BrandController::class, 'toggleActive'])->name('brands.active');
 
@@ -63,11 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('products/subcategories', [ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
     Route::delete('/products/{id}/active', [ProductController::class, 'toggleActive'])->name('categories.active');
 
-
     // users
     Route::apiResource('users', UserController::class);
     Route::delete('/users/{id}/active', [UserController::class, 'toggleActive'])->name('users.active');
-
 
     Route::put('users/updateActive/{id}', [UserController::class, 'updateActive'])->name('admin.users.updateActive');
 
@@ -75,27 +73,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('slides', SlideController::class);
     Route::delete('/slides/{id}/active', [SlideController::class, 'toggleActive'])->name('slides.active');
 
-
     // messages
     Route::apiResource('messages', MessageController::class);
 
     // couriers
     Route::apiResource('couriers', CourierController::class);
 
-    //delivery methods
+    // delivery methods
     // messages
     Route::apiResource('delivery-methods', DeliveryMethodController::class);
 
-
-    //orders
+    // orders
     Route::apiResource('orders', OrderController::class);
     Route::put('orders/details/{orderItemId}', [OrderController::class, 'updateItemDetails'])->name('admin.orders.updateItemDetails');
     Route::get('orders/logs/{orderId}', [OrderController::class, 'logs'])->name('admin.orders.updateItemDetails');
 
-    //attributes
+    // attributes
     Route::apiResource('attributes', AttributeController::class);
 
-    //lookup
+    // lookup
     Route::get('lookup/orders', [LookupController::class, 'getOrders'])->name('admin.dashboard');
     Route::get('lookup/categories/{parentOnly?}', [LookupController::class, 'getCategories'])->name('admin.dashboard');
     Route::get('lookup/brands', [LookupController::class, 'getBrands'])->name('admin.dashboard');
@@ -106,14 +102,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // dashboard
     Route::get('dashboard', [DashboardController::class, 'get'])->name('admin.dashboard');
 
-    //attribute values
+    // attribute values
     Route::apiResource('attribute-values', AttributeValueController::class);
 
-
-    //coupons
+    // coupons
     Route::apiResource('coupons', CouponController::class);
 
-    //seller
+    // seller
     Route::apiResource('sellers', SellerController::class);
     Route::post('sellers/active', [SellerController::class, 'toggleActive'])->name('admin.sellers.toggleActive');
     Route::post('sellers/account/bank', [SellerAccountController::class, 'saveBankDetails'])->name('admin.sellers.updateBankDetails');
@@ -124,11 +119,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sellers/account/balance', [SellerBalanceController::class, 'show'])->name('admin.sellers.getBalance');
     Route::post('sellers/account/balance/withdraw', [SellerBalanceController::class, 'withdraw'])->name('admin.sellers.withdraw');
     Route::get('sellers/account/balance/withdraw', [SellerBalanceController::class, 'getWithdrawals'])->name('sellers.getWithdrawals');
-    Route::post('sellers/billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'store'])->name('sellers.billing');
-    Route::get('billing', [\App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'show'])->name('sellers.billing');
-    Route::get('reviews', [\App\Http\Controllers\Api\Seller\ReviewController::class, 'index'])->name('sellers.reviews');
-    Route::post('reviews/reply', [\App\Http\Controllers\Api\Seller\ReviewController::class, 'createReply'])->name('sellers.reviews');
-
+    Route::post('sellers/billing', [App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'store'])->name('sellers.billing');
+    Route::get('billing', [App\Http\Controllers\Api\Seller\SellerBillingInformationController::class, 'show'])->name('sellers.billing');
+    Route::get('reviews', [App\Http\Controllers\Api\Seller\ReviewController::class, 'index'])->name('sellers.reviews');
+    Route::post('reviews/reply', [App\Http\Controllers\Api\Seller\ReviewController::class, 'createReply'])->name('sellers.reviews');
 
     // Faq Articles
     Route::apiResource('faq-articles', FaqArticleController::class);
@@ -143,5 +137,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('faq-tags', FaqTagController::class);
 
 });
-
-

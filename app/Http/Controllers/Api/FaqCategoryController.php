@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\MassDestroyFaqCategoryRequest;
@@ -9,11 +11,10 @@ use App\Http\Requests\UpdateFaqCategoryRequest;
 use App\Http\Resources\Support\CategoryResource;
 use App\Models\FaqCategory;
 use App\Repositories\Interfaces\Support\ICategoryRepository;
-use Illuminate\Http\Request;
 
 class FaqCategoryController extends ApiController
 {
-    public function __construct(private ICategoryRepository $categoryRepository){}
+    public function __construct(private ICategoryRepository $categoryRepository) {}
 
     public function index(SearchRequest $request)
     {
@@ -31,7 +32,7 @@ class FaqCategoryController extends ApiController
     {
         $faqCategory = FaqCategory::create($request->all());
 
-        if (!$faqCategory) {
+        if (! $faqCategory) {
             return $this->error('Unable to create Category');
         }
 
@@ -42,7 +43,7 @@ class FaqCategoryController extends ApiController
     {
         $faqCategory->update($request->all());
 
-        if (!$faqCategory) {
+        if (! $faqCategory) {
             return $this->error('Unable to update Category');
         }
 
@@ -53,7 +54,7 @@ class FaqCategoryController extends ApiController
     {
         $result = $faqCategory->delete();
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to delete Category');
         }
 

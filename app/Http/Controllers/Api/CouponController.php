@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Coupon\CreateCoupon;
@@ -15,13 +17,10 @@ class CouponController extends ApiController
 {
     public function __construct(
         private ICouponRepository $couponRepository,
-    )
-    {
-
-    }
+    ) {}
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(SearchRequest $request)
@@ -37,14 +36,13 @@ class CouponController extends ApiController
     }
 
     /**
-     * @param StoreCouponRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreCouponRequest $request, CreateCoupon $createCoupon)
     {
         $result = $createCoupon->handle($request->all());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Coupon');
         }
 
@@ -64,15 +62,13 @@ class CouponController extends ApiController
     }
 
     /**
-     * @param Request $request
-     * @param $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id, UpdateCoupon $updateCoupon)
     {
         $result = $updateCoupon->handle($request->except(['_token', '_method']), $id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Coupon');
         }
 
@@ -80,14 +76,13 @@ class CouponController extends ApiController
     }
 
     /**
-     * @param $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, DeleteCoupon $deleteCoupon)
     {
         $result = $deleteCoupon->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to delete Coupon');
         }
 

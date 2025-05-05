@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\PaymentProviders;
 
 use App\Models\Transaction;
@@ -7,7 +9,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Throwable;
 
@@ -15,7 +16,7 @@ class Paypal extends BaseProvider
 {
     public function capture(Collection $orderLines, array $orderData)
     {
-        $provider = new PayPalClient();
+        $provider = new PayPalClient;
         $paypalToken = $provider->getAccessToken();
 
         $items = collect($this->formatLineItems($orderLines));
@@ -32,19 +33,20 @@ class Paypal extends BaseProvider
 
             $total = $subtotal + $shipping + $commission;
 
-            if (!empty($orderData['coupon']) && $orderData['coupon']->seller_id === $sellerId) {
+            if (! empty($orderData['coupon']) && $orderData['coupon']->seller_id === $sellerId) {
                 $total -= $orderData['coupon']->value;
             }
 
             $products = $products->map(function ($item) {
                 unset($item['price'], $item['shipping']);
+
                 return $item;
             });
 
             $amounts = [
                 'currency_code' => config('shop.currency_code', 'GBP'),
                 'value' => round($total, 2),
-                'breakdown' => [ //discount
+                'breakdown' => [ // discount
                     'item_total' => [
                         'currency_code' => config('shop.currency_code', 'GBP'),
                         'value' => $subtotal,
@@ -55,24 +57,24 @@ class Paypal extends BaseProvider
                     ],
                     'insurance' => [
                         'currency_code' => config('shop.currency_code', 'GBP'),
-                        'value' => (float)round($commission, 2),
-                    ]
-                ]
+                        'value' => (float) round($commission, 2),
+                    ],
+                ],
             ];
 
-            if (!empty($orderData['coupon'])) {
+            if (! empty($orderData['coupon'])) {
                 $amounts['breakdown']['discount'] = [
                     'currency_code' => config('shop.currency_code', 'GBP'),
-                    'value' => (float)$orderData['coupon']->value,
+                    'value' => (float) $orderData['coupon']->value,
                 ];
             }
 
-            //tax total The total tax for all items. Required if the request includes purchase_units.items.tax. Must equal the sum of (items[].tax * items[].quantity) for all items. tax_total.value can not be a negative number.
+            // tax total The total tax for all items. Required if the request includes purchase_units.items.tax. Must equal the sum of (items[].tax * items[].quantity) for all items. tax_total.value can not be a negative number.
             $purchaseUnits[] = [
                 'invoice_id' => "{$orderData['orderId']}-{$sellerId}",
                 'reference_id' => $sellerId,
                 'amount' => $amounts,
-                'items' => $products->toArray()
+                'items' => $products->toArray(),
             ];
 
             $transactionData = [
@@ -84,7 +86,7 @@ class Paypal extends BaseProvider
                 'total' => $total - $commission,
                 'commission' => $commission,
                 'shipping' => $shipping,
-                'discount' => !empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
+                'discount' => ! empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
             ];
 
             Transaction::create($transactionData);
@@ -94,16 +96,17 @@ class Paypal extends BaseProvider
 
         try {
             $response = $provider->createOrder([
-                "intent" => "CAPTURE",
-                "application_context" => [
-                    "return_url" => route('paypal.payment.success', ['orderId' => $orderData['orderId']]),
-                    "cancel_url" => route('paypal.payment/cancel'),
+                'intent' => 'CAPTURE',
+                'application_context' => [
+                    'return_url' => route('paypal.payment.success', ['orderId' => $orderData['orderId']]),
+                    'cancel_url' => route('paypal.payment/cancel'),
                 ],
                 'purchase_units' => $purchaseUnits,
             ]);
 
             if (isset($response['error'])) {
                 dd($response);
+
                 return false;
             }
 
@@ -121,17 +124,14 @@ class Paypal extends BaseProvider
             }
         } catch (Exception $exception) {
             dd($exception->getMessage());
+
             return false;
         }
-
 
         return false;
     }
 
-
     /**
-     * @param Request $request
-     * @return bool
      * @throws Throwable
      */
     public function paymentSuccess(Request $request): bool

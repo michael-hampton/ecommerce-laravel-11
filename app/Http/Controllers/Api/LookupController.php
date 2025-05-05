@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\AttributeResource;
@@ -13,13 +15,11 @@ use App\Models\ProductAttribute;
 
 class LookupController
 {
-
     public function getOrders()
     {
         $orders = Order::orderBy('created_at', 'desc')
             ->whereRelation('orderItems', 'seller_id', ['seller_id' => auth('sanctum')->user()->id])
-            ->get()
-        ;
+            ->get();
 
         return response()->json(OrderResource::collection($orders), 200);
     }
@@ -27,8 +27,7 @@ class LookupController
     public function getBrands()
     {
         $brands = Brand::orderBy('name', 'asc')
-            ->get()
-        ;
+            ->get();
 
         return response()->json(BrandResource::collection($brands), 200);
     }
@@ -39,8 +38,7 @@ class LookupController
         if ($parentOnly) {
             $query->where(function ($query) {
                 $query->where('parent_id', '=', null)
-                    ->orWhere('parent_id', '=', 0)
-                ;
+                    ->orWhere('parent_id', '=', 0);
             });
         }
 
@@ -53,8 +51,7 @@ class LookupController
     {
         $categories = Category::orderBy('name', 'asc')
             ->where('parent_id', $categoryId)
-            ->get()
-        ;
+            ->get();
 
         return response()->json(CategoryResource::collection($categories), 200);
     }

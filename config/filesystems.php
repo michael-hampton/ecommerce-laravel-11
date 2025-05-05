@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -40,7 +42,7 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root'   => public_path() . '/images',
+            'root' => public_path().'/images',
             'url' => env('APP_URL').'/public',
             'visibility' => 'public',
             'throw' => false,

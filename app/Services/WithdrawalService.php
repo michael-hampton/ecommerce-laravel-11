@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\SellerBalance;
@@ -12,15 +14,12 @@ use Exception;
 class WithdrawalService implements IWithdrawalService
 {
     public function __construct(
-        private int                $sellerId,
-        private float              $amount,
+        private int $sellerId,
+        private float $amount,
         private WithdrawalTypeEnum $type,
-        private WithdrawalEnum     $withdrawalType,
-        private int | null                $id
-    )
-    {
-
-    }
+        private WithdrawalEnum $withdrawalType,
+        private ?int $id
+    ) {}
 
     public function updateBalance()
     {
@@ -34,14 +33,14 @@ class WithdrawalService implements IWithdrawalService
 
         $withdrawalData = [
             'amount' => $this->amount,
-            'seller_id' => $this->sellerId
+            'seller_id' => $this->sellerId,
         ];
 
         $data = [
             'seller_id' => auth()->id(),
             'balance' => $newBalance,
             'previous_balance' => $previousBalance->balance,
-            'type' => $this->type->value
+            'type' => $this->type->value,
         ];
 
         if ($this->type === WithdrawalTypeEnum::OrderReceived) {
@@ -60,8 +59,7 @@ class WithdrawalService implements IWithdrawalService
         }
 
         SellerWithdrawal::create($withdrawalData);
+
         return SellerBalance::create($data);
     }
 }
-
-

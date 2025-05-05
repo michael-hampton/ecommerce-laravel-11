@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class SlideResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class SlideResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'image' => asset('images/slides') . '/' . $this->image,
+            'image' => asset('images/slides').'/'.$this->image,
             'subtitle' => $this->subtitle,
             'link' => $this->link,
             'active' => $this->active,

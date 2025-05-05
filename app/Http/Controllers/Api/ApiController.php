@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -12,13 +14,13 @@ class ApiController extends Controller
     /**
      * success response method.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function success($result, string $message, int $code = Response::HTTP_OK)
     {
         $response = [
             'success' => true,
-            'data'    => $result,
+            'data' => $result,
             'message' => $message,
         ];
 
@@ -28,17 +30,17 @@ class ApiController extends Controller
     /**
      * return error response.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function error(string $error, array $errorMessages = [], int $code = Response::HTTP_BAD_REQUEST)
     {
         $response = [
             'success' => false,
             'message' => $error,
-            'errors' => $errorMessages
+            'errors' => $errorMessages,
         ];
 
-        if(!empty($errorMessages)){
+        if (! empty($errorMessages)) {
             $response['data'] = $errorMessages;
         }
 
@@ -51,9 +53,8 @@ class ApiController extends Controller
             'current_page' => $items->currentPage(),
             'total' => $items->total(),
             'per_page' => $items->perPage(),
-            'data' =>$data]
-        ;
+            'data' => $data];
+
         return \response()->json($response);
     }
 }
-

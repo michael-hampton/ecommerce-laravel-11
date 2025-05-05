@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,7 +28,7 @@ class ContactUsRequest extends FormRequest
             'email' => 'required|email',
             'phone' => 'required|numeric',
             'subject' => 'required',
-            'message' => 'required'
+            'message' => 'required',
 
         ];
     }

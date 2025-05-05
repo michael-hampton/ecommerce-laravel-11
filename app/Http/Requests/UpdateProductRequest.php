@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\Product;
@@ -27,7 +29,7 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:products,name,'.request()->get('id'),
-            'slug' => 'required|string|max:255|unique:products,slug,' . request()->get('id'),
+            'slug' => 'required|string|max:255|unique:products,slug,'.request()->get('id'),
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }

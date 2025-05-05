@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
@@ -11,10 +13,7 @@ use Illuminate\Http\Request;
 
 class SellerController extends Controller
 {
-    public function __construct(private IProductRepository $productRepository)
-    {
-
-    }
+    public function __construct(private IProductRepository $productRepository) {}
 
     public function index(int $sellerId)
     {
@@ -22,25 +21,24 @@ class SellerController extends Controller
 
         $profile = Profile::where('user_id', $sellerId)->first();
 
-        $currency = config("shop.currency");
+        $currency = config('shop.currency');
 
         $sellerProducts = $this->productRepository->getPaginated(10, 'created_at', 'desc', ['seller_id' => auth()->id()]);
-
 
         return view('front.seller.index', compact('seller', 'profile', 'sellerProducts', 'currency'));
     }
 
     public function store(Request $request, int $sellerId)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->back()->with('error', 'Not logged in');
         }
 
         $seller = User::whereId($sellerId)->first();
         $seller->reviews()->create([
-            'comment' => $request->input("review"),
-            'rating' => $request->input("rating"),
-            'user_id' => auth()->user()->id
+            'comment' => $request->input('review'),
+            'rating' => $request->input('rating'),
+            'user_id' => auth()->user()->id,
         ]);
 
         return redirect()->back()->with('message', 'Review was added successfully!');

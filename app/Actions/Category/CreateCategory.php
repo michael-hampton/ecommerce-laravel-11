@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Category;
 
 use App\Helper;
@@ -9,11 +11,9 @@ use App\Models\ProductAttribute;
 use App\Repositories\Interfaces\ICategoryRepository;
 use Illuminate\Support\Str;
 
-class CreateCategory {
-    public function __construct(private ICategoryRepository $repository)
-    {
-
-    }
+class CreateCategory
+{
+    public function __construct(private ICategoryRepository $repository) {}
 
     public function handle(array $data): Category
     {
@@ -22,10 +22,10 @@ class CreateCategory {
             $data['parent_id'] = 0;
         }
 
-        if (!empty($data['image'])) {
+        if (! empty($data['image'])) {
 
             $image = $data['image'];
-            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
 
             $image->storeAs('categories', $filename, 'public');
 
@@ -34,10 +34,10 @@ class CreateCategory {
 
             $data['image'] = $filename;
         }
-        
+
         $category = $this->repository->create($data);
 
-        if (!empty($data['attributes'])) {
+        if (! empty($data['attributes'])) {
             $this->saveAttributes($data['attributes'], $category);
         }
 
@@ -56,5 +56,4 @@ class CreateCategory {
             );
         }
     }
-
 }

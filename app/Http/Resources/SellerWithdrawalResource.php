@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class SellerWithdrawalResource extends JsonResource
         return [
             'amount' => $this->amount,
             'created_at' => $this->created_at,
-            'seller_id' => $this->seller_id
+            'seller_id' => $this->seller_id,
         ];
     }
 }

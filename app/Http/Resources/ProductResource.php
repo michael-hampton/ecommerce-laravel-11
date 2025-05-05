@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -19,9 +21,9 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'active' => $this->active,
-            'image' => asset('images/products') . '/' . $this->image,
+            'image' => asset('images/products').'/'.$this->image,
             'images' => collect(explode(',', $this->images))->map(function ($image) {
-                return asset('images/products') . '/' . $image;
+                return asset('images/products').'/'.$image;
             }),
             'category' => $this->category,
             'brand' => $this->brand,
@@ -40,7 +42,7 @@ class ProductResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'product_attributes' => $this->productAttributes,
-            'package_size' => $this->package_size
+            'package_size' => $this->package_size,
         ];
     }
 }

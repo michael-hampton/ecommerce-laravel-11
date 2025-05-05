@@ -1,16 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Category;
 
 use App\Repositories\Interfaces\ICategoryRepository;
 
 class DeleteCategory
 {
-    public function __construct(private ICategoryRepository $repository)
-    {
-
-    }
-
+    public function __construct(private ICategoryRepository $repository) {}
 
     public function handle(int $id)
     {
@@ -22,5 +20,4 @@ class DeleteCategory
 
         return $this->repository->delete($id);
     }
-
 }

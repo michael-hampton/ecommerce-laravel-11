@@ -1,8 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Interfaces;
 
-interface ISlideRepository extends IBaseRepository
-{
-
-}
+interface ISlideRepository extends IBaseRepository {}

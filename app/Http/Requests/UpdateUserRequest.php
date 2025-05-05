@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\User;
@@ -29,7 +31,7 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|max:255|min:3|unique:users,name,'.request()->get('id'),
             'email' => 'required|email|unique:users,email,'.request()->get('id'),
             'mobile' => 'required|numeric|digits:12|unique:users,mobile,'.request()->get('id'),
-            //'password' => 'required|min:6|confirmed',
+            // 'password' => 'required|min:6|confirmed',
         ];
     }
 }

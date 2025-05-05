@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\PaymentProviders;
 
 class BaseProvider
 {
-
     public function formatLineItems($orderLines)
     {
         $items = [];
@@ -21,7 +22,7 @@ class BaseProvider
                 'unit_amount' => [
                     'currency_code' => config('shop.currency_code', 'GBP'),
                     'value' => $this->truncateNumber($lineTotal),
-                ]
+                ],
             ];
         }
 
@@ -31,7 +32,7 @@ class BaseProvider
     protected function truncateNumber($number, $precision = 2)
     {
         // Zero causes issues, and no need to truncate
-        if (0 == (int)$number) {
+        if ((int) $number == 0) {
             return $number;
         }
         // Are we negative?
@@ -40,6 +41,7 @@ class BaseProvider
         $number = abs($number);
         // Calculate precision number for dividing / multiplying
         $precision = pow(10, $precision);
+
         // Run the math, re-applying the negative value to ensure returns correctly negative / positive
         return floor($number * $precision) / $precision * $negative;
     }

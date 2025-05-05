@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+declare(strict_types=1);
 
+namespace App\Http\Controllers\Api;
 
 use App\Actions\Attribute\CreateAttribute;
 use App\Actions\Attribute\DeleteAttribute;
@@ -15,14 +16,12 @@ use Illuminate\Http\Request;
 
 class AttributeController extends ApiController
 {
-    public function __construct(private IAttributeRepository $attributeRepository)
-    {
-
-    }
+    public function __construct(private IAttributeRepository $attributeRepository) {}
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|object
+     *
      * @throws \Exception
      */
     public function index(SearchRequest $request)
@@ -38,14 +37,13 @@ class AttributeController extends ApiController
     }
 
     /**
-     * @param StoreAttributeRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreAttributeRequest $request, CreateAttribute $createAttribute)
     {
         $result = $createAttribute->handle($request->all());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Attribute');
         }
 
@@ -65,15 +63,13 @@ class AttributeController extends ApiController
     }
 
     /**
-     * @param UpdateAttributeRequest $request
-     * @param $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateAttributeRequest $request, $id, UpdateAttribute $updateAttribute)
     {
         $result = $updateAttribute->handle($request->except(['_token', '_method']), $id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Attribute');
         }
 
@@ -81,14 +77,13 @@ class AttributeController extends ApiController
     }
 
     /**
-     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $id, DeleteAttribute $deleteAttribute)
     {
         $result = $deleteAttribute->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to delete Attribute');
         }
 

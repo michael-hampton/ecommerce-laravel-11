@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Slide;
@@ -21,7 +23,7 @@ class SlideRepository extends BaseRepository implements ISlideRepository
             $query->where('active', true);
         }
 
-        $query->when(!empty($searchParams['title']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['title']), function (Builder $query) use ($searchParams) {
             $query->where('title', 'like', "%{$searchParams['name']}%");
         });
 

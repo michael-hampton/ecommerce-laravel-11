@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -25,7 +27,7 @@ class OrderItemResource extends JsonResource
                 return OrderLogResource::make($item);
             }),
             'product' => ProductResource::make($this->product),
-            'messages' => MessageResource::collection($this->messages)
+            'messages' => MessageResource::collection($this->messages),
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\PaymentProviders;
 
 use App\Models\Order;
@@ -8,11 +10,8 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
-use Stripe\Charge;
 use Stripe\Customer;
 use Stripe\StripeClient;
-use Stripe\Token;
 
 class Stripe extends BaseProvider
 {
@@ -24,8 +23,9 @@ class Stripe extends BaseProvider
         $order = Order::whereId($orderData['orderId'])->first();
 
         try {
-            if (!isset($orderData['token'])) {
+            if (! isset($orderData['token'])) {
                 dd('no');
+
                 return false;
             }
 
@@ -51,7 +51,7 @@ class Stripe extends BaseProvider
                         'country' => $order->address->country,
                     ],
                 ],
-                'source' => $orderData['token']
+                'source' => $orderData['token'],
             ]);
 
             foreach ($items as $sellerId => $item) {
@@ -63,17 +63,17 @@ class Stripe extends BaseProvider
                 $commission = $items->count() > 1 ? $orderData['commission'] / $items->count() : $orderData['commission'];
                 $total = $subtotal + $shipping + $commission;
 
-                if (!empty($orderData['coupon']) && $orderData['coupon']->seller_id === $sellerId) {
+                if (! empty($orderData['coupon']) && $orderData['coupon']->seller_id === $sellerId) {
                     $total -= $orderData['coupon']->value;
                 }
 
-                Log::info('subtotal: ' . $subtotal . ' shipping: ' . $shipping . ' comission: ' . $commission . ' total: ' . $total);
+                Log::info('subtotal: '.$subtotal.' shipping: '.$shipping.' comission: '.$commission.' total: '.$total);
 
                 $charge = $stripe->charges->create([
                     'customer' => $customer['id'],
                     'currency' => config('shop.currency_code', 'GBP'),
                     'amount' => round(($total * pow(10, 2)), 0),
-                    'description' => 'Payment for order no ' . $order->id
+                    'description' => 'Payment for order no '.$order->id,
                 ]);
 
                 $transactionData = [
@@ -85,7 +85,7 @@ class Stripe extends BaseProvider
                     'total' => $total - $commission,
                     'commission' => $commission,
                     'shipping' => $shipping,
-                    'discount' => !empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
+                    'discount' => ! empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
                 ];
 
                 Transaction::create($transactionData);
@@ -95,13 +95,12 @@ class Stripe extends BaseProvider
                 }
             }
 
-
         } catch (Exception $exception) {
             dd($exception->getMessage());
+
             return false;
         }
 
         return false;
     }
-
 }

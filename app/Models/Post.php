@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +16,6 @@ class Post extends Model
      *
      * @var array
      */
-
     protected $fillable = ['title', 'message', 'seller_id', 'user_id', 'order_item_id', 'images'];
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +21,7 @@ return new class extends Migration
             $table->enum('type', ['fixed', 'percent'])->default('fixed');
             $table->decimal('value', 15, 2)->default(0);
             $table->decimal('cart_value', 15, 2)->default(0);
-            $table->date('expires_at')->default(\Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'));
+            $table->date('expires_at')->default(Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
         });
     }

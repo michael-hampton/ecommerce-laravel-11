@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,7 +25,7 @@ class UpdateFaqCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'slug' => 'required|unique:faq_categories,slug,' . request()->get('slug'),
+            'slug' => 'required|unique:faq_categories,slug,'.request()->get('slug'),
         ];
     }
 }

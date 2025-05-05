@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Support;
 
 use Illuminate\Http\Request;
@@ -15,7 +17,7 @@ class QuestionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id" => $this->id,
+            'id' => $this->id,
             'question' => $this->question,
             'answer' => $this->answer,
             'category' => CategoryResource::make($this->category),

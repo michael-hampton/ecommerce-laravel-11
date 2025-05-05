@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Message\CreateComment;
-use App\Actions\Message\CreateMessage;
 use App\Actions\Message\DeleteMessage;
 use App\Actions\Message\UpdateMessage;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\PostReplyRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Resources\MessageResource;
@@ -18,10 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 class MessageController extends ApiController
 {
-    public function __construct(private IMessageRepository $messageRepository)
-    {
-
-    }
+    public function __construct(private IMessageRepository $messageRepository) {}
 
     /**
      * Display a listing of the resource.
@@ -49,10 +46,10 @@ class MessageController extends ApiController
             'user_id' => auth('sanctum')->user()->id,
             'post_id' => $request->integer('postId'),
             'message' => $request->string('message'),
-            'images' => $request->file('images')
+            'images' => $request->file('images'),
         ]);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Message');
         }
 
@@ -74,9 +71,9 @@ class MessageController extends ApiController
      */
     public function update(Request $request, string $id, UpdateMessage $updateMessage): Response
     {
-        $result = $updateMessage->handle($request->all(), $id, );
+        $result = $updateMessage->handle($request->all(), $id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Message');
         }
 
@@ -89,8 +86,8 @@ class MessageController extends ApiController
     public function destroy(string $id, DeleteMessage $deleteMessage): Response
     {
         $result = $deleteMessage->handle($id);
-        
-        if (!$result) {
+
+        if (! $result) {
             return $this->error('Unable to delete Message');
         }
 

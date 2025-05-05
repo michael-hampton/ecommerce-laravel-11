@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Comment;
@@ -18,11 +20,11 @@ class MessageSeeder extends Seeder
 
         for ($i = 0; $i < 100; $i++) {
             $product = [
-                'title' => $faker->sentence . ' - ' . $i,
+                'title' => $faker->sentence.' - '.$i,
                 'message' => $faker->paragraph,
                 'created_at' => now(),
                 'seller_id' => 1,
-                'user_id' => 1
+                'user_id' => 1,
             ];
 
             $message = Post::create($product);
@@ -32,7 +34,7 @@ class MessageSeeder extends Seeder
                     'message' => $faker->paragraph,
                     'created_at' => now(),
                     'user_id' => 1,
-                    'post_id' => $message->id
+                    'post_id' => $message->id,
                 ];
 
                 $comment = Comment::create($product);

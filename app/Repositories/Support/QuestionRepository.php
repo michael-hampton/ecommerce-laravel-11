@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Support;
 
 use App\Models\FaqQuestion;
@@ -9,7 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class QuestionRepository extends BaseRepository implements IQuestionRepository
 {
-    public function __construct(FaqQuestion $address) {
+    public function __construct(FaqQuestion $address)
+    {
         parent::__construct($address);
     }
 
@@ -17,7 +20,7 @@ class QuestionRepository extends BaseRepository implements IQuestionRepository
     {
         $query = $this->getQuery();
 
-        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('question', 'like', "%{$searchParams['name']}%");
         });
 

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Str;
 
 class OrderDetailResource extends JsonResource
 {
@@ -28,7 +29,7 @@ class OrderDetailResource extends JsonResource
             'orderLogs' => $this->logs->map(function ($item) {
                 return OrderLogResource::make($item);
             }),
-            'totals' => (new OrderTotals())->toArray($this->transaction, $this->orderItems),
+            'totals' => (new OrderTotals)->toArray($this->transaction, $this->orderItems),
             'subtotal' => $this->subtotal,
             'shipping' => $this->shipping,
             'discount' => $this->discount,

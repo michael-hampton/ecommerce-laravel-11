@@ -1,18 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourierResource;
 use App\Repositories\CourierRepository;
-use App\Repositories\Interfaces\ICourierRepository;
 use Illuminate\Http\Request;
 
 class CourierController extends Controller
 {
-    public function __construct(private readonly CourierRepository $courierRepository)
-    {
-    }
+    public function __construct(private readonly CourierRepository $courierRepository) {}
 
     /**
      * Display a listing of the resource.

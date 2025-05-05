@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Str;
 
 class OrderResource extends JsonResource
@@ -32,7 +33,7 @@ class OrderResource extends JsonResource
             'number_of_items' => $this->totalCount(),
             'order_date' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'courier' => CourierResource::make($this->courier)
+            'courier' => CourierResource::make($this->courier),
         ];
     }
 }

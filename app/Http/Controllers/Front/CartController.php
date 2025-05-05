@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
 use App\Actions\Coupon\ApplyCoupon;
@@ -14,13 +16,13 @@ use Illuminate\Support\Facades\View;
 
 class CartController extends Controller
 {
-
     public function index(GetAvailiableDeliveryMethods $getAvailiableDeliveryMethods)
     {
         $items = Cart::instance('cart')->content();
         $shippingMethods = $getAvailiableDeliveryMethods->handle($items);
         $currency = config('shop.currency');
         $productAttributes = ProductAttributeValue::all();
+
         return view('front.cart', compact('items', 'currency', 'shippingMethods', 'productAttributes'));
     }
 
@@ -39,7 +41,7 @@ class CartController extends Controller
                 'view' => View::make('front.partials.cart-header', [
                     'items' => Cart::instance('cart')->content(),
                     'currency' => config('shop.currency'),
-                ])->render()
+                ])->render(),
             ]);
         }
 
@@ -53,6 +55,7 @@ class CartController extends Controller
         if (\request()->ajax()) {
             return response()->json(['count' => Cart::instance('cart')->content()->count()]);
         }
+
         return redirect()->back();
     }
 
@@ -73,6 +76,7 @@ class CartController extends Controller
         $shippingPrice = $request->input('shipping_price');
 
         Cart::instance('cart')->setShipping($rowId, $shippingId, $shippingPrice);
+
         return redirect()->back();
     }
 
@@ -102,16 +106,13 @@ class CartController extends Controller
         return redirect()->back();
     }
 
-    public function updateShippingId(int $shippingId)
-    {
-
-    }
+    public function updateShippingId(int $shippingId) {}
 
     public function applyCoupon(ApplyCouponCodeRequest $request, ApplyCoupon $applyCoupon)
     {
         $couponCode = $request->get('coupon_code');
 
-        if (!$applyCoupon->handle($couponCode)) {
+        if (! $applyCoupon->handle($couponCode)) {
 
             if ($request->ajax()) {
                 return response()->json(['error' => true]);

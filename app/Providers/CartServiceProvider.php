@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Services\Cart\Cart;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Session\SessionManager;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 
 class CartServiceProvider extends ServiceProvider
@@ -17,7 +18,7 @@ class CartServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('cart',function() {
+        $this->app->bind('cart', function () {
             return new Cart($this->app['session'], $this->app['events']);
         });
 

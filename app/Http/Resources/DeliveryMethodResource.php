@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -21,7 +23,7 @@ class DeliveryMethodResource extends JsonResource
             'country_id' => $this->country_id,
             'tracking' => $this->tracking,
             'courier_id' => $this->courier_id,
-            'courier' => CourierResource::make($this->courier)
+            'courier' => CourierResource::make($this->courier),
         ];
     }
 }

@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Models\User;
 use App\Repositories\AddressRepository;
-use App\Repositories\Support\ArticleRepository;
 use App\Repositories\AttributeRepository;
 use App\Repositories\AttributeValueRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\CategoryRepository;
-use App\Repositories\Interfaces\Support\IQuestionRepository;
-use App\Repositories\Support\CategoryRepository as SupportCategoryRepository;
 use App\Repositories\CountryRepository;
 use App\Repositories\CouponRepository;
 use App\Repositories\CourierRepository;
@@ -20,7 +19,6 @@ use App\Repositories\Interfaces\IAttributeRepository;
 use App\Repositories\Interfaces\IAttributeValueRepository;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
-use App\Repositories\Interfaces\Support\ICategoryRepository as ISupportCategoryRepository;
 use App\Repositories\Interfaces\ICountryRepository;
 use App\Repositories\Interfaces\ICouponRepository;
 use App\Repositories\Interfaces\ICourierRepository;
@@ -33,11 +31,15 @@ use App\Repositories\Interfaces\ISlideRepository;
 use App\Repositories\Interfaces\ITransactionRepository;
 use App\Repositories\Interfaces\IUserRepository;
 use App\Repositories\Interfaces\Support\IArticleRepository;
+use App\Repositories\Interfaces\Support\ICategoryRepository as ISupportCategoryRepository;
+use App\Repositories\Interfaces\Support\IQuestionRepository;
 use App\Repositories\MessageRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\SellerRepository;
 use App\Repositories\SlideRepository;
+use App\Repositories\Support\ArticleRepository;
+use App\Repositories\Support\CategoryRepository as SupportCategoryRepository;
 use App\Repositories\Support\QuestionRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
@@ -70,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
         ITransactionRepository::class => TransactionRepository::class,
         IArticleRepository::class => ArticleRepository::class,
         ISupportCategoryRepository::class => SupportCategoryRepository::class,
-        IQuestionRepository ::class => QuestionRepository::class
+        IQuestionRepository::class => QuestionRepository::class,
     ];
 
     /**
@@ -83,9 +85,9 @@ class AppServiceProvider extends ServiceProvider
         foreach ($this->repositories as $interface => $repository) {
             $this->app->bind($interface, $repository);
         }
-        
+
         $this->app->singleton('Image', function ($app) {
-            return new Image();
+            return new Image;
         });
     }
 
@@ -115,15 +117,15 @@ class AppServiceProvider extends ServiceProvider
                 'token' => $token,
                 'email' => $user->getEmailForPasswordReset(),
             ], false));
-    
+
             return (new MailMessage)
-                ->subject(config('app.name') . ': ' . __('Reset Password Request'))
+                ->subject(config('app.name').': '.__('Reset Password Request'))
                 ->greeting(__('Hello!'))
                 ->line(__('You are receiving this email because we received a password reset request for your account.'))
                 ->action(__('Reset Password'), $url)
-                ->line(__('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
+                ->line(__('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
                 ->line(__('If you did not request a password reset, no further action is required.'))
-                ->salutation(__('Regards,') . "\n" . config('app.name') . " Team");
+                ->salutation(__('Regards,')."\n".config('app.name').' Team');
         });
     }
 }

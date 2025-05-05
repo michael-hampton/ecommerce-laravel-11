@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Category;
@@ -41,10 +43,6 @@ class ProductRepository extends BaseRepository implements IProductRepository
             ->get();
     }
 
-    /**
-     * @param array $searchParams
-     * @return Builder
-     */
     protected function applyFilters(array $searchParams = []): Builder
     {
         $query = $this->getQuery();
@@ -53,45 +51,45 @@ class ProductRepository extends BaseRepository implements IProductRepository
             $query->where('active', true);
         }
 
-        $query->when(!empty($searchParams['seller_id']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['seller_id']), function (Builder $query) use ($searchParams) {
             $query->where('seller_id', '=', $searchParams['seller_id']);
         });
 
-        $query->whereRelation('seller', function (Builder $query) use ($searchParams) {
+        $query->whereRelation('seller', function (Builder $query) {
             $query->where('approved', true);
         });
 
-        $query->when(!empty($searchParams['brandIds']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['brandIds']), function (Builder $query) use ($searchParams) {
             $query->whereIn('brand_id', explode(',', $searchParams['brandIds']));
         });
 
-        $query->when(!empty($searchParams['attributeValueIds']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['attributeValueIds']), function (Builder $query) use ($searchParams) {
             $query->whereHas('productAttributes', function ($query) use ($searchParams) {
                 $query->whereIn('attribute_value_id', explode(',', $searchParams['attributeValueIds']));
             });
         });
 
-        $query->when(!empty($searchParams['categoryIds']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['categoryIds']), function (Builder $query) use ($searchParams) {
             // get children
             $children = Category::whereIn('parent_id', explode(',', $searchParams['categoryIds']))->get();
 
             $childrenIds = $children->pluck('id')->toArray();
             $parentIds = array_map('intval', explode(',', $searchParams['categoryIds']));
-            $ids = !empty($childrenIds) ? array_merge($parentIds, $childrenIds) : $parentIds;
+            $ids = ! empty($childrenIds) ? array_merge($parentIds, $childrenIds) : $parentIds;
 
             $query->whereIn('category_id', $ids);
 
         });
 
-        $query->when(!empty($searchParams['minPrice']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['minPrice']), function (Builder $query) use ($searchParams) {
             $query->where('regular_price', '>=', $searchParams['minPrice']);
         });
 
-        $query->when(!empty($searchParams['maxPrice']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['maxPrice']), function (Builder $query) use ($searchParams) {
             $query->where('regular_price', '<=', $searchParams['maxPrice']);
         });
 
-        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('name', 'like', "%{$searchParams['name']}%");
         });
 

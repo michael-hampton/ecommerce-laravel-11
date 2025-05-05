@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -116,7 +118,7 @@ return [
     ],
 
     'views' => [
-        'html' => 'emails'
-    ]
+        'html' => 'emails',
+    ],
 
 ];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\MassDestroyFaqQuestionRequest;
@@ -9,12 +11,11 @@ use App\Http\Requests\UpdateFaqQuestionRequest;
 use App\Http\Resources\Support\QuestionResource;
 use App\Models\FaqQuestion;
 use App\Repositories\Interfaces\Support\IQuestionRepository;
-use Illuminate\Http\Request;
 
 class FaqQuestionController extends ApiController
 {
-    public function __construct(private IQuestionRepository $questionRepository) {
-    }
+    public function __construct(private IQuestionRepository $questionRepository) {}
+
     public function index(SearchRequest $request)
     {
         $values = $this->questionRepository->getPaginated(
@@ -31,7 +32,7 @@ class FaqQuestionController extends ApiController
     {
         $faqQuestion = FaqQuestion::create($request->all());
 
-        if (!$faqQuestion) {
+        if (! $faqQuestion) {
             return $this->error('Unable to create Question');
         }
 
@@ -42,7 +43,7 @@ class FaqQuestionController extends ApiController
     {
         $result = $faqQuestion->update($request->all());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Question');
         }
 
@@ -53,7 +54,7 @@ class FaqQuestionController extends ApiController
     {
         $result = $faqQuestion->delete();
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to delete Question');
         }
 

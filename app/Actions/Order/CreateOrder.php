@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Order;
 
 use App\Events\OrderCreated;
@@ -12,7 +14,6 @@ use App\Models\WithdrawalTypeEnum;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
-use App\Services\Interfaces\IOrderService;
 use App\Services\PaymentProviders\Paypal;
 use App\Services\PaymentProviders\Stripe;
 use App\Services\WithdrawalService;
@@ -23,10 +24,7 @@ use Illuminate\Support\Facades\Session;
 
 class CreateOrder
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository)
-    {
-
-    }
+    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
 
     public function handle(array $data)
     {
@@ -34,7 +32,6 @@ class CreateOrder
         $this->setAmountForCheckout();
 
         $coupon = Session::has('coupon') ? Coupon::where('code', Session::get('coupon')['code'])->first() : null;
-
 
         DB::beginTransaction();
 
@@ -47,7 +44,7 @@ class CreateOrder
                 'discount' => Session::get('checkout.discount'),
                 'shipping' => Session::get('checkout.shipping'),
                 'address_id' => $data['address_id'],
-                'commission' => Session::get('checkout.commission')
+                'commission' => Session::get('checkout.commission'),
             ];
 
             $cartItems = Cart::instance('cart')->content();
@@ -57,15 +54,16 @@ class CreateOrder
 
             $order = $this->repository->create($orderData);
 
-            if (!$order) {
+            if (! $order) {
                 DB::rollBack();
             }
 
             $groupBySeller = [];
 
             foreach ($cartItems as $item) {
-                if (!isset($groupBySeller[$item->model->seller_id])) {
+                if (! isset($groupBySeller[$item->model->seller_id])) {
                     $groupBySeller[$item->model->seller_id] = 1;
+
                     continue;
                 }
                 $groupBySeller[$item->model->seller_id]++;
@@ -83,10 +81,10 @@ class CreateOrder
 
                 $discount = 0;
 
-                if (!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
+                if (! empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
                     if ($groupBySeller[$item->model->seller_id] === 1) {
                         $discount = $coupon->value;
-                    } elseif (Session::has('coupon') && !empty(Session::get('coupon')['matched'])) {
+                    } elseif (Session::has('coupon') && ! empty(Session::get('coupon')['matched'])) {
                         $matched = Session::get('coupon')['matched'];
                         $discount = in_array($item->id, $matched) ? $coupon->value : 0;
                     } else {
@@ -101,9 +99,9 @@ class CreateOrder
                     'price' => $item->price,
                     'seller_id' => $item->model->seller_id,
                     'order_id' => $order->id,
-                    'shipping_id' => !empty($deliveryMethod) ? $deliveryMethod->id : null,
+                    'shipping_id' => ! empty($deliveryMethod) ? $deliveryMethod->id : null,
                     'shipping_price' => round($shippingPrice, 4),
-                    'courier_id' => !empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
+                    'courier_id' => ! empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
                 ];
 
                 if ($discount > 0) {
@@ -115,13 +113,13 @@ class CreateOrder
                     'price' => $item->price,
                     'commission' => $commission,
                     'quantity' => $item->qty,
-                    'shipping_price' => round($shippingPrice, 4), //TODO Need to allow for coupons
-                    'discount' => $discount > 0 ? $discount : 0
+                    'shipping_price' => round($shippingPrice, 4), // TODO Need to allow for coupons
+                    'discount' => $discount > 0 ? $discount : 0,
                 ];
 
                 $result = OrderItem::create($orderItemData);
 
-                if (!$result) {
+                if (! $result) {
                     DB::rollBack();
                     break;
                 }
@@ -148,7 +146,7 @@ class CreateOrder
 
                     $result = Transaction::create($transactionData);
 
-                    if (!$result) {
+                    if (! $result) {
                         DB::rollBack();
                     }
                 }
@@ -169,13 +167,12 @@ class CreateOrder
             Session::forget('cart');
             Session::forget('coupon');
 
-
             event(new OrderCreated($order));
 
             if ($data['mode'] === 'paypal') {
-                (new Paypal())->capture($cartItems, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]);
+                (new Paypal)->capture($cartItems, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]);
             } elseif ($data['mode'] === 'card') {
-                (new Stripe())->capture($cartItems, array_merge($data, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]));
+                (new Stripe)->capture($cartItems, array_merge($data, ['orderId' => $order->id, 'commission' => $orderData['commission'], 'coupon' => $coupon]));
             }
 
             DB::commit();
@@ -190,6 +187,7 @@ class CreateOrder
     {
         if (Cart::instance('cart')->content()->isEmpty()) {
             Session::forget('checkout');
+
             return;
         }
 
@@ -201,7 +199,7 @@ class CreateOrder
                 'shipping' => Session::get('discounts')['shipping'],
                 'commission' => Session::get('discounts')['commission'],
                 'total' => Session::get('discounts')['total'],
-                'coupon' => Session::get('discounts')
+                'coupon' => Session::get('discounts'),
             ]);
 
             return;

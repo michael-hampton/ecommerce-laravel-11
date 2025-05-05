@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Product;
 
-use App\Helper;
 use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\ProductAttributeValue;
 use App\Models\WithdrawalEnum;
 use App\Models\WithdrawalTypeEnum;
 use App\Services\WithdrawalService;
+
 class SaveProduct
 {
-   
     protected function saveAttributes(array $data, Product $product): void
     {
         $productAttributeValues = AttributeValue::all()->keyBy('id');
@@ -31,7 +32,6 @@ class SaveProduct
             $attributeValue->save();
         }
     }
-
 
     protected function updateSellerBalance(int $bumpDays, Product $product): bool
     {

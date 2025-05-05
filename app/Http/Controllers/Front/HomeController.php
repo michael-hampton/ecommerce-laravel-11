@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
@@ -25,9 +27,7 @@ class HomeController extends Controller
         private IProductRepository $productRepository,
         private ISlideRepository $slideRepository,
         private IBrandRepository $brandRepository
-    ) {
-
-    }
+    ) {}
 
     public function index()
     {
@@ -53,18 +53,17 @@ class HomeController extends Controller
 
     public function updatePassword(UpdatePasswordRequest $request)
     {
-        #Match The Old Password
-        if (!Hash::check($request->old_password, auth()->user()->password)) {
-            return back()->with("error", "Old Password Doesn't match!");
+        // Match The Old Password
+        if (! Hash::check($request->old_password, auth()->user()->password)) {
+            return back()->with('error', "Old Password Doesn't match!");
         }
 
-
-        #Update the new Password
+        // Update the new Password
         User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->new_password)
+            'password' => Hash::make($request->new_password),
         ]);
 
-        return back()->with("status", "Password changed successfully!");
+        return back()->with('status', 'Password changed successfully!');
     }
 
     public function about()
@@ -80,7 +79,7 @@ class HomeController extends Controller
     public function help()
     {
         $categories = FaqCategory::all();
-        //$questions = FaqQuestion::all()->groupBy('category_id');
+        // $questions = FaqQuestion::all()->groupBy('category_id');
 
         return view('front.help', compact('categories'));
     }
@@ -92,6 +91,7 @@ class HomeController extends Controller
                 $query->where('slug', '=', $slug);
             })
             ->get();
+
         return view('front.help-topic', compact('questions'));
     }
 
@@ -100,17 +100,13 @@ class HomeController extends Controller
         return view('front.terms');
     }
 
-
     /**
-
      * Write code on Method
-
      *
-
+     *
+     *
      * @return response()
-
      */
-
     public function store(ContactUsRequest $request)
     {
         Contact::create($request->all());

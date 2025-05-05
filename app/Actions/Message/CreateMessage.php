@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Message;
 
 use App\Helper;
@@ -8,33 +10,28 @@ use App\Repositories\Interfaces\IMessageRepository;
 
 class CreateMessage
 {
-
-    public function __construct(private IMessageRepository $repository)
-    {
-
-    }
+    public function __construct(private IMessageRepository $repository) {}
 
     /**
-     * @param array $data
      * @return mixed
      */
     public function handle(array $data)
     {
         $sellerId = $data['sellerId'] ?? null;
 
-        if (empty($sellerId) && !empty($data['orderItemId'])) {
+        if (empty($sellerId) && ! empty($data['orderItemId'])) {
             $orderItem = OrderItem::whereId($data['orderItemId'])->first();
             $sellerId = $orderItem->seller_id;
         }
 
-        if (!empty($data['images'])) {
+        if (! empty($data['images'])) {
             $counter = 0;
             $gallery_arr = [];
             foreach ($data['images'] as $file) {
                 $gextension = $file->getClientOriginalExtension();
                 $check = in_array($gextension, ['png', 'jpg', 'jpeg', 'gif']);
                 if ($check) {
-                    $gfilename = time() . "-" . $counter . "." . $gextension;
+                    $gfilename = time().'-'.$counter.'.'.$gextension;
                     $file->storeAs('messages', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'messages');
                     array_push($gallery_arr, $gfilename);
@@ -52,7 +49,7 @@ class CreateMessage
             'message' => $data['comment'],
             'seller_id' => $sellerId,
             'order_item_id' => $data['orderItemId'] ?? null,
-            'images' => $gallery_images ?? null
+            'images' => $gallery_images ?? null,
         ]);
     }
 }

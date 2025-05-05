@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +16,6 @@ class OrderLog extends Model
         'order_item_id',
         'status_to',
         'courier_name',
-        'tracking_number'
+        'tracking_number',
     ];
 }

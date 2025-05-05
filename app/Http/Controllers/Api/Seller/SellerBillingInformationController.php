@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Http\Controllers\Controller;
-use App\Models\SellerBankDetails;
 use App\Models\SellerBillingInformation;
 use Illuminate\Http\Request;
 
@@ -27,8 +28,7 @@ class SellerBillingInformationController extends Controller
             array_merge($request->all(), ['seller_id' => auth('sanctum')->id()])
         );
 
-
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update billing details');
         }
 
@@ -42,7 +42,7 @@ class SellerBillingInformationController extends Controller
     {
         $result = SellerBillingInformation::where('seller_id', auth('sanctum')->id())->first();
 
-       return response()->json($result);
+        return response()->json($result);
     }
 
     /**

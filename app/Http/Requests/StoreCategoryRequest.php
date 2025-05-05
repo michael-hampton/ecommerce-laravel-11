@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\Category;
@@ -26,9 +28,9 @@ class StoreCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required|unique:categories,name',
-            'slug'=>'required|unique:categories,slug',
-            //'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|unique:categories,name',
+            'slug' => 'required|unique:categories,slug',
+            // 'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

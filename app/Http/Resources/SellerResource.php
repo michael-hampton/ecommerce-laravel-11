@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class SellerResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'profile_picture' => asset('images/sellers') . '/' . $this->profile_picture,
+            'profile_picture' => asset('images/sellers').'/'.$this->profile_picture,
             'phone' => $this->phone,
             'email' => $this->email,
             'biography' => $this->biography,
@@ -28,7 +30,7 @@ class SellerResource extends JsonResource
             'address2' => $this->address2,
             'website' => $this->website,
             'active' => $this->active,
-            'username' => $this->username
+            'username' => $this->username,
         ];
     }
 }

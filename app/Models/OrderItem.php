@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -30,18 +32,21 @@ class OrderItem extends Model
         'delivery_date',
         'cancelled_date',
         'commission',
-        'approved_date'
+        'approved_date',
     ];
 
-    public function product(): BelongsTo {
+    public function product(): BelongsTo
+    {
         return $this->belongsTo(Product::class, 'product_id');
     }
 
-    public function seller(): BelongsTo {
+    public function seller(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'seller_id');
     }
 
-    public function order(): BelongsTo {
+    public function order(): BelongsTo
+    {
         return $this->belongsTo(Order::class, 'order_id');
     }
 
@@ -52,7 +57,7 @@ class OrderItem extends Model
 
     public function logs(): HasMany
     {
-        return $this->hasMany(OrderLog::class , 'order_item_id');
+        return $this->hasMany(OrderLog::class, 'order_item_id');
     }
 
     public function courier(): BelongsTo
@@ -60,7 +65,8 @@ class OrderItem extends Model
         return $this->belongsTo(Courier::class, 'courier_id');
     }
 
-    public function messages(): HasMany {
+    public function messages(): HasMany
+    {
         return $this->hasMany(Post::class, 'order_item_id');
     }
 }

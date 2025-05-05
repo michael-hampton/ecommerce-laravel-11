@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Category;
@@ -8,7 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoryRepository extends BaseRepository implements ICategoryRepository
 {
-
     public function __construct(Category $category)
     {
         parent::__construct($category);
@@ -22,19 +23,19 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository
             $query->where('active', true);
         }
 
-        $query->when(!empty($searchParams['ignore_children']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['ignore_children']), function (Builder $query) {
             $query->where('parent_id', '=', 0)->orWhere('parent_id', '=', null);
         });
 
-        $query->when(!empty($searchParams['is_featured']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['is_featured']), function (Builder $query) use ($searchParams) {
             $query->where('is_featured', '=', $searchParams['is_featured']);
         });
 
-        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('name', 'like', "%{$searchParams['name']}%");
         });
 
-        $query->when(!empty($searchParams['menu_status']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['menu_status']), function (Builder $query) use ($searchParams) {
             $query->where('menu_status', $searchParams['menu_status']);
         });
 

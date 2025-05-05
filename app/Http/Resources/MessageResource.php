@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -23,8 +25,8 @@ class MessageResource extends JsonResource
             'title' => $this->title,
             'comments' => CommentResource::collection($this->comments),
             'images' => collect(explode(',', $this->images))->map(function ($image) {
-                return asset('images/messages/' . $image);
-            })
+                return asset('images/messages/'.$image);
+            }),
         ];
     }
 }

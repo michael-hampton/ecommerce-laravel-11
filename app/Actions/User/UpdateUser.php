@@ -1,32 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Helper;
 use App\Repositories\Interfaces\IUserRepository;
-use App\Services\Interfaces\IUserService;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 
 class UpdateUser
 {
-    public function __construct(private IUserRepository $repository)
-    {
-
-    }
-
+    public function __construct(private IUserRepository $repository) {}
 
     public function handle(array $data, int $id)
     {
         $user = $this->repository->getById($id);
 
-        if (!empty($data['image'])) {
-            if (File::exists(public_path('uploads/users/' . $user->image))) {
-                File::delete(public_path('uploads/users/' . $user->image));
+        if (! empty($data['image'])) {
+            if (File::exists(public_path('uploads/users/'.$user->image))) {
+                File::delete(public_path('uploads/users/'.$user->image));
             }
 
             $image = $data['image'];
-            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
 
             $data['image']->storeAs('users', $filename, 'public');
 

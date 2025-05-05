@@ -1,21 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Order;
 
 use App\Events\OrderStatusUpdated;
 use App\Models\Order;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
+
 use function auth;
 
 class UpdateOrder
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository)
-    {
+    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
 
-    }
-
-    
     public function handle(array $data, int $id): Order
     {
         $orderData = ['status' => $data['status']];
@@ -28,7 +27,7 @@ class UpdateOrder
             $orderData['cancelled_date'] = now();
         }
 
-        if (!empty($data['tracking_number'])) {
+        if (! empty($data['tracking_number'])) {
             $orderData['tracking_number'] = $data['tracking_number'];
         }
 
@@ -51,5 +50,4 @@ class UpdateOrder
 
         return $order;
     }
-
 }

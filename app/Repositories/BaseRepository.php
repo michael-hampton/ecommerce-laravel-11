@@ -1,42 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Repositories\Interfaces\IBaseRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\Paginator;
 
 class BaseRepository implements IBaseRepository
 {
     protected $requiredRelationships = [];
 
-    public function __construct(protected Model $model)
-    {
-    }
+    public function __construct(protected Model $model) {}
 
     /**
      * Get all items
      *
-     * @param string $columns specific columns to select
-     * @param string $orderBy column to sort by
-     * @param string $sort sort direction
+     * @param  string  $columns  specific columns to select
+     * @param  string  $orderBy  column to sort by
+     * @param  string  $sort  sort direction
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAll(string $columns = null, string $orderBy = 'created_at', string $sort = 'desc', array $searchParams = [])
+    public function getAll(?string $columns = null, string $orderBy = 'created_at', string $sort = 'desc', array $searchParams = [])
     {
         return $this->applyFilters($searchParams)
             ->with($this->requiredRelationships)
             ->orderBy($orderBy, $sort)
-            ->get()
-        ;
+            ->get();
     }
 
     protected function getQuery(): Builder
     {
         $query = $this->model->query();
 
-        $query->when(!empty($this->with), function (Builder $query) {
+        $query->when(! empty($this->with), function (Builder $query) {
             $query->with($this->with);
         });
 
@@ -51,19 +49,15 @@ class BaseRepository implements IBaseRepository
     /**
      * Get paged items
      *
-     * @param int $paged
-     * @param string $orderBy
-     * @param string $sort
-     * @param $search
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getPaginated(int $paged = 15, string $orderBy = 'created_at', string $sort = 'desc', $search = [])
     {
-//        dd($this->applyFilters($search)
-//            //->with($this->requiredRelationships)
-//            ->orderBy($orderBy, $sort)->toSql());
+        //        dd($this->applyFilters($search)
+        //            //->with($this->requiredRelationships)
+        //            ->orderBy($orderBy, $sort)->toSql());
 
-        return  $this->applyFilters($search)
+        return $this->applyFilters($search)
             ->with($this->requiredRelationships)
             ->orderBy($orderBy, $sort)
             ->paginate($paged);
@@ -72,7 +66,7 @@ class BaseRepository implements IBaseRepository
     /**
      * Choose what relationships to return with query.
      *
-     * @param mixed $relationships
+     * @param  mixed  $relationships
      * @return $this
      */
     public function with($relationships)
@@ -95,7 +89,6 @@ class BaseRepository implements IBaseRepository
     /**
      * Perform the repository query.
      *
-     * @param $callback
      * @return mixed
      */
     protected function doQuery($callback)
@@ -112,11 +105,11 @@ class BaseRepository implements IBaseRepository
     /**
      * Items for select options
      *
-     * @param string $data column to display in the option
-     * @param string $key column to be used as the value in option
-     * @param string $orderBy column to sort by
-     * @param string $sort sort direction
-     * @return array           array with key value pairs
+     * @param  string  $data  column to display in the option
+     * @param  string  $key  column to be used as the value in option
+     * @param  string  $orderBy  column to sort by
+     * @param  string  $sort  sort direction
+     * @return array array with key value pairs
      */
     public function getForSelect($data, $key = 'id', $orderBy = 'created_at', $sort = 'desc')
     {
@@ -125,8 +118,7 @@ class BaseRepository implements IBaseRepository
                 ->with($this->requiredRelationships)
                 ->orderBy($orderBy, $sort)
                 ->lists($data, $key)
-                ->all()
-            ;
+                ->all();
         };
 
         return $this->doQuery($query);
@@ -135,16 +127,15 @@ class BaseRepository implements IBaseRepository
     /**
      * Get instance of model by column
      *
-     * @param mixed $term search term
-     * @param string $column column to search
+     * @param  mixed  $term  search term
+     * @param  string  $column  column to search
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getCollectionByColumn(string $term, string $column = 'slug', int $limit = 0)
     {
         $query = $this->model
-            //->with($this->requiredRelationships)
-            ->where($column, '=', $term)
-        ;
+            // ->with($this->requiredRelationships)
+            ->where($column, '=', $term);
 
         if ($limit > 0) {
             $query->take($limit);
@@ -156,8 +147,8 @@ class BaseRepository implements IBaseRepository
     /**
      * Get item by id or column
      *
-     * @param mixed $term id or term
-     * @param string $column column to search
+     * @param  mixed  $term  id or term
+     * @param  string  $column  column to search
      * @return Model
      */
     public function getActively($term, $column = 'slug')
@@ -172,7 +163,7 @@ class BaseRepository implements IBaseRepository
     /**
      * Get item by its id
      *
-     * @param integer $id
+     * @param  int  $id
      * @return Model
      */
     public function getById($id)
@@ -183,24 +174,22 @@ class BaseRepository implements IBaseRepository
     /**
      * Get instance of model by column
      *
-     * @param mixed $term search term
-     * @param string $column column to search
+     * @param  mixed  $term  search term
+     * @param  string  $column  column to search
      * @return Model
      */
     public function getItemByColumn($term, $column = 'slug')
     {
         return $this->model
-            //->with($this->requiredRelationships)
+            // ->with($this->requiredRelationships)
             ->where($column, '=', $term)
-            ->first()
-        ;
+            ->first();
     }
 
     /**
      * Update or crate a record and return the entity
      *
-     * @param array $identifiers columns to search for
-     * @param array $data
+     * @param  array  $identifiers  columns to search for
      * @return mixed
      */
     public function updateOrCreate(array $identifiers, array $data)
@@ -219,8 +208,8 @@ class BaseRepository implements IBaseRepository
     /**
      * Update a record using the primary key.
      *
-     * @param $id mixed primary key
-     * @param $data array
+     * @param  $id  mixed primary key
+     * @param  $data  array
      */
     public function update($id, array $data)
     {
@@ -230,7 +219,6 @@ class BaseRepository implements IBaseRepository
     /**
      * Create new using mass assignment
      *
-     * @param array $data
      * @return mixed
      */
     public function create(array $data)
@@ -240,8 +228,6 @@ class BaseRepository implements IBaseRepository
 
     /**
      * Used for bulk insertion
-     * @param array $data
-     * @return bool
      */
     public function insert(array $data): bool
     {
@@ -251,7 +237,6 @@ class BaseRepository implements IBaseRepository
     /**
      * Delete a record by the primary key.
      *
-     * @param $id
      * @return bool
      */
     public function delete($id)
@@ -262,50 +247,50 @@ class BaseRepository implements IBaseRepository
     /**
      *  Apply any modifiers to the query.
      *
-     * @param $callback
-     * @param $methodName
-     * @param $arguments
+     * @param  $callback
+     * @param  $methodName
+     * @param  $arguments
      * @return mixed
      */
-//    private function doBeforeQuery($callback, $methodName, $arguments)
-//    {
-//        $traits = $this->getUsedTraits();
-//
-//        if (in_array(CacheResults::class, $traits) && $this->caching && $this->isCacheableMethod($methodName)) {
-//            return $this->processCacheRequest($callback, $methodName, $arguments);
-//        }
-//
-//        return $callback();
-//    }
+    //    private function doBeforeQuery($callback, $methodName, $arguments)
+    //    {
+    //        $traits = $this->getUsedTraits();
+    //
+    //        if (in_array(CacheResults::class, $traits) && $this->caching && $this->isCacheableMethod($methodName)) {
+    //            return $this->processCacheRequest($callback, $methodName, $arguments);
+    //        }
+    //
+    //        return $callback();
+    //    }
 
     /**
      * Handle the query result.
      *
-     * @param $result
-     * @param $methodName
-     * @param $arguments
+     * @param  $result
+     * @param  $methodName
+     * @param  $arguments
      * @return mixed
      */
-//    private function doAfterQuery($result, $methodName, $arguments)
-//    {
-//        $traits = $this->getUsedTraits();
-//
-//        if (in_array(CacheResults::class, $traits)) {
-//            // Reset caching to enabled in case it has just been disabled.
-//            $this->caching = true;
-//        }
-//
-//        if (in_array(ThrowsHttpExceptions::class, $traits)) {
-//
-//            if ($this->shouldThrowHttpException($result, $methodName)) {
-//                $this->throwNotFoundHttpException($methodName, $arguments);
-//            }
-//
-//            $this->exceptionsDisabled = false;
-//        }
-//
-//        return $result;
-//    }
+    //    private function doAfterQuery($result, $methodName, $arguments)
+    //    {
+    //        $traits = $this->getUsedTraits();
+    //
+    //        if (in_array(CacheResults::class, $traits)) {
+    //            // Reset caching to enabled in case it has just been disabled.
+    //            $this->caching = true;
+    //        }
+    //
+    //        if (in_array(ThrowsHttpExceptions::class, $traits)) {
+    //
+    //            if ($this->shouldThrowHttpException($result, $methodName)) {
+    //                $this->throwNotFoundHttpException($methodName, $arguments);
+    //            }
+    //
+    //            $this->exceptionsDisabled = false;
+    //        }
+    //
+    //        return $result;
+    //    }
 
     /**
      * @return int
@@ -318,26 +303,26 @@ class BaseRepository implements IBaseRepository
     public function setRequiredRelationships(array $requiredRelationships): self
     {
         $this->requiredRelationships = $requiredRelationships;
+
         return $this;
     }
 
     /**
      * @return $this
      */
-//    protected function setUses()
-//    {
-//        $this->uses = array_flip(class_uses_recursive(get_class($this)));
-//
-//        return $this;
-//    }
-//
-//    /**
-//     * @return array
-//     */
-//    protected function getUsedTraits()
-//    {
-//        return $this->uses;
-//    }
-
+    //    protected function setUses()
+    //    {
+    //        $this->uses = array_flip(class_uses_recursive(get_class($this)));
+    //
+    //        return $this;
+    //    }
+    //
+    //    /**
+    //     * @return array
+    //     */
+    //    protected function getUsedTraits()
+    //    {
+    //        return $this->uses;
+    //    }
 
 }

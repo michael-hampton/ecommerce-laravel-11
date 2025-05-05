@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Profile;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ProfilePolicy
 {
@@ -29,7 +30,7 @@ class ProfilePolicy
      */
     public function create(User $user): bool
     {
-         return true;
+        return true;
     }
 
     /**

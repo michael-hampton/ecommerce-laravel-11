@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductAttributeValue;
 use Faker\Generator;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -35,7 +35,7 @@ class ProductSeeder extends Seeder
                 'seller_id' => $faker->numberBetween(1, 2),
                 'name' => $faker->word(),
                 'slug' => $faker->slug(),
-                'image' => Str::replace('products/', '', collect(Storage::disk('public')->files('products'))->random())
+                'image' => Str::replace('products/', '', collect(Storage::disk('public')->files('products'))->random()),
             ];
 
             $product = Product::create($product);

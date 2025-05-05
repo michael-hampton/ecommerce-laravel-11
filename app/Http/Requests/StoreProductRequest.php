@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\Product;
@@ -26,19 +28,19 @@ class StoreProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required|unique:brands,name|max:100',
-            'slug'=>'required|unique:products,slug',
-            'category_id'=>'required',
-            'brand_id'=>'required',
-            'short_description'=>'required|max:100',
-            'description'=>'required|max:250',
-            'regular_price'=>'required',
-            'sale_price'=>'required',
-            'SKU'=>'required',
-            'stock_status'=>'required',
-            'featured'=>'required',
-            'quantity'=>'required',
-            'image'=>'required|mimes:png,jpg,jpeg|max:2048'
+            'name' => 'required|unique:brands,name|max:100',
+            'slug' => 'required|unique:products,slug',
+            'category_id' => 'required',
+            'brand_id' => 'required',
+            'short_description' => 'required|max:100',
+            'description' => 'required|max:250',
+            'regular_price' => 'required',
+            'sale_price' => 'required',
+            'SKU' => 'required',
+            'stock_status' => 'required',
+            'featured' => 'required',
+            'quantity' => 'required',
+            'image' => 'required|mimes:png,jpg,jpeg|max:2048',
         ];
     }
 }

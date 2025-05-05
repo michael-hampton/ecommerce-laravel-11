@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
 use App\Actions\Address\CreateAddress;
@@ -19,28 +21,26 @@ class CheckoutController extends Controller
 {
     public function __construct(
         private IAddressRepository $addressRepository,
-        private IOrderRepository   $orderRepository,
-    )
-    {
-
-    }
+        private IOrderRepository $orderRepository,
+    ) {}
 
     public function index(Request $request)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
-        if (!empty($request->integer('shipping_id'))) {
+        if (! empty($request->integer('shipping_id'))) {
             \App\Services\Cart\Facade\Cart::instance('cart')->setShippingId($request->integer('shipping_id'));
         }
 
         $countries = Country::orderBy('name', 'asc')->get();
         $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
+
         return view('front.checkout', [
             'addresses' => $addresses,
             'countries' => $countries,
-            'currency' => config('shop.currency')
+            'currency' => config('shop.currency'),
         ]);
     }
 
@@ -49,7 +49,7 @@ class CheckoutController extends Controller
         $customerId = auth()->user()->id;
         $addressId = $request->integer('address');
         $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
-        $address = !empty($addressId) ? $addresses->where('id', $addressId)->first() : $addresses->first();
+        $address = ! empty($addressId) ? $addresses->where('id', $addressId)->first() : $addresses->first();
 
         $adrressData = $request->except(['_token']);
         $adrressData['customer_id'] = $customerId;
@@ -67,8 +67,7 @@ class CheckoutController extends Controller
 
             return redirect()
                 ->route('checkout.orderConfirmation', compact('order'))
-                ->with('success', 'Order placed successfully')
-            ;
+                ->with('success', 'Order placed successfully');
         }
 
         return view('front.checkout-card', ['addressId' => $addressId, 'addresses' => $addresses, 'currency' => config('shop.currency')]);
@@ -87,8 +86,7 @@ class CheckoutController extends Controller
 
         return redirect()
             ->route('checkout.orderConfirmation', compact('order'))
-            ->with('success', 'Order placed successfully')
-        ;
+            ->with('success', 'Order placed successfully');
     }
 
     public function orderConfirmation(): View

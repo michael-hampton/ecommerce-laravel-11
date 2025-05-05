@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +28,7 @@ class Order extends Model
         'total',
         'commission',
         'tracking_number',
-        'courier_id'
+        'courier_id',
     ];
 
     public function customer()
@@ -39,15 +41,18 @@ class Order extends Model
         return $this->belongsTo(Address::class, 'address_id');
     }
 
-    public function lineTotal() {
+    public function lineTotal()
+    {
         return $this->orderItems->where('seller_id', auth()->id())->sum('price');
     }
 
-    public function totalCount() {
+    public function totalCount()
+    {
         return $this->orderItems->where('seller_id', auth()->id())->count();
     }
 
-    public function subtotal() {
+    public function subtotal()
+    {
         $orderItems = $this->orderItems->where('seller_id', auth()->id());
 
         $total = 0;
@@ -62,7 +67,8 @@ class Order extends Model
         return round($total, 2);
     }
 
-    public function shipping() {
+    public function shipping()
+    {
         $orderItems = $this->orderItems->where('seller_id', auth()->id());
 
         $total = 0;
@@ -86,7 +92,7 @@ class Order extends Model
 
     public function logs()
     {
-        return $this->hasMany(OrderLog::class , 'order_id');
+        return $this->hasMany(OrderLog::class, 'order_id');
     }
 
     public function courier()

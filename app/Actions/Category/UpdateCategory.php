@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Category;
 
 use App\Helper;
@@ -12,10 +14,7 @@ use Illuminate\Support\Str;
 
 class UpdateCategory
 {
-    public function __construct(private ICategoryRepository $repository)
-    {
-
-    }
+    public function __construct(private ICategoryRepository $repository) {}
 
     private function saveAttributes($attributes, Category $category): void
     {
@@ -39,13 +38,13 @@ class UpdateCategory
             $data['parent_id'] = 0;
         }
 
-        if (!empty($data['image'])) {
-            if (File::exists(public_path('uploads/categories/' . $category->image))) {
-                File::delete(public_path('uploads/categories/' . $category->image));
+        if (! empty($data['image'])) {
+            if (File::exists(public_path('uploads/categories/'.$category->image))) {
+                File::delete(public_path('uploads/categories/'.$category->image));
             }
 
             $image = $data['image'];
-            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
 
             $image->storeAs('categories', $filename, 'public');
 
@@ -55,12 +54,11 @@ class UpdateCategory
             $data['image'] = $filename;
         }
 
-        if (!empty($data['attributes'])) {
+        if (! empty($data['attributes'])) {
             $this->saveAttributes($data['attributes'], $category);
             unset($data['attributes']);
         }
 
         return $this->repository->update($id, $data);
     }
-
 }

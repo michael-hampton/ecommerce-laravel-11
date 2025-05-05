@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
-use App\Actions\Brand\UpdateBrand;
 use App\Actions\Category\ActivateCategory;
 use App\Actions\Category\CreateCategory;
 use App\Actions\Category\DeleteCategory;
@@ -15,10 +16,7 @@ use App\Repositories\Interfaces\ICategoryRepository;
 
 class CategoryController extends ApiController
 {
-    public function __construct(private ICategoryRepository $categoryRepository)
-    {
-
-    }
+    public function __construct(private ICategoryRepository $categoryRepository) {}
 
     /**
      * Display a listing of the resource.
@@ -37,16 +35,14 @@ class CategoryController extends ApiController
         return $this->sendPaginatedResponse($categories, CategoryResource::collection($categories));
     }
 
-
     /**
-     * @param StoreCategoryRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreCategoryRequest $request, CreateCategory $createCategory)
     {
         $result = $createCategory->handle($request->all());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Category');
         }
 
@@ -66,15 +62,13 @@ class CategoryController extends ApiController
     }
 
     /**
-     * @param UpdateCategoryRequest $request
-     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateCategoryRequest $request, int $id, UpdateCategory $updateCategory)
     {
         $result = $updateCategory->handle($request->except(['_token', '_method']), $id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Category');
         }
 
@@ -82,14 +76,13 @@ class CategoryController extends ApiController
     }
 
     /**
-     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $id, DeleteCategory $deleteCategory)
     {
         $result = $deleteCategory->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to delete Category');
         }
 
@@ -100,7 +93,7 @@ class CategoryController extends ApiController
     {
         $result = $activateCategory->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Category');
         }
 

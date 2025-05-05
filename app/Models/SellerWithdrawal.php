@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +13,6 @@ class SellerWithdrawal extends Model
         'seller_id',
         'transaction_id',
         'order_id',
-        'product_id'
+        'product_id',
     ];
 }

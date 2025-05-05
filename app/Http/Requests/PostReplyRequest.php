@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,7 +27,7 @@ class PostReplyRequest extends FormRequest
     {
         return [
             'message' => 'required|string|min:3|max:255',
-            'postId' => 'required|integer|exists:posts,id'
+            'postId' => 'required|integer|exists:posts,id',
         ];
     }
 }

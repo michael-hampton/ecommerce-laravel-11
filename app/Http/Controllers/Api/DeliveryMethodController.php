@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Actions\DeliveryMethod\CreateDeliveryMethod;
@@ -19,12 +21,10 @@ class DeliveryMethodController extends ApiController
     public function __construct(
         private ICountryRepository $countryRepository,
         private DeliveryMethodRepository $deliveryMethodRepository,
-    ) {
-
-    }
+    ) {}
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(SearchRequest $request)
@@ -39,16 +39,14 @@ class DeliveryMethodController extends ApiController
         return $this->sendPaginatedResponse($countries, DeliveryCountryResource::collection($countries));
     }
 
-
     /**
-     * @param StoreDeliveryMethodRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreDeliveryMethodRequest $request, CreateDeliveryMethod $createDeliveryMethod)
     {
         $result = $createDeliveryMethod->handle($request->all());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Delivery Method');
         }
 
@@ -64,20 +62,18 @@ class DeliveryMethodController extends ApiController
     public function show($id)
     {
         $delivery = $this->deliveryMethodRepository->getAll(null, 'country_id', 'desc', ['country_id' => $id]);
-    
-       return response()->json(DeliveryMethodResource::collection($delivery));
+
+        return response()->json(DeliveryMethodResource::collection($delivery));
     }
 
     /**
-     * @param UpdateDeliveryMethodRequest $request
-     * @param $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateDeliveryMethodRequest $request, $id, UpdateDeliveryMethod $updateDeliveryMethod)
     {
         $result = $updateDeliveryMethod->handle($request->all(), $id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Delivery Method');
         }
 
@@ -85,14 +81,13 @@ class DeliveryMethodController extends ApiController
     }
 
     /**
-     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $id, DeleteDeliveryMethod $deleteDeliveryMethod)
     {
         $result = $deleteDeliveryMethod->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Delivery Method');
         }
 

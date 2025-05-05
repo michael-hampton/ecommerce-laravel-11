@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
@@ -12,6 +14,7 @@ class WishListController extends Controller
     {
         $items = Cart::instance('wishlist')->content();
         $currency = config('shop.currency');
+
         return view('front.wishlist', compact('items', 'currency'));
     }
 
@@ -34,12 +37,14 @@ class WishListController extends Controller
     public function removeFromWishList(string $rowId)
     {
         Cart::instance('wishlist')->remove($rowId);
+
         return redirect()->back();
     }
 
     public function emptyWishList()
     {
         Cart::instance('wishlist')->destroy();
+
         return redirect()->back();
     }
 
@@ -54,6 +59,7 @@ class WishListController extends Controller
             $item->price
         )->associate('App\Models\Product');
         Cart::instance('wishlist')->remove($rowId);
+
         return redirect()->back();
     }
 }

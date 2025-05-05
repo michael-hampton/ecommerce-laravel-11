@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Brand;
 
 use App\Helper;
@@ -9,19 +11,15 @@ use Illuminate\Support\Str;
 
 class CreateBrand
 {
-    public function __construct(private IBrandRepository $repository)
-    {
-
-    }
-
+    public function __construct(private IBrandRepository $repository) {}
 
     /**
-     * @param array $data
      * @return mixed
      */
-    public function handle(array $data): Brand {
+    public function handle(array $data): Brand
+    {
         $data['slug'] = Str::slug($data['name']);
-        $filename = time() . '.' . $data['image']->getClientOriginalExtension();
+        $filename = time().'.'.$data['image']->getClientOriginalExtension();
         $data['image']->storeAs('brands', $filename, 'public');
 
         // Thumbnail

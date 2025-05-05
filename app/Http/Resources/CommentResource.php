@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -20,8 +22,8 @@ class CommentResource extends JsonResource
             'created_at' => $this->created_at->diffForHumans(),
             'message' => $this->message,
             'images' => collect(explode(',', $this->images))->map(function ($image) {
-                return asset('images/messages/' . $image);
-            })
+                return asset('images/messages/'.$image);
+            }),
         ];
     }
 }

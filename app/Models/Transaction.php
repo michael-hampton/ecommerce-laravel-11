@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,18 +24,21 @@ class Transaction extends Model
         'total',
         'shipping',
         'discount',
-        'withdrawn'
+        'withdrawn',
     ];
 
-    public function order() {
+    public function order()
+    {
         return $this->belongsTo(Order::class, 'order_id');
     }
 
-    public function customer() {
+    public function customer()
+    {
         return $this->belongsTo(User::class, 'customer_id');
     }
 
-    public function seller() {
+    public function seller()
+    {
         return $this->belongsTo(User::class, 'seller_id');
     }
 }

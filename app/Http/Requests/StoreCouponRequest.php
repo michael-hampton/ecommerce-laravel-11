@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -13,7 +15,7 @@ class StoreCouponRequest extends FormRequest
      */
     public function authorize()
     {
-        return true; //TODO
+        return true; // TODO
     }
 
     /**
@@ -24,11 +26,11 @@ class StoreCouponRequest extends FormRequest
     public function rules()
     {
         return [
-            'code'=>'required|unique:coupons,code',
-            'type'=>'required',
-            'value'=>'required|numeric',
-            'cart_value'=>'required|numeric',
-            'expires_at'=>'required|date',
+            'code' => 'required|unique:coupons,code',
+            'type' => 'required',
+            'value' => 'required|numeric',
+            'cart_value' => 'required|numeric',
+            'expires_at' => 'required|date',
         ];
     }
 }

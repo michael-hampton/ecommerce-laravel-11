@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\User;
@@ -21,8 +23,7 @@ class UserRepository extends BaseRepository implements IUserRepository
             $query->where('active', true);
         }
 
-
-        $query->when(!empty($searchParams['name']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('name', 'like', "%{$searchParams['name']}%");
         });
 

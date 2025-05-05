@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -24,7 +26,6 @@ class RegisterController extends Controller
     |
     */
 
-
     /**
      * Where to redirect users after registration.
      *
@@ -45,7 +46,6 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -62,7 +62,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\Models\User
+     * @return User
      */
     protected function create(Request $request): RedirectResponse
     {
@@ -73,18 +73,18 @@ class RegisterController extends Controller
             'mobile' => $request->string('mobile'),
             'password' => Hash::make($request->string('password')),
             'active' => true,
-            'utype' => !empty($request->get('seller_account')) ? 'ADM' : 'USR'
+            'utype' => ! empty($request->get('seller_account')) ? 'ADM' : 'USR',
         ]);
 
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
-        if(!empty($request->get('seller_account'))) {
+        if (! empty($request->get('seller_account'))) {
             Profile::create([
                 'name' => $request->string('name'),
                 'email' => $request->string('email'),
                 'phone' => $request->string('mobile'),
                 'user_id' => $user->id,
-                'active' => false
+                'active' => false,
             ]);
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -24,7 +26,7 @@ class UpdateAttributeValueRequest extends FormRequest
     {
         return [
             'attribute_id' => 'required|integer|exists:product_attributes,id',
-            'name' => 'required|string|max:255|unique:attribute_values,name,' . request()->get('id'),
+            'name' => 'required|string|max:255|unique:attribute_values,name,'.request()->get('id'),
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,7 +27,7 @@ class UpdateSellerBankDetails extends FormRequest
             'account_name' => 'required',
             'account_number' => 'required',
             'bank_name' => 'required',
-            //'bank_code' => 'required',
+            // 'bank_code' => 'required',
         ];
     }
 }

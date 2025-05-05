@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +15,7 @@ class SellerBillingInformation extends Model
         'address2',
         'city',
         'state',
-        'seller_id'
+        'seller_id',
     ];
 
     protected $table = 'seller_billing_information';

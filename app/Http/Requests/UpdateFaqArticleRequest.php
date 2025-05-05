@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,7 +25,7 @@ class UpdateFaqArticleRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'slug' => 'required|unique:faq_articles,slug,' . request()->get('slug'),
+            'slug' => 'required|unique:faq_articles,slug,'.request()->get('slug'),
             'tags.*' => 'integer',
             'tags' => 'array',
 

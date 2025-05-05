@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Actions\Seller\CreateSeller;
@@ -20,10 +22,7 @@ class SellerController extends ApiController
     public function __construct(
         private ISellerRepository $sellerRepository,
         private IUserRepository $userRepository,
-    )
-    {
-
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -47,7 +46,7 @@ class SellerController extends ApiController
     {
         $result = $createSeller->handle($request->all());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Seller');
         }
 
@@ -75,21 +74,18 @@ class SellerController extends ApiController
     {
         $result = $updateSeller->handle($request->all(), $id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Seller');
         }
 
         return $this->success($result, 'Seller updated');
     }
 
-    /**
-     * @param UpdateSellerActive $request
-     * @return \Illuminate\Http\Response
-     */
-    public function toggleActive(UpdateSellerActive $request): Response {
+    public function toggleActive(UpdateSellerActive $request): Response
+    {
         $result = Profile::whereId($request->integer('sellerId'))->update(['active' => $request->boolean('active')]);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Seller');
         }
 
@@ -103,7 +99,7 @@ class SellerController extends ApiController
     {
         $result = $deleteSeller->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Seller');
         }
 

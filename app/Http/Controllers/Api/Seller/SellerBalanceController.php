@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Actions\Seller\WithdrawFunds;
@@ -18,12 +20,11 @@ class SellerBalanceController
 
         return response()->json([
             'balances' => SellerBalanceResource::collection($sellerBalance),
-            'current' => SellerBalanceResource::make($sellerBalance->sortByDesc('created_at')->first())
+            'current' => SellerBalanceResource::make($sellerBalance->sortByDesc('created_at')->first()),
         ]);
     }
 
     /**
-     * @param WithdrawBalanceRequest $request
      * @return JsonResponse
      */
     public function withdraw(WithdrawBalanceRequest $request, WithdrawFunds $withdrawFunds)

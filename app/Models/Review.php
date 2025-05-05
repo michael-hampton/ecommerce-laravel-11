@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,12 +15,12 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
-        'comment', 
-        'rating', 
-        'commentable_type', 
-        'commentable_id', 
+        'comment',
+        'rating',
+        'commentable_type',
+        'commentable_id',
         'user_id',
-        'parent_id'
+        'parent_id',
     ];
 
     public function commentable(): MorphTo
@@ -28,10 +30,11 @@ class Review extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function replies(): HasOne {
-        return $this->hasOne(Review::class,'parent_id');
+    public function replies(): HasOne
+    {
+        return $this->hasOne(Review::class, 'parent_id');
     }
 }

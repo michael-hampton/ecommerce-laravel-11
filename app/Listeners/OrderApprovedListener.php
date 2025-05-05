@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Listeners;
 
 use App\Events\OrderApproved;
 use App\Http\Resources\OrderTotals;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class OrderApprovedListener
@@ -31,7 +31,7 @@ class OrderApprovedListener
             'order' => $event->order,
             'orderItems' => $event->orderItems,
             'currency' => config('shop.currency'),
-            'totals' => (new OrderTotals())->toArray($event->order->transaction, $event->order->orderItems, $event->user->id),
+            'totals' => (new OrderTotals)->toArray($event->order->transaction, $event->order->orderItems, $event->user->id),
         ]));
     }
 }

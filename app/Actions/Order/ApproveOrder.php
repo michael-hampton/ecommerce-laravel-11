@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Order;
 
 use App\Models\OrderItem;
@@ -13,11 +15,7 @@ use Exception;
 
 class ApproveOrder
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository)
-    {
-
-    }
-
+    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
 
     public function handle(int $orderId, array $ids)
     {
@@ -48,18 +46,18 @@ class ApproveOrder
                     $transaction->id
                 ))->updateBalance();
 
-               $transaction->update(['payment_status' => 'approved']);
+                $transaction->update(['payment_status' => 'approved']);
 
-               $user = User::whereId($sellerId)->first();
-               event(new \App\Events\OrderApproved( $order, $user, $items));
+                $user = User::whereId($sellerId)->first();
+                event(new \App\Events\OrderApproved($order, $user, $items));
 
             }
 
             OrderItem::whereIn('id', $ids)->update(['approved_date' => now()]);
 
         } catch (Exception $e) {
-            echo '' . $e->getMessage();
-            die;
+            echo ''.$e->getMessage();
+            exit;
         }
 
         $order->update(['status' => 'complete']);

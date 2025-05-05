@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Product\ActivateProduct;
@@ -20,12 +22,10 @@ class ProductController extends ApiController
 {
     public function __construct(
         private IProductRepository $productRepository
-    ) {
-
-    }
+    ) {}
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function index(SearchRequest $request)
@@ -37,7 +37,7 @@ class ProductController extends ApiController
             [
                 'seller_id' => auth('sanctum')->user()->id,
                 'name' => $request->get('searchText'),
-                'ignore_active' => true
+                'ignore_active' => true,
             ]
         );
 
@@ -46,14 +46,13 @@ class ProductController extends ApiController
     }
 
     /**
-     * @param StoreProductRequest $request
      * @return Response
      */
     public function store(StoreProductRequest $request, CreateProduct $createProduct)
     {
         $result = $createProduct->handle($request->all());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to create Product');
         }
 
@@ -63,7 +62,7 @@ class ProductController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return Response
      */
     public function show($id)
@@ -72,15 +71,13 @@ class ProductController extends ApiController
     }
 
     /**
-     * @param UpdateProductRequest $request
-     * @param $id
      * @return Response
      */
     public function update(UpdateProductRequest $request, $id, UpdateProduct $updateProduct)
     {
         $result = $updateProduct->handle($request->except(['_token', '_method', 'attr', 'charge_featured']), $id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Product');
         }
 
@@ -88,14 +85,13 @@ class ProductController extends ApiController
     }
 
     /**
-     * @param int $id
      * @return Response
      */
     public function destroy(int $id, DeleteProduct $deleteProduct)
     {
         $result = $deleteProduct->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to delete Product');
         }
 
@@ -120,7 +116,7 @@ class ProductController extends ApiController
     {
         $result = $activateProduct->handle($id);
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Unable to update Category');
         }
     }

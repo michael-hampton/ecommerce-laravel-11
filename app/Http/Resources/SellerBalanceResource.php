@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class SellerBalanceResource extends JsonResource
         return [
             'seller_id' => $this->seller_id,
             'balance' => $this->balance,
-            'previous_balance' => $this->previous_balance
+            'previous_balance' => $this->previous_balance,
         ];
     }
 }

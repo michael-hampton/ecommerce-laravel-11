@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -14,12 +16,12 @@ class DeliveryCountryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-       return [
-           'id' => $this->id,
-           'name' => $this->name,
-           'code' => $this->code,
-           'shipping_active' => $this->shipping_active,
-           'delivery_methods' => DeliveryMethodResource::collection($this->deliveryMethods)
-       ];
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'code' => $this->code,
+            'shipping_active' => $this->shipping_active,
+            'delivery_methods' => DeliveryMethodResource::collection($this->deliveryMethods),
+        ];
     }
 }

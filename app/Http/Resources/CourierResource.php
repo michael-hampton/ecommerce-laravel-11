@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use App\Models\Country;
@@ -22,7 +24,7 @@ class CourierResource extends JsonResource
             'active' => $this->active,
             'countries_active' => collect(explode(',', $this->countries_active))->map(function ($item) {
                 return CountryResource::make(Country::whereId($item)->first());
-            })
+            }),
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Category;
@@ -21,12 +23,12 @@ class CategorySeeder extends Seeder
         $productAttributes = ProductAttribute::all();
 
         $categoryAttributes = [
-            'Clothing' => ['Condition', 'Color', 'Size'], 
-            'Electronics' => ['Color', 'Condition'], 
-            'Appliances' => ['Color', 'Condition'], 
-            'Men' => ['Condition', 'Color', 'Size'], 
-            'Women' => ['Condition', 'Color', 'Size'], 
-            'Kids' => ['Condition', 'Color', 'Size']
+            'Clothing' => ['Condition', 'Color', 'Size'],
+            'Electronics' => ['Color', 'Condition'],
+            'Appliances' => ['Color', 'Condition'],
+            'Men' => ['Condition', 'Color', 'Size'],
+            'Women' => ['Condition', 'Color', 'Size'],
+            'Kids' => ['Condition', 'Color', 'Size'],
         ];
 
         $categories = [
@@ -40,7 +42,7 @@ class CategorySeeder extends Seeder
                 'active' => 1,
                 'description' => $faker->sentence(),
                 'meta_title' => $faker->sentence(),
-                'meta_keywords' => $faker->word()
+                'meta_keywords' => $faker->word(),
             ],
             [
                 'parent_id' => 0,
@@ -52,7 +54,7 @@ class CategorySeeder extends Seeder
                 'active' => 1,
                 'description' => $faker->sentence(),
                 'meta_title' => $faker->sentence(),
-                'meta_keywords' => $faker->word()
+                'meta_keywords' => $faker->word(),
             ],
             [
                 'parent_id' => 0,
@@ -64,7 +66,7 @@ class CategorySeeder extends Seeder
                 'active' => 1,
                 'description' => $faker->sentence(),
                 'meta_title' => $faker->sentence(),
-                'meta_keywords' => $faker->word()
+                'meta_keywords' => $faker->word(),
             ],
             [
                 'parent_id' => 1,
@@ -76,7 +78,7 @@ class CategorySeeder extends Seeder
                 'active' => 1,
                 'description' => $faker->sentence(),
                 'meta_title' => $faker->sentence(),
-                'meta_keywords' => $faker->word()
+                'meta_keywords' => $faker->word(),
             ],
             [
                 'parent_id' => 1,
@@ -88,7 +90,7 @@ class CategorySeeder extends Seeder
                 'active' => 1,
                 'description' => $faker->sentence(),
                 'meta_title' => $faker->sentence(),
-                'meta_keywords' => $faker->word()
+                'meta_keywords' => $faker->word(),
             ],
             [
                 'parent_id' => 1,
@@ -100,22 +102,21 @@ class CategorySeeder extends Seeder
                 'active' => 1,
                 'description' => $faker->sentence(),
                 'meta_title' => $faker->sentence(),
-                'meta_keywords' => $faker->word()
+                'meta_keywords' => $faker->word(),
             ],
         ];
-
 
         foreach ($categories as $category) {
             $category = Category::create($category);
 
-            if(array_key_exists($category['name'], $categoryAttributes)) {
-                foreach($categoryAttributes[$category['name']] as $key => $value) {
+            if (array_key_exists($category['name'], $categoryAttributes)) {
+                foreach ($categoryAttributes[$category['name']] as $key => $value) {
                     $attribute = $productAttributes->where('name', $value)->first()->id;
 
                     CategoryAttributes::create([
                         'category_id' => $category->id,
                         'attribute_id' => $attribute,
-                        'active' => true
+                        'active' => true,
                     ]);
                 }
             }

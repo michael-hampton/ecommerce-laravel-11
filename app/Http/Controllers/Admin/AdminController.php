@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -11,14 +13,10 @@ use App\Repositories\Interfaces\IOrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    public function __construct(private IOrderRepository $orderRepository)
-    {
-
-    }
+    public function __construct(private IOrderRepository $orderRepository) {}
 
     public function index()
     {
@@ -32,8 +30,8 @@ class AdminController extends Controller
                             COUNT(*) AS Total
                             FROM orders
                             INNER JOIN order_items ON order_items.order_id = orders.id
-                            WHERE seller_id = " . Auth::user()->id . "
-                            ");
+                            WHERE seller_id = ".Auth::user()->id.'
+                            ');
 
         $data = DB::select("SELECT DATE_FORMAT(order_items.created_at, '%m') AS Month, SUM(price) AS total,
                                 sum(if(orders.status='ordered', price, 0)) as TotalOrderedAmount,
@@ -41,7 +39,7 @@ class AdminController extends Controller
                             sum(if(orders.status='cancelled', price, 0)) as TotalCancelledAmount
                                 FROM order_items
                                 INNER JOIN orders ON order_items.order_id = orders.id
-                                WHERE YEAR(order_items.created_at) = " . date('Y') . "
+                                WHERE YEAR(order_items.created_at) = ".date('Y')."
                                 GROUP BY DATE_FORMAT(order_items.created_at, '%m')");
 
         $orders = $this->orderRepository->getPaginated(10, 'created_at', 'desc', ['seller_id' => \auth()->id()]);
@@ -58,12 +56,14 @@ class AdminController extends Controller
     public function askQuestion()
     {
         $posts = Post::where('seller_id', \auth()->id())->get();
+
         return view('admin.ask-a-question', compact('posts'));
     }
 
     public function askQuestionDetails(int $id)
     {
         $post = Post::whereId($id)->first();
+
         return view('admin.ask-a-question-details', compact('post'));
     }
 
@@ -72,7 +72,7 @@ class AdminController extends Controller
         Comment::create([
             'user_id' => \auth()->id(),
             'post_id' => $request->input('postId'),
-            'message' => $request->input('message')
+            'message' => $request->input('message'),
         ]);
 
         return back()->with('success', 'Post reply successfully');
@@ -81,6 +81,7 @@ class AdminController extends Controller
     public function profile()
     {
         $profile = Profile::whereId(\auth()->id())->first();
+
         return view('admin.profile.profile', compact('profile'));
     }
 
@@ -112,7 +113,6 @@ class AdminController extends Controller
             ]
         );
 
-       return back()->with('success', 'Profile updated successfully');
+        return back()->with('success', 'Profile updated successfully');
     }
 }
-
