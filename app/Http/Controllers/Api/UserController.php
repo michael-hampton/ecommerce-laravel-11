@@ -4,10 +4,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\ActivateUser;
-use App\Actions\CreateUser;
-use App\Actions\DeleteUser;
-use App\Actions\UpdateUser;
+use App\Actions\User\ActivateUser;
+use App\Actions\User\CreateUser;
+use App\Actions\User\DeleteUser;
+use App\Actions\User\UpdateUser;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;

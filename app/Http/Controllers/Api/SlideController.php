@@ -4,10 +4,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\ActivateSlide;
-use App\Actions\CreateSlide;
-use App\Actions\DeleteSlide;
-use App\Actions\UpdateSlide;
+use App\Actions\Slide\ActivateSlide;
+use App\Actions\Slide\CreateSlide;
+use App\Actions\Slide\DeleteSlide;
+use App\Actions\Slide\UpdateSlide;
 use App\Http\Requests\CreateSlideRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateSlideRequest;

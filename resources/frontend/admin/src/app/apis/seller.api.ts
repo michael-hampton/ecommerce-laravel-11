@@ -55,6 +55,10 @@ export class SellerApi {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/balance/withdraw`, payload);
   }
 
+  activateBalance(payload: Partial<any>) {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/balance/activate`, payload);
+  }
+
   getSellerBankAccountDetails() {
     return this.httpClient.get(`${environment.apiUrl}/${MODULE}/account/bank`);
   }

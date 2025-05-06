@@ -2,7 +2,7 @@
 
 
 
-namespace App\Actions;
+namespace App\Actions\User;
 
 use App\Helper;
 use App\Repositories\Interfaces\IUserRepository;

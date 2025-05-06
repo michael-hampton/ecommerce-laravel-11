@@ -18,6 +18,8 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('profile_picture')->nullable();
+            $table->boolean('balance_activated')->default(false);
+            $table->date('date_of_birth')->nullable();
             $table->string('biography')->nullable();
             $table->text('allowed_shipping_methods')->nullable();
             $table->string('city')->nullable();

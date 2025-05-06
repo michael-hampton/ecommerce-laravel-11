@@ -28,6 +28,8 @@ class Profile extends Model
         'biography',
         'username',
         'email',
+        'balance_activated',
+        'date_of_birth'
     ];
 
     protected $casts = ['active' => 'boolean'];

@@ -2,7 +2,7 @@
 
 
 
-namespace App\Actions;
+namespace App\Actions\Slide;
 
 use App\Repositories\Interfaces\ISlideRepository;
 use Illuminate\Support\Facades\File;

@@ -50,6 +50,9 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   }
 
   readonly cards$ = this.select(({ card_details }) => card_details);
+  readonly data$ = this.select(({ data }) => data);
+  readonly billing$ = this.select(({ billing }) => billing);
+  readonly bank_account$ = this.select(({ bank_account_details }) => bank_account_details);
 
   vm$ = this.select(state => ({
     imagePreview: state.imagePreview,
@@ -114,6 +117,11 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     card_details: [...state.card_details, card]
   }));
 
+  readonly updateBalanceActivatedFlag = this.updater((state) => ({
+    ...state,
+    data: { ...state.data, ...{ balance_activated: true } }
+  }));
+
   readonly updateCard = this.updater((state, updatedCard: AccountDetails) => ({
     ...state,
     card_details: state.card_details.map(card =>
@@ -148,29 +156,46 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     )
   }
 
-   readonly deleteCard = this.effect<number>(
-      pipe(
-        tap(() => this._globalStore.setLoading(true)),
-        switchMap((id) => this._api.removeCard(id).pipe(
-            tapResponse({
-              next: (users) => {
-                this.removeCard(id)
-                this._globalStore.setSuccess('Deleted successfully');
-                //this.patchState({loading: false, saveSuccess: true})
-              },
-              error: (error: HttpErrorResponse) =>  this._globalStore.setError(UiError(error)),
-              finalize: () => this._globalStore.setLoading(false),
-            })
-          )
-        )
+  readonly deleteCard = this.effect<number>(
+    pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      switchMap((id) => this._api.removeCard(id).pipe(
+        tapResponse({
+          next: (users) => {
+            this.removeCard(id)
+            this._globalStore.setSuccess('Deleted successfully');
+            //this.patchState({loading: false, saveSuccess: true})
+          },
+          error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+          finalize: () => this._globalStore.setLoading(false),
+        })
       )
-    );
+      )
+    )
+  );
 
   saveWithdrawal = (payload: Partial<any>) => {
     return this._api.saveWithdrawal(payload).pipe(
       tap(() => this._globalStore.setLoading(true)),
       tapResponse({
         next: (users) => this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => {
+          this._globalStore.setLoading(false)
+          this._globalStore.setError(UiError(error))
+        },
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  activateBalance = (payload: Partial<any>) => {
+    return this._api.activateBalance(payload).pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (users) => {
+          this._globalStore.setSuccess('Saved successfully')
+          this.updateBalanceActivatedFlag()
+        },
         error: (error: HttpErrorResponse) => {
           this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))

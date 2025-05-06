@@ -2,9 +2,10 @@
 
 
 
-namespace App\Actions;
+namespace App\Actions\User;
 
 use App\Helper;
+use App\Models\User;
 use App\Repositories\Interfaces\IUserRepository;
 use Illuminate\Support\Facades\Hash;
 
@@ -12,7 +13,7 @@ class CreateUser
 {
     public function __construct(private IUserRepository $repository) {}
 
-    public function handle(array $data)
+    public function handle(array $data): User
     {
 
         $data['password'] = Hash::make($data['password']);

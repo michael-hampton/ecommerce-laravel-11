@@ -38,7 +38,7 @@ class MessageController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostReplyRequest $request, CreateComment $createComment): Response
+    public function store(PostReplyRequest $request, CreateComment $createComment): JsonResponse
     {
         Log::info($request->hasFile('images'));
 

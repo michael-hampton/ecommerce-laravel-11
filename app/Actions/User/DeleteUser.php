@@ -2,7 +2,7 @@
 
 
 
-namespace App\Actions;
+namespace App\Actions\User;
 
 use App\Repositories\Interfaces\IUserRepository;
 use Illuminate\Support\Facades\File;

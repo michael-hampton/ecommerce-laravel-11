@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Seller;
 
 use App\Actions\Seller\CreateCard;
 use App\Actions\Seller\RemoveCard;
+use App\Actions\Seller\SaveBankAccount;
 use App\Actions\Seller\UpdateCard;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
@@ -20,10 +21,10 @@ class SellerAccountController extends ApiController
      */
     public function index()
     {
-        
+
         return response()->json(CardDetailsResource::collection(SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
-        ->where('type', 'card')
-        ->get()));
+            ->where('type', 'card')
+            ->get()));
     }
 
     /**
@@ -69,17 +70,15 @@ class SellerAccountController extends ApiController
         return response()->json(
             SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
                 ->where('type', 'bank')
-                ->first());
+                ->first()
+        );
     }
 
-    public function saveBankDetails(UpdateSellerBankDetails $request)
+    public function saveBankDetails(UpdateSellerBankDetails $request, SaveBankAccount $saveBankAccount)
     {
-        $result = SellerBankDetails::updateOrCreate(
-            ['seller_id' => auth('sanctum')->user()->id, 'type' => 'bank'],
-            array_merge($request->all(), ['seller_id' => auth('sanctum')->user()->id, 'type' => 'bank'])
-        );
+        $result = $saveBankAccount->handle($request);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to save bank details');
         }
 

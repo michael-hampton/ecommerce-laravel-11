@@ -5,13 +5,14 @@
 namespace App\Actions\DeliveryMethod;
 
 use App\Models\Country;
+use App\Models\DeliveryMethod;
 use App\Repositories\DeliveryMethodRepository;
 
 class CreateDeliveryMethod
 {
     public function __construct(private DeliveryMethodRepository $repository) {}
 
-    public function handle(array $data)
+    public function handle(array $data): bool
     {
         $array = array_map(function ($item) use ($data): array {
             return $item + ['country_id' => $data['country_id']];
