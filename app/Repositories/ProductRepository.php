@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Repositories;
 
@@ -92,7 +92,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
         $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
             $query->where('name', 'like', "%{$searchParams['name']}%");
         });
-
+        
         return $query;
     }
 }

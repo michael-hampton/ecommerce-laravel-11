@@ -15,9 +15,10 @@ import { ToastComponent } from './components/toast/toast.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
 import { ControlValueAccessorDirective } from './directives/control-value-accessor.directive';
+import { DatePassedDirective } from './directives/date-passed.directive';
 
 @NgModule({
-  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent, CategorySelectorComponent, ControlValueAccessorDirective],
+  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent, CategorySelectorComponent, ControlValueAccessorDirective, DatePassedDirective],
   imports: [
     CommonModule,
     ControlErrorComponent,
@@ -33,7 +34,8 @@ import { ControlValueAccessorDirective } from './directives/control-value-access
         ColumnComponent,
         ToastComponent,
         LoaderComponent,
-        CategorySelectorComponent
+        CategorySelectorComponent,
+        DatePassedDirective
     ]
 })
 export class SharedModule { }

@@ -13,6 +13,7 @@ import { WithdrawalsComponent } from './components/withdrawals/withdrawals.compo
 import { ShopDetailsComponent } from './components/shop-details/shop-details.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { ReviewsComponent } from './components/reviews/reviews.component';
+import { DatePassedDirective } from '../../shared/directives/date-passed.directive';
 
 
 @NgModule({
@@ -25,13 +26,13 @@ import { ReviewsComponent } from './components/reviews/reviews.component';
     WithdrawalsComponent,
     ShopDetailsComponent,
     TransactionsComponent,
-    ReviewsComponent
+    ReviewsComponent,
   ],
     imports: [
         CommonModule,
         SettingsRoutingModule,
         SharedModule,
-        ReactiveFormsModule
-    ]
+        ReactiveFormsModule,
+   ]
 })
 export class SettingsModule { }

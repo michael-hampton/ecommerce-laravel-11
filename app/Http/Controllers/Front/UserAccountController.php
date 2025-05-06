@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers\Front;
 
 use App\Actions\Message\CreateMessage;
@@ -99,8 +97,10 @@ class UserAccountController extends Controller
     public function address()
     {
         $addresses = $this->addressRepository->getCollectionByColumn(auth()->id(), 'customer_id');
+        $defaultAddress = $addresses->where('is_default', 1)->first();
+        $otherAddress = $addresses->where('is_default', 0)->first();
 
-        return view('front.user.account-address', compact('addresses'));
+        return view('front.user.account-address', compact('addresses', 'defaultAddress', 'otherAddress'));
     }
 
     public function addAddress()
@@ -110,6 +110,7 @@ class UserAccountController extends Controller
 
     public function storeAddress(StoreCustomerAddressRequest $request)
     {
+
         $this->addressRepository->create([
             'customer_id' => auth()->id(),
             'name' => $request->get('name'),
@@ -119,7 +120,7 @@ class UserAccountController extends Controller
             'zip' => $request->get('zip'),
             'phone' => $request->get('phone'),
             'state' => $request->get('state'),
-            'is_default' => ! empty($request->get('isdefault')) ? 1 : 0,
+            'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
             'country' => $request->get('country') ?? 'United Kingdom',
         ]);
 
@@ -155,7 +156,7 @@ class UserAccountController extends Controller
     {
         $wishlistItems = Cart::instance('wishlist')->getStoredItems();
 
-        return view('front.user.account-wishlist', compact('wishlistItems'));
+        return view('front.user.account-wishlist', ['wishlistItems' => $wishlistItems, 'currency' => config('shop.currency')]);
     }
 
     public function reviews()

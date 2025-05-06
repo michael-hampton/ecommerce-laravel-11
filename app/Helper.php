@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App;
 
 use Intervention\Image\Laravel\Facades\Image;

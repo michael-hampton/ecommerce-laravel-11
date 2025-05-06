@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 return [
     'show_multiple_delivery_methods' => false,

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Controllers\Front;
 
@@ -20,6 +20,7 @@ class WishListController extends Controller
 
     public function addToWishList(Request $request)
     {
+
         Cart::instance('wishlist')->add(
             $request->id,
             $request->name,
@@ -43,6 +44,7 @@ class WishListController extends Controller
 
     public function emptyWishList()
     {
+        exit('here');
         Cart::instance('wishlist')->destroy();
 
         return redirect()->back();

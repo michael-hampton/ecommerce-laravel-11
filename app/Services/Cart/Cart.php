@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Services\Cart;
 
 use App\Helper;
@@ -83,11 +81,7 @@ class Cart
             }, $id);
         }
 
-        if ($id instanceof CartItem) {
-            $cartItem = $id;
-        } else {
-            $cartItem = $this->createCartItem($id, $name, $qty, $price, $options, $taxrate);
-        }
+        $cartItem = $id instanceof CartItem ? $id : $this->createCartItem($id, $name, $qty, $price, $options, $taxrate);
 
         $content = $this->getContent();
 
@@ -183,7 +177,7 @@ class Cart
      * @return Collection
      */
     protected function getContent()
-    {
+     {
         $content = $this->session->has($this->instance)
             ? $this->session->get($this->instance)
             : new Collection;

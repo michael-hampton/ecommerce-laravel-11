@@ -8,19 +8,23 @@
                 <div class="col-md-3 mb-3 mb-md-4 mb-xxl-5">
                     <div class="card">
                         <a class="card-img-container" href="{{route('shop.product.details', ['slug' => $product->slug])}}">
-                            <img style="max-height: 150px"
-                                 src="{{asset('images/products/thumbnails')}}/{{$product->image}}"
-                                 class="card-img-top" alt="{{$product->name}}">
+                            <img style="max-height: 150px" src="{{asset('images/products/thumbnails')}}/{{$product->image}}"
+                                class="card-img-top" alt="{{$product->name}}">
                         </a>
 
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="{{route('shop.product.details', ['slug' => $product->slug])}}">{{$product->name}}</a>
+                                <a
+                                    href="{{route('shop.product.details', ['slug' => $product->slug])}}">{{$product->name}}</a>
                             </h5>
                             <div class="mb-4">
                                 <p class="card-text">{{$product->short_description}}</p>
-                                <p class="pc__category">Category: <a href="{{route('shop.index', ['categoryId' => $product->category_id])}}">{{$product->category->name}}</a></p>
-                                <p class="pc__category">Brand: <a href="{{route('shop.index', ['brandId' => $product->brand_id])}}">{{$product->brand->name}}</a> </p>
+                                <p class="pc__category">Category: <a
+                                        href="{{route('shop.index', ['categoryId' => $product->category_id])}}">{{$product->category->name}}</a>
+                                </p>
+                                <p class="pc__category">Brand: <a
+                                        href="{{route('shop.index', ['brandId' => $product->brand_id])}}">{{$product->brand->name}}</a>
+                                </p>
                                 <p class="pc__category">Seller: <a
                                         href="{{route('seller.details', ['id' => $product->seller_id])}}">{{$product->seller->name}}</a>
                                 </p>
@@ -28,16 +32,18 @@
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="mb-0">
-                            <span class="h5 mb-0">
-                             @if($product->sale_price)
-                                    <s>{{$currency}}{{$product->regular_price}}</s> {{$currency}}{{$product->sale_price}}
-                                @else
-                                    {{$currency}}{{$product->regular_price}}
-                                @endif
-                        </span>
+                                    <span class="h5 mb-0">
+                                        @if($product->sale_price)
+                                            <s>{{$currency}}{{$product->regular_price}}</s>
+                                            {{$currency}}{{$product->sale_price}}
+                                        @else
+                                            {{$currency}}{{$product->regular_price}}
+                                        @endif
+                                    </span>
 
                                     @if(config('shop.show_commission'))
-                                        <br class="small commission-text">{{ Helper::calculateCommission(!empty($product->sale_price) ? $product->sale_price : $product->regular_price, true)}}
+                                        <br
+                                            class="small commission-text">{{ Helper::calculateCommission(!empty($product->sale_price) ? $product->sale_price : $product->regular_price, true)}}
                                         inc
                                     @endif
                                 </div>
@@ -60,7 +66,7 @@
                                     <input type="hidden" name="name" value="{{$product->name}}">
                                     <input type="hidden" name="quantity" value="1">
                                     <input type="hidden" name="price"
-                                           value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
+                                        value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
 
                                     <button class="btn btn-primary btn-sm add-to-cart">Add to Cart</button>
                                 </form>
@@ -72,14 +78,13 @@
                                     <input type="hidden" name="id" value="{{$product->id}}">
                                     <input type="hidden" name="name" value="{{$product->name}}">
                                     <input type="hidden" name="price"
-                                           value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
+                                        value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
                                     <input type="hidden" name="quantity" value="1">
 
                                     <button class="btn btn-outline-secondary btn-sm js-add-wishlist">
                                         <i class="fa fa-heart"></i>
                                         @if(Session::has('wishlist_products') && array_key_exists($product->id, Session::get('wishlist_products')))
-                                            <span
-                                                class="wishlist-amount">{{Session::get('wishlist_products')[$product->id]}}</span>
+                                            <span class="wishlist-amount">{{Session::get('wishlist_products')[$product->id]}}</span>
                                         @endif
                                     </button>
                                 </form>
@@ -91,5 +96,3 @@
         </div>
     </div>
 </div>
-
-

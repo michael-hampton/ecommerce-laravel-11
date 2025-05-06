@@ -1,18 +1,18 @@
-import {Injectable} from '@angular/core';
-import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
-import {tapResponse} from '@ngrx/operators'
-import {GlobalStore} from "../global.store";
-import {Seller} from '../../types/seller/seller';
-import {SellerApi} from '../../apis/seller.api';
-import {UiError} from '../../core/services/exception.service';
-import {tap} from 'rxjs/operators';
-import {AccountDetails} from '../../types/seller/account-details';
-import {Transaction} from '../../types/orders/transaction';
-import {BalanceCollection} from '../../types/seller/balance';
-import {Withdrawal} from '../../types/seller/withdrawal';
-import {Billing} from '../../types/seller/billing';
-import {switchMap} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ComponentStore } from '@ngrx/component-store';
+import { tapResponse } from '@ngrx/operators'
+import { GlobalStore } from "../global.store";
+import { Seller } from '../../types/seller/seller';
+import { SellerApi } from '../../apis/seller.api';
+import { UiError } from '../../core/services/exception.service';
+import { tap } from 'rxjs/operators';
+import { AccountDetails } from '../../types/seller/account-details';
+import { Transaction } from '../../types/orders/transaction';
+import { BalanceCollection } from '../../types/seller/balance';
+import { Withdrawal } from '../../types/seller/withdrawal';
+import { Billing } from '../../types/seller/billing';
+import { pipe, switchMap } from 'rxjs';
 import { Review } from '../../types/seller/review';
 
 export interface ProfileFormState {
@@ -20,7 +20,7 @@ export interface ProfileFormState {
   currentFile?: File;
   data: Seller
   bank_account_details: AccountDetails
-  card_details: AccountDetails,
+  card_details: AccountDetails[],
   transactions: Transaction[],
   balance: BalanceCollection,
   withdrawals: Withdrawal[],
@@ -34,7 +34,7 @@ const defaultState: ProfileFormState = {
   currentFile: undefined,
   data: {} as Seller,
   bank_account_details: {} as AccountDetails,
-  card_details: {} as AccountDetails,
+  card_details: [],
   transactions: [],
   balance: {} as BalanceCollection,
   withdrawals: [],
@@ -49,6 +49,8 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     super(defaultState);
   }
 
+  readonly cards$ = this.select(({ card_details }) => card_details);
+
   vm$ = this.select(state => ({
     imagePreview: state.imagePreview,
     data: state.data,
@@ -56,11 +58,12 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     balance: state.balance,
     withdrawals: state.withdrawals,
     loading: state.loading,
-    reviews: state.reviews
+    reviews: state.reviews,
+    card_details: state.card_details
   }))
 
   saveData = (payload: Partial<Seller>) => {
-    const {id, ...dataCreate} = payload
+    const { id, ...dataCreate } = payload
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
 
     return request$.pipe(
@@ -77,7 +80,7 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   }
 
   saveBilling = (payload: Partial<Seller>) => {
-    const {id, ...dataCreate} = payload
+    const { id, ...dataCreate } = payload
 
     return this._api.saveBilling(payload).pipe(
       tap(() => this._globalStore.setLoading(true)),
@@ -106,11 +109,36 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     )
   }
 
+  readonly addCard = this.updater((state, card: AccountDetails) => ({
+    ...state,
+    card_details: [...state.card_details, card]
+  }));
+
+  readonly updateCard = this.updater((state, updatedCard: AccountDetails) => ({
+    ...state,
+    card_details: state.card_details.map(card =>
+      card.id === updatedCard.id ? updatedCard : card
+    )
+  }));
+
+  readonly removeCard = this.updater((state, cardId: number) => ({
+    ...state,
+    card_details: state.card_details.filter(card => card.id !== cardId)
+  }));
+
   saveCardDetails = (payload: Partial<any>) => {
-    return this._api.saveCardDetails(payload).pipe(
+    const request$ = payload['id'] ? this._api.updateCard(payload, payload['id']) : this._api.addNewCard(payload)
+    return request$.pipe(
       tap(() => this._globalStore.setLoading(true)),
       tapResponse({
-        next: (users) => this._globalStore.setSuccess('Saved successfully'),
+        next: (card: any) => {
+          if (!payload['id']) {
+            this.addCard(card.data)
+          } else {
+            this.updateCard(card.data)
+          }
+          this._globalStore.setSuccess('Saved successfully')
+        },
         error: (error: HttpErrorResponse) => {
           this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))
@@ -119,6 +147,24 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
       })
     )
   }
+
+   readonly deleteCard = this.effect<number>(
+      pipe(
+        tap(() => this._globalStore.setLoading(true)),
+        switchMap((id) => this._api.removeCard(id).pipe(
+            tapResponse({
+              next: (users) => {
+                this.removeCard(id)
+                this._globalStore.setSuccess('Deleted successfully');
+                //this.patchState({loading: false, saveSuccess: true})
+              },
+              error: (error: HttpErrorResponse) =>  this._globalStore.setError(UiError(error)),
+              finalize: () => this._globalStore.setLoading(false),
+            })
+          )
+        )
+      )
+    );
 
   saveWithdrawal = (payload: Partial<any>) => {
     return this._api.saveWithdrawal(payload).pipe(
@@ -135,19 +181,19 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   }
 
   selectFile(event: any): void {
-    this.patchState({imagePreview: ''})
+    this.patchState({ imagePreview: '' })
     const selectedFiles = event.target.files;
 
     if (selectedFiles) {
       const file: File | null = selectedFiles.item(0);
 
       if (file) {
-        this.patchState({imagePreview: '', currentFile: file})
+        this.patchState({ imagePreview: '', currentFile: file })
 
         const reader = new FileReader();
 
         reader.onload = (e: any) => {
-          this.patchState({imagePreview: e.target.result})
+          this.patchState({ imagePreview: e.target.result })
 
         };
 
@@ -157,14 +203,14 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
   }
 
   getData(sellerId: number) {
-    this.patchState({loading: true})
+    this.patchState({ loading: true })
     return this._api.getSeller(sellerId).pipe(
       tapResponse({
         next: (data) => {
-          this.patchState({data: data as Seller})
+          this.patchState({ data: data as Seller })
         },
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this.patchState({ loading: false }),
       })
     )
   }
@@ -175,11 +221,11 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     (trigger$) => trigger$.pipe(
       switchMap(() =>
         this._api.getTransactions().pipe(
-          tap(() => this.patchState({loading: true})),
+          tap(() => this.patchState({ loading: true })),
           tapResponse({
-            next: (data) => this.patchState({transactions: data as Transaction[]}),
+            next: (data) => this.patchState({ transactions: data as Transaction[] }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )
@@ -188,11 +234,11 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
 
   getReviews() {
     return this._api.getReviews().pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       tapResponse({
-        next: (data) => this.patchState({reviews: data as Review[]}),
+        next: (data) => this.patchState({ reviews: data as Review[] }),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this.patchState({ loading: false }),
       })
     )
   }
@@ -220,13 +266,13 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
     // names. We encourage to choose one of these and use them consistently in your codebase.
     (trigger$) => trigger$.pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       switchMap(() =>
         this._api.getBalance().pipe(
           tapResponse({
-            next: (data) => this.patchState({balance: data as BalanceCollection}),
+            next: (data) => this.patchState({ balance: data as BalanceCollection }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )
@@ -235,11 +281,11 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
 
   getSellerBankAccountDetails() {
     return this._api.getSellerBankAccountDetails().pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       tapResponse({
-        next: (data) => this.patchState({bank_account_details: data as AccountDetails}),
+        next: (data) => this.patchState({ bank_account_details: data as AccountDetails }),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this.patchState({ loading: false }),
       })
     )
   }
@@ -248,13 +294,13 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
     // names. We encourage to choose one of these and use them consistently in your codebase.
     (trigger$) => trigger$.pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       switchMap(() =>
         this._api.getWithdrawals().pipe(
           tapResponse({
-            next: (data) => this.patchState({withdrawals: data as Withdrawal[]}),
+            next: (data) => this.patchState({ withdrawals: data as Withdrawal[] }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )
@@ -263,23 +309,29 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
 
   getBilling() {
     return this._api.getBilling().pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       tapResponse({
-        next: (data) => this.patchState({billing: data as Billing}),
+        next: (data) => this.patchState({ billing: data as Billing }),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this.patchState({ loading: false }),
       })
     )
   }
 
-  getSellerCardDetails() {
-    return this._api.getSellerCardDetails().pipe(
-      tap(() => this.patchState({loading: true})),
-      tapResponse({
-        next: (data) => this.patchState({card_details: data as AccountDetails}),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this.patchState({loading: false}),
-      })
+  readonly getSellerCardDetails = this.effect<void>(
+    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good
+    // names. We encourage to choose one of these and use them consistently in your codebase.
+    (trigger$) => trigger$.pipe(
+      tap(() => this.patchState({ loading: true })),
+      switchMap(() =>
+        this._api.getSellerCardDetails().pipe(
+          tapResponse({
+            next: (data) => this.patchState({ card_details: data as AccountDetails[] }),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            finalize: () => this.patchState({ loading: false }),
+          })
+        )
+      )
     )
-  }
+  );
 }

@@ -1,16 +1,77 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers\Api\Seller;
 
+use App\Actions\Seller\CreateCard;
+use App\Actions\Seller\RemoveCard;
+use App\Actions\Seller\UpdateCard;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSellerBankDetails;
 use App\Http\Requests\UpdateSellerCardDetails;
+use App\Http\Resources\CardDetailsResource;
 use App\Models\SellerBankDetails;
+use Illuminate\Http\Request;
 
-class SellerAccountController extends Controller
+class SellerAccountController extends ApiController
 {
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        
+        return response()->json(CardDetailsResource::collection(SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
+        ->where('type', 'card')
+        ->get()));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(UpdateSellerCardDetails $request, CreateCard $createCard)
+    {
+        $result = $createCard->handle($request);
+
+        return $result ? $this->success(CardDetailsResource::make($result), 'Card Created') : $this->error($result);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id, UpdateCard $updateCard)
+    {
+        $result = $updateCard->handle($request);
+
+        return $result ? $this->success(CardDetailsResource::make($result), 'Card Updated') : $this->error($result);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id, RemoveCard $removeCard)
+    {
+        $result = $removeCard->handle($id);
+
+        return $result ? $this->success($result, 'Card Removed') : $this->error('Unable to remove card');
+    }
+
+    public function getSellerBankAccountDetails()
+    {
+        return response()->json(
+            SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
+                ->where('type', 'bank')
+                ->first());
+    }
+
     public function saveBankDetails(UpdateSellerBankDetails $request)
     {
         $result = SellerBankDetails::updateOrCreate(
@@ -25,33 +86,4 @@ class SellerAccountController extends Controller
         return $this->success($result, 'bank details updated');
     }
 
-    public function saveCardDetails(UpdateSellerCardDetails $request)
-    {
-        $result = SellerBankDetails::updateOrCreate(
-            ['seller_id' => auth('sanctum')->user()->id, 'type' => 'card'],
-            array_merge($request->all(), ['seller_id' => auth('sanctum')->user()->id, 'type' => 'card'])
-        );
-
-        if (! $result) {
-            return $this->error('Unable to save card');
-        }
-
-        return $this->success($result, 'card updated');
-    }
-
-    public function getSellerBankAccountDetails()
-    {
-        return response()->json(
-            SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
-                ->where('type', 'bank')
-                ->first());
-    }
-
-    public function getSellerCardAccountDetails()
-    {
-        return response()->json(
-            SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
-                ->where('type', 'card')
-                ->first());
-    }
 }

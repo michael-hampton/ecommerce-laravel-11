@@ -11,13 +11,9 @@
           <img style="width: 100px" src="{{item.customer.image}}" alt="{{item.customer.name}}" class="image">
           <div class="">
             <a href="#" class="fw-bold">{{ item.customer.name }}</a>
+            <br>{{item.customer.mobile}}
           </div>
         </div>
-      </ng-template>
-    </data-table-column>
-    <data-table-column header="Mobile" [sortable]="false">
-      <ng-template #dataTableCell let-item="item">
-       {{item.customer.mobile}}
       </ng-template>
     </data-table-column>
 <!--    <data-table-column header="Subtotal" property="subtotal" [sortable]="true"></data-table-column>-->
@@ -25,7 +21,20 @@
 <!--    <data-table-column header="Commission" property="commission" [sortable]="true"></data-table-column>-->
 <!--    <data-table-column header="Tax" property="tax" [sortable]="true"></data-table-column>-->
     <data-table-column header="Total" property="total" [sortable]="true"></data-table-column>
-    <data-table-column header="Status" property="status" [sortable]="true"></data-table-column>
+    <data-table-column header="Status" property="status" [sortable]="true">
+      <ng-template #dataTableCell let-item="item">
+        @if(item.status.toLowerCase() === 'complete') {
+           <span class="badge fs-xs text-success bg-success-subtle rounded-pill">Completed</span>
+        } @else if (item.status.toLowerCase() === 'ordered') {
+          <span class="badge fs-xs text-info bg-info-subtle rounded-pill">Pending</span>
+        } @else if (item.status.toLowerCase() === 'cancelled') {
+          <span class="badge fs-xs text-danger bg-danger-subtle rounded-pill">Canceled</span>
+        } @else {
+          <span class="badge fs-xs text-success bg-success-subtle rounded-pill">{{item.status}}</span>
+        }
+       
+      </ng-template>
+    </data-table-column>
     <data-table-column header="Order Date" property="order_date" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
         {{item.order_date | date}}

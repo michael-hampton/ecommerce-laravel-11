@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Controllers\Api\Seller;
 
@@ -12,7 +12,6 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Repositories\Interfaces\ISellerRepository;
 use App\Repositories\Interfaces\IUserRepository;
-use App\Services\Interfaces\ISellerService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -21,7 +20,6 @@ class ReviewController extends ApiController
     public function __construct(
         private ISellerRepository $sellerRepository,
         private IUserRepository $userRepository,
-        private ISellerService $sellerService
     ) {}
 
     public function index(Request $request)

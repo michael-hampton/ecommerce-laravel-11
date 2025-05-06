@@ -6,6 +6,8 @@ export type AccountDetails = {
   sort_code: string
   card_type: string
   card_number: string
+  formatted_card_number: string
+  id: number
   card_expiry_date: string
   card_cvv: string
   seller_id: number

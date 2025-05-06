@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Actions\Seller;
+
+use App\Models\SellerBankDetails;
+use Illuminate\Http\Request;
+
+class UpdateCard
+{
+    public function handle(Request $request) {
+        $card = SellerBankDetails::findOrFail($request->integer('id'));
+        $card->update([
+            'card_name' => $request->string('card_name'),
+            'card_expiry_date' => $request->string('card_expiry_date'),
+            'card_cvv' => $request->string('card_cvv'),
+            'card_number' => $request->string('card_number'),
+        ]);
+
+        return $card->fresh();
+    }
+}

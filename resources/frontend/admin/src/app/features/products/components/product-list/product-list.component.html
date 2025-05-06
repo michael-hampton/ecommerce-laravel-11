@@ -1,63 +1,174 @@
 <ng-container *ngIf="vm$ | async as vm">
- <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Products" (reload)="reload()"
-             [sortBy]="vm.filter.sortBy" [sortDir]="vm.filter.sortDir"
-             [itemCount]="vm.data?.total" [items]="vm.data?.data" [page]="vm.filter.page"
-             (changePage)="pageChanged($event)">
-    <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
-    <data-table-column header="Name" property="name" [sortable]="true">
+  <app-table
+    (addButton)="add($event)"
+    [indexColumn]="false"
+    headerTitle="Products"
+    (reload)="reload()"
+    [sortBy]="vm.filter.sortBy"
+    [sortDir]="vm.filter.sortDir"
+    [itemCount]="vm.data?.total"
+    [items]="vm.data?.data"
+    [page]="vm.filter.page"
+    (changePage)="pageChanged($event)"
+  >
+    <data-table-column header="Product" property="name" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
-        <div class="d-flex align-items-center justify-content-between me-3">
-          <img style="width: 100px" src="{{item.image}}" alt="{{item.name}}" class="image">
-          <div class="">
-            <a href="#" class="fw-bold">{{ item.name }}</a>
+        <div
+          class="d-flex align-items-start align-items-md-center hover-effect-scale position-relative py-1"
+        >
+          <div
+            class="bg-body-secondary rounded overflow-hidden flex-shrink-sm-0"
+            style="max-width: 142px"
+          >
+            <img
+              style="width: 100px"
+              src="{{ item.image }}"
+              class="hover-effect-target"
+              alt="{{ item.name }}"
+            />
+          </div>
+          <div class="ps-2 ps-sm-3 ms-1">
+            <span
+              class="badge fs-xs text-success bg-success-subtle rounded-pill d-md-none mb-1"
+              >Active</span
+            >
+            <h6 class="product mb-2">
+              <a
+                class="fs-sm fw-medium hover-effect-underline stretched-link"
+                href="shop-product-marketplace.html"
+                >{{ item.name }}</a
+              >
+            </h6>
+            <div
+              class="d-flex flex-md-column align-items-center align-items-md-start gap-2"
+            >
+            <span>Category: {{item.category.name}}</span>
+            <span>Brand: {{item.brand.name}}</span>
+              <div class="h6 mb-0 me-1 me-md-0">
+                {{ item.sale_price | currency }}
+              </div>
+              <div class="d-flex gap-2">
+                <div
+                  class="d-flex align-items-center fs-xs text-body-emphasis bg-body-tertiary rounded-pill px-2 py-1"
+                >
+                  <i class="fa fa-heart text-body-secondary me-1"></i>
+                  13
+                </div>
+                <div
+                  class="d-flex align-items-center fs-xs text-body-emphasis bg-body-tertiary rounded-pill px-2 py-1"
+                >
+                  <i class="fa fa-message text-body-secondary me-1"></i>
+                  4
+                </div>
+              </div>
+            </div>
+            <div class="fs-xs text-nowrap d-md-none mt-2 mb-1">
+              <span class="text-body-secondary">Sales:</span> 47
+            </div>
+            <div class="fs-xs text-nowrap d-sm-none">
+              <span class="text-body-secondary">Earnings:</span> $669.75
+            </div>
           </div>
         </div>
       </ng-template>
     </data-table-column>
-    <data-table-column header="Regular Price" property="regular_price" [sortable]="true"></data-table-column>
-    <data-table-column header="Sale Price" property="sale_price" [sortable]="true"></data-table-column>
-    <data-table-column header="SKU" property="SKU" [sortable]="true"></data-table-column>
-    <data-table-column header="Slug" property="slug" [sortable]="true"></data-table-column>
-    <data-table-column header="Category" [sortable]="false">
+
+    <data-table-column header="Status" property="active" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
-       {{item.category.name}}
+        <span
+          *ngIf="item.active === true"
+          class="status badge fs-xs text-success bg-success-subtle rounded-pill"
+          >Published</span
+        >
+        <span
+          *ngIf="item.active !== true"
+          class="status badge fs-xs text-warning bg-warning-subtle rounded-pill"
+          >Draft</span
+        >
+        <span
+          *ngIf="item.featured === true"
+          class="status badge fs-xs text-success bg-success-subtle rounded-pill"
+          >Featured</span
+        >
       </ng-template>
     </data-table-column>
-    <data-table-column header="Brand" [sortable]="false">
+    <data-table-column
+      header="Sales"
+      property="sales"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column header="Earnings" property="earnings" [sortable]="true"
+      ><ng-template>$669.75</ng-template></data-table-column
+    >
+
+    <data-table-column header="Stock" property="earnings" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
-        {{item.brand.name}}
-      </ng-template>
-    </data-table-column>
-    <data-table-column header="Featured" [sortable]="false">
-      <ng-template #dataTableCell let-item="item">
-        {{item.featured === true ? 'Yes' : 'No'}}
-      </ng-template>
-    </data-table-column>
-    <data-table-column header="In Stock" [sortable]="false">
-      <ng-template #dataTableCell let-item="item">
-       {{item.has_stock === true ? 'Yes' : 'No'}}
-      </ng-template>
-    </data-table-column>
-    <data-table-column header="Quantity" property="quantity" [sortable]="true"></data-table-column>
+        @if(item.quantity > 0) {
+        {{ item.quantity }}
+        } @else {
+        <span
+          class="status badge fs-xs text-warning bg-warning-subtle rounded-pill"
+          >Out of Stock</span
+        >
+        }
+      </ng-template></data-table-column
+    >
+
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <div class="d-flex align-items-center">
-          <a href="javascript:void(0)" class="edit me-3" (click)="makeActive(item.id)">
-            <i [ngClass]="{'fa-toggle-on': item.active === true, 'fa-toggle-off' : item.active !== true }"
-            class="fa"></i>
-          </a>
-          <a href="javascript:void(0)" class="edit me-3" (click)="edit(item)">
-            <i class="fa fa-eye"></i>
-          </a>
-          <a href="javascript:void(0)" class="delete" (click)="delete(item)">
-            <i class="fa fa-trash"></i>
-          </a>
+        <div class="dropdown">
+          <button
+            type="button"
+            class="btn btn-icon btn-ghost btn-sm btn-secondary rounded-circle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="Settings"
+          >
+            <i class="fa fa-more-vertical fs-base"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a
+                class="dropdown-item"
+                href="javascript:void(0)"
+                (click)="edit(item)"
+              >
+                <i class="fa fa-edit opacity-75 me-2"></i>
+                Edit
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="javascript:void(0)">
+                <i class="fa fa-zap fs-base opacity-75 me-2"></i>
+                Promote
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="javascript:void(0)"
+                (click)="makeActive(item.id)"
+              >
+                <i class="fa fa-archive opacity-75 me-2"></i>
+                @if(item.active === true) { Mark as Draft } @else {Publish }
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item text-danger"
+                href="javascript:void(0)"
+                (click)="delete(item)"
+              >
+                <i class="fa fa-trash opacity-75 me-2"></i>
+                Delete
+              </a>
+            </li>
+          </ul>
         </div>
       </ng-template>
     </data-table-column>
   </app-table>
 </ng-container>
-
 
 <div #confirmationModal></div>
 

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Providers;
 
@@ -24,6 +24,7 @@ use App\Repositories\Interfaces\ICouponRepository;
 use App\Repositories\Interfaces\ICourierRepository;
 use App\Repositories\Interfaces\IDeliveryMethodRepository;
 use App\Repositories\Interfaces\IMessageRepository;
+use App\Repositories\Interfaces\IOrderItemRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Repositories\Interfaces\ISellerRepository;
@@ -73,6 +74,7 @@ class AppServiceProvider extends ServiceProvider
         IArticleRepository::class => ArticleRepository::class,
         ISupportCategoryRepository::class => SupportCategoryRepository::class,
         IQuestionRepository::class => QuestionRepository::class,
+        IOrderItemRepository::class => OrderItemRepository::class
     ];
 
     /**

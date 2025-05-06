@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Controllers\Front;
 
@@ -82,7 +82,7 @@ class ShopController extends Controller
         );
 
         if (Auth::check()) {
-            Cart::instance('cart')->store(Auth::user()->email);
+            //Cart::instance('cart')->store(Auth::user()->email);
             Cart::instance('wishlist')->store(Auth::user()->email);
         }
 

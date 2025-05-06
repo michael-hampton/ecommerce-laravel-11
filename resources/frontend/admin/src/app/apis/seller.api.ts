@@ -33,8 +33,18 @@ export class SellerApi {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/bank`, payload);
   }
 
-  saveCardDetails(payload: Partial<any>) {
+  addNewCard(payload: Partial<any>) {
+    alert('adding card')
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/card`, payload);
+  }
+
+  updateCard(payload: Partial<any>, id: number) {
+    return this.httpClient.put(`${environment.apiUrl}/${MODULE}/account/card/${id}`, payload);
+  }
+
+  removeCard(id: number) {
+    alert('removing card')
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/account/card/${id}`);
   }
 
   saveReviewReply(payload: Partial<any>) {

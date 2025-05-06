@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 use App\Http\Middleware\AuthAdmin;
 use Illuminate\Auth\AuthenticationException;

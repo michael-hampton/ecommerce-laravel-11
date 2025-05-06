@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Api\AttributeController;
@@ -112,9 +112,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('sellers', SellerController::class);
     Route::post('sellers/active', [SellerController::class, 'toggleActive'])->name('admin.sellers.toggleActive');
     Route::post('sellers/account/bank', [SellerAccountController::class, 'saveBankDetails'])->name('admin.sellers.updateBankDetails');
-    Route::post('sellers/account/card', [SellerAccountController::class, 'saveCardDetails'])->name('admin.sellers.updateCardDetails');
+    Route::post('sellers/account/card', [SellerAccountController::class, 'store'])->name('admin.sellers.updateCardDetails');
+    Route::put('sellers/account/card/{id}', [SellerAccountController::class, 'update'])->name('admin.sellers.updateCardDetails');
+    Route::delete('sellers/account/card/{id}', [SellerAccountController::class, 'destroy'])->name('admin.sellers.updateCardDetails');
     Route::get('sellers/account/bank', [SellerAccountController::class, 'getSellerBankAccountDetails'])->name('admin.sellers.getBankDetails');
-    Route::get('sellers/account/card', [SellerAccountController::class, 'getSellerCardAccountDetails'])->name('admin.sellers.getCardDetails');
+    Route::get('sellers/account/card', [SellerAccountController::class, 'index'])->name('admin.sellers.getCardDetails');
     Route::get('sellers/account/transactions', [SellerTransactionController::class, 'index'])->name('admin.sellers.getTransactions');
     Route::get('sellers/account/balance', [SellerBalanceController::class, 'show'])->name('admin.sellers.getBalance');
     Route::post('sellers/account/balance/withdraw', [SellerBalanceController::class, 'withdraw'])->name('admin.sellers.withdraw');

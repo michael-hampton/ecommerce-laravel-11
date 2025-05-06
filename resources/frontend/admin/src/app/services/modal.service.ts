@@ -32,7 +32,7 @@ export class ModalService {
     this.componentRef.instance.title = config.modalTitle;
     this.componentRef.instance.body = config.modalBody ?? '';
     this.componentRef.instance.size = config.size ?? '';
-    this.componentRef.instance.saveButtonText = 'Delete';
+    this.componentRef.instance.saveButtonText = config.saveButtonLabel || 'Delete';
     this.componentRef.instance.saveButtonClass = 'btn-danger';
     this.componentRef.instance.showFooter = config.showFooter ??  true;
     this.componentRef.instance.template = config.template;

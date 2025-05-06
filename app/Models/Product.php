@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Models;
 
@@ -33,7 +33,7 @@ class Product extends Model
         'active',
     ];
 
-    protected $casts = ['active' => 'bool'];
+    protected $casts = ['active' => 'bool', 'featured' => 'bool'];
 
     public function category()
     {
