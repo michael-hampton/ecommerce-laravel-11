@@ -38,7 +38,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <h5 class="card-title">{{$item->name}}</h5>
-                                        <p class="text-muted">Category: {{$item->model->category_name}}</p>
+                                        <p class="text-muted">Category: {{$item->model->category->name}}</p>
+                                        <p class="text-muted">Brand: {{$item->model->brand->name}}</p>
                                         <ul class="shopping-cart__product-item__options">
                                             @foreach($item->model->productAttributes as $productAttribute)
                                                 <li>{{$productAttribute->productAttribute->name}}

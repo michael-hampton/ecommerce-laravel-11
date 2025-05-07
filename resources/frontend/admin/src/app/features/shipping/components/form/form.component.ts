@@ -23,7 +23,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   ngOnInit() {
     this.initForm()
     this._store.getCouriers()
-    this._store.getCountries()
+    this._store.getCountries(this.formData?.id ? false : true)
 
     if (this.formData?.id) {
       this._store.loadDataForCountry(this.formData?.id).subscribe((results: Shipping[]) => {

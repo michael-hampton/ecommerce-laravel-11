@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 
@@ -32,7 +33,7 @@ class ApiController extends Controller
      *
      * @return Response
      */
-    public function error(string $error, array $errorMessages = [], int $code = Response::HTTP_BAD_REQUEST)
+    public function error(string $error, array $errorMessages = [], int $code = Response::HTTP_BAD_REQUEST): JsonResponse
     {
         $response = [
             'success' => false,
@@ -47,7 +48,7 @@ class ApiController extends Controller
         return response()->json($response, $code);
     }
 
-    public function sendPaginatedResponse(Paginator $items, JsonResource $data)
+    public function sendPaginatedResponse(Paginator $items, JsonResource $data): JsonResponse
     {
         $response = [
             'current_page' => $items->currentPage(),

@@ -67,9 +67,13 @@ export class CategoryListComponent implements OnInit {
     this._store.reset();
   }
 
-  makeActive(id: number) {
-    this._store.makeActive(id).subscribe(result => {
-      this._store.loadData(this._store.filter$);
-    })
+  makeActive(data: any) {
+    const message = data.active ? 'This will hide the category from the website, including the menu. Any products listed within the category will no longer be accessible' : 'This will show the category from the website including the menu. Any products listed within the category will become accessible'
+    const saveButtonText = data.active ? 'Hide' : 'Publish'
+    this.sub = this.modalService
+    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
+    .subscribe((v) => {
+      this._store.makeActive(data).subscribe()
+    });
   }
 }

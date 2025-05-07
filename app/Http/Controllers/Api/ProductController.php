@@ -28,7 +28,7 @@ class ProductController extends ApiController
      */
     public function index(SearchRequest $request)
     {
-        $products = $this->productRepository->getPaginated(
+        $products = $this->productRepository->setRequiredRelationships(['orderItems'])->getPaginated(
             $request->integer('limit'),
             $request->string('sortBy'),
             $request->string('sortDir'),

@@ -11,7 +11,6 @@
           <img style="width: 100px" src="{{item.customer.image}}" alt="{{item.customer.name}}" class="image">
           <div class="">
             <a href="#" class="fw-bold">{{ item.customer.name }}</a>
-            <br>{{item.customer.mobile}}
           </div>
         </div>
       </ng-template>
@@ -53,10 +52,31 @@
     </data-table-column>
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <div class="d-flex align-items-center">
-          <a href="javascript:void(0)" class="edit me-3" [routerLink]="['details', item.id]">
-            <i class="fa fa-eye"></i>
-          </a>
+        <div class="dropdown">
+          <button
+            type="button"
+            class="btn btn-icon btn-ghost rounded-circle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="Settings"
+          >
+            <i
+              style="font-size: 22px"
+              class="fa-solid fa-ellipsis-vertical"
+            ></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a
+                class="dropdown-item"
+                href="javascript:void(0)"
+                [routerLink]="['details', item.id]"
+              >
+                <i class="fa fa-eye opacity-75 me-2"></i>
+                View Details
+              </a>
+            </li>
+          </ul>
         </div>
       </ng-template>
     </data-table-column>

@@ -81,7 +81,7 @@ class SellerController extends ApiController
         return $this->success($result, 'Seller updated');
     }
 
-    public function toggleActive(UpdateSellerActive $request): Response
+    public function toggleActive(UpdateSellerActive $request): JsonResponse
     {
         $result = Profile::whereId($request->integer('sellerId'))->update(['active' => $request->boolean('active')]);
 
@@ -95,7 +95,7 @@ class SellerController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id, DeleteSeller $deleteSeller): Response
+    public function destroy(string $id, DeleteSeller $deleteSeller): JsonResponse
     {
         $result = $deleteSeller->handle($id);
 

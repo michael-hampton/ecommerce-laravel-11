@@ -47,15 +47,23 @@ export class ProductStore extends FilterStore<Product> {
     )
   );
 
-  makeActive(id: number) {
-    return this._api.toggleActive(id).pipe(
-      tapResponse({
-        next: (data) => this._globalStore.setSuccess('Saved successfully'),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
-      })
-    )
-  }
+  makeActive(updatedProduct: Product) {
+      return this._api.toggleActive(updatedProduct.id).pipe(
+        tapResponse({
+          next: (data) => {
+            updatedProduct.active = updatedProduct.active ? 0 : 1
+            this.patchState((state) => ({
+              data: {...state.data, ...{data: state.data.data.map(product => 
+                product.id === updatedProduct.id ? updatedProduct : product
+              )}}
+            }));
+            this._globalStore.setSuccess('Saved successfully')
+          },
+          error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+          finalize: () => this._globalStore.setLoading(false),
+        })
+      )
+    }
 
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(

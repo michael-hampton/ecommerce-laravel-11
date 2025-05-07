@@ -116,6 +116,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('sellers/account/card/{id}', [SellerAccountController::class, 'update'])->name('admin.sellers.updateCardDetails');
     Route::delete('sellers/account/card/{id}', [SellerAccountController::class, 'destroy'])->name('admin.sellers.updateCardDetails');
     Route::get('sellers/account/bank', [SellerAccountController::class, 'getSellerBankAccountDetails'])->name('admin.sellers.getBankDetails');
+    Route::delete('sellers/account/bank/{id}', [SellerAccountController::class, 'deleteBankAccount'])->name('admin.sellers.getBankDetails');
     Route::get('sellers/account/card', [SellerAccountController::class, 'index'])->name('admin.sellers.getCardDetails');
     Route::get('sellers/account/transactions', [SellerTransactionController::class, 'index'])->name('admin.sellers.getTransactions');
     Route::get('sellers/account/balance', [SellerBalanceController::class, 'show'])->name('admin.sellers.getBalance');

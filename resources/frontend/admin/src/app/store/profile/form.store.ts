@@ -174,6 +174,32 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     )
   );
 
+  deleteAccount(id: number) {
+    return this._api.deleteAccount(id).pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (users) => this._globalStore.setSuccess('Deleted successfully'),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
+  deleteBankAccount(id: number) {
+    return this._api.deleteBankAccount(id).pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (users) => {
+          this.patchState({ bank_account_details: {} as AccountDetails })
+          this._globalStore.setSuccess('Deleted successfully');
+          //this.patchState({loading: false, saveSuccess: true})
+        },
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
   saveWithdrawal = (payload: Partial<any>) => {
     return this._api.saveWithdrawal(payload).pipe(
       tap(() => this._globalStore.setLoading(true)),

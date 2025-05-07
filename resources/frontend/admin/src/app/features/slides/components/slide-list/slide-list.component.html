@@ -21,17 +21,51 @@
     </data-table-column>
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <div class="d-flex align-items-center">
-          <a href="javascript:void(0)" class="edit me-3" (click)="makeActive(item.id)">
-            <i [ngClass]="{'fa-toggle-on': item.active === true, 'fa-toggle-off' : item.active !== true }"
-            class="fa"></i>
-          </a>
-          <a href="javascript:void(0)" class="edit me-3" (click)="edit(item)">
-            <i class="fa fa-eye"></i>
-          </a>
-          <a href="javascript:void(0)" class="delete" (click)="delete(item)">
-            <i class="fa fa-trash"></i>
-          </a>
+        <div class="dropdown">
+          <button
+            type="button"
+            class="btn btn-icon btn-ghost rounded-circle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="Settings"
+          >
+            <i
+              style="font-size: 22px"
+              class="fa-solid fa-ellipsis-vertical"
+            ></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a
+                class="dropdown-item"
+                href="javascript:void(0)"
+                (click)="edit(item)"
+              >
+                <i class="fa fa-edit opacity-75 me-2"></i>
+                Edit
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="javascript:void(0)"
+                (click)="makeActive(item)"
+              >
+                <i class="fa fa-archive opacity-75 me-2"></i>
+                @if(item.active) { Hide } @else {Publish }
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item text-danger"
+                href="javascript:void(0)"
+                (click)="delete(item)"
+              >
+                <i class="fa fa-trash opacity-75 me-2"></i>
+                Delete
+              </a>
+            </li>
+          </ul>
         </div>
       </ng-template>
     </data-table-column>

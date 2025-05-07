@@ -70,10 +70,14 @@ export class SlideListComponent implements OnInit {
     this._store.reset();
   }
 
-  makeActive(id: number) {
-    this._store.makeActive(id).subscribe(result => {
-      this._store.loadData(this._store.filter$);
-    })
+  makeActive(data: any) {
+    const message = data.active ? 'This will hide the slide from the banner on the homepage.' : 'This will show the slide in the banner on the homepage'
+    const saveButtonText = data.active ? 'Hide' : 'Publish'
+    this.sub = this.modalService
+    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
+    .subscribe((v) => {
+      this._store.makeActive(data).subscribe()
+    });
   }
 }
 

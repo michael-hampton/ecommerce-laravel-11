@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Services\Cart\Facade\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class WishListController extends Controller
 {
@@ -29,7 +30,13 @@ class WishListController extends Controller
         )->associate('App\Models\Product');
 
         if ($request->ajax()) {
-            return response()->json(['count' => Cart::instance('wishlist')->content()->count()]);
+            return response()->json([
+                'count' => Cart::instance('wishlist')->content()->count(),
+                'view' => View::make('front.partials.wishlist-header', [
+                    'items' => Cart::instance('wishlist')->content(),
+                    'currency' => config('shop.currency'),
+                ])->render(),
+            ]);
         }
 
         return redirect()->back();
@@ -44,10 +51,9 @@ class WishListController extends Controller
 
     public function emptyWishList()
     {
-        exit('here');
         Cart::instance('wishlist')->destroy();
 
-        return redirect()->back();
+        return response()->json(['success' => true, 'count'=> Cart::instance('')->content()->count()]);
     }
 
     public function moveToCart(string $rowId)

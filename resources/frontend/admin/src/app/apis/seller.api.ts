@@ -33,8 +33,11 @@ export class SellerApi {
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/bank`, payload);
   }
 
+  deleteBankAccount(id: number) {
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/account/bank/${id}`);
+  }
+
   addNewCard(payload: Partial<any>) {
-    alert('adding card')
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/account/card`, payload);
   }
 
@@ -43,8 +46,11 @@ export class SellerApi {
   }
 
   removeCard(id: number) {
-    alert('removing card')
     return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/account/card/${id}`);
+  }
+
+  deleteAccount(id: number) {
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`);
   }
 
   saveReviewReply(payload: Partial<any>) {

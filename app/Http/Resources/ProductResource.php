@@ -43,6 +43,10 @@ class ProductResource extends JsonResource
             'updated_at' => $this->updated_at,
             'product_attributes' => $this->productAttributes,
             'package_size' => $this->package_size,
+            'sales' => $this->orderItems->where('seller_id', auth('sanctum')->user()->id)->sum('quantity'),
+            'earnings' => round($this->orderItems->where('seller_id', auth('sanctum')->user()->id)->map(function ($product, $key) {
+                return $product->price * $product->quantity;
+            })->sum(), 2)
         ];
     }
 }

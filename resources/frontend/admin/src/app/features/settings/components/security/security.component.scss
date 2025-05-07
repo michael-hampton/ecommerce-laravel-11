@@ -1,0 +1,16 @@
+.password-toggle-button {
+    align-items: center;
+    color: var(--cz-body-color);
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    padding: 0 1rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: color .2s ease-in-out;
+}
+
+.password-toggle {
+    position: relative;
+}

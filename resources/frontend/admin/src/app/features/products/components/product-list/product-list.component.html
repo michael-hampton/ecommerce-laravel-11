@@ -42,8 +42,8 @@
             <div
               class="d-flex flex-md-column align-items-center align-items-md-start gap-2"
             >
-            <span>Category: {{item.category.name}}</span>
-            <span>Brand: {{item.brand.name}}</span>
+              <span>Category: {{ item.category.name }}</span>
+              <span>Brand: {{ item.brand.name }}</span>
               <div class="h6 mb-0 me-1 me-md-0">
                 {{ item.sale_price | currency }}
               </div>
@@ -97,11 +97,13 @@
       property="sales"
       [sortable]="true"
     ></data-table-column>
-    <data-table-column header="Earnings" property="earnings" [sortable]="true"
-      ><ng-template>$669.75</ng-template></data-table-column
-    >
+    <data-table-column
+      header="Earnings"
+      property="earnings"
+      [sortable]="true"
+    ></data-table-column>
 
-    <data-table-column header="Stock" property="earnings" [sortable]="true">
+    <data-table-column header="Stock" property="quantity" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
         @if(item.quantity > 0) {
         {{ item.quantity }}
@@ -119,12 +121,15 @@
         <div class="dropdown">
           <button
             type="button"
-            class="btn btn-icon btn-ghost btn-sm btn-secondary rounded-circle"
+            class="btn btn-icon btn-ghost rounded-circle"
             data-bs-toggle="dropdown"
             aria-expanded="false"
             aria-label="Settings"
           >
-            <i class="fa fa-more-vertical fs-base"></i>
+            <i
+              style="font-size: 22px"
+              class="fa-solid fa-ellipsis-vertical"
+            ></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
@@ -147,10 +152,10 @@
               <a
                 class="dropdown-item"
                 href="javascript:void(0)"
-                (click)="makeActive(item.id)"
+                (click)="makeActive(item)"
               >
                 <i class="fa fa-archive opacity-75 me-2"></i>
-                @if(item.active === true) { Mark as Draft } @else {Publish }
+                @if(item.active) { Hide } @else {Publish }
               </a>
             </li>
             <li>

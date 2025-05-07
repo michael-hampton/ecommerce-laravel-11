@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Actions\Seller\CreateCard;
+use App\Actions\Seller\DeleteBankAccount;
 use App\Actions\Seller\RemoveCard;
 use App\Actions\Seller\SaveBankAccount;
 use App\Actions\Seller\UpdateCard;
@@ -72,6 +73,12 @@ class SellerAccountController extends ApiController
                 ->where('type', 'bank')
                 ->first()
         );
+    }
+
+    public function deleteBankAccount(int $id, DeleteBankAccount $deleteBankAccount)
+    {
+        $result = $deleteBankAccount->handle($id);
+        return $result ? $this->success($result, 'Bank Account Removed') : $this->error('Unable to remove bank account');
     }
 
     public function saveBankDetails(UpdateSellerBankDetails $request, SaveBankAccount $saveBankAccount)

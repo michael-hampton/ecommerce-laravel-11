@@ -46,16 +46,23 @@ export class BrandStore extends FilterStore<Brand> {
     )
   );
 
-  makeActive(id: number) {
-    return this._api.toggleActive(id).pipe(
-      tapResponse({
-        next: (data) => this._globalStore.setSuccess('Saved successfully'),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
-      })
-    )
-  }
-
+  makeActive(updatedBrand: Brand) {
+      return this._api.toggleActive(updatedBrand.id).pipe(
+        tapResponse({
+          next: (data) => {
+            updatedBrand.active = updatedBrand.active ? 0 : 1
+            this.patchState((state) => ({
+              data: {...state.data, ...{data: state.data.data.map(brand => 
+                brand.id === updatedBrand.id ? updatedBrand : brand
+              )}}
+            }));
+            this._globalStore.setSuccess('Saved successfully')
+          },
+          error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+          finalize: () => this._globalStore.setLoading(false),
+        })
+      )
+    }
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),

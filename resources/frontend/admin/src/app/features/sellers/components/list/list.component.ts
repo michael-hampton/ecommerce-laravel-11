@@ -32,11 +32,16 @@ export class ListComponent implements OnInit {
     this._store.loadData(this._store.filter$);
   }
 
-  makeActive(data: Seller) {
-   this._store.makeActive(data.active !== true, data.id).subscribe(result => {
-     this._store.loadData(this._store.filter$);
-   })
+  makeActive(data: any) {
+    const message = data.active ? 'This will prevent the seller from being able to log in. They will no longer be able to access their account including adding new listings and managing their orders' : 'This will mean the seller can log in and access their account including adding new listings and managing their orders'
+    const saveButtonText = data.active ? 'Hide' : 'Publish'
+    this.sub = this.modalService
+    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
+    .subscribe((v) => {
+      this._store.makeActive(data.active !== true, data).subscribe()
+    });
   }
+
   delete = async (data: any) => {
     this.sub = this.modalService
       .openConfirmationModal(ModalComponent, this.entry, data, {

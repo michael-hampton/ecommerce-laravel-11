@@ -69,9 +69,13 @@ export class BrandListComponent implements OnInit {
     this._store.reset();
   }
 
-  makeActive(id: number) {
-    this._store.makeActive(id).subscribe(result => {
-      this._store.loadData(this._store.filter$);
-    })
+  makeActive(data: any) {
+    const message = data.active ? 'This will hide the brand from the website, including the menu. Any products listed within the brand will no longer be accessible from inside the brand. They may still be accessible from any categories they are listed in' : 'This will show the brand from the website including the menu. Any products listed within the brand will become accessible from within it'
+    const saveButtonText = data.active ? 'Hide' : 'Publish'
+    this.sub = this.modalService
+    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
+    .subscribe((v) => {
+      this._store.makeActive(data).subscribe()
+    });
   }
 }

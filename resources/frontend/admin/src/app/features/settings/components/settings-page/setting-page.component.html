@@ -40,6 +40,16 @@
             >Profile</a
           >
           <a
+          class="nav-link"
+          id="nav-security-tab"
+          data-bs-toggle="tab"
+          href="#nav-security"
+          role="tab"
+          aria-controls="nav-security"
+          aria-selected="true"
+          >Security</a
+        >
+          <a
             class="nav-link"
             id="nav-home-tab"
             data-bs-toggle="tab"
@@ -89,6 +99,16 @@
             aria-selected="false"
             >Reviews</a
           >
+          <a
+          class="nav-link"
+          id="notifications-tab"
+          data-bs-toggle="tab"
+          href="#nav-notifications"
+          role="tab"
+          aria-controls="nav-notifications"
+          aria-selected="false"
+          >Notifications</a
+        >
         </div>
       </nav>
       <div class="tab-content mt-5" id="nav-tabContent">
@@ -100,6 +120,12 @@
         >
           <app-shop-details></app-shop-details>
         </div>
+        <div
+          class="tab-pane fade"
+          id="nav-security"
+          role="tabpanel"
+          aria-labelledby="nav-security-tab"
+        ><app-security></app-security></div>
         <div
           class="tab-pane fade"
           id="nav-home"
@@ -145,6 +171,12 @@
           role="tabpanel"
           aria-labelledby="nav-reviews-tab"
         ><app-reviews></app-reviews></div>
+        <div
+          class="tab-pane fade"
+          id="nav-notifications"
+          role="tabpanel"
+          aria-labelledby="nav-notifications-tab"
+        ><app-notifications></app-notifications></div>
       </div>
     </div>
   </div>

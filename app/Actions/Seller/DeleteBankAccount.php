@@ -4,8 +4,9 @@ namespace App\Actions\Seller;
 
 use App\Models\SellerBankDetails;
 
-class RemoveCard
+class DeleteBankAccount
 {
+
     public function handle(int $id) {
         return SellerBankDetails::find($id)->delete();
     }

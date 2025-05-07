@@ -46,15 +46,23 @@ export class UserStore extends FilterStore<User> {
     )
   );
 
-  makeActive(id: number) {
-    return this._api.toggleActive(id).pipe(
-      tapResponse({
-        next: (data) => this._globalStore.setSuccess('Saved successfully'),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
-      })
-    )
-  }
+ makeActive(updateUser: User) {
+     return this._api.toggleActive(updateUser.id).pipe(
+       tapResponse({
+         next: (data) => {
+           updateUser.active = updateUser.active ? 0 : 1
+           this.patchState((state) => ({
+             data: {...state.data, ...{data: state.data.data.map(user => 
+               user.id === updateUser.id ? updateUser : user
+             )}}
+           }));
+           this._globalStore.setSuccess('Saved successfully')
+         },
+         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+         finalize: () => this._globalStore.setLoading(false),
+       })
+     )
+   }
 
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(

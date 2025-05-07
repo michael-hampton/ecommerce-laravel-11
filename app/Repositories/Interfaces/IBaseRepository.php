@@ -88,4 +88,6 @@ interface IBaseRepository
     public function delete($id);
 
     public function insert(array $data): bool;
+
+    public function setRequiredRelationships(array $requiredRelationships): self;
 }

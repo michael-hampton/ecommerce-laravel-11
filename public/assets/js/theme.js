@@ -1390,6 +1390,8 @@ function pureFadeOut(e) {
                     $('.wishlist-count-container').append(`<span class="wishlist-amount d-block position-absolute js-cart-items-count">${data.count}</span>`)
                 }
 
+                $('#wishlist').html(data.view)
+
                 if($(this).hasClass("active")) {
                     $(this).removeClass("active");
                 } else {

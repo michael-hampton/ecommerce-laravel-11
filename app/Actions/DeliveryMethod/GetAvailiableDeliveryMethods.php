@@ -59,4 +59,14 @@ class GetAvailiableDeliveryMethods
 
         return $methods;
     }
+
+    private function isBulk($items) {
+        $bySellers = [];
+        $this->shippingSet = [];
+        foreach ($items as $item) {
+            $bySellers[$item->model->seller_id][] = $item->model->id;
+        }
+
+        return count(value: $bySellers) === 1;
+    }
 }

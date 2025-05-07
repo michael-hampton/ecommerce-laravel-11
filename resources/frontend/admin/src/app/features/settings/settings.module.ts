@@ -14,6 +14,8 @@ import { ShopDetailsComponent } from './components/shop-details/shop-details.com
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { ReviewsComponent } from './components/reviews/reviews.component';
 import { DatePassedDirective } from '../../shared/directives/date-passed.directive';
+import { SecurityComponent } from './components/security/security.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 
 
 @NgModule({
@@ -27,6 +29,8 @@ import { DatePassedDirective } from '../../shared/directives/date-passed.directi
     ShopDetailsComponent,
     TransactionsComponent,
     ReviewsComponent,
+    SecurityComponent,
+    NotificationsComponent,
   ],
     imports: [
         CommonModule,

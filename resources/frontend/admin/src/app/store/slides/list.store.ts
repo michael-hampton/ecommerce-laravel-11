@@ -45,15 +45,23 @@ export class SlideStore extends FilterStore<Slide> {
     )
   );
 
-  makeActive(id: number) {
-    return this._api.toggleActive(id).pipe(
-      tapResponse({
-        next: (data) => this._globalStore.setSuccess('Saved successfully'),
-        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this._globalStore.setLoading(false),
-      })
-    )
-  }
+  makeActive(updatedSlide: Slide) {
+      return this._api.toggleActive(updatedSlide.id).pipe(
+        tapResponse({
+          next: (data) => {
+            updatedSlide.active = updatedSlide.active ? 0 : 1
+            this.patchState((state) => ({
+              data: {...state.data, ...{data: state.data.data.map(slide => 
+                slide.id === updatedSlide.id ? updatedSlide : slide
+              )}}
+            }));
+            this._globalStore.setSuccess('Saved successfully')
+          },
+          error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+          finalize: () => this._globalStore.setLoading(false),
+        })
+      )
+    }
 
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(

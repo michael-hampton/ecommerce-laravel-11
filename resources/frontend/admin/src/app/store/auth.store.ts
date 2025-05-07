@@ -25,7 +25,7 @@ export class AuthStore {
     this.user$.pipe(
       map((user) => {
         const roles: RoleEnum[] = Array.isArray(role) ? role : [role];
-        return roles.length === 0 || roles.includes(user.payload.role)
+        return roles.length === 0 || roles.includes(user?.payload?.role)
       })
     );
 
