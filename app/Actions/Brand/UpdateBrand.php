@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class UpdateBrand
 {
-    public function __construct(private IBrandRepository $brandRepository) {}
+    public function __construct(private readonly IBrandRepository $brandRepository) {}
 
     public function handle(array $data, int $id)
     {

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 class MessageController extends ApiController
 {
-    public function __construct(private IMessageRepository $messageRepository) {}
+    public function __construct(private readonly IMessageRepository $messageRepository) {}
 
     /**
      * Display a listing of the resource.

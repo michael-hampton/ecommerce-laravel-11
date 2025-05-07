@@ -9,7 +9,7 @@ use App\Repositories\DeliveryMethodRepository;
 
 class UpdateDeliveryMethod
 {
-    public function __construct(private DeliveryMethodRepository $deliveryMethodRepository) {}
+    public function __construct(private readonly DeliveryMethodRepository $deliveryMethodRepository) {}
 
     public function handle(array $data, int $id): bool
     {
@@ -17,9 +17,7 @@ class UpdateDeliveryMethod
         $update = [];
         $delete = [];
 
-        $array = array_map(function ($item) use ($data): array {
-            return $item + ['country_id' => $data['country_id']];
-        }, $data['methods']);
+        $array = array_map(fn($item): array => $item + ['country_id' => $data['country_id']], $data['methods']);
 
         $current = DeliveryMethod::where('country_id', $data['country_id'])->get();
 

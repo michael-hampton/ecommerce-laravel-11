@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class CreateUser
 {
-    public function __construct(private IUserRepository $userRepository) {}
+    public function __construct(private readonly IUserRepository $userRepository) {}
 
     public function handle(array $data): User
     {

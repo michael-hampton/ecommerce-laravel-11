@@ -38,7 +38,7 @@ class Helper
         // Cast the number to a positive to solve rounding
         $number = abs($number);
         // Calculate precision number for dividing / multiplying
-        $precision = pow(10, $precision);
+        $precision = 10 ** $precision;
 
         // Run the math, re-applying the negative value to ensure returns correctly negative / positive
         return floor($number * $precision) / $precision * $negative;

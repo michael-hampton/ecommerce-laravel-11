@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class CreateProduct extends SaveProduct
 {
-    public function __construct(private IProductRepository $productRepository) {}
+    public function __construct(private readonly IProductRepository $productRepository) {}
 
     public function handle(array $data)
     {

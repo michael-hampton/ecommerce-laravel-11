@@ -72,7 +72,7 @@ class Stripe extends BaseProvider
                 $charge = $stripeClient->charges->create([
                     'customer' => $customer['id'],
                     'currency' => config('shop.currency_code', 'GBP'),
-                    'amount' => round(($total * pow(10, 2)), 0),
+                    'amount' => round(($total * 10 ** 2), 0),
                     'description' => 'Payment for order no '.$order->id,
                 ]);
 

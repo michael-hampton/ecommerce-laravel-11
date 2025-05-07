@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Session;
 
 class CreateOrder
 {
-    public function __construct(private IOrderRepository $orderRepository, private IAddressRepository $addressRepository)
+    public function __construct(private readonly IOrderRepository $orderRepository, private readonly IAddressRepository $addressRepository)
     {
     }
 
@@ -131,9 +131,7 @@ class CreateOrder
 
                 $item->model->decrement('quantity');
 
-                $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(function ($item): bool {
-                    return $item->id == (string) $item->id;
-                });
+                $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(fn($item): bool => $item->id == (string) $item->id);
 
                 $wishlistItems->each(function ($item): void {
                     $user = User::where('email', $item->identifier)->firstOrFail();
@@ -145,9 +143,7 @@ class CreateOrder
             if ($data['mode'] === 'seller_balance') {
                 foreach ($test as $sellerId => $seller) {
                     $items = collect($seller);
-                    $total = $items->map(function (array $item): float {
-                        return $item['discount'] > 0 ? (($item['price'] * $item['quantity']) + $item['shipping_price']) - $item['discount'] : ($item['price'] * $item['quantity']) + $item['shipping_price'];
-                    })->first();
+                    $total = $items->map(fn(array $item): float => $item['discount'] > 0 ? (($item['price'] * $item['quantity']) + $item['shipping_price']) - $item['discount'] : ($item['price'] * $item['quantity']) + $item['shipping_price'])->first();
 
                     $transactionData = [
                         'order_id' => $order->id,

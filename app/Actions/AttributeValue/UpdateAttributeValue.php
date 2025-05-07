@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\IAttributeValueRepository;
 
 class UpdateAttributeValue
 {
-    public function __construct(private IAttributeValueRepository $attributeValueRepository) {}
+    public function __construct(private readonly IAttributeValueRepository $attributeValueRepository) {}
 
     public function handle(array $data, int $id)
     {

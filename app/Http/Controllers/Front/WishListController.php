@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\View;
 
 class WishListController extends Controller
 {
-    public function __construct(private IProductRepository $productRepository) {
+    public function __construct(private readonly IProductRepository $productRepository) {
     }
 
     public function index()

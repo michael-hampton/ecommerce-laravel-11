@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
-    public function __construct(private IUserRepository $userRepository) {}
+    public function __construct(private readonly IUserRepository $userRepository) {}
 
     /**
      * @param Request $searchRequest

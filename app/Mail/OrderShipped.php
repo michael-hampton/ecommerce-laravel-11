@@ -14,14 +14,12 @@ class OrderShipped extends Mailable
 {
     use Queueable;
     use SerializesModels;
-    public $mailData;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData)
+    public function __construct(public $mailData)
     {
-        $this->mailData = $mailData;
     }
 
     /**

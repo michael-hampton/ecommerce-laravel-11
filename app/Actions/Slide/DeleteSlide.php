@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class DeleteSlide
 {
-    public function __construct(private ISlideRepository $slideRepository) {}
+    public function __construct(private readonly ISlideRepository $slideRepository) {}
 
     public function handle(int $id)
     {

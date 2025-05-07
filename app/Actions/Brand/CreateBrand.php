@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class CreateBrand
 {
-    public function __construct(private IBrandRepository $brandRepository) {}
+    public function __construct(private readonly IBrandRepository $brandRepository) {}
 
     public function handle(array $data): Brand
     {

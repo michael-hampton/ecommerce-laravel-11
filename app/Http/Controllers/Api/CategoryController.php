@@ -16,7 +16,7 @@ use App\Repositories\Interfaces\ICategoryRepository;
 
 class CategoryController extends ApiController
 {
-    public function __construct(private ICategoryRepository $categoryRepository) {}
+    public function __construct(private readonly ICategoryRepository $categoryRepository) {}
 
     /**
      * Display a listing of the resource.

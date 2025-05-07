@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 
 class UpdateSlide
 {
-    public function __construct(private ISlideRepository $slideRepository) {}
+    public function __construct(private readonly ISlideRepository $slideRepository) {}
 
     public function handle(array $data, int $id)
     {

@@ -26,8 +26,8 @@ use function auth;
 class UserAccountController extends Controller
 {
     public function __construct(
-        private IOrderRepository $orderRepository,
-        private IAddressRepository $addressRepository,
+        private readonly IOrderRepository $orderRepository,
+        private readonly IAddressRepository $addressRepository,
     ) {}
 
     public function index()

@@ -17,7 +17,7 @@ use Illuminate\Http\Response;
 
 class OrderController extends ApiController
 {
-    public function __construct(private IOrderRepository $orderRepository) {}
+    public function __construct(private readonly IOrderRepository $orderRepository) {}
 
     /**
      * @param Request $searchRequest

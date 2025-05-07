@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\ICategoryRepository;
 
 class ActivateCategory
 {
-    public function __construct(private ICategoryRepository $categoryRepository) {}
+    public function __construct(private readonly ICategoryRepository $categoryRepository) {}
 
     public function handle(int $id)
     {

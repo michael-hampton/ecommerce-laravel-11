@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 
 class SlideController extends ApiController
 {
-    public function __construct(private ISlideRepository $slideRepository) {}
+    public function __construct(private readonly ISlideRepository $slideRepository) {}
 
     /**
      * @param Request $searchRequest

@@ -14,7 +14,7 @@ use App\Repositories\Interfaces\Support\IQuestionRepository;
 
 class FaqQuestionController extends ApiController
 {
-    public function __construct(private IQuestionRepository $questionRepository) {}
+    public function __construct(private readonly IQuestionRepository $questionRepository) {}
 
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {

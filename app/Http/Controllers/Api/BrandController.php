@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 
 class BrandController extends ApiController
 {
-    public function __construct(private IBrandRepository $brandRepository) {}
+    public function __construct(private readonly IBrandRepository $brandRepository) {}
 
     /**
      * @param Request $searchRequest

@@ -20,8 +20,8 @@ use Illuminate\Http\Response;
 class SellerController extends ApiController
 {
     public function __construct(
-        private ISellerRepository $sellerRepository,
-        private IUserRepository $userRepository,
+        private readonly ISellerRepository $sellerRepository,
+        private readonly IUserRepository $userRepository,
     ) {}
 
     /**

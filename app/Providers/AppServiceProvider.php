@@ -86,9 +86,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->bind($interface, $repository);
         }
 
-        $this->app->singleton('Image', function ($app): \App\Providers\Image {
-            return new Image;
-        });
+        $this->app->singleton('Image', fn($app): \App\Providers\Image => new Image);
     }
 
     /**
@@ -96,19 +94,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
-            return (new MailMessage)
-                ->subject('Verify Email Address')
-                ->line('Click the button below to verify your email address.')
-                ->action('Verify Email Address', $url);
-        });
+        VerifyEmail::toMailUsing(fn(object $notifiable, string $url) => (new MailMessage)
+            ->subject('Verify Email Address')
+            ->line('Click the button below to verify your email address.')
+            ->action('Verify Email Address', $url));
 
-        ResetPassword::createUrlUsing(function (User $user, string $token) {
-            return url(route('password.reset', [
-                'token' => $token,
-                'email' => $user->getEmailForPasswordReset(),
-            ], false));
-        });
+        ResetPassword::createUrlUsing(fn(User $user, string $token) => url(route('password.reset', [
+            'token' => $token,
+            'email' => $user->getEmailForPasswordReset(),
+        ], false)));
 
         ResetPassword::toMailUsing(function (User $user, string $token) {
             $url = url(route('password.reset', [

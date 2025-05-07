@@ -7,7 +7,7 @@ use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/app',
+         __DIR__ . '/app',
         //__DIR__ . '/bootstrap',
         //__DIR__ . '/config',
         //__DIR__ . '/public',
@@ -16,7 +16,7 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
     ])
     // uncomment to reach your current PHP version
-     //->withPhpSets()
+     ->withPhpSets(php82:true)
      ->withPreparedSets(
         deadCode: true,
         earlyReturn: true,

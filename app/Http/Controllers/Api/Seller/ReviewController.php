@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 class ReviewController extends ApiController
 {
     public function __construct(
-        private IUserRepository $userRepository,
+        private readonly IUserRepository $userRepository,
     ) {}
 
     public function index(Request $request)
@@ -28,9 +28,7 @@ class ReviewController extends ApiController
         $anonymousResourceCollection = SellerReviewResource::collection($seller->reviews()->whereNull('parent_id')->get());
 
         $reviews = $seller->products()->with('reviews')
-            ->whereHas('reviews', function (Builder $builder) {
-                return $builder->whereNull('parent_id');
-            })
+            ->whereHas('reviews', fn(Builder $builder) => $builder->whereNull('parent_id'))
             ->get()->map(function ($item) {
                 if ($item->has('reviews')) {
                     return $item->reviews;
@@ -39,9 +37,7 @@ class ReviewController extends ApiController
                 return false;
             })->flatten();
 
-        $reviews = $reviews->filter(function (Review $review): bool {
-            return $review->parent_id === null;
-        });
+        $reviews = $reviews->filter(fn(Review $review): bool => $review->parent_id === null);
 
         $productReviews = ProductReviewResource::collection($reviews);
 

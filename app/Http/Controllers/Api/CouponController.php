@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 class CouponController extends ApiController
 {
     public function __construct(
-        private ICouponRepository $couponRepository,
+        private readonly ICouponRepository $couponRepository,
     ) {}
 
     /**

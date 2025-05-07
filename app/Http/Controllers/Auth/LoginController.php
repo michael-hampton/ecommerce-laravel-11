@@ -45,7 +45,7 @@ class LoginController extends ApiController
         $this->middleware('auth')->only('logout');
     }
 
-    public function login()
+    public function login(\Illuminate\Http\Request $request)
     {
         return view('auth.login');
     }
@@ -59,6 +59,7 @@ class LoginController extends ApiController
 
             return $this->success($success, 'User login successfully.');
         }
+
         return $this->error('Unauthorised.', ['error' => 'Unauthorised']);
     }
 

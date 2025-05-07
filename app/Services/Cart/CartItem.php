@@ -166,9 +166,8 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    public function price($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function price($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         return $this->numberFormat($this->price, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -204,9 +203,8 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    public function priceTax($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function priceTax($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         return $this->numberFormat($this->priceTax, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -245,7 +243,7 @@ class CartItem implements Arrayable, Jsonable
     public function getShippingId($hasBulk = false, int $deliveryMethodId = 0)
     {
         $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
-        $address = (empty($this->addressId)) ? (auth()->check() ? auth()->user()->defaultAddress() : null) : (Address::whereId($this->addressId)->first());
+        $address = ($this->addressId === 0) ? (auth()->check() ? auth()->user()->defaultAddress() : null) : (Address::whereId($this->addressId)->first());
 
         $query = DeliveryMethod::query()
             ->with('courier')
@@ -295,9 +293,8 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         return $this->numberFormat($this->subtotal, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -309,9 +306,8 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    public function total($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function total($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         return $this->numberFormat($this->total, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -322,9 +318,8 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    public function tax($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function tax($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         return $this->numberFormat($this->tax, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -335,9 +330,8 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    public function taxTotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function taxTotal($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         return $this->numberFormat($this->taxTotal, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -389,7 +383,7 @@ class CartItem implements Arrayable, Jsonable
      */
     public function associate($model): static
     {
-        $this->associatedModel = is_string($model) ? $model : get_class($model);
+        $this->associatedModel = is_string($model) ? $model : $model::class;
 
         return $this;
     }

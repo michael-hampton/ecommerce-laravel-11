@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 class AttributeController extends ApiController
 {
-    public function __construct(private IAttributeRepository $attributeRepository) {}
+    public function __construct(private readonly IAttributeRepository $attributeRepository) {}
 
     /**
      * @param Request $searchRequest

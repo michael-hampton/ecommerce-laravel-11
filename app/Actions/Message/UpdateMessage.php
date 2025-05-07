@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\IMessageRepository;
 
 class UpdateMessage
 {
-    public function __construct(private IMessageRepository $messageRepository) {}
+    public function __construct(private readonly IMessageRepository $messageRepository) {}
 
     public function handle(array $data, int $id)
     {

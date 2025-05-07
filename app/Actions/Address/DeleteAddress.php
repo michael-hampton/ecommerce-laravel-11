@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\IAddressRepository;
 
 class DeleteAddress
 {
-    public function __construct(private IAddressRepository $addressRepository) {}
+    public function __construct(private readonly IAddressRepository $addressRepository) {}
 
     public function handle(int $id): void
     {

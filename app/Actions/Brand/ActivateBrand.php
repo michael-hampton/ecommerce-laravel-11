@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\IBrandRepository;
 
 class ActivateBrand
 {
-    public function __construct(private IBrandRepository $brandRepository) {}
+    public function __construct(private readonly IBrandRepository $brandRepository) {}
 
     public function handle(int $id)
     {

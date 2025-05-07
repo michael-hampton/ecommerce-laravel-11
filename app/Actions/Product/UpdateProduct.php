@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 
 class UpdateProduct extends SaveProduct
 {
-    public function __construct(private IProductRepository $productRepository)
+    public function __construct(private readonly IProductRepository $productRepository)
     {
     }
 
@@ -103,9 +103,7 @@ class UpdateProduct extends SaveProduct
         //if the product has a sale price lower than the regular price (discounted) and the discounted price is not the same as whats already been saved (indicates a change in price) then send notifiaction
         
         if (!empty($data['sale_price']) && $data['sale_price'] < $data['regular_price']) {
-            $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(function ($item): bool {
-                return $item->id == (string) $item->id;
-            });
+            $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(fn($item): bool => $item->id == (string) $item->id);
 
             $wishlistItems->each(function ($item) use ($product): void {
                 $user = User::where('email', $item->identifier)->firstOrFail();

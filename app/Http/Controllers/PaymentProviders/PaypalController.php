@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class PaypalController extends Controller
 {
-    public function __construct(private IOrderRepository $orderRepository) {}
+    public function __construct(private readonly IOrderRepository $orderRepository) {}
 
     public function paymentCancel()
     {

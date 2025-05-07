@@ -14,7 +14,7 @@ use App\Repositories\Interfaces\Support\IArticleRepository;
 
 class FaqArticleController extends ApiController
 {
-    public function __construct(private IArticleRepository $iArticleRepository) {}
+    public function __construct(private readonly IArticleRepository $iArticleRepository) {}
 
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {

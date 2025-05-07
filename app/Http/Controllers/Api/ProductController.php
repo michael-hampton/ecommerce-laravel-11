@@ -21,7 +21,7 @@ use Illuminate\Http\Response;
 class ProductController extends ApiController
 {
     public function __construct(
-        private IProductRepository $productRepository
+        private readonly IProductRepository $productRepository
     ) {}
 
     /**
@@ -117,6 +117,7 @@ class ProductController extends ApiController
         if (! $result) {
             return $this->error('Unable to update Category');
         }
+
         return null;
     }
 }

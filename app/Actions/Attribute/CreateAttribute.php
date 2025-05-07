@@ -10,7 +10,7 @@ use Attribute;
 
 class CreateAttribute
 {
-    public function __construct(private IAttributeRepository $attributeRepository) {}
+    public function __construct(private readonly IAttributeRepository $attributeRepository) {}
 
     public function handle(array $data): ProductAttribute
     {

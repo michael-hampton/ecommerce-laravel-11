@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class CreateCategory
 {
-    public function __construct(private ICategoryRepository $categoryRepository) {}
+    public function __construct(private readonly ICategoryRepository $categoryRepository) {}
 
     public function handle(array $data): Category
     {
@@ -46,7 +46,7 @@ class CreateCategory
 
     private function saveAttributes($attributes, Category $category): void
     {
-        $attributeIds = explode(',', $attributes);
+        $attributeIds = explode(',', (string) $attributes);
         $productAttributes = ProductAttribute::whereIn('id', $attributeIds)->get();
 
         foreach ($productAttributes as $productAttribute) {

@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\ICategoryRepository;
 
 class DeleteCategory
 {
-    public function __construct(private ICategoryRepository $categoryRepository) {}
+    public function __construct(private readonly ICategoryRepository $categoryRepository) {}
 
     public function handle(int $id)
     {

@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 class AttributeValueController extends ApiController
 {
     public function __construct(
-        private IAttributeValueRepository $attributeValueRepository
+        private readonly IAttributeValueRepository $attributeValueRepository
     ) {}
 
     /**

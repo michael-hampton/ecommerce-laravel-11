@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\IProductRepository;
 
 class DeleteProduct
 {
-    public function __construct(private IProductRepository $productRepository) {}
+    public function __construct(private readonly IProductRepository $productRepository) {}
 
     public function handle(int $id)
     {

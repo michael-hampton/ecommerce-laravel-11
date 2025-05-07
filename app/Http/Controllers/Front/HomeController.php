@@ -23,9 +23,9 @@ use Illuminate\Support\Facades\Hash;
 class HomeController extends Controller
 {
     public function __construct(
-        private ICategoryRepository $categoryRepository,
-        private IProductRepository $productRepository,
-        private ISlideRepository $slideRepository
+        private readonly ICategoryRepository $categoryRepository,
+        private readonly IProductRepository $productRepository,
+        private readonly ISlideRepository $slideRepository
     ) {}
 
     public function index()

@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\View;
 class CheckoutController extends Controller
 {
     public function __construct(
-        private IAddressRepository $addressRepository,
-        private IOrderRepository $orderRepository,
+        private readonly IAddressRepository $addressRepository,
+        private readonly IOrderRepository $orderRepository,
     ) {}
 
     public function index(Request $request)

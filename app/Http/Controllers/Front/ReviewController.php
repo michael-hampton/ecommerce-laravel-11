@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    public function __construct(private IProductRepository $productRepository) {}
+    public function __construct(private readonly IProductRepository $productRepository) {}
 
     public function store(Request $request, int $productId)
     {

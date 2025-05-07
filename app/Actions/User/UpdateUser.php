@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 
 class UpdateUser
 {
-    public function __construct(private IUserRepository $userRepository) {}
+    public function __construct(private readonly IUserRepository $userRepository) {}
 
     public function handle(array $data, int $id)
     {

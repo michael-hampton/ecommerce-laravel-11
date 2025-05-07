@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\ICouponRepository;
 
 class CreateCoupon
 {
-    public function __construct(private ICouponRepository $couponRepository) {}
+    public function __construct(private readonly ICouponRepository $couponRepository) {}
 
     public function handle(array $data): Coupon
     {

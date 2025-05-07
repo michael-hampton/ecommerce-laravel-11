@@ -10,7 +10,7 @@ use App\Repositories\Interfaces\ITransactionRepository;
 
 class SellerTransactionController extends ApiController
 {
-    public function __construct(private ITransactionRepository $transactionRepository) {}
+    public function __construct(private readonly ITransactionRepository $transactionRepository) {}
 
     public function index()
     {

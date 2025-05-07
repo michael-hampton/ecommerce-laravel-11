@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class DeleteUser
 {
-    public function __construct(private IUserRepository $userRepository) {}
+    public function __construct(private readonly IUserRepository $userRepository) {}
 
     public function handle(int $id)
     {

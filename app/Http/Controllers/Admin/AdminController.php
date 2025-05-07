@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function __construct(private IOrderRepository $orderRepository) {}
+    public function __construct(private readonly IOrderRepository $orderRepository) {}
 
     public function index()
     {

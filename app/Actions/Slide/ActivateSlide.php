@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\ISlideRepository;
 
 class ActivateSlide
 {
-    public function __construct(private ISlideRepository $slideRepository) {}
+    public function __construct(private readonly ISlideRepository $slideRepository) {}
 
     public function handle(int $id)
     {

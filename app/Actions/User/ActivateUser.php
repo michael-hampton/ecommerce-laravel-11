@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\IUserRepository;
 
 class ActivateUser
 {
-    public function __construct(private IUserRepository $userRepository) {}
+    public function __construct(private readonly IUserRepository $userRepository) {}
 
     public function handle(int $id)
     {

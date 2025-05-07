@@ -30,9 +30,9 @@ class ShopController extends Controller
     ];
 
     public function __construct(
-        private IProductRepository $productRepository,
-        private IBrandRepository $brandRepository,
-        private ICategoryRepository $categoryRepository,
+        private readonly IProductRepository $productRepository,
+        private readonly IBrandRepository $brandRepository,
+        private readonly ICategoryRepository $categoryRepository,
     ) {
         //
     }
@@ -41,8 +41,8 @@ class ShopController extends Controller
     {
         $brandIds = $request->get('brandId') ?? '';
         $categoryIds = $request->get('categoryId') ?? '';
-        $showCategory = count(array_filter(explode(',', $categoryIds))) == 1;
-        $showBrand = count(array_filter(explode(',', $brandIds))) == 1 && $showCategory === false;
+        $showCategory = count(array_filter(explode(',', (string) $categoryIds))) == 1;
+        $showBrand = count(array_filter(explode(',', (string) $brandIds))) == 1 && $showCategory === false;
 
         $brands = $this->brandRepository->setRequiredRelationships(['products'])->getAll(null, 'name', 'asc');
         $brandIds = $request->get('brandId') ?? '';

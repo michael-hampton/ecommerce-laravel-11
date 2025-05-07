@@ -14,7 +14,7 @@ use App\Repositories\Interfaces\Support\ICategoryRepository;
 
 class FaqCategoryController extends ApiController
 {
-    public function __construct(private ICategoryRepository $categoryRepository) {}
+    public function __construct(private readonly ICategoryRepository $categoryRepository) {}
 
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {

@@ -13,7 +13,7 @@ use function auth;
 
 class UpdateOrder
 {
-    public function __construct(private IOrderRepository $orderRepository) {}
+    public function __construct(private readonly IOrderRepository $orderRepository) {}
 
     public function handle(array $data, int $id): Order
     {

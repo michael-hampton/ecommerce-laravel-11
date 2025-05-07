@@ -10,7 +10,7 @@ use App\Repositories\Interfaces\IMessageRepository;
 
 class CreateMessage
 {
-    public function __construct(private IMessageRepository $messageRepository) {}
+    public function __construct(private readonly IMessageRepository $messageRepository) {}
 
     /**
      * @return mixed

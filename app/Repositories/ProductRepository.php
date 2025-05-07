@@ -60,21 +60,21 @@ class ProductRepository extends BaseRepository implements IProductRepository
         });
 
         $builder->when(! empty($searchParams['brandIds']), function (Builder $builder) use ($searchParams): void {
-            $builder->whereIn('brand_id', explode(',', $searchParams['brandIds']));
+            $builder->whereIn('brand_id', explode(',', (string) $searchParams['brandIds']));
         });
 
         $builder->when(! empty($searchParams['attributeValueIds']), function (Builder $builder) use ($searchParams): void {
             $builder->whereHas('productAttributes', function ($query) use ($searchParams): void {
-                $query->whereIn('attribute_value_id', explode(',', $searchParams['attributeValueIds']));
+                $query->whereIn('attribute_value_id', explode(',', (string) $searchParams['attributeValueIds']));
             });
         });
 
         $query->when(! empty($searchParams['categoryIds']), function (Builder $builder) use ($searchParams): void {
             // get children
-            $children = Category::whereIn('parent_id', explode(',', $searchParams['categoryIds']))->get();
+            $children = Category::whereIn('parent_id', explode(',', (string) $searchParams['categoryIds']))->get();
 
             $childrenIds = $children->pluck('id')->toArray();
-            $parentIds = array_map('intval', explode(',', $searchParams['categoryIds']));
+            $parentIds = array_map('intval', explode(',', (string) $searchParams['categoryIds']));
             $ids = empty($childrenIds) ? $parentIds : array_merge($parentIds, $childrenIds);
 
             $builder->whereIn('category_id', $ids);

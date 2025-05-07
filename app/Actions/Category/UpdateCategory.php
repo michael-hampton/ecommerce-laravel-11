@@ -14,11 +14,11 @@ use Illuminate\Support\Str;
 
 class UpdateCategory
 {
-    public function __construct(private ICategoryRepository $categoryRepository) {}
+    public function __construct(private readonly ICategoryRepository $categoryRepository) {}
 
     private function saveAttributes($attributes, Category $category): void
     {
-        $attributeIds = explode(',', $attributes);
+        $attributeIds = explode(',', (string) $attributes);
         $productAttributes = ProductAttribute::whereIn('id', $attributeIds)->get();
 
         foreach ($productAttributes as $productAttribute) {

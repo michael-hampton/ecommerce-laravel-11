@@ -43,9 +43,7 @@ class GetAvailiableDeliveryMethods
         $order = ['Large', 'Medium', 'Small'];
 
         // Get the largest package size in the cart
-        $orderedBySize = $availiableMethods->sortBy(function (array $item) use ($order): int|false {
-            return array_search($item['name'], $order, true);
-        })->groupBy('name');
+        $orderedBySize = $availiableMethods->sortBy(fn(array $item): int|false => array_search($item['name'], $order, true))->groupBy('name');
 
         if ($orderedBySize->keys()->count() > 1) {
             return [];

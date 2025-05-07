@@ -18,22 +18,12 @@ class Cart
 {
     const DEFAULT_INSTANCE = 'default';
 
-    /**
-     * Instance of the session manager.
-     */
-    protected \Illuminate\Session\SessionManager $session;
-
     private int $shippingId = 0;
 
     /**
      * The address id of the user placing the order used to get the country for the delivery method
      */
     private int $addressId = 0;
-
-    /**
-     * Instance of the event dispatcher.
-     */
-    private \Illuminate\Contracts\Events\Dispatcher $events;
 
     private array $shippingSet = [];
 
@@ -45,11 +35,14 @@ class Cart
     /**
      * Cart constructor.
      */
-    public function __construct(SessionManager $sessionManager, Dispatcher $dispatcher)
+    public function __construct(/**
+     * Instance of the session manager.
+     */
+    protected \Illuminate\Session\SessionManager $session, /**
+     * Instance of the event dispatcher.
+     */
+    private readonly \Illuminate\Contracts\Events\Dispatcher $dispatcher)
     {
-        $this->session = $sessionManager;
-        $this->events = $dispatcher;
-
         $this->instance(self::DEFAULT_INSTANCE);
     }
 
@@ -70,9 +63,7 @@ class Cart
     public function add($id, $name = null, $qty = null, $price = null, array $options = [], $taxrate = null)
     {
         if ($this->isMulti($id)) {
-            return array_map(function ($item) {
-                return $this->add($item);
-            }, $id);
+            return array_map(fn($item) => $this->add($item), $id);
         }
 
         $cartItem = $id instanceof CartItem ? $id : $this->createCartItem($id, $name, $qty, $price, $options, $taxrate);
@@ -85,7 +76,7 @@ class Cart
 
         $content->put($cartItem->rowId, $cartItem);
 
-        $this->events->dispatch('cart.added', $cartItem);
+        $this->dispatcher->dispatch('cart.added', $cartItem);
 
         $this->session->put($this->instance, $content);
 
@@ -204,9 +195,10 @@ class Cart
 
             return null;
         }
+
         $content->put($cartItem->rowId, $cartItem);
 
-        $this->events->dispatch('cart.updated', $cartItem);
+        $this->dispatcher->dispatch('cart.updated', $cartItem);
 
         $this->session->put($this->instance, $content);
 
@@ -226,7 +218,7 @@ class Cart
 
         $content->pull($cartItem->rowId);
 
-        $this->events->dispatch('cart.removed', $cartItem);
+        $this->dispatcher->dispatch('cart.removed', $cartItem);
 
         $this->session->put($this->instance, $content);
     }
@@ -362,7 +354,7 @@ class Cart
             'created_at' => new DateTime,
         ]);
 
-        $this->events->dispatch('cart.stored');
+        $this->dispatcher->dispatch('cart.stored');
     }
 
     /**
@@ -434,7 +426,7 @@ class Cart
             $content->put($cartItem->rowId, $cartItem);
         }
 
-        $this->events->dispatch('cart.restored');
+        $this->dispatcher->dispatch('cart.restored');
 
         $this->session->put($this->instance, $content);
 
@@ -545,15 +537,12 @@ class Cart
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    public function total($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function total($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         $content = $this->getContent();
 
-        $total = $content->reduce(function ($total, CartItem $cartItem): float|int {
-            return $total + ($cartItem->qty * $cartItem->priceTax);
-        }, 0);
+        $total = $content->reduce(fn($total, CartItem $cartItem): float|int => $total + ($cartItem->qty * $cartItem->priceTax), 0);
 
         $total += $this->shipping() + $this->commission();
 
@@ -571,9 +560,8 @@ class Cart
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return float
      */
-    public function shipping($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function shipping($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         $content = $this->getContent();
 
@@ -632,15 +620,12 @@ class Cart
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return float
      */
-    public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         $content = $this->getContent();
 
-        $subTotal = $content->reduce(function ($subTotal, CartItem $cartItem): int|float {
-            return $subTotal + ($cartItem->qty * $cartItem->price);
-        }, 0);
+        $subTotal = $content->reduce(fn($subTotal, CartItem $cartItem): int|float => $subTotal + ($cartItem->qty * $cartItem->price), 0);
 
         return $this->numberFormat($subTotal, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -651,15 +636,12 @@ class Cart
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return float
      */
-    public function tax($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function tax($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         $content = $this->getContent();
 
-        $tax = $content->reduce(function ($tax, CartItem $cartItem): float|int {
-            return $tax + ($cartItem->qty * $cartItem->tax);
-        }, 0);
+        $tax = $content->reduce(fn($tax, CartItem $cartItem): float|int => $tax + ($cartItem->qty * $cartItem->tax), 0);
 
         return $this->numberFormat($tax, $decimals, $decimalPoint, $thousandSeperator);
     }

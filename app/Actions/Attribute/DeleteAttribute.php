@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\IAttributeRepository;
 
 class DeleteAttribute
 {
-    public function __construct(private IAttributeRepository $attributeRepository) {}
+    public function __construct(private readonly IAttributeRepository $attributeRepository) {}
 
     public function handle(int $id)
     {

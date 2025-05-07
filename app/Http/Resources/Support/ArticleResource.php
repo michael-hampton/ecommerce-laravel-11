@@ -25,9 +25,7 @@ class ArticleResource extends JsonResource
             'category' => $this->category,
             'slug' => $this->slug,
             'tags' => $this->tags,
-            'tag_ids' => $this->tags->map(function ($tag) {
-                return $tag->id;
-            })->toArray(),
+            'tag_ids' => $this->tags->map(fn($tag) => $tag->id)->toArray(),
         ];
     }
 }

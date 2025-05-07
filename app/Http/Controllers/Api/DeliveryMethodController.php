@@ -19,8 +19,8 @@ use Illuminate\Http\Request;
 class DeliveryMethodController extends ApiController
 {
     public function __construct(
-        private ICountryRepository $countryRepository,
-        private DeliveryMethodRepository $deliveryMethodRepository,
+        private readonly ICountryRepository $countryRepository,
+        private readonly DeliveryMethodRepository $deliveryMethodRepository,
     ) {}
 
     /**

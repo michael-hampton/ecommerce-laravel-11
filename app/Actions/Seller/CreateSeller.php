@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\ISellerRepository;
 
 class CreateSeller
 {
-    public function __construct(private ISellerRepository $sellerRepository) {}
+    public function __construct(private readonly ISellerRepository $sellerRepository) {}
 
     public function handle(array $data): Profile
     {

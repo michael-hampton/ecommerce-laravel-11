@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 
 class ApplyCoupon
 {
-    public function __construct(private ICouponRepository $couponRepository) {}
+    public function __construct(private readonly ICouponRepository $couponRepository) {}
 
     public function handle(string $couponCode): bool
     {
@@ -28,11 +28,11 @@ class ApplyCoupon
         $matched = [];
 
         foreach ($cartItems as $cartItem) {
-            if (! empty($coupon->categories) && in_array($cartItem->model->category_id, explode(',', $coupon->categories))) {
+            if (! empty($coupon->categories) && in_array($cartItem->model->category_id, explode(',', (string) $coupon->categories))) {
                 $categoryValid = true;
             }
 
-            if (! empty($coupon->brands) && in_array($cartItem->model->brand_id, explode(',', $coupon->brands))) {
+            if (! empty($coupon->brands) && in_array($cartItem->model->brand_id, explode(',', (string) $coupon->brands))) {
                 $brandValid = true;
             }
 

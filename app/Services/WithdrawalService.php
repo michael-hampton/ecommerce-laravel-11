@@ -14,11 +14,11 @@ use Exception;
 class WithdrawalService implements IWithdrawalService
 {
     public function __construct(
-        private int $sellerId,
-        private float $amount,
-        private WithdrawalTypeEnum $withdrawalTypeEnum,
-        private WithdrawalEnum $withdrawalEnum,
-        private ?int $id
+        private readonly int $sellerId,
+        private readonly float $amount,
+        private readonly WithdrawalTypeEnum $withdrawalTypeEnum,
+        private readonly WithdrawalEnum $withdrawalEnum,
+        private readonly ?int $id
     ) {}
 
     public function updateBalance()

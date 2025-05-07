@@ -23,9 +23,7 @@ class OrderItemResource extends JsonResource
             'quantity' => $this->quantity,
             'tracking_number' => $this->tracking_number,
             'courier_id' => $this->courier_id,
-            'orderLogs' => $this->logs->map(function ($item) {
-                return OrderLogResource::make($item);
-            }),
+            'orderLogs' => $this->logs->map(fn($item) => OrderLogResource::make($item)),
             'product' => ProductResource::make($this->product),
             'messages' => MessageResource::collection($this->messages),
         ];
