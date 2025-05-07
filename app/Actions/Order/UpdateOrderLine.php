@@ -7,8 +7,6 @@ namespace App\Actions\Order;
 use App\Events\OrderStatusUpdated;
 use App\Models\OrderItem;
 use App\Models\Transaction;
-use App\Repositories\Interfaces\IAddressRepository;
-use App\Repositories\Interfaces\IOrderRepository;
 
 class UpdateOrderLine
 {

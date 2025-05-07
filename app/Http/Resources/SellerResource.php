@@ -31,7 +31,7 @@ class SellerResource extends JsonResource
             'website' => $this->website,
             'active' => $this->active,
             'username' => $this->username,
-            'balance_activated' => $this->balance_activated
+            'balance_activated' => $this->balance_activated,
         ];
     }
 }

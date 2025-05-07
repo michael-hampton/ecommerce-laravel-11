@@ -12,6 +12,7 @@ class Profile extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'name',
@@ -29,7 +30,7 @@ class Profile extends Model
         'username',
         'email',
         'balance_activated',
-        'date_of_birth'
+        'date_of_birth',
     ];
 
     protected $casts = ['active' => 'boolean'];

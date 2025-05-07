@@ -59,7 +59,7 @@ class Helper
 
         $firstPart = '';
 
-        for ($x = 0; $x <= strlen($em[0]); ++$x) {
+        for ($x = 0; $x <= strlen($em[0]); $x++) {
             $firstPart .= '*';
         }
 

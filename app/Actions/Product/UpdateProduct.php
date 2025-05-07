@@ -16,9 +16,7 @@ use Illuminate\Support\Str;
 
 class UpdateProduct extends SaveProduct
 {
-    public function __construct(private readonly IProductRepository $productRepository)
-    {
-    }
+    public function __construct(private readonly IProductRepository $productRepository) {}
 
     public function handle(array $data, int $id)
     {
@@ -31,19 +29,19 @@ class UpdateProduct extends SaveProduct
 
         $product->fill($data);
 
-        if (!empty($data['subcategory_id'])) {
+        if (! empty($data['subcategory_id'])) {
             $data['category_id'] = $data['subcategory_id'];
             unset($data['subcategory_id']);
         }
 
-        if (!empty($data['attribute_values'])) {
+        if (! empty($data['attribute_values'])) {
             $attributeValues = $data['attribute_values'];
             unset($data['attribute_values']);
         }
 
-        if (!empty($data['image'])) {
+        if (! empty($data['image'])) {
             $fileExtension = $data['image']->getClientOriginalExtension();
-            $filename = $currentTimestamp . '.' . $fileExtension;
+            $filename = $currentTimestamp.'.'.$fileExtension;
 
             $data['image']->storeAs('products', $filename, 'public');
 
@@ -56,18 +54,18 @@ class UpdateProduct extends SaveProduct
         $galleryArr = [];
         $galleryImages = '';
         $counter = 1;
-        if (!empty($data['images'])) {
+        if (! empty($data['images'])) {
             $allowedfileExtension = ['jpg', 'png', 'jpeg'];
             $files = $data['images'];
             foreach ($files as $file) {
                 $gextension = $file->getClientOriginalExtension();
                 $check = in_array($gextension, $allowedfileExtension);
                 if ($check) {
-                    $gfilename = $currentTimestamp . '-' . $counter . '.' . $gextension;
+                    $gfilename = $currentTimestamp.'-'.$counter.'.'.$gextension;
                     $file->storeAs('products', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'products');
                     $galleryArr[] = $gfilename;
-                    ++$counter;
+                    $counter++;
                 }
             }
 
@@ -79,7 +77,7 @@ class UpdateProduct extends SaveProduct
         $bumpDays = $data['bump_days'];
         unset($data['bump_days']);
 
-        if (!empty($bumpDays)) {
+        if (! empty($bumpDays)) {
             $this->updateSellerBalance($bumpDays, $product);
         }
 
@@ -87,7 +85,7 @@ class UpdateProduct extends SaveProduct
 
         ProductAttributeValue::where('product_id', $id)->forceDelete();
 
-        if (!empty($attributeValues)) {
+        if (! empty($attributeValues)) {
             $this->saveAttributes($attributeValues);
         }
 
@@ -100,10 +98,10 @@ class UpdateProduct extends SaveProduct
 
     private function sendNotification(array $data, Product $product): void
     {
-        //if the product has a sale price lower than the regular price (discounted) and the discounted price is not the same as whats already been saved (indicates a change in price) then send notifiaction
-        
-        if (!empty($data['sale_price']) && $data['sale_price'] < $data['regular_price']) {
-            $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(fn($item): bool => $item->id == (string) $item->id);
+        // if the product has a sale price lower than the regular price (discounted) and the discounted price is not the same as whats already been saved (indicates a change in price) then send notifiaction
+
+        if (! empty($data['sale_price']) && $data['sale_price'] < $data['regular_price']) {
+            $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(fn ($item): bool => $item->id == (string) $item->id);
 
             $wishlistItems->each(function ($item) use ($product): void {
                 $user = User::where('email', $item->identifier)->firstOrFail();

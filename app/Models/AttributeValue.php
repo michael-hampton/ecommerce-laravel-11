@@ -12,6 +12,7 @@ class AttributeValue extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $fillable = ['attribute_id', 'name'];
 
     public function attribute()

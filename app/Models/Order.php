@@ -12,6 +12,7 @@ class Order extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $fillable = [
         'customer_id',
         'subtotal',

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Actions\DeliveryMethod;
 
-use App\Repositories\DeliveryMethodRepository;
-
 class GetAvailiableDeliveryMethods
 {
     /**
@@ -43,7 +41,7 @@ class GetAvailiableDeliveryMethods
         $order = ['Large', 'Medium', 'Small'];
 
         // Get the largest package size in the cart
-        $orderedBySize = $availiableMethods->sortBy(fn(array $item): int|false => array_search($item['name'], $order, true))->groupBy('name');
+        $orderedBySize = $availiableMethods->sortBy(fn (array $item): int|false => array_search($item['name'], $order, true))->groupBy('name');
 
         if ($orderedBySize->keys()->count() > 1) {
             return [];
@@ -61,7 +59,8 @@ class GetAvailiableDeliveryMethods
         return $methods;
     }
 
-    private function isBulk($items): bool {
+    private function isBulk($items): bool
+    {
         $bySellers = [];
         $this->shippingSet = [];
         foreach ($items as $item) {

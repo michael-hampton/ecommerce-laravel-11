@@ -92,7 +92,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
         $builder->when(! empty($searchParams['name']), function (Builder $builder) use ($searchParams): void {
             $builder->where('name', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
-        
+
         return $builder;
     }
 }

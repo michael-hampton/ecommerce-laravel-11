@@ -8,8 +8,6 @@ use App\Models\OrderItem;
 use App\Models\User;
 use App\Models\WithdrawalEnum;
 use App\Models\WithdrawalTypeEnum;
-use App\Repositories\Interfaces\IAddressRepository;
-use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\WithdrawalService;
 use Exception;
 

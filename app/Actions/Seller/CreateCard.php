@@ -12,12 +12,12 @@ class CreateCard
     public function handle(Request $request)
     {
         return SellerBankDetails::create([
-            'seller_id' => auth('sanctum')->user()->id, 
+            'seller_id' => auth('sanctum')->user()->id,
             'card_name' => $request->string('card_name'),
             'card_expiry_date' => $request->string('card_expiry_date'),
             'card_cvv' => $request->string('card_cvv'),
             'card_number' => $request->string('card_number'),
-            'type' => 'card'
+            'type' => 'card',
         ]);
     }
 }

@@ -11,7 +11,6 @@ use App\Models\Contact;
 use App\Models\FaqCategory;
 use App\Models\FaqQuestion;
 use App\Models\User;
-use App\Repositories\Interfaces\IBrandRepository;
 use App\Repositories\Interfaces\ICategoryRepository;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Repositories\Interfaces\ISlideRepository;

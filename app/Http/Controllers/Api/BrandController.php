@@ -20,7 +20,7 @@ class BrandController extends ApiController
     public function __construct(private readonly IBrandRepository $brandRepository) {}
 
     /**
-     * @param Request $searchRequest
+     * @param  Request  $searchRequest
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {

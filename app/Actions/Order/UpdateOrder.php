@@ -6,7 +6,6 @@ namespace App\Actions\Order;
 
 use App\Events\OrderStatusUpdated;
 use App\Models\Order;
-use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 
 use function auth;

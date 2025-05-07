@@ -22,7 +22,7 @@ class CourierResource extends JsonResource
             'name' => $this->name,
             'code' => $this->code,
             'active' => $this->active,
-            'countries_active' => collect(explode(',', $this->countries_active))->map(fn($item) => CountryResource::make(Country::whereId($item)->first())),
+            'countries_active' => collect(explode(',', $this->countries_active))->map(fn ($item) => CountryResource::make(Country::whereId($item)->first())),
         ];
     }
 }

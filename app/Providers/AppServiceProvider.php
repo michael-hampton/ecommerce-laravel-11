@@ -74,7 +74,7 @@ class AppServiceProvider extends ServiceProvider
         IArticleRepository::class => ArticleRepository::class,
         ISupportCategoryRepository::class => SupportCategoryRepository::class,
         IQuestionRepository::class => QuestionRepository::class,
-        IOrderItemRepository::class => OrderItemRepository::class
+        IOrderItemRepository::class => OrderItemRepository::class,
     ];
 
     /**
@@ -86,7 +86,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->bind($interface, $repository);
         }
 
-        $this->app->singleton('Image', fn($app): \App\Providers\Image => new Image);
+        $this->app->singleton('Image', fn ($app): Image => new Image);
     }
 
     /**
@@ -94,12 +94,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        VerifyEmail::toMailUsing(fn(object $notifiable, string $url) => (new MailMessage)
+        VerifyEmail::toMailUsing(fn (object $notifiable, string $url) => (new MailMessage)
             ->subject('Verify Email Address')
             ->line('Click the button below to verify your email address.')
             ->action('Verify Email Address', $url));
 
-        ResetPassword::createUrlUsing(fn(User $user, string $token) => url(route('password.reset', [
+        ResetPassword::createUrlUsing(fn (User $user, string $token) => url(route('password.reset', [
             'token' => $token,
             'email' => $user->getEmailForPasswordReset(),
         ], false)));

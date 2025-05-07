@@ -18,9 +18,7 @@ class OrderShipped extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public $mailData)
-    {
-    }
+    public function __construct(public $mailData) {}
 
     /**
      * Get the message envelope.

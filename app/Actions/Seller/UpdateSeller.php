@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Actions\Seller;
 
 use App\Models\Profile;
-use App\Repositories\Interfaces\ISellerRepository;
 
 class UpdateSeller
 {
@@ -13,6 +12,7 @@ class UpdateSeller
     {
         $profile = Profile::findOrFail($id);
         $profile->fill($data);
+
         return $profile->save();
     }
 }

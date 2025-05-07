@@ -7,7 +7,6 @@ namespace App\Actions\Seller;
 use App\Models\SellerBalance;
 use App\Models\SellerWithdrawal;
 use App\Models\Transaction;
-use App\Repositories\Interfaces\ISellerRepository;
 
 class WithdrawFunds
 {

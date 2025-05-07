@@ -1,7 +1,5 @@
 <?php
 
-
-
 return [
     'show_multiple_delivery_methods' => false,
     'admin_url' => 'http://localhost:4200/',

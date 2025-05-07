@@ -36,15 +36,15 @@ class ProductInWishlistReduced extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line(new HtmlString('The price on a product in your wishlist <strong>' . $this->product->name . '</strong> has been reduced to ' . config('shop.currency') . $this->product->sale_price))
-            //->action('Notification Action', url('/'))
+            ->line(new HtmlString('The price on a product in your wishlist <strong>'.$this->product->name.'</strong> has been reduced to '.config('shop.currency').$this->product->sale_price))
+            // ->action('Notification Action', url('/'))
             ->line('Thank you for using our application!');
     }
 
     public function toDatabase($notifiable): array
     {
         return [
-            'message' => 'The price on a product in your wishlist <strong>' . $this->product->name . '</strong> has been reduced to ' . $this->product->sale_price,
+            'message' => 'The price on a product in your wishlist <strong>'.$this->product->name.'</strong> has been reduced to '.$this->product->sale_price,
             // Add any additional data you want to store in the database
         ];
     }

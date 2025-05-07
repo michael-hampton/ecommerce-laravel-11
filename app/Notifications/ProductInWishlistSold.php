@@ -36,15 +36,15 @@ class ProductInWishlistSold extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line(new HtmlString('A product in your wishlist <strong>' . $this->product->name . '</strong> was sold to another buyer'))
-            //->action('Notification Action', url('/'))
+            ->line(new HtmlString('A product in your wishlist <strong>'.$this->product->name.'</strong> was sold to another buyer'))
+            // ->action('Notification Action', url('/'))
             ->line('Thank you for using our application!');
     }
 
     public function toDatabase($notifiable): array
     {
         return [
-            'message' => 'A product in your wishlist <strong>' . $this->product->name . '</strong> was sold to another buyer',
+            'message' => 'A product in your wishlist <strong>'.$this->product->name.'</strong> was sold to another buyer',
             // Add any additional data you want to store in the database
         ];
     }

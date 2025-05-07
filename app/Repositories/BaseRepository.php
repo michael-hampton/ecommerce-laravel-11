@@ -80,7 +80,7 @@ class BaseRepository implements IBaseRepository
         if ($relationships == 'all') {
             $this->requiredRelationships = $this->relationships;
         } elseif (is_array($relationships)) {
-            $this->requiredRelationships = array_filter($relationships, fn($value): bool => in_array($value, $this->relationships));
+            $this->requiredRelationships = array_filter($relationships, fn ($value): bool => in_array($value, $this->relationships));
         } elseif (is_string($relationships)) {
             $this->requiredRelationships[] = $relationships;
         }
@@ -115,7 +115,7 @@ class BaseRepository implements IBaseRepository
      */
     public function getForSelect($data, $key = 'id', $orderBy = 'created_at', $sort = 'desc')
     {
-        $query = (fn() => $this->model
+        $query = (fn () => $this->model
             ->with($this->requiredRelationships)
             ->orderBy($orderBy, $sort)
             ->lists($data, $key)

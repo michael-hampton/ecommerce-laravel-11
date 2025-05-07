@@ -38,10 +38,10 @@ class Cart
     public function __construct(/**
      * Instance of the session manager.
      */
-    protected \Illuminate\Session\SessionManager $session, /**
+        protected SessionManager $session, /**
      * Instance of the event dispatcher.
      */
-    private readonly \Illuminate\Contracts\Events\Dispatcher $dispatcher)
+        private readonly Dispatcher $dispatcher)
     {
         $this->instance(self::DEFAULT_INSTANCE);
     }
@@ -63,7 +63,7 @@ class Cart
     public function add($id, $name = null, $qty = null, $price = null, array $options = [], $taxrate = null)
     {
         if ($this->isMulti($id)) {
-            return array_map(fn($item) => $this->add($item), $id);
+            return array_map(fn ($item) => $this->add($item), $id);
         }
 
         $cartItem = $id instanceof CartItem ? $id : $this->createCartItem($id, $name, $qty, $price, $options, $taxrate);
@@ -161,7 +161,7 @@ class Cart
      * @return Collection
      */
     protected function getContent()
-     {
+    {
         return $this->session->has($this->instance)
             ? $this->session->get($this->instance)
             : new Collection;
@@ -463,7 +463,7 @@ class Cart
                     continue;
                 }
 
-                ++$wishlistProducts[$cartItemRow->id];
+                $wishlistProducts[$cartItemRow->id]++;
             }
         }
 
@@ -542,7 +542,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $total = $content->reduce(fn($total, CartItem $cartItem): float|int => $total + ($cartItem->qty * $cartItem->priceTax), 0);
+        $total = $content->reduce(fn ($total, CartItem $cartItem): float|int => $total + ($cartItem->qty * $cartItem->priceTax), 0);
 
         $total += $this->shipping() + $this->commission();
 
@@ -625,7 +625,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $subTotal = $content->reduce(fn($subTotal, CartItem $cartItem): int|float => $subTotal + ($cartItem->qty * $cartItem->price), 0);
+        $subTotal = $content->reduce(fn ($subTotal, CartItem $cartItem): int|float => $subTotal + ($cartItem->qty * $cartItem->price), 0);
 
         return $this->numberFormat($subTotal, $decimals, $decimalPoint, $thousandSeperator);
     }
@@ -641,7 +641,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $tax = $content->reduce(fn($tax, CartItem $cartItem): float|int => $tax + ($cartItem->qty * $cartItem->tax), 0);
+        $tax = $content->reduce(fn ($tax, CartItem $cartItem): float|int => $tax + ($cartItem->qty * $cartItem->tax), 0);
 
         return $this->numberFormat($tax, $decimals, $decimalPoint, $thousandSeperator);
     }

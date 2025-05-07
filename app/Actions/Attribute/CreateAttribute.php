@@ -6,7 +6,6 @@ namespace App\Actions\Attribute;
 
 use App\Models\ProductAttribute;
 use App\Repositories\Interfaces\IAttributeRepository;
-use Attribute;
 
 class CreateAttribute
 {

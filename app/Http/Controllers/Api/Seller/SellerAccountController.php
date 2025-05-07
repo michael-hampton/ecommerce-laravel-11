@@ -10,7 +10,6 @@ use App\Actions\Seller\RemoveCard;
 use App\Actions\Seller\SaveBankAccount;
 use App\Actions\Seller\UpdateCard;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSellerBankDetails;
 use App\Http\Requests\UpdateSellerCardDetails;
 use App\Http\Resources\CardDetailsResource;
@@ -80,6 +79,7 @@ class SellerAccountController extends ApiController
     public function deleteBankAccount(int $id, DeleteBankAccount $deleteBankAccount)
     {
         $result = $deleteBankAccount->handle($id);
+
         return $result ? $this->success($result, 'Bank Account Removed') : $this->error('Unable to remove bank account');
     }
 
@@ -87,11 +87,10 @@ class SellerAccountController extends ApiController
     {
         $sellerBankDetails = $saveBankAccount->handle($updateSellerBankDetails);
 
-        if (!$sellerBankDetails) {
+        if (! $sellerBankDetails) {
             return $this->error('Unable to save bank details');
         }
 
         return $this->success($sellerBankDetails, 'bank details updated');
     }
-
 }

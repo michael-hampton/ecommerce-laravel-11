@@ -25,9 +25,9 @@ class ProductController extends ApiController
     ) {}
 
     /**
-     * @param Request $searchRequest
+     * @param  Request  $searchRequest
      */
-    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
+    public function index(SearchRequest $searchRequest): JsonResponse
     {
         $products = $this->productRepository->setRequiredRelationships(['orderItems'])->getPaginated(
             $searchRequest->integer('limit'),
@@ -110,7 +110,7 @@ class ProductController extends ApiController
         return response()->json($products);
     }
 
-    public function toggleActive(int $id, ActivateProduct $activateProduct): ?\Illuminate\Http\JsonResponse
+    public function toggleActive(int $id, ActivateProduct $activateProduct): ?JsonResponse
     {
         $result = $activateProduct->handle($id);
 

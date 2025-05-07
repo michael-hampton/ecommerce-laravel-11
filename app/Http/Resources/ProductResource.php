@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'active' => $this->active,
             'image' => asset('images/products').'/'.$this->image,
-            'images' => collect(explode(',', $this->images))->map(fn(string $image): string => asset('images/products').'/'.$image),
+            'images' => collect(explode(',', $this->images))->map(fn (string $image): string => asset('images/products').'/'.$image),
             'category' => $this->category,
             'brand' => $this->brand,
             'short_description' => $this->short_description,
@@ -42,7 +42,7 @@ class ProductResource extends JsonResource
             'product_attributes' => $this->productAttributes,
             'package_size' => $this->package_size,
             'sales' => $this->orderItems->where('seller_id', auth('sanctum')->user()->id)->sum('quantity'),
-            'earnings' => round($this->orderItems->where('seller_id', auth('sanctum')->user()->id)->map(fn($product, $key): int|float => $product->price * $product->quantity)->sum(), 2)
+            'earnings' => round($this->orderItems->where('seller_id', auth('sanctum')->user()->id)->map(fn ($product, $key): int|float => $product->price * $product->quantity)->sum(), 2),
         ];
     }
 }

@@ -45,7 +45,7 @@ class LoginController extends ApiController
         $this->middleware('auth')->only('logout');
     }
 
-    public function login(\Illuminate\Http\Request $request)
+    public function login(Request $request)
     {
         return view('auth.login');
     }

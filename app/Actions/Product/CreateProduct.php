@@ -49,7 +49,7 @@ class CreateProduct extends SaveProduct
                     $file->storeAs('products', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'products');
                     $galleryArr[] = $gfilename;
-                    ++$counter;
+                    $counter++;
                 }
             }
 

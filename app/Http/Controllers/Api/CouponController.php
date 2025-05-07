@@ -20,7 +20,7 @@ class CouponController extends ApiController
     ) {}
 
     /**
-     * @param Request $searchRequest
+     * @param  Request  $searchRequest
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {

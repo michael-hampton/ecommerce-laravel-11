@@ -143,6 +143,7 @@ class Paypal extends BaseProvider
         $payPal->getAccessToken();
 
         $response = $payPal->capturePaymentOrder($request->query('token'));
+
         return isset($response['status']) && $response['status'] == 'COMPLETED';
     }
 }

@@ -27,7 +27,7 @@ class SellerController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $slides = $this->sellerRepository->getPaginated(
             $request->integer('limit'),

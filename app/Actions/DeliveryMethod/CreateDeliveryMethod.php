@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Actions\DeliveryMethod;
 
 use App\Models\Country;
-use App\Models\DeliveryMethod;
 use App\Repositories\DeliveryMethodRepository;
 
 class CreateDeliveryMethod
@@ -14,7 +13,7 @@ class CreateDeliveryMethod
 
     public function handle(array $data): bool
     {
-        $array = array_map(fn($item): array => $item + ['country_id' => $data['country_id']], $data['methods']);
+        $array = array_map(fn ($item): array => $item + ['country_id' => $data['country_id']], $data['methods']);
 
         Country::whereId($data['country_id'])->first()->update(['shipping_active' => true]);
 

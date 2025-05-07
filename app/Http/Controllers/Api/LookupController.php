@@ -68,7 +68,7 @@ class LookupController
     {
         $categoryAttributes = Category::find($categoryId)->attributes()->with('attribute')->get();
 
-        $attributes = $categoryAttributes->map(fn($item) => $item->attribute);
+        $attributes = $categoryAttributes->map(fn ($item) => $item->attribute);
 
         return response()->json(AttributeResource::collection($attributes), 200);
     }

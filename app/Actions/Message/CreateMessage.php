@@ -38,7 +38,7 @@ class CreateMessage
                     $counter += 1;
                 }
 
-                ++$counter;
+                $counter++;
             }
 
             $gallery_images = implode(',', $gallery_arr);

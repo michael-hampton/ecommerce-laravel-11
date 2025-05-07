@@ -26,9 +26,7 @@ use Illuminate\Support\Facades\Session;
 
 class CreateOrder
 {
-    public function __construct(private readonly IOrderRepository $orderRepository, private readonly IAddressRepository $addressRepository)
-    {
-    }
+    public function __construct(private readonly IOrderRepository $orderRepository, private readonly IAddressRepository $addressRepository) {}
 
     public function handle(array $data)
     {
@@ -58,20 +56,20 @@ class CreateOrder
 
             $order = $this->orderRepository->create($orderData);
 
-            if (!$order) {
+            if (! $order) {
                 DB::rollBack();
             }
 
             $groupBySeller = [];
 
             foreach ($cartItems as $item) {
-                if (!isset($groupBySeller[$item->model->seller_id])) {
+                if (! isset($groupBySeller[$item->model->seller_id])) {
                     $groupBySeller[$item->model->seller_id] = 1;
 
                     continue;
                 }
 
-                ++$groupBySeller[$item->model->seller_id];
+                $groupBySeller[$item->model->seller_id]++;
             }
 
             $test = [];
@@ -86,10 +84,10 @@ class CreateOrder
 
                 $discount = 0;
 
-                if (!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
+                if (! empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
                     if ($groupBySeller[$item->model->seller_id] === 1) {
                         $discount = $coupon->value;
-                    } elseif (Session::has('coupon') && !empty(Session::get('coupon')['matched'])) {
+                    } elseif (Session::has('coupon') && ! empty(Session::get('coupon')['matched'])) {
                         $matched = Session::get('coupon')['matched'];
                         $discount = in_array($item->id, $matched) ? $coupon->value : 0;
                     } else {
@@ -124,14 +122,14 @@ class CreateOrder
 
                 $result = OrderItem::create($orderItemData);
 
-                if (!$result) {
+                if (! $result) {
                     DB::rollBack();
                     break;
                 }
 
                 $item->model->decrement('quantity');
 
-                $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(fn($item): bool => $item->id == (string) $item->id);
+                $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(fn ($item): bool => $item->id == (string) $item->id);
 
                 $wishlistItems->each(function ($item): void {
                     $user = User::where('email', $item->identifier)->firstOrFail();
@@ -143,7 +141,7 @@ class CreateOrder
             if ($data['mode'] === 'seller_balance') {
                 foreach ($test as $sellerId => $seller) {
                     $items = collect($seller);
-                    $total = $items->map(fn(array $item): float => $item['discount'] > 0 ? (($item['price'] * $item['quantity']) + $item['shipping_price']) - $item['discount'] : ($item['price'] * $item['quantity']) + $item['shipping_price'])->first();
+                    $total = $items->map(fn (array $item): float => $item['discount'] > 0 ? (($item['price'] * $item['quantity']) + $item['shipping_price']) - $item['discount'] : ($item['price'] * $item['quantity']) + $item['shipping_price'])->first();
 
                     $transactionData = [
                         'order_id' => $order->id,
@@ -159,7 +157,7 @@ class CreateOrder
 
                     $result = Transaction::create($transactionData);
 
-                    if (!$result) {
+                    if (! $result) {
                         DB::rollBack();
                     }
                 }
@@ -192,7 +190,7 @@ class CreateOrder
             return $order;
         } catch (Exception $exception) {
             echo $exception->getMessage();
-            die;
+            exit;
         }
     }
 

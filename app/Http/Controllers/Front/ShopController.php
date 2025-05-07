@@ -82,7 +82,7 @@ class ShopController extends Controller
         );
 
         if (Auth::check()) {
-            //Cart::instance('cart')->store(Auth::user()->email);
+            // Cart::instance('cart')->store(Auth::user()->email);
             Cart::instance('wishlist')->store(Auth::user()->email);
         }
 

@@ -1,7 +1,5 @@
 <?php
 
-
-
 use App\Http\Middleware\AuthAdmin;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;

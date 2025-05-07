@@ -19,7 +19,7 @@ class UserController extends ApiController
     public function __construct(private readonly IUserRepository $userRepository) {}
 
     /**
-     * @param Request $searchRequest
+     * @param  Request  $searchRequest
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|object
      *
      * @throws \Exception

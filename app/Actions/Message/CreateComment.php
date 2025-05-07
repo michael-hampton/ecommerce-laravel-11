@@ -6,7 +6,6 @@ namespace App\Actions\Message;
 
 use App\Helper;
 use App\Models\Comment;
-use App\Repositories\Interfaces\IMessageRepository;
 
 class CreateComment
 {
@@ -26,7 +25,7 @@ class CreateComment
                     $file->storeAs('messages', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'messages');
                     $galleryArr[] = $gfilename;
-                    ++$counter;
+                    $counter++;
                 }
             }
 

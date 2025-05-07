@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Notifications\ProductAddedToWishlist;
-use App\Notifications\ProductInWishlistSold;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Cart\Facade\Cart;
 use Illuminate\Http\Request;
@@ -15,8 +13,7 @@ use Illuminate\Support\Facades\View;
 
 class WishListController extends Controller
 {
-    public function __construct(private readonly IProductRepository $productRepository) {
-    }
+    public function __construct(private readonly IProductRepository $productRepository) {}
 
     public function index()
     {
@@ -62,7 +59,7 @@ class WishListController extends Controller
     {
         Cart::instance('wishlist')->destroy();
 
-        return response()->json(['success' => true, 'count'=> Cart::instance('')->content()->count()]);
+        return response()->json(['success' => true, 'count' => Cart::instance('')->content()->count()]);
     }
 
     public function moveToCart(string $rowId)

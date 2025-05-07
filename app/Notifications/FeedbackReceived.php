@@ -38,8 +38,8 @@ class FeedbackReceived extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('You received some feedback from ' . $this->review->customer->name . '.')
-            ->line('Comment: ' . $this->review->comment . ' Rating: ' . $this->review->rating)
+            ->line('You received some feedback from '.$this->review->customer->name.'.')
+            ->line('Comment: '.$this->review->comment.' Rating: '.$this->review->rating)
             ->action('Visit your account panel to see more', url(config('shop.admin_url')))
             ->line('Thank you for using our application!');
     }
@@ -47,7 +47,7 @@ class FeedbackReceived extends Notification implements ShouldQueue
     public function toDatabase($notifiable): array
     {
         return [
-            'message' =>'You received some feedback from ' . $this->review->customer->name,
+            'message' => 'You received some feedback from '.$this->review->customer->name,
             // Add any additional data you want to store in the database
         ];
     }

@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 
 class UpdateCard
 {
-    public function handle(Request $request) {
+    public function handle(Request $request)
+    {
         $card = SellerBankDetails::findOrFail($request->integer('id'));
         $card->update([
             'card_name' => $request->string('card_name'),

@@ -19,7 +19,7 @@ class AttributeController extends ApiController
     public function __construct(private readonly IAttributeRepository $attributeRepository) {}
 
     /**
-     * @param Request $searchRequest
+     * @param  Request  $searchRequest
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|object
      *
      * @throws \Exception

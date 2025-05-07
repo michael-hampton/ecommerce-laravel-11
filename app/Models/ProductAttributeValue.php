@@ -13,6 +13,7 @@ class ProductAttributeValue extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $fillable = ['product_attribute_id', 'attribute_value_id', 'product_id'];
 
     public function productAttribute(): HasOne
