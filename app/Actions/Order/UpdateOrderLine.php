@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Order;
 
@@ -12,8 +12,6 @@ use App\Repositories\Interfaces\IOrderRepository;
 
 class UpdateOrderLine
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
-
     public function handle(array $data, int $id)
     {
         $orderData = ['status' => $data['status']];

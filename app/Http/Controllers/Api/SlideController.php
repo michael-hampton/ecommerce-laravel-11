@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -20,16 +20,15 @@ class SlideController extends ApiController
     public function __construct(private ISlideRepository $slideRepository) {}
 
     /**
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $searchRequest
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $slides = $this->slideRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText'), 'ignore_active' => true]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText'), 'ignore_active' => true]
         );
 
         return $this->sendPaginatedResponse($slides, SlideResource::collection($slides));
@@ -38,23 +37,21 @@ class SlideController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateSlideRequest $request, CreateSlide $createSlide)
+    public function store(CreateSlideRequest $createSlideRequest, CreateSlide $createSlide)
     {
-        $result = $createSlide->handle($request->all());
+        $slide = $createSlide->handle($createSlideRequest->all());
 
-        if (! $result) {
+        if (! $slide) {
             return $this->error('Unable to create Slide');
         }
 
-        return $this->success($result, 'Slide created');
+        return $this->success($slide, 'Slide created');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function show(int $id)
+    public function show(int $id): void
     {
         //
     }
@@ -62,9 +59,9 @@ class SlideController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateSlideRequest $request, $id, UpdateSlide $updateSlide)
+    public function update(UpdateSlideRequest $updateSlideRequest, int $id, UpdateSlide $updateSlide)
     {
-        $result = $updateSlide->handle($request->except(['_method']), $id);
+        $result = $updateSlide->handle($updateSlideRequest->except(['_method']), $id);
 
         if (! $result) {
             return $this->error('Unable to update Slide');
@@ -76,7 +73,7 @@ class SlideController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, DeleteSlide $deleteSlide)
+    public function destroy(int $id, DeleteSlide $deleteSlide)
     {
         $result = $deleteSlide->handle($id);
 

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -19,7 +19,7 @@ class WithdrawalRequestedListener
     /**
      * Handle the event.
      */
-    public function handle(WithdrawalRequested $event): void
+    public function handle(WithdrawalRequested $withdrawalRequested): void
     {
         //
     }

@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Brand;
 
 use App\Repositories\Interfaces\IBrandRepository;
 
 class DeleteBrand
 {
-    public function __construct(private IBrandRepository $repository) {}
+    public function __construct(private IBrandRepository $brandRepository) {}
 
     public function handle(int $id)
     {
-        $brand = $this->repository->getById($id);
+        $this->brandRepository->getById($id);
 
         /*if(File::exists(public_path('images/brands/' . $brand->image))){
             File::delete(public_path('images/brands/' . $brand->image));
         }*/
 
-        return $this->repository->delete($id);
+        return $this->brandRepository->delete($id);
     }
 }

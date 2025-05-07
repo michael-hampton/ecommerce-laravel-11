@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -20,16 +20,15 @@ class CouponController extends ApiController
     ) {}
 
     /**
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $searchRequest
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $coupons = $this->couponRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText')]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($coupons, CouponResource::collection($coupons));
@@ -38,15 +37,15 @@ class CouponController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCouponRequest $request, CreateCoupon $createCoupon)
+    public function store(StoreCouponRequest $storeCouponRequest, CreateCoupon $createCoupon)
     {
-        $result = $createCoupon->handle($request->all());
+        $coupon = $createCoupon->handle($storeCouponRequest->all());
 
-        if (! $result) {
+        if (! $coupon) {
             return $this->error('Unable to create Coupon');
         }
 
-        return $this->success($result, 'Coupon created');
+        return $this->success($coupon, 'Coupon created');
 
     }
 
@@ -54,9 +53,8 @@ class CouponController extends ApiController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): void
     {
         //
     }
@@ -64,7 +62,7 @@ class CouponController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, UpdateCoupon $updateCoupon)
+    public function update(Request $request, int $id, UpdateCoupon $updateCoupon)
     {
         $result = $updateCoupon->handle($request->except(['_token', '_method']), $id);
 
@@ -78,7 +76,7 @@ class CouponController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, DeleteCoupon $deleteCoupon)
+    public function destroy(int $id, DeleteCoupon $deleteCoupon)
     {
         $result = $deleteCoupon->handle($id);
 

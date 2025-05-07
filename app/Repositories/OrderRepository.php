@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -22,18 +22,18 @@ class OrderRepository extends BaseRepository implements IOrderRepository
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['seller_id']), function (Builder $query) use ($searchParams) {
-            $query->whereHas('orderItems', function (Builder $query) use ($searchParams) {
-                $query->where('seller_id', $searchParams['seller_id']);
+        $builder->when(! empty($searchParams['seller_id']), function (Builder $builder) use ($searchParams): void {
+            $builder->whereHas('orderItems', function (Builder $builder) use ($searchParams): void {
+                $builder->where('seller_id', $searchParams['seller_id']);
             });
         });
 
-        $query->when(! empty($searchParams['customer_id']), function (Builder $query) use ($searchParams) {
-            $query->where('customer_id', $searchParams['customer_id']);
+        $query->when(! empty($searchParams['customer_id']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('customer_id', $searchParams['customer_id']);
         });
 
-        return $query;
+        return $builder;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
-
+    use HasFactory;
+    use SoftDeletes;
     protected $fillable = [
         'name',
         'slug',
@@ -53,14 +53,14 @@ class Product extends Model
         return $this->belongsTo(User::class, 'seller_id');
     }
 
-    protected function scopeFeatured(Builder $query): void
+    protected function scopeFeatured(Builder $builder): void
     {
-        $query->where('featured', '=', 1);
+        $builder->where('featured', '=', 1);
     }
 
-    protected function scopeOnSale(Builder $query): void
+    protected function scopeOnSale(Builder $builder): void
     {
-        $query->whereNotNull('sale_price')
+        $builder->whereNotNull('sale_price')
             ->where('sale_price', '<>', '')
             ->whereRaw('sale_price < regular_price');
     }

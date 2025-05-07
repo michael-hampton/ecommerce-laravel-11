@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\File;
 
 class UpdateUser
 {
-    public function __construct(private IUserRepository $repository) {}
+    public function __construct(private IUserRepository $userRepository) {}
 
     public function handle(array $data, int $id)
     {
-        $user = $this->repository->getById($id);
+        $user = $this->userRepository->getById($id);
 
         if (! empty($data['image'])) {
             if (File::exists(public_path('uploads/users/'.$user->image))) {
@@ -32,6 +32,6 @@ class UpdateUser
             $data['image'] = $filename;
         }
 
-        return $this->repository->update($id, $data);
+        return $this->userRepository->update($id, $data);
     }
 }

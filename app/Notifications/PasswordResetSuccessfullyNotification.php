@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Notifications;
 
@@ -13,7 +13,7 @@ class PasswordResetSuccessfullyNotification extends Notification implements Shou
 {
     use Queueable;
 
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }

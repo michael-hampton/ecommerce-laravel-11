@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -10,19 +10,19 @@ use Illuminate\Database\Eloquent\Builder;
 
 class AttributeRepository extends BaseRepository implements IAttributeRepository
 {
-    public function __construct(ProductAttribute $attribute)
+    public function __construct(ProductAttribute $productAttribute)
     {
-        parent::__construct($attribute);
+        parent::__construct($productAttribute);
     }
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
-            $query->where('name', 'like', "%{$searchParams['name']}%");
+        $builder->when(! empty($searchParams['name']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('name', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
 
-        return $query;
+        return $builder;
     }
 }

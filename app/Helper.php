@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Intervention\Image\Laravel\Facades\Image;
@@ -30,6 +32,7 @@ class Helper
         if ((int) $number == 0) {
             return $number;
         }
+
         // Are we negative?
         $negative = $number / abs($number);
         // Cast the number to a positive to solve rounding
@@ -41,11 +44,11 @@ class Helper
         return floor($number * $precision) / $precision * $negative;
     }
 
-    public static function generateThumbnailImage($image, $filename, $type)
+    public static function generateThumbnailImage($image, string $filename, string $type): void
     {
         $thumbnailPath = public_path('images/'.$type.'/thumbnails');
 
-        $image = Image::read($image->path())
+        Image::read($image->path())
             ->resize(100, 100)
             ->save($thumbnailPath.'/'.$filename);
     }
@@ -56,7 +59,7 @@ class Helper
 
         $firstPart = '';
 
-        for ($x = 0; $x <= strlen($em[0]); $x++) {
+        for ($x = 0; $x <= strlen($em[0]); ++$x) {
             $firstPart .= '*';
         }
 

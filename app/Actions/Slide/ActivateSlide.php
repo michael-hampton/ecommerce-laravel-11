@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Slide;
 
@@ -8,12 +8,12 @@ use App\Repositories\Interfaces\ISlideRepository;
 
 class ActivateSlide
 {
-    public function __construct(private ISlideRepository $repository) {}
+    public function __construct(private ISlideRepository $slideRepository) {}
 
     public function handle(int $id)
     {
-        $slide = $this->repository->getById($id);
-        $data = ['active' => $slide->active === true ? false : true];
+        $slide = $this->slideRepository->getById($id);
+        $data = ['active' => $slide->active !== true];
 
         return $slide->update($data);
     }

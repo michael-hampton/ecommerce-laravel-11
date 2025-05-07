@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Order;
 
@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Session;
 
 class CreateOrder
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository)
+    public function __construct(private IOrderRepository $orderRepository, private IAddressRepository $addressRepository)
     {
     }
 
@@ -56,7 +56,7 @@ class CreateOrder
             $shipping = DeliveryMethod::where('country_id', $address->country_id)->get();
             $bulkPrice = config('shop.bulk_price');
 
-            $order = $this->repository->create($orderData);
+            $order = $this->orderRepository->create($orderData);
 
             if (!$order) {
                 DB::rollBack();
@@ -70,7 +70,8 @@ class CreateOrder
 
                     continue;
                 }
-                $groupBySeller[$item->model->seller_id]++;
+
+                ++$groupBySeller[$item->model->seller_id];
             }
 
             $test = [];
@@ -103,9 +104,9 @@ class CreateOrder
                     'price' => $item->price,
                     'seller_id' => $item->model->seller_id,
                     'order_id' => $order->id,
-                    'shipping_id' => !empty($deliveryMethod) ? $deliveryMethod->id : null,
+                    'shipping_id' => empty($deliveryMethod) ? null : $deliveryMethod->id,
                     'shipping_price' => round($shippingPrice, 4),
-                    'courier_id' => !empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
+                    'courier_id' => empty($deliveryMethod) ? null : $deliveryMethod->courier_id,
                 ];
 
                 if ($discount > 0) {
@@ -130,11 +131,11 @@ class CreateOrder
 
                 $item->model->decrement('quantity');
 
-                $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(function ($item) {
-                    return in_array($item->id, [(string) $item->id]);
+                $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(function ($item): bool {
+                    return $item->id == (string) $item->id;
                 });
 
-                $wishlistItems->each(function ($item) {
+                $wishlistItems->each(function ($item): void {
                     $user = User::where('email', $item->identifier)->firstOrFail();
 
                     $user->notify(new ProductInWishlistSold($item->model));
@@ -144,7 +145,7 @@ class CreateOrder
             if ($data['mode'] === 'seller_balance') {
                 foreach ($test as $sellerId => $seller) {
                     $items = collect($seller);
-                    $total = $items->map(function ($item) {
+                    $total = $items->map(function (array $item): float {
                         return $item['discount'] > 0 ? (($item['price'] * $item['quantity']) + $item['shipping_price']) - $item['discount'] : ($item['price'] * $item['quantity']) + $item['shipping_price'];
                     })->first();
 
@@ -193,14 +194,13 @@ class CreateOrder
             DB::commit();
 
             return $order;
-        } catch (Exception $ex) {
-            echo $ex->getMessage();
+        } catch (Exception $exception) {
+            echo $exception->getMessage();
             die;
-            DB::rollBack();
         }
     }
 
-    private function setAmountForCheckout()
+    private function setAmountForCheckout(): void
     {
         if (Cart::instance('cart')->content()->isEmpty()) {
             Session::forget('checkout');
@@ -221,6 +221,7 @@ class CreateOrder
 
             return;
         }
+
         Session::put('checkout', [
             'discount' => 0,
             'shipping' => Cart::instance('cart')->shipping(),

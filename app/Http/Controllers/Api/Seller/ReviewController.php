@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Seller;
 
@@ -18,7 +18,6 @@ use Illuminate\Http\Request;
 class ReviewController extends ApiController
 {
     public function __construct(
-        private ISellerRepository $sellerRepository,
         private IUserRepository $userRepository,
     ) {}
 
@@ -26,11 +25,11 @@ class ReviewController extends ApiController
     {
 
         $seller = $this->userRepository->getById(auth('sanctum')->user()->id);
-        $sellerReviews = SellerReviewResource::collection($seller->reviews()->whereNull('parent_id')->get());
+        $anonymousResourceCollection = SellerReviewResource::collection($seller->reviews()->whereNull('parent_id')->get());
 
         $reviews = $seller->products()->with('reviews')
-            ->whereHas('reviews', function (Builder $query) {
-                return $query->whereNull('parent_id');
+            ->whereHas('reviews', function (Builder $builder) {
+                return $builder->whereNull('parent_id');
             })
             ->get()->map(function ($item) {
                 if ($item->has('reviews')) {
@@ -40,7 +39,7 @@ class ReviewController extends ApiController
                 return false;
             })->flatten();
 
-        $reviews = $reviews->filter(function (Review $review) {
+        $reviews = $reviews->filter(function (Review $review): bool {
             return $review->parent_id === null;
         });
 
@@ -48,19 +47,19 @@ class ReviewController extends ApiController
 
         return response()->json(
             array_merge(
-                json_decode($sellerReviews->toJson(), true),
+                json_decode($anonymousResourceCollection->toJson(), true),
                 json_decode($productReviews->toJson(), true)
             )
         );
     }
 
-    public function createReply(ReviewReplyRequest $request)
+    public function createReply(ReviewReplyRequest $reviewReplyRequest)
     {
-        $parent = Review::findOrFail($request->integer('reviewId'));
+        $parent = Review::findOrFail($reviewReplyRequest->integer('reviewId'));
 
         $result = $parent->commentable->reviews()->create([
-            'parent_id' => $request->integer('reviewId'),
-            'comment' => $request->string('reply'),
+            'parent_id' => $reviewReplyRequest->integer('reviewId'),
+            'comment' => $reviewReplyRequest->string('reply'),
             'user_id' => auth('sanctum')->user()->id,
             'seller_id' => auth('sanctum')->user()->id,
         ]);

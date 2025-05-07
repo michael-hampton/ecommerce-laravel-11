@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Product\ActivateProduct;
@@ -23,18 +25,17 @@ class ProductController extends ApiController
     ) {}
 
     /**
-     * @param  Request  $request
-     * @return JsonResponse
+     * @param Request $searchRequest
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $products = $this->productRepository->setRequiredRelationships(['orderItems'])->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
             [
                 'seller_id' => auth('sanctum')->user()->id,
-                'name' => $request->get('searchText'),
+                'name' => $searchRequest->get('searchText'),
                 'ignore_active' => true,
             ]
         );
@@ -46,9 +47,9 @@ class ProductController extends ApiController
     /**
      * @return Response
      */
-    public function store(StoreProductRequest $request, CreateProduct $createProduct)
+    public function store(StoreProductRequest $storeProductRequest, CreateProduct $createProduct)
     {
-        $result = $createProduct->handle($request->all());
+        $result = $createProduct->handle($storeProductRequest->all());
 
         if (! $result) {
             return $this->error('Unable to create Product');
@@ -61,9 +62,8 @@ class ProductController extends ApiController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Response
      */
-    public function show($id)
+    public function show($id): void
     {
         //
     }
@@ -71,9 +71,9 @@ class ProductController extends ApiController
     /**
      * @return Response
      */
-    public function update(UpdateProductRequest $request, $id, UpdateProduct $updateProduct)
+    public function update(UpdateProductRequest $updateProductRequest, int $id, UpdateProduct $updateProduct)
     {
-        $result = $updateProduct->handle($request->except(['_token', '_method', 'attr', 'charge_featured']), $id);
+        $result = $updateProduct->handle($updateProductRequest->except(['_token', '_method', 'attr', 'charge_featured']), $id);
 
         if (! $result) {
             return $this->error('Unable to update Product');
@@ -110,12 +110,13 @@ class ProductController extends ApiController
         return response()->json($products);
     }
 
-    public function toggleActive(int $id, ActivateProduct $activateProduct)
+    public function toggleActive(int $id, ActivateProduct $activateProduct): ?\Illuminate\Http\JsonResponse
     {
         $result = $activateProduct->handle($id);
 
         if (! $result) {
             return $this->error('Unable to update Category');
         }
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Cart;
 
 use App\Helper;
@@ -18,43 +20,35 @@ class Cart
 
     /**
      * Instance of the session manager.
-     *
-     * @var SessionManager
      */
-    protected $session;
+    protected \Illuminate\Session\SessionManager $session;
 
     private int $shippingId = 0;
 
     /**
      * The address id of the user placing the order used to get the country for the delivery method
-     *
-     * @var int
      */
-    private $addressId = 0;
+    private int $addressId = 0;
 
     /**
      * Instance of the event dispatcher.
-     *
-     * @var Dispatcher
      */
-    private $events;
+    private \Illuminate\Contracts\Events\Dispatcher $events;
 
-    private $shippingSet = [];
+    private array $shippingSet = [];
 
     /**
      * Holds the current cart instance.
-     *
-     * @var string
      */
-    private $instance;
+    private string $instance;
 
     /**
      * Cart constructor.
      */
-    public function __construct(SessionManager $session, Dispatcher $events)
+    public function __construct(SessionManager $sessionManager, Dispatcher $dispatcher)
     {
-        $this->session = $session;
-        $this->events = $events;
+        $this->session = $sessionManager;
+        $this->events = $dispatcher;
 
         $this->instance(self::DEFAULT_INSTANCE);
     }
@@ -64,7 +58,7 @@ class Cart
      *
      * @return $this
      */
-    public function instance($instance = null)
+    public function instance($instance = null): static
     {
         $instance = $instance ?: self::DEFAULT_INSTANCE;
 
@@ -141,12 +135,11 @@ class Cart
      *
      * @param  string  $rowId
      * @param  mixed  $model
-     * @return void
      */
-    public function associate($rowId, $model)
+    public function associate($rowId, $model): void
     {
         if (is_string($model) && ! class_exists($model)) {
-            throw new UnknownModelException("The supplied model {$model} does not exist.");
+            throw new UnknownModelException(sprintf('The supplied model %s does not exist.', $model));
         }
 
         $cartItem = $this->get($rowId);
@@ -165,7 +158,7 @@ class Cart
         $content = $this->getContent();
 
         if (! $content->has($rowId)) {
-            throw new InvalidRowIDException("The cart does not contain rowId {$rowId}.");
+            throw new InvalidRowIDException(sprintf('The cart does not contain rowId %s.', $rowId));
         }
 
         return $content->get($rowId);
@@ -178,11 +171,9 @@ class Cart
      */
     protected function getContent()
      {
-        $content = $this->session->has($this->instance)
+        return $this->session->has($this->instance)
             ? $this->session->get($this->instance)
             : new Collection;
-
-        return $content;
     }
 
     public function update($rowId, $qty)
@@ -211,10 +202,9 @@ class Cart
         if ($cartItem->qty <= 0) {
             $this->remove($cartItem->rowId);
 
-            return;
-        } else {
-            $content->put($cartItem->rowId, $cartItem);
+            return null;
         }
+        $content->put($cartItem->rowId, $cartItem);
 
         $this->events->dispatch('cart.updated', $cartItem);
 
@@ -227,9 +217,8 @@ class Cart
      * Remove the cart item with the given rowId from the cart.
      *
      * @param  string  $rowId
-     * @return void
      */
-    public function remove($rowId)
+    public function remove($rowId): void
     {
         $cartItem = $this->get($rowId);
 
@@ -244,10 +233,8 @@ class Cart
 
     /**
      * Destroy the current cart instance.
-     *
-     * @return void
      */
-    public function destroy()
+    public function destroy(): void
     {
         $this->session->remove($this->instance);
     }
@@ -266,7 +253,7 @@ class Cart
         return $this->session->get($this->instance);
     }
 
-    public function getShippingType()
+    public function getShippingType(): void
     {
         $content = $this->getContent();
 
@@ -296,9 +283,8 @@ class Cart
      *
      * @param  string  $rowId
      * @param  int|float  $taxRate
-     * @return void
      */
-    public function setTax($rowId, $taxRate)
+    public function setTax($rowId, $taxRate): void
     {
         $cartItem = $this->get($rowId);
 
@@ -311,7 +297,7 @@ class Cart
         $this->session->put($this->instance, $content);
     }
 
-    public function setShippingId(int $shippingId)
+    public function setShippingId(int $shippingId): void
     {
         $this->shippingId = $shippingId;
     }
@@ -321,9 +307,8 @@ class Cart
      *
      * @param  string  $rowId
      * @param  int|float  $taxRate
-     * @return void
      */
-    public function setShipping($rowId, $shippingId, $shippingPrice)
+    public function setShipping($rowId, $shippingId, $shippingPrice): void
     {
         $content = $this->getContent();
 
@@ -359,9 +344,8 @@ class Cart
      * Store an the current instance of the cart.
      *
      * @param  mixed  $identifier
-     * @return void
      */
-    public function store($identifier)
+    public function store($identifier): void
     {
         $content = $this->getContent();
 
@@ -417,10 +401,8 @@ class Cart
 
     /**
      * Get the current cart instance.
-     *
-     * @return string
      */
-    public function currentInstance()
+    public function currentInstance(): string
     {
         return str_replace('cart.', '', $this->instance);
     }
@@ -429,9 +411,8 @@ class Cart
      * Restore the cart with the given identifier.
      *
      * @param  mixed  $identifier
-     * @return void
      */
-    public function restore($identifier)
+    public function restore($identifier): void
     {
         if (! $this->storedCartWithIdentifierExists($identifier)) {
             return;
@@ -469,7 +450,7 @@ class Cart
         return $this->getConnection()->table($this->getTableName())->where('identifier', $identifier)->where('instance', $this->currentInstance())->exists();
     }
 
-    public function loadWishlistProducts()
+    public function loadWishlistProducts(): void
     {
         if (Session::has('wishlist_products')) {
             return;
@@ -490,14 +471,17 @@ class Cart
                     continue;
                 }
 
-                $wishlistProducts[$cartItemRow->id]++;
+                ++$wishlistProducts[$cartItemRow->id];
             }
         }
 
         $this->session->put('wishlist_products', $wishlistProducts);
     }
 
-    public function getStoredItems()
+    /**
+     * @return list<mixed>
+     */
+    public function getStoredItems(): array
     {
 
         $stored = $this->getConnection()->table($this->getTableName())
@@ -524,7 +508,7 @@ class Cart
      *
      * @param  mixed  $identifier
      */
-    public function deleteStoredCart($identifier)
+    public function deleteStoredCart($identifier): void
     {
         $this->getConnection()
             ->table($this->getTableName())
@@ -567,7 +551,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $total = $content->reduce(function ($total, CartItem $cartItem) {
+        $total = $content->reduce(function ($total, CartItem $cartItem): float|int {
             return $total + ($cartItem->qty * $cartItem->priceTax);
         }, 0);
 
@@ -576,7 +560,7 @@ class Cart
         return $this->numberFormat($total, $decimals, $decimalPoint, $thousandSeperator);
     }
 
-    public function setAddressId(int $addressId)
+    public function setAddressId(int $addressId): void
     {
         $this->addressId = $addressId;
     }
@@ -618,17 +602,17 @@ class Cart
 
     /**
      * Get the Formated number
-     *
-     * @return string
      */
-    private function numberFormat($value, $decimals, $decimalPoint, $thousandSeperator)
+    private function numberFormat($value, $decimals, $decimalPoint, $thousandSeperator): string
     {
         if (is_null($decimals)) {
             $decimals = is_null(config('cart.format.decimals')) ? 2 : config('cart.format.decimals');
         }
+
         if (is_null($decimalPoint)) {
             $decimalPoint = is_null(config('cart.format.decimal_point')) ? '.' : config('cart.format.decimal_point');
         }
+
         if (is_null($thousandSeperator)) {
             $thousandSeperator = is_null(config('cart.format.thousand_seperator')) ? ',' : config('cart.format.thousand_seperator');
         }
@@ -654,7 +638,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $subTotal = $content->reduce(function ($subTotal, CartItem $cartItem) {
+        $subTotal = $content->reduce(function ($subTotal, CartItem $cartItem): int|float {
             return $subTotal + ($cartItem->qty * $cartItem->price);
         }, 0);
 
@@ -673,7 +657,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $tax = $content->reduce(function ($tax, CartItem $cartItem) {
+        $tax = $content->reduce(function ($tax, CartItem $cartItem): float|int {
             return $tax + ($cartItem->qty * $cartItem->tax);
         }, 0);
 

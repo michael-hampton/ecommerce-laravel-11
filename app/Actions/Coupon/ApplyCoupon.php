@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Coupon;
 
@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Session;
 
 class ApplyCoupon
 {
-    public function __construct(private ICouponRepository $repository) {}
+    public function __construct(private ICouponRepository $couponRepository) {}
 
     public function handle(string $couponCode): bool
     {
-        $coupon = $this->repository->getAll(null, 'id', 'desc', ['code' => $couponCode, 'expiry_date' => Carbon::today(), 'cart_value' => Cart::instance('cart')->subtotal()])->first();
+        $coupon = $this->couponRepository->getAll(null, 'id', 'desc', ['code' => $couponCode, 'expiry_date' => Carbon::today(), 'cart_value' => Cart::instance('cart')->subtotal()])->first();
 
         $hasSeller = false;
 
@@ -76,16 +76,14 @@ class ApplyCoupon
         return true;
     }
 
-    private function calculateDiscount()
+    private function calculateDiscount(): void
     {
         $discount = 0;
         if (Session::has('coupon')) {
             $coupon = Session::get('coupon');
             $discount = $coupon['value'];
 
-            if ($coupon['type'] == 'fixed') {
-
-            } else {
+            if ($coupon['type'] != 'fixed') {
                 $discount = (Cart::instance('cart')->subtotal() * $discount) / 100;
             }
 

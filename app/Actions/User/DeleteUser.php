@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class DeleteUser
 {
-    public function __construct(private IUserRepository $repository) {}
+    public function __construct(private IUserRepository $userRepository) {}
 
     public function handle(int $id)
     {
@@ -19,6 +19,6 @@ class DeleteUser
             File::delete(public_path('uploads/users/' . $user->image));
         }*/
 
-        return $this->repository->delete($id);
+        return $this->userRepository->delete($id);
     }
 }

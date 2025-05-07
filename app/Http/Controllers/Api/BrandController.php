@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -20,16 +20,15 @@ class BrandController extends ApiController
     public function __construct(private IBrandRepository $brandRepository) {}
 
     /**
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $searchRequest
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $brands = $this->brandRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText'), 'ignore_active' => true]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText'), 'ignore_active' => true]
         );
 
         return $this->sendPaginatedResponse($brands, BrandResource::collection($brands));
@@ -38,24 +37,23 @@ class BrandController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreBrandRequest $request, CreateBrand $createBrand)
+    public function store(StoreBrandRequest $storeBrandRequest, CreateBrand $createBrand)
     {
-        $result = $createBrand->handle($request->all());
+        $brand = $createBrand->handle($storeBrandRequest->all());
 
-        if (! $result) {
+        if (! $brand) {
             return $this->error('Unable to create Brand');
         }
 
-        return $this->success($result, 'Brand created');
+        return $this->success($brand, 'Brand created');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): void
     {
         //
     }
@@ -63,9 +61,9 @@ class BrandController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBrandRequest $request, $id, UpdateBrand $updateBrand)
+    public function update(UpdateBrandRequest $updateBrandRequest, int $id, UpdateBrand $updateBrand)
     {
-        $result = $updateBrand->handle($request->except(['_token', '_method']), $id);
+        $result = $updateBrand->handle($updateBrandRequest->except(['_token', '_method']), $id);
 
         if (! $result) {
             return $this->error('Unable to update Brand');

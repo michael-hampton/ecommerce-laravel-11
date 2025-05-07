@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Resources;
 
@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'active' => $this->active,
             'image' => asset('images/products').'/'.$this->image,
-            'images' => collect(explode(',', $this->images))->map(function ($image) {
+            'images' => collect(explode(',', $this->images))->map(function (string $image): string {
                 return asset('images/products').'/'.$image;
             }),
             'category' => $this->category,
@@ -32,7 +32,7 @@ class ProductResource extends JsonResource
             'regular_price' => $this->regular_price,
             'sale_price' => $this->sale_price,
             'SKU' => $this->SKU,
-            'has_stock' => $this->stock_status === 'instock' ? true : false,
+            'has_stock' => $this->stock_status === 'instock',
             'featured' => $this->featured,
             'quantity' => $this->quantity,
             'seller_id' => $this->seller_id,
@@ -44,7 +44,7 @@ class ProductResource extends JsonResource
             'product_attributes' => $this->productAttributes,
             'package_size' => $this->package_size,
             'sales' => $this->orderItems->where('seller_id', auth('sanctum')->user()->id)->sum('quantity'),
-            'earnings' => round($this->orderItems->where('seller_id', auth('sanctum')->user()->id)->map(function ($product, $key) {
+            'earnings' => round($this->orderItems->where('seller_id', auth('sanctum')->user()->id)->map(function ($product, $key): int|float {
                 return $product->price * $product->quantity;
             })->sum(), 2)
         ];

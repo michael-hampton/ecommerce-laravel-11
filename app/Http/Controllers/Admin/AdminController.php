@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
@@ -46,33 +46,33 @@ class AdminController extends Controller
 
         $months = [];
 
-        foreach ($data as $k => $item) {
+        foreach ($data as $item) {
             $months[$item->Month] = $item->total;
         }
 
-        return view('admin.index', compact('dashboardData', 'orders', 'months'));
+        return view('admin.index', ['dashboardData' => $dashboardData, 'orders' => $orders, 'months' => $months]);
     }
 
     public function askQuestion()
     {
         $posts = Post::where('seller_id', \auth()->id())->get();
 
-        return view('admin.ask-a-question', compact('posts'));
+        return view('admin.ask-a-question', ['posts' => $posts]);
     }
 
     public function askQuestionDetails(int $id)
     {
         $post = Post::whereId($id)->first();
 
-        return view('admin.ask-a-question-details', compact('post'));
+        return view('admin.ask-a-question-details', ['post' => $post]);
     }
 
-    public function postReply(PostReplyRequest $request)
+    public function postReply(PostReplyRequest $postReplyRequest)
     {
         Comment::create([
             'user_id' => \auth()->id(),
-            'post_id' => $request->input('postId'),
-            'message' => $request->input('message'),
+            'post_id' => $postReplyRequest->input('postId'),
+            'message' => $postReplyRequest->input('message'),
         ]);
 
         return back()->with('success', 'Post reply successfully');
@@ -82,7 +82,7 @@ class AdminController extends Controller
     {
         $profile = Profile::whereId(\auth()->id())->first();
 
-        return view('admin.profile.profile', compact('profile'));
+        return view('admin.profile.profile', ['profile' => $profile]);
     }
 
     public function updateProfile(Request $request)

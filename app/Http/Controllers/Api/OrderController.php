@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -20,16 +20,15 @@ class OrderController extends ApiController
     public function __construct(private IOrderRepository $orderRepository) {}
 
     /**
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $searchRequest
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $orders = $this->orderRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['seller_id' => auth('sanctum')->user()->id, 'name' => $request->get('searchText')]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['seller_id' => auth('sanctum')->user()->id, 'name' => $searchRequest->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($orders, OrderResource::collection($orders));
@@ -37,10 +36,8 @@ class OrderController extends ApiController
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request): void
     {
         //
     }
@@ -52,31 +49,31 @@ class OrderController extends ApiController
     {
         $order = Order::with(['logs', 'transaction', 'orderItems', 'customer', 'address'])->whereId($orderId)->firstOrFail();
 
-        $resource = OrderDetailResource::make($order);
+        $orderDetailResource = OrderDetailResource::make($order);
 
-        return response()->json($resource);
+        return response()->json($orderDetailResource);
     }
 
     /**
      * @return Response
      */
-    public function update(UpdateOrderStatusRequest $request, $id, UpdateOrder $updateOrder)
+    public function update(UpdateOrderStatusRequest $updateOrderStatusRequest, int $id, UpdateOrder $updateOrder)
     {
-        $result = $updateOrder->handle($request->except(['_token', '_method']), $id);
+        $order = $updateOrder->handle($updateOrderStatusRequest->except(['_token', '_method']), $id);
 
-        if (! $result) {
+        if (! $order) {
             return $this->error('Unable to update Order');
         }
 
-        return $this->success($result, 'Order updated');
+        return $this->success($order, 'Order updated');
     }
 
     /**
      * @return Response
      */
-    public function updateItemDetails(UpdateOrderStatusRequest $request, $id, UpdateOrderLine $updateOrderLine)
+    public function updateItemDetails(UpdateOrderStatusRequest $updateOrderStatusRequest, int $id, UpdateOrderLine $updateOrderLine)
     {
-        $result = $updateOrderLine->handle($request->except(['_token', '_method']), $id);
+        $result = $updateOrderLine->handle($updateOrderStatusRequest->except(['_token', '_method']), $id);
 
         if (! $result) {
             return $this->error('Unable to update Order');
@@ -103,9 +100,8 @@ class OrderController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return Response
      */
-    public function destroy($id)
+    public function destroy($id): void
     {
         //
     }

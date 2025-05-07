@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
@@ -32,6 +32,6 @@ class ReviewController extends Controller
 
         $product = $orderItem->product;
 
-        return view('user.user-review', compact('product', 'orderItem'));
+        return view('user.user-review', ['product' => $product, 'orderItem' => $orderItem]);
     }
 }

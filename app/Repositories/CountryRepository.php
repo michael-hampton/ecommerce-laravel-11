@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,16 +17,16 @@ class CountryRepository extends BaseRepository implements ICountryRepository
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
-            $query->where('name', 'like', "%{$searchParams['name']}%");
+        $builder->when(! empty($searchParams['name']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('name', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
 
-        $query->when(! empty($searchParams['shipping_active']), function (Builder $query) use ($searchParams) {
-            $query->where('shipping_active', $searchParams['shipping_active']);
+        $builder->when(! empty($searchParams['shipping_active']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('shipping_active', $searchParams['shipping_active']);
         });
 
-        return $query;
+        return $builder;
     }
 }

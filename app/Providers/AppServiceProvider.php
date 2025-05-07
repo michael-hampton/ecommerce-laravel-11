@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * @var string[]
      */
-    private $repositories = [
+    private array $repositories = [
         ICourierRepository::class, CourierRepository::class,
         IDeliveryMethodRepository::class, DeliveryMethodRepository::class,
         ISellerRepository::class => SellerRepository::class,
@@ -79,26 +79,22 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         foreach ($this->repositories as $interface => $repository) {
             $this->app->bind($interface, $repository);
         }
 
-        $this->app->singleton('Image', function ($app) {
+        $this->app->singleton('Image', function ($app): \App\Providers\Image {
             return new Image;
         });
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
             return (new MailMessage)

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,12 +17,12 @@ class TransactionRepository extends BaseRepository implements ITransactionReposi
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['seller_id']), function (Builder $query) use ($searchParams) {
-            $query->where('seller_id', $searchParams['seller_id']);
+        $builder->when(! empty($searchParams['seller_id']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('seller_id', $searchParams['seller_id']);
         });
 
-        return $query;
+        return $builder;
     }
 }

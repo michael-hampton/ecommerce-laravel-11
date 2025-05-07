@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -21,17 +21,17 @@ class OrderApprovedListener
     /**
      * Handle the event.
      */
-    public function handle(OrderApproved $event): void
+    public function handle(OrderApproved $orderApproved): void
     {
-        $email = $event->user->email;
+        $email = $orderApproved->user->email;
         Mail::to($email)->send(new \App\Mail\OrderApproved([
             'email' => $email,
-            'name' => $event->order->customer->name,
-            'order_id' => $event->order->id,
-            'order' => $event->order,
-            'orderItems' => $event->orderItems,
+            'name' => $orderApproved->order->customer->name,
+            'order_id' => $orderApproved->order->id,
+            'order' => $orderApproved->order,
+            'orderItems' => $orderApproved->orderItems,
             'currency' => config('shop.currency'),
-            'totals' => (new OrderTotals)->toArray($event->order->transaction, $event->order->orderItems, $event->user->id),
+            'totals' => (new OrderTotals)->toArray($orderApproved->order->transaction, $orderApproved->order->orderItems, $orderApproved->user->id),
         ]));
     }
 }

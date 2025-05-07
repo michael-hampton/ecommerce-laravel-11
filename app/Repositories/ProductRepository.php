@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -19,8 +19,8 @@ class ProductRepository extends BaseRepository implements IProductRepository
     public function getHotDeals()
     {
         return $this->model->onSale()
-            ->whereRelation('seller', function (Builder $query) {
-                $query->where('approved', true);
+            ->whereRelation('seller', function (Builder $builder): void {
+                $builder->where('approved', true);
             })
             ->where('quantity', '>', 0)
             ->where('active', true)
@@ -33,8 +33,8 @@ class ProductRepository extends BaseRepository implements IProductRepository
     public function getFeaturedProducts()
     {
         return $this->model->featured()
-            ->whereRelation('seller', function (Builder $query) {
-                $query->where('approved', true);
+            ->whereRelation('seller', function (Builder $builder): void {
+                $builder->where('approved', true);
             })->where('quantity', '>', 0)
             ->where('active', true)
             ->orderBy('name')
@@ -45,54 +45,54 @@ class ProductRepository extends BaseRepository implements IProductRepository
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
         if (empty($searchParams['ignore_active'])) {
-            $query->where('active', true);
+            $builder->where('active', true);
         }
 
-        $query->when(! empty($searchParams['seller_id']), function (Builder $query) use ($searchParams) {
-            $query->where('seller_id', '=', $searchParams['seller_id']);
+        $builder->when(! empty($searchParams['seller_id']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('seller_id', '=', $searchParams['seller_id']);
         });
 
-        $query->whereRelation('seller', function (Builder $query) {
-            $query->where('approved', true);
+        $builder->whereRelation('seller', function (Builder $builder): void {
+            $builder->where('approved', true);
         });
 
-        $query->when(! empty($searchParams['brandIds']), function (Builder $query) use ($searchParams) {
-            $query->whereIn('brand_id', explode(',', $searchParams['brandIds']));
+        $builder->when(! empty($searchParams['brandIds']), function (Builder $builder) use ($searchParams): void {
+            $builder->whereIn('brand_id', explode(',', $searchParams['brandIds']));
         });
 
-        $query->when(! empty($searchParams['attributeValueIds']), function (Builder $query) use ($searchParams) {
-            $query->whereHas('productAttributes', function ($query) use ($searchParams) {
+        $builder->when(! empty($searchParams['attributeValueIds']), function (Builder $builder) use ($searchParams): void {
+            $builder->whereHas('productAttributes', function ($query) use ($searchParams): void {
                 $query->whereIn('attribute_value_id', explode(',', $searchParams['attributeValueIds']));
             });
         });
 
-        $query->when(! empty($searchParams['categoryIds']), function (Builder $query) use ($searchParams) {
+        $query->when(! empty($searchParams['categoryIds']), function (Builder $builder) use ($searchParams): void {
             // get children
             $children = Category::whereIn('parent_id', explode(',', $searchParams['categoryIds']))->get();
 
             $childrenIds = $children->pluck('id')->toArray();
             $parentIds = array_map('intval', explode(',', $searchParams['categoryIds']));
-            $ids = ! empty($childrenIds) ? array_merge($parentIds, $childrenIds) : $parentIds;
+            $ids = empty($childrenIds) ? $parentIds : array_merge($parentIds, $childrenIds);
 
-            $query->whereIn('category_id', $ids);
+            $builder->whereIn('category_id', $ids);
 
         });
 
-        $query->when(! empty($searchParams['minPrice']), function (Builder $query) use ($searchParams) {
-            $query->where('regular_price', '>=', $searchParams['minPrice']);
+        $builder->when(! empty($searchParams['minPrice']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('regular_price', '>=', $searchParams['minPrice']);
         });
 
-        $query->when(! empty($searchParams['maxPrice']), function (Builder $query) use ($searchParams) {
-            $query->where('regular_price', '<=', $searchParams['maxPrice']);
+        $builder->when(! empty($searchParams['maxPrice']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('regular_price', '<=', $searchParams['maxPrice']);
         });
 
-        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
-            $query->where('name', 'like', "%{$searchParams['name']}%");
+        $builder->when(! empty($searchParams['name']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('name', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
         
-        return $query;
+        return $builder;
     }
 }

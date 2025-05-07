@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -21,8 +21,8 @@ class IssueReportedListener
     /**
      * Handle the event.
      */
-    public function handle(IssueReported $event): void
+    public function handle(IssueReported $issueReported): void
     {
-        Mail::to($event->email)->send(new SendIssueReported($event->emailData));
+        Mail::to($issueReported->email)->send(new SendIssueReported($issueReported->emailData));
     }
 }

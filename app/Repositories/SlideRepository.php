@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,16 +17,16 @@ class SlideRepository extends BaseRepository implements ISlideRepository
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
         if (empty($searchParams['ignore_active'])) {
-            $query->where('active', true);
+            $builder->where('active', true);
         }
 
-        $query->when(! empty($searchParams['title']), function (Builder $query) use ($searchParams) {
-            $query->where('title', 'like', "%{$searchParams['name']}%");
+        $builder->when(! empty($searchParams['title']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('title', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
 
-        return $query;
+        return $builder;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Attribute;
 
 use App\Models\ProductAttribute;
@@ -8,10 +10,10 @@ use Attribute;
 
 class CreateAttribute
 {
-    public function __construct(private IAttributeRepository $repository) {}
+    public function __construct(private IAttributeRepository $attributeRepository) {}
 
     public function handle(array $data): ProductAttribute
     {
-        return $this->repository->create($data);
+        return $this->attributeRepository->create($data);
     }
 }

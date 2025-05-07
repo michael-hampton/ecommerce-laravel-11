@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Seller;
 
@@ -32,9 +32,9 @@ class SellerBalanceController extends ApiController
     /**
      * @return JsonResponse
      */
-    public function withdraw(WithdrawBalanceRequest $request, WithdrawFunds $withdrawFunds)
+    public function withdraw(WithdrawBalanceRequest $withdrawBalanceRequest, WithdrawFunds $withdrawFunds)
     {
-        $result = $withdrawFunds->handle($request->all());
+        $result = $withdrawFunds->handle($withdrawBalanceRequest->all());
 
         return response()->json(SellerBalanceResource::make($result));
     }
@@ -49,10 +49,10 @@ class SellerBalanceController extends ApiController
     public function activate(Request $request, SaveBillingInformation $saveBillingInformation, SaveBankAccount $saveBankAccount, UpdateSeller $updateSeller)
     {
         $result1 = $saveBillingInformation->handle($request);
-        $result2 = $saveBankAccount->handle($request);
+        $sellerBankDetails = $saveBankAccount->handle($request);
         $result3 = $updateSeller->handle(array_merge($request->all(), ['balance_activated' => true]), auth('sanctum')->user()->id);
 
-        return $result1 && $result2 && $result3 ? $this->success($result1, 'Balance Activated') : $this->error('Balance could not be activated');
+        return $result1 && $sellerBankDetails && $result3 ? $this->success($result1, 'Balance Activated') : $this->error('Balance could not be activated');
 
     }
 }

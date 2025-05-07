@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Seller;
 
@@ -8,10 +8,10 @@ use App\Repositories\Interfaces\ISellerRepository;
 
 class DeleteSeller
 {
-    public function __construct(private ISellerRepository $repository) {}
+    public function __construct(private ISellerRepository $sellerRepository) {}
 
     public function handle(int $id): bool
     {
-        return $this->repository->delete($id);
+        return $this->sellerRepository->delete($id);
     }
 }

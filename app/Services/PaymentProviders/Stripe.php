@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Services\PaymentProviders;
 
@@ -15,10 +15,10 @@ use Stripe\StripeClient;
 
 class Stripe extends BaseProvider
 {
-    public function capture(Collection $orderLines, array $orderData)
+    public function capture(Collection $orderLines, array $orderData): bool
     {
         $items = collect($this->formatLineItems($orderLines));
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
 
         $order = Order::whereId($orderData['orderId'])->first();
 
@@ -30,7 +30,7 @@ class Stripe extends BaseProvider
             }
 
             // Create a new Stripe customer.
-            $customer = $stripe->customers->create([
+            $customer = $stripeClient->customers->create([
                 'name' => $order->address->name,
                 'email' => $order->customer->email,
                 'phone' => $order->address->phone,
@@ -69,7 +69,7 @@ class Stripe extends BaseProvider
 
                 Log::info('subtotal: '.$subtotal.' shipping: '.$shipping.' comission: '.$commission.' total: '.$total);
 
-                $charge = $stripe->charges->create([
+                $charge = $stripeClient->charges->create([
                     'customer' => $customer['id'],
                     'currency' => config('shop.currency_code', 'GBP'),
                     'amount' => round(($total * pow(10, 2)), 0),
@@ -85,7 +85,7 @@ class Stripe extends BaseProvider
                     'total' => $total - $commission,
                     'commission' => $commission,
                     'shipping' => $shipping,
-                    'discount' => ! empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
+                    'discount' => empty($orderData['coupon']) ? 0 : $orderData['coupon']->value,
                 ];
 
                 Transaction::create($transactionData);

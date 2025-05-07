@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Actions\Seller\CreateCard;
@@ -31,9 +33,9 @@ class SellerAccountController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UpdateSellerCardDetails $request, CreateCard $createCard)
+    public function store(UpdateSellerCardDetails $updateSellerCardDetails, CreateCard $createCard)
     {
-        $result = $createCard->handle($request);
+        $result = $createCard->handle($updateSellerCardDetails);
 
         return $result ? $this->success(CardDetailsResource::make($result), 'Card Created') : $this->error($result);
     }
@@ -41,7 +43,7 @@ class SellerAccountController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): void
     {
         //
     }
@@ -81,15 +83,15 @@ class SellerAccountController extends ApiController
         return $result ? $this->success($result, 'Bank Account Removed') : $this->error('Unable to remove bank account');
     }
 
-    public function saveBankDetails(UpdateSellerBankDetails $request, SaveBankAccount $saveBankAccount)
+    public function saveBankDetails(UpdateSellerBankDetails $updateSellerBankDetails, SaveBankAccount $saveBankAccount)
     {
-        $result = $saveBankAccount->handle($request);
+        $sellerBankDetails = $saveBankAccount->handle($updateSellerBankDetails);
 
-        if (!$result) {
+        if (!$sellerBankDetails) {
             return $this->error('Unable to save bank details');
         }
 
-        return $this->success($result, 'bank details updated');
+        return $this->success($sellerBankDetails, 'bank details updated');
     }
 
 }

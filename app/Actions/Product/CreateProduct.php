@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Product;
 
@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class CreateProduct extends SaveProduct
 {
-    public function __construct(private IProductRepository $repository) {}
+    public function __construct(private IProductRepository $productRepository) {}
 
     public function handle(array $data)
     {
@@ -48,8 +48,8 @@ class CreateProduct extends SaveProduct
                     $gfilename = $currentTimestamp.'-'.$counter.'.'.$gextension;
                     $file->storeAs('products', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'products');
-                    array_push($galleryArr, $gfilename);
-                    $counter++;
+                    $galleryArr[] = $gfilename;
+                    ++$counter;
                 }
             }
 
@@ -61,7 +61,7 @@ class CreateProduct extends SaveProduct
         $bumpDays = $data['bump_days'];
         unset($data['bump_days']);
 
-        $product = $this->repository->create($data);
+        $product = $this->productRepository->create($data);
 
         if (! empty($bumpDays) && $product->featured === false) {
             $this->updateSellerBalance($bumpDays, $product);

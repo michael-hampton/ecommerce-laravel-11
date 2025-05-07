@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseRepository implements IBaseRepository
 {
+    public $with;
+    public $cacheTtl;
     protected $requiredRelationships = [];
 
     public function __construct(protected Model $model) {}
@@ -34,8 +36,8 @@ class BaseRepository implements IBaseRepository
     {
         $query = $this->model->query();
 
-        $query->when(! empty($this->with), function (Builder $query) {
-            $query->with($this->with);
+        $query->when(! empty($this->with), function (Builder $builder): void {
+            $builder->with($this->with);
         });
 
         return $query;
@@ -69,18 +71,18 @@ class BaseRepository implements IBaseRepository
      * @param  mixed  $relationships
      * @return $this
      */
-    public function with($relationships)
+    public function with($relationships): static
     {
         $this->requiredRelationships = [];
 
         if ($relationships == 'all') {
             $this->requiredRelationships = $this->relationships;
         } elseif (is_array($relationships)) {
-            $this->requiredRelationships = array_filter($relationships, function ($value) {
+            $this->requiredRelationships = array_filter($relationships, function ($value): bool {
                 return in_array($value, $this->relationships);
             });
         } elseif (is_string($relationships)) {
-            array_push($this->requiredRelationships, $relationships);
+            $this->requiredRelationships[] = $relationships;
         }
 
         return $this;

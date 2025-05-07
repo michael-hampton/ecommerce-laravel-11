@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -16,21 +16,21 @@ class FaqCategoryController extends ApiController
 {
     public function __construct(private ICategoryRepository $categoryRepository) {}
 
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $values = $this->categoryRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText')]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($values, CategoryResource::collection($values));
     }
 
-    public function store(StoreFaqCategoryRequest $request)
+    public function store(StoreFaqCategoryRequest $storeFaqCategoryRequest)
     {
-        $faqCategory = FaqCategory::create($request->all());
+        $faqCategory = FaqCategory::create($storeFaqCategoryRequest->all());
 
         if (! $faqCategory) {
             return $this->error('Unable to create Category');
@@ -39,9 +39,9 @@ class FaqCategoryController extends ApiController
         return $this->success($faqCategory, 'Category created');
     }
 
-    public function update(UpdateFaqCategoryRequest $request, FaqCategory $faqCategory)
+    public function update(UpdateFaqCategoryRequest $updateFaqCategoryRequest, FaqCategory $faqCategory)
     {
-        $faqCategory->update($request->all());
+        $faqCategory->update($updateFaqCategoryRequest->all());
 
         if (! $faqCategory) {
             return $this->error('Unable to update Category');
@@ -61,7 +61,7 @@ class FaqCategoryController extends ApiController
         return $this->success($result, 'Category deleted');
     }
 
-    public function massDestroy(MassDestroyFaqCategoryRequest $request)
+    public function massDestroy(MassDestroyFaqCategoryRequest $massDestroyFaqCategoryRequest)
     {
         $result = FaqCategory::whereIn('id', request('ids'))->delete();
 

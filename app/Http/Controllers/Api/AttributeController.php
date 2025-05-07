@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -19,18 +19,18 @@ class AttributeController extends ApiController
     public function __construct(private IAttributeRepository $attributeRepository) {}
 
     /**
-     * @param  Request  $request
+     * @param Request $searchRequest
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|object
      *
      * @throws \Exception
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $attributes = $this->attributeRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText')]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($attributes, AttributeResource::collection($attributes));
@@ -39,15 +39,15 @@ class AttributeController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAttributeRequest $request, CreateAttribute $createAttribute)
+    public function store(StoreAttributeRequest $storeAttributeRequest, CreateAttribute $createAttribute)
     {
-        $result = $createAttribute->handle($request->all());
+        $productAttribute = $createAttribute->handle($storeAttributeRequest->all());
 
-        if (! $result) {
+        if (! $productAttribute) {
             return $this->error('Unable to create Attribute');
         }
 
-        return $this->success($result, 'Attribute created');
+        return $this->success($productAttribute, 'Attribute created');
 
     }
 
@@ -55,9 +55,8 @@ class AttributeController extends ApiController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): void
     {
         //
     }
@@ -65,9 +64,9 @@ class AttributeController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAttributeRequest $request, $id, UpdateAttribute $updateAttribute)
+    public function update(UpdateAttributeRequest $updateAttributeRequest, int $id, UpdateAttribute $updateAttribute)
     {
-        $result = $updateAttribute->handle($request->except(['_token', '_method']), $id);
+        $result = $updateAttribute->handle($updateAttributeRequest->except(['_token', '_method']), $id);
 
         if (! $result) {
             return $this->error('Unable to update Attribute');

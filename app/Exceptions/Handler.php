@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Exceptions;
 
@@ -41,56 +41,16 @@ class Handler extends ExceptionHandler
 
     /**
      * Register the exception handling callbacks for the application.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
+        $this->reportable(function (Throwable $throwable): void {
             //
         });
     }
 
-    public function render($request, Throwable $e): Response
+    public function render($request, Throwable $throwable): Response
     {
         exit('here');
-
-        if ($request->is('api/*')) {
-            return match (true) {
-                $e instanceof AuthenticationException => response()->json([
-                    'success' => false,
-                    'message' => 'Unauthorized Request.',
-                ], Response::HTTP_UNAUTHORIZED),
-
-                $e instanceof ValidationException => response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed.',
-                    'errors' => $e->errors(),
-                ], Response::HTTP_UNPROCESSABLE_ENTITY),
-
-                $e instanceof NotFoundHttpException => response()->json([
-                    'success' => false,
-                    'message' => 'Resource not found.',
-                ], Response::HTTP_NOT_FOUND),
-
-                $e instanceof HttpException => response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], $e->getStatusCode()),
-
-                $e instanceof RouteNotFoundException => response()->json([
-                    'success' => false,
-                    'message' => 'Route not found.',
-                ], Response::HTTP_NOT_FOUND),
-
-                default => response()->json([
-                    'success' => false,
-                    'message' => 'An unexpected error occurred.',
-                    'details' => $e->getMessage(),
-                ], Response::HTTP_INTERNAL_SERVER_ERROR),
-            };
-        }
-
-        return parent::render($request, e: $e);
     }
 }

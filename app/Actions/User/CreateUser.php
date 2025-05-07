@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class CreateUser
 {
-    public function __construct(private IUserRepository $repository) {}
+    public function __construct(private IUserRepository $userRepository) {}
 
     public function handle(array $data): User
     {
@@ -28,6 +28,6 @@ class CreateUser
 
         $data['active'] = (empty($data['active']) ? 0 : $data['active'] === 'on') ? 1 : 0;
 
-        return $this->repository->create($data);
+        return $this->userRepository->create($data);
     }
 }

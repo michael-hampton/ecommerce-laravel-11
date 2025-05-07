@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Front;
 
 use App\Actions\Message\CreateMessage;
@@ -37,14 +39,14 @@ class UserAccountController extends Controller
     {
         $orders = $this->orderRepository->getPaginated(10, 'id', 'desc', ['customer_id' => auth()->id()]);
 
-        return view('front.user.orders', compact('orders'));
+        return view('front.user.orders', ['orders' => $orders]);
     }
 
     public function orderDetails(int $orderId)
     {
         $order = $this->orderRepository->getById($orderId);
 
-        return view('front.user.order-details', compact('order'));
+        return view('front.user.order-details', ['order' => $order]);
     }
 
     public function cancelOrder(int $orderId, UpdateOrder $updateOrder)
@@ -54,17 +56,17 @@ class UserAccountController extends Controller
         return back()->with('success', 'Order cancelled');
     }
 
-    public function approveOrder(ApproveOrderRequest $request, int $orderId, ApproveOrder $approveOrder)
+    public function approveOrder(ApproveOrderRequest $approveOrderRequest, int $orderId, ApproveOrder $approveOrder)
     {
-        $result = $approveOrder->handle($orderId, $request->array('values'));
+        $result = $approveOrder->handle($orderId, $approveOrderRequest->array('values'));
 
         return response()->json($result);
     }
 
-    public function reportOrder(int $orderItemId, ReportIssueRequest $request, CreateMessage $createMessage)
+    public function reportOrder(int $orderItemId, ReportIssueRequest $reportIssueRequest, CreateMessage $createMessage)
     {
 
-        $reason = trim($request->string('reason'));
+        $reason = trim($reportIssueRequest->string('reason'));
         $orderItem = OrderItem::whereId($orderItemId);
         $title = $reason === 'returnRefund' ? 'Refund Requested from buyer. Items should be returned' : 'Refund Requested from buyer. They do not wish to return the items';
 
@@ -76,8 +78,8 @@ class UserAccountController extends Controller
 
         $result = $createMessage->handle([
             'title' => $title,
-            'images' => $request->file('images'),
-            'comment' => $request->string('message'),
+            'images' => $reportIssueRequest->file('images'),
+            'comment' => $reportIssueRequest->string('message'),
             'sellerId' => $orderItem->seller_id,
             'order_item_id' => $orderItem->id,
             'user_id' => auth()->user()->id,
@@ -86,7 +88,7 @@ class UserAccountController extends Controller
         event(new IssueReported(auth()->user()->email, [
             'item' => $orderItem,
             'currency' => config('shop.currency'),
-            'message' => $request->string('message'),
+            'message' => $reportIssueRequest->string('message'),
             'resolution' => $title,
             'customer' => auth()->user()->name,
         ]));
@@ -100,7 +102,7 @@ class UserAccountController extends Controller
         $defaultAddress = $addresses->where('is_default', 1)->first();
         $otherAddress = $addresses->where('is_default', 0)->first();
 
-        return view('front.user.account-address', compact('addresses', 'defaultAddress', 'otherAddress'));
+        return view('front.user.account-address', ['addresses' => $addresses, 'defaultAddress' => $defaultAddress, 'otherAddress' => $otherAddress]);
     }
 
     public function addAddress()
@@ -108,20 +110,20 @@ class UserAccountController extends Controller
         return view('user.account-address-add');
     }
 
-    public function storeAddress(StoreCustomerAddressRequest $request)
+    public function storeAddress(StoreCustomerAddressRequest $storeCustomerAddressRequest)
     {
 
         $this->addressRepository->create([
             'customer_id' => auth()->id(),
-            'name' => $request->get('name'),
-            'address1' => $request->get('address1'),
-            'address2' => $request->get('address2'),
-            'city' => $request->get('city'),
-            'zip' => $request->get('zip'),
-            'phone' => $request->get('phone'),
-            'state' => $request->get('state'),
-            'is_default' => !empty($request->get('isdefault')) ? 1 : 0,
-            'country' => $request->get('country') ?? 'United Kingdom',
+            'name' => $storeCustomerAddressRequest->get('name'),
+            'address1' => $storeCustomerAddressRequest->get('address1'),
+            'address2' => $storeCustomerAddressRequest->get('address2'),
+            'city' => $storeCustomerAddressRequest->get('city'),
+            'zip' => $storeCustomerAddressRequest->get('zip'),
+            'phone' => $storeCustomerAddressRequest->get('phone'),
+            'state' => $storeCustomerAddressRequest->get('state'),
+            'is_default' => empty($storeCustomerAddressRequest->get('isdefault')) ? 0 : 1,
+            'country' => $storeCustomerAddressRequest->get('country') ?? 'United Kingdom',
         ]);
 
         return back()->with('success', 'Address added');
@@ -131,22 +133,22 @@ class UserAccountController extends Controller
     {
         $address = $this->addressRepository->getById($addressId);
 
-        return view('front.user.account-address-edit', compact('address'));
+        return view('front.user.account-address-edit', ['address' => $address]);
     }
 
-    public function updateAddress(StoreCustomerAddressRequest $request, int $addressId)
+    public function updateAddress(StoreCustomerAddressRequest $storeCustomerAddressRequest, int $addressId)
     {
         $this->addressRepository->update($addressId, [
             'customer_id' => auth()->id(),
-            'name' => $request->get('name'),
-            'address1' => $request->get('address1'),
-            'address2' => $request->get('address2'),
-            'city' => $request->get('city'),
-            'zip' => $request->get('zip'),
-            'phone' => $request->get('phone'),
-            'state' => $request->get('state'),
-            'is_default' => ! empty($request->get('isdefault')) ? 1 : 0,
-            'country' => $request->get('country') ?? 'United Kingdom',
+            'name' => $storeCustomerAddressRequest->get('name'),
+            'address1' => $storeCustomerAddressRequest->get('address1'),
+            'address2' => $storeCustomerAddressRequest->get('address2'),
+            'city' => $storeCustomerAddressRequest->get('city'),
+            'zip' => $storeCustomerAddressRequest->get('zip'),
+            'phone' => $storeCustomerAddressRequest->get('phone'),
+            'state' => $storeCustomerAddressRequest->get('state'),
+            'is_default' => empty($storeCustomerAddressRequest->get('isdefault')) ? 0 : 1,
+            'country' => $storeCustomerAddressRequest->get('country') ?? 'United Kingdom',
         ]);
 
         return back()->with('success', 'Address updated');
@@ -163,19 +165,19 @@ class UserAccountController extends Controller
     {
         $reviews = auth()->user()->reviews()->get();
 
-        return view('front.user.account-review', compact('reviews'));
+        return view('front.user.account-review', ['reviews' => $reviews]);
     }
 
     public function askQuestion()
     {
         $posts = Post::where('user_id', auth()->id())->get();
 
-        return view('front.user.account-ask-a-question', compact('posts'));
+        return view('front.user.account-ask-a-question', ['posts' => $posts]);
     }
 
-    public function createQuestion(PostCommentRequest $request, CreateMessage $createMessage)
+    public function createQuestion(PostCommentRequest $postCommentRequest, CreateMessage $createMessage)
     {
-        $result = $createMessage->handle($request->all());
+        $createMessage->handle($postCommentRequest->all());
 
         return back()->with('success', 'Question posted');
     }
@@ -184,15 +186,15 @@ class UserAccountController extends Controller
     {
         $post = Post::whereId($id)->first();
 
-        return view('front.user.account-ask-a-question-details', compact('post'));
+        return view('front.user.account-ask-a-question-details', ['post' => $post]);
     }
 
-    public function postReply(PostReplyRequest $request)
+    public function postReply(PostReplyRequest $postReplyRequest)
     {
         Comment::create([
             'user_id' => auth()->id(),
-            'post_id' => $request->input('postId'),
-            'message' => $request->input('message'),
+            'post_id' => $postReplyRequest->input('postId'),
+            'message' => $postReplyRequest->input('message'),
         ]);
 
         return back()->with('success', 'Post reply successfully');

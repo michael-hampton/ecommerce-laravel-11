@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
@@ -58,9 +58,8 @@ class LoginController extends ApiController
             $success['name'] = $user->name;
 
             return $this->success($success, 'User login successfully.');
-        } else {
-            return $this->error('Unauthorised.', ['error' => 'Unauthorised']);
         }
+        return $this->error('Unauthorised.', ['error' => 'Unauthorised']);
     }
 
     /**

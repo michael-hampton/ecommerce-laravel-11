@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Message;
 
@@ -10,8 +10,6 @@ use App\Repositories\Interfaces\IMessageRepository;
 
 class CreateComment
 {
-    public function __construct(private IMessageRepository $repository) {}
-
     /**
      * @return mixed
      */
@@ -27,10 +25,11 @@ class CreateComment
                     $gfilename = time().'-'.$counter.'.'.$gextension;
                     $file->storeAs('messages', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'messages');
-                    array_push($galleryArr, $gfilename);
-                    $counter++;
+                    $galleryArr[] = $gfilename;
+                    ++$counter;
                 }
             }
+
             $galleryImages = implode(',', $galleryArr);
         }
 

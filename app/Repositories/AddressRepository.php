@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,12 +17,12 @@ class AddressRepository extends BaseRepository implements IAddressRepository
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['customer_id']), function (Builder $query) use ($searchParams) {
-            $query->where('customer_id', $searchParams['customer_id']);
+        $builder->when(! empty($searchParams['customer_id']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('customer_id', $searchParams['customer_id']);
         });
 
-        return $query;
+        return $builder;
     }
 }

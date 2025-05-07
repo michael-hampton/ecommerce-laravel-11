@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use App\Models\Review;
@@ -42,7 +44,7 @@ class FeedbackReceived extends Notification implements ShouldQueue
             ->line('Thank you for using our application!');
     }
 
-    public function toDatabase($notifiable)
+    public function toDatabase($notifiable): array
     {
         return [
             'message' =>'You received some feedback from ' . $this->review->customer->name,

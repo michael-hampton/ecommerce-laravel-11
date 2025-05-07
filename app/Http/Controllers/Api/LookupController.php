@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -36,7 +36,7 @@ class LookupController
     {
         $query = Category::orderBy('created_at', 'desc');
         if ($parentOnly) {
-            $query->where(function ($query) {
+            $query->where(function ($query): void {
                 $query->where('parent_id', '=', null)
                     ->orWhere('parent_id', '=', 0);
             });
@@ -66,7 +66,7 @@ class LookupController
 
     public function getAttributesForCategory(int $categoryId)
     {
-        $categoryAttributes = $phone = Category::find($categoryId)->attributes()->with('attribute')->get();
+        $categoryAttributes = Category::find($categoryId)->attributes()->with('attribute')->get();
 
         $attributes = $categoryAttributes->map(function ($item) {
             return $item->attribute;

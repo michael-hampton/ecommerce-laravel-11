@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -22,23 +22,23 @@ class OrderStatusUpdatedListener
     /**
      * Handle the event.
      */
-    public function handle(OrderStatusUpdated $event): void
+    public function handle(OrderStatusUpdated $orderStatusUpdated): void
     {
-        $email = $event->order->customer->email;
+        $email = $orderStatusUpdated->order->customer->email;
 
         OrderLog::create([
-            'order_id' => $event->order->id,
-            'courier_name' => $event->data['courier_id'],
-            'tracking_number' => $event->data['tracking_number'],
-            'status_to' => $event->data['status'],
+            'order_id' => $orderStatusUpdated->order->id,
+            'courier_name' => $orderStatusUpdated->data['courier_id'],
+            'tracking_number' => $orderStatusUpdated->data['tracking_number'],
+            'status_to' => $orderStatusUpdated->data['status'],
         ]);
 
         Mail::to($email)->send(new OrderShipped([
             'email' => $email,
-            'name' => $event->order->customer->name,
-            'order_id' => $event->order->id,
-            'order' => $event->order,
-            'orderItems' => $event->orderItems,
+            'name' => $orderStatusUpdated->order->customer->name,
+            'order_id' => $orderStatusUpdated->order->id,
+            'order' => $orderStatusUpdated->order,
+            'orderItems' => $orderStatusUpdated->orderItems,
             'currency' => config('shop.currency'),
         ]));
     }

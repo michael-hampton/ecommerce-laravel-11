@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -41,20 +41,20 @@ class ApiController extends Controller
             'errors' => $errorMessages,
         ];
 
-        if (! empty($errorMessages)) {
+        if ($errorMessages !== []) {
             $response['data'] = $errorMessages;
         }
 
         return response()->json($response, $code);
     }
 
-    public function sendPaginatedResponse(Paginator $items, JsonResource $data): JsonResponse
+    public function sendPaginatedResponse(Paginator $paginator, JsonResource $jsonResource): JsonResponse
     {
         $response = [
-            'current_page' => $items->currentPage(),
-            'total' => $items->total(),
-            'per_page' => $items->perPage(),
-            'data' => $data];
+            'current_page' => $paginator->currentPage(),
+            'total' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
+            'data' => $jsonResource];
 
         return \response()->json($response);
     }

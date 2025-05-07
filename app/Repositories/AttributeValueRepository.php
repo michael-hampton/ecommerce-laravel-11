@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,12 +17,12 @@ class AttributeValueRepository extends BaseRepository implements IAttributeValue
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
-            $query->where('name', 'like', "%{$searchParams['name']}%");
+        $builder->when(! empty($searchParams['name']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('name', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
 
-        return $query;
+        return $builder;
     }
 }

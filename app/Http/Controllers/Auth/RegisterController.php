@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
@@ -73,10 +73,10 @@ class RegisterController extends Controller
             'mobile' => $request->string('mobile'),
             'password' => Hash::make($request->string('password')),
             'active' => true,
-            'utype' => ! empty($request->get('seller_account')) ? 'ADM' : 'USR',
+            'utype' => empty($request->get('seller_account')) ? 'USR' : 'ADM',
         ]);
 
-        $token = $user->createToken('MyAppToken')->plainTextToken;
+        $user->createToken('MyAppToken')->plainTextToken;
 
         if (! empty($request->get('seller_account'))) {
             Profile::create([

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories\Support;
 
@@ -11,19 +11,19 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ArticleRepository extends BaseRepository implements IArticleRepository
 {
-    public function __construct(FaqArticle $address)
+    public function __construct(FaqArticle $faqArticle)
     {
-        parent::__construct($address);
+        parent::__construct($faqArticle);
     }
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['customer_id']), function (Builder $query) use ($searchParams) {
-            $query->where('customer_id', $searchParams['customer_id']);
+        $builder->when(! empty($searchParams['customer_id']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('customer_id', $searchParams['customer_id']);
         });
 
-        return $query;
+        return $builder;
     }
 }

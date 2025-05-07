@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,28 +17,28 @@ class CouponRepository extends BaseRepository implements ICouponRepository
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['expiry_date']), function (Builder $query) use ($searchParams) {
-            $query->where('expires_at', '>=', $searchParams['expiry_date']);
+        $builder->when(! empty($searchParams['expiry_date']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('expires_at', '>=', $searchParams['expiry_date']);
         });
 
-        $query->when(! empty($searchParams['cart_value']), function (Builder $query) use ($searchParams) {
-            $query->where('cart_value', '<=', $searchParams['cart_value']);
+        $builder->when(! empty($searchParams['cart_value']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('cart_value', '<=', $searchParams['cart_value']);
         });
 
-        $query->when(! empty($searchParams['code']), function (Builder $query) use ($searchParams) {
-            $query->where('code', '=', $searchParams['code']);
+        $builder->when(! empty($searchParams['code']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('code', '=', $searchParams['code']);
         });
 
-        $query->when(! empty($searchParams['maxPrice']), function (Builder $query) use ($searchParams) {
-            $query->where('regular_price', '<=', $searchParams['maxPrice']);
+        $builder->when(! empty($searchParams['maxPrice']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('regular_price', '<=', $searchParams['maxPrice']);
         });
 
-        $query->when(isset($searchParams['name']), function (Builder $query) use ($searchParams) {
-            $query->where('code', 'like', "%{$searchParams['name']}%");
+        $builder->when(isset($searchParams['name']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('code', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
 
-        return $query;
+        return $builder;
     }
 }

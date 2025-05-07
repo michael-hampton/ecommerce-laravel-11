@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
@@ -23,7 +23,7 @@ class WishListController extends Controller
         $items = Cart::instance('wishlist')->content();
         $currency = config('shop.currency');
 
-        return view('front.wishlist', compact('items', 'currency'));
+        return view('front.wishlist', ['items' => $items, 'currency' => $currency]);
     }
 
     public function addToWishList(Request $request)
@@ -33,7 +33,7 @@ class WishListController extends Controller
             $request->name,
             $request->quantity,
             $request->price
-        )->associate('App\Models\Product');
+        )->associate(\App\Models\Product::class);
 
         $item = $this->productRepository->setRequiredRelationships(['seller'])->getById($request->id);
         $item->seller->notify(new ProductAddedToWishlist($item->seller, $item));
@@ -74,7 +74,7 @@ class WishListController extends Controller
             $item->name,
             $item->qty,
             $item->price
-        )->associate('App\Models\Product');
+        )->associate(\App\Models\Product::class);
         Cart::instance('wishlist')->remove($rowId);
 
         return redirect()->back();

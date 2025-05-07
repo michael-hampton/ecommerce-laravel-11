@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories\Support;
 
@@ -11,19 +11,19 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoryRepository extends BaseRepository implements ICategoryRepository
 {
-    public function __construct(FaqCategory $address)
+    public function __construct(FaqCategory $faqCategory)
     {
-        parent::__construct($address);
+        parent::__construct($faqCategory);
     }
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
-            $query->where('name', 'like', "%{$searchParams['name']}%");
+        $builder->when(! empty($searchParams['name']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('name', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
 
-        return $query;
+        return $builder;
     }
 }

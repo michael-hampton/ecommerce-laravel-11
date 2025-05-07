@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Product;
 
@@ -16,14 +16,14 @@ use Illuminate\Support\Str;
 
 class UpdateProduct extends SaveProduct
 {
-    public function __construct(private IProductRepository $repository)
+    public function __construct(private IProductRepository $productRepository)
     {
     }
 
     public function handle(array $data, int $id)
     {
-        $product = $this->repository->getById($id);
-      
+        $product = $this->productRepository->getById($id);
+
         $data['slug'] = Str::slug($data['name']);
         $currentTimestamp = Carbon::now()->timestamp;
 
@@ -52,6 +52,7 @@ class UpdateProduct extends SaveProduct
 
             $data['image'] = $filename;
         }
+
         $galleryArr = [];
         $galleryImages = '';
         $counter = 1;
@@ -65,12 +66,14 @@ class UpdateProduct extends SaveProduct
                     $gfilename = $currentTimestamp . '-' . $counter . '.' . $gextension;
                     $file->storeAs('products', $gfilename, 'public');
                     Helper::generateThumbnailImage($file, $gfilename, 'products');
-                    array_push($galleryArr, $gfilename);
-                    $counter++;
+                    $galleryArr[] = $gfilename;
+                    ++$counter;
                 }
             }
+
             $galleryImages = implode(', ', $galleryArr);
         }
+
         $data['images'] = $galleryImages;
 
         $bumpDays = $data['bump_days'];
@@ -80,7 +83,7 @@ class UpdateProduct extends SaveProduct
             $this->updateSellerBalance($bumpDays, $product);
         }
 
-        $this->repository->update($id, $data);
+        $this->productRepository->update($id, $data);
 
         ProductAttributeValue::where('product_id', $id)->forceDelete();
 
@@ -100,11 +103,11 @@ class UpdateProduct extends SaveProduct
         //if the product has a sale price lower than the regular price (discounted) and the discounted price is not the same as whats already been saved (indicates a change in price) then send notifiaction
         
         if (!empty($data['sale_price']) && $data['sale_price'] < $data['regular_price']) {
-            $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(function ($item) {
-                return in_array($item->id, [(string) $item->id]);
+            $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(function ($item): bool {
+                return $item->id == (string) $item->id;
             });
 
-            $wishlistItems->each(function ($item) use ($product) {
+            $wishlistItems->each(function ($item) use ($product): void {
                 $user = User::where('email', $item->identifier)->firstOrFail();
 
                 $user->notify(new ProductInWishlistReduced($product));

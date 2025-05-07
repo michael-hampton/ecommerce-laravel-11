@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Category;
 
@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class CreateCategory
 {
-    public function __construct(private ICategoryRepository $repository) {}
+    public function __construct(private ICategoryRepository $categoryRepository) {}
 
     public function handle(array $data): Category
     {
@@ -35,7 +35,7 @@ class CreateCategory
             $data['image'] = $filename;
         }
 
-        $category = $this->repository->create($data);
+        $category = $this->categoryRepository->create($data);
 
         if (! empty($data['attributes'])) {
             $this->saveAttributes($data['attributes'], $category);
@@ -44,7 +44,7 @@ class CreateCategory
         return $category;
     }
 
-    private function saveAttributes($attributes, Category $category)
+    private function saveAttributes($attributes, Category $category): void
     {
         $attributeIds = explode(',', $attributes);
         $productAttributes = ProductAttribute::whereIn('id', $attributeIds)->get();

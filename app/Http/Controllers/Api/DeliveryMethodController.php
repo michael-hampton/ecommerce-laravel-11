@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -24,16 +24,15 @@ class DeliveryMethodController extends ApiController
     ) {}
 
     /**
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $searchRequest
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $countries = $this->countryRepository->setRequiredRelationships(['deliveryMethods'])->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText'), 'shipping_active' => true]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText'), 'shipping_active' => true]
         );
 
         return $this->sendPaginatedResponse($countries, DeliveryCountryResource::collection($countries));
@@ -42,9 +41,9 @@ class DeliveryMethodController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDeliveryMethodRequest $request, CreateDeliveryMethod $createDeliveryMethod)
+    public function store(StoreDeliveryMethodRequest $storeDeliveryMethodRequest, CreateDeliveryMethod $createDeliveryMethod)
     {
-        $result = $createDeliveryMethod->handle($request->all());
+        $result = $createDeliveryMethod->handle($storeDeliveryMethodRequest->all());
 
         if (! $result) {
             return $this->error('Unable to create Delivery Method');
@@ -69,9 +68,9 @@ class DeliveryMethodController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateDeliveryMethodRequest $request, $id, UpdateDeliveryMethod $updateDeliveryMethod)
+    public function update(UpdateDeliveryMethodRequest $updateDeliveryMethodRequest, int $id, UpdateDeliveryMethod $updateDeliveryMethod)
     {
-        $result = $updateDeliveryMethod->handle($request->all(), $id);
+        $result = $updateDeliveryMethod->handle($updateDeliveryMethodRequest->all(), $id);
 
         if (! $result) {
             return $this->error('Unable to update Delivery Method');

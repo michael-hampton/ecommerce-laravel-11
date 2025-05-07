@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Requests;
 
@@ -25,7 +25,7 @@ class UpdateProductRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required|string|max:255|unique:products,name,'.request()->get('id'),

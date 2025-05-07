@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\DeliveryMethod;
 
@@ -10,7 +10,7 @@ use App\Repositories\DeliveryMethodRepository;
 
 class CreateDeliveryMethod
 {
-    public function __construct(private DeliveryMethodRepository $repository) {}
+    public function __construct(private DeliveryMethodRepository $deliveryMethodRepository) {}
 
     public function handle(array $data): bool
     {
@@ -20,6 +20,6 @@ class CreateDeliveryMethod
 
         Country::whereId($data['country_id'])->first()->update(['shipping_active' => true]);
 
-        return $this->repository->insert($array);
+        return $this->deliveryMethodRepository->insert($array);
     }
 }

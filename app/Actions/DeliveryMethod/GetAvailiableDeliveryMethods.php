@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\DeliveryMethod;
 
@@ -8,7 +8,10 @@ use App\Repositories\DeliveryMethodRepository;
 
 class GetAvailiableDeliveryMethods
 {
-    public function __construct(private DeliveryMethodRepository $repository) {}
+    /**
+     * @var never[]
+     */
+    public $shippingSet;
 
     public function handle($items)
     {
@@ -40,8 +43,8 @@ class GetAvailiableDeliveryMethods
         $order = ['Large', 'Medium', 'Small'];
 
         // Get the largest package size in the cart
-        $orderedBySize = $availiableMethods->sortBy(function ($item) use ($order) {
-            return array_search($item['name'], $order);
+        $orderedBySize = $availiableMethods->sortBy(function (array $item) use ($order): int|false {
+            return array_search($item['name'], $order, true);
         })->groupBy('name');
 
         if ($orderedBySize->keys()->count() > 1) {
@@ -60,7 +63,7 @@ class GetAvailiableDeliveryMethods
         return $methods;
     }
 
-    private function isBulk($items) {
+    private function isBulk($items): bool {
         $bySellers = [];
         $this->shippingSet = [];
         foreach ($items as $item) {

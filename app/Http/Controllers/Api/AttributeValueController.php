@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -21,16 +21,15 @@ class AttributeValueController extends ApiController
     ) {}
 
     /**
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $searchRequest
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $attributeValues = $this->attributeValueRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText')]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($attributeValues, AttributeValueResource::collection($attributeValues));
@@ -39,24 +38,23 @@ class AttributeValueController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAttributeValueRequest $request, CreateAttributeValue $createAttributeValue)
+    public function store(StoreAttributeValueRequest $storeAttributeValueRequest, CreateAttributeValue $createAttributeValue)
     {
-        $result = $createAttributeValue->handle($request->except(['_token', '_method']));
+        $attributeValue = $createAttributeValue->handle($storeAttributeValueRequest->except(['_token', '_method']));
 
-        if (! $result) {
+        if (! $attributeValue) {
             return $this->error('Unable to create Attribute Value');
         }
 
-        return $this->success($result, 'Attribute Value created');
+        return $this->success($attributeValue, 'Attribute Value created');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): void
     {
         //
     }
@@ -64,9 +62,9 @@ class AttributeValueController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAttributeValueRequest $request, $id, UpdateAttributeValue $updateAttributeValue)
+    public function update(UpdateAttributeValueRequest $updateAttributeValueRequest, int $id, UpdateAttributeValue $updateAttributeValue)
     {
-        $result = $updateAttributeValue->handle($request->except(['_token', '_method']), $id);
+        $result = $updateAttributeValue->handle($updateAttributeValueRequest->except(['_token', '_method']), $id);
 
         if (! $result) {
             return $this->error('Unable to update Attribute Value');

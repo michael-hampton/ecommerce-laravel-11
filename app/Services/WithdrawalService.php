@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -16,8 +16,8 @@ class WithdrawalService implements IWithdrawalService
     public function __construct(
         private int $sellerId,
         private float $amount,
-        private WithdrawalTypeEnum $type,
-        private WithdrawalEnum $withdrawalType,
+        private WithdrawalTypeEnum $withdrawalTypeEnum,
+        private WithdrawalEnum $withdrawalEnum,
         private ?int $id
     ) {}
 
@@ -25,7 +25,7 @@ class WithdrawalService implements IWithdrawalService
     {
         $previousBalance = SellerBalance::where('seller_id', $this->sellerId)->orderByDesc('created_at')->first();
 
-        $newBalance = $this->withdrawalType === WithdrawalEnum::Decrease ? $previousBalance->balance - $this->amount : $previousBalance->balance + $this->amount;
+        $newBalance = $this->withdrawalEnum === WithdrawalEnum::Decrease ? $previousBalance->balance - $this->amount : $previousBalance->balance + $this->amount;
 
         if (empty($previousBalance) || $previousBalance->balance <= 0) {
             throw new Exception('Insufficient balance');
@@ -40,20 +40,20 @@ class WithdrawalService implements IWithdrawalService
             'seller_id' => auth()->id(),
             'balance' => $newBalance,
             'previous_balance' => $previousBalance->balance,
-            'type' => $this->type->value,
+            'type' => $this->withdrawalTypeEnum->value,
         ];
 
-        if ($this->type === WithdrawalTypeEnum::OrderReceived) {
+        if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderReceived) {
             $withdrawalData['transaction_id'] = $this->id;
             $data['transaction_id'] = $this->id;
         }
 
-        if ($this->type === WithdrawalTypeEnum::BumpProduct) {
+        if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::BumpProduct) {
             $withdrawalData['product_id'] = $this->id;
             $data['product_id'] = $this->id;
         }
 
-        if ($this->type === WithdrawalTypeEnum::OrderSpent) {
+        if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderSpent) {
             $withdrawalData['order_id'] = $this->id;
             $data['order_id'] = $this->id;
         }

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -21,15 +21,15 @@ class OrderCreatedListener
     /**
      * Handle the event.
      */
-    public function handle(OrderCreated $event): void
+    public function handle(OrderCreated $orderCreated): void
     {
-        $email = $event->order->customer->email;
+        $email = $orderCreated->order->customer->email;
         Mail::to($email)->send(new OrderConfirmation([
             'email' => $email,
-            'name' => $event->order->customer->name,
-            'order_id' => $event->order->id,
-            'order' => $event->order,
-            'orderItems' => $event->order->orderItems,
+            'name' => $orderCreated->order->customer->name,
+            'order_id' => $orderCreated->order->id,
+            'order' => $orderCreated->order,
+            'orderItems' => $orderCreated->order->orderItems,
             'currency' => config('shop.currency'),
         ]));
     }

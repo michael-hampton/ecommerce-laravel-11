@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Coupon;
 
@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\ICouponRepository;
 
 class CreateCoupon
 {
-    public function __construct(private ICouponRepository $repository) {}
+    public function __construct(private ICouponRepository $couponRepository) {}
 
     public function handle(array $data): Coupon
     {
@@ -23,6 +23,6 @@ class CreateCoupon
 
         $data['seller_id'] = auth()->id();
 
-        return $this->repository->create($data);
+        return $this->couponRepository->create($data);
     }
 }

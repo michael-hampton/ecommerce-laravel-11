@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,12 +17,12 @@ class DeliveryMethodRepository extends BaseRepository implements IDeliveryMethod
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
-        $query->when(! empty($searchParams['country_id']), function (Builder $query) use ($searchParams) {
-            $query->where('country_id', $searchParams['country_id']);
+        $builder->when(! empty($searchParams['country_id']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('country_id', $searchParams['country_id']);
         });
 
-        return $query;
+        return $builder;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -19,12 +19,12 @@ class Contact extends Model
      *
      * @return response()
      */
-    public static function boot()
+    protected static function boot()
     {
 
         parent::boot();
 
-        static::created(function ($item) {
+        static::created(function ($item): void {
 
             $adminEmail = 'your_admin_email@gmail.com';
 

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -16,21 +16,21 @@ class FaqQuestionController extends ApiController
 {
     public function __construct(private IQuestionRepository $questionRepository) {}
 
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $values = $this->questionRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText')]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($values, QuestionResource::collection($values));
     }
 
-    public function store(StoreFaqQuestionRequest $request)
+    public function store(StoreFaqQuestionRequest $storeFaqQuestionRequest)
     {
-        $faqQuestion = FaqQuestion::create($request->all());
+        $faqQuestion = FaqQuestion::create($storeFaqQuestionRequest->all());
 
         if (! $faqQuestion) {
             return $this->error('Unable to create Question');
@@ -39,9 +39,9 @@ class FaqQuestionController extends ApiController
         return $this->success($faqQuestion, 'Question created');
     }
 
-    public function update(UpdateFaqQuestionRequest $request, FaqQuestion $faqQuestion)
+    public function update(UpdateFaqQuestionRequest $updateFaqQuestionRequest, FaqQuestion $faqQuestion)
     {
-        $result = $faqQuestion->update($request->all());
+        $result = $faqQuestion->update($updateFaqQuestionRequest->all());
 
         if (! $result) {
             return $this->error('Unable to create Question');
@@ -61,7 +61,7 @@ class FaqQuestionController extends ApiController
         return $this->success($result, 'Question deleted');
     }
 
-    public function massDestroy(MassDestroyFaqQuestionRequest $request)
+    public function massDestroy(MassDestroyFaqQuestionRequest $massDestroyFaqQuestionRequest)
     {
         $result = FaqQuestion::whereIn('id', request('ids'))->delete();
 

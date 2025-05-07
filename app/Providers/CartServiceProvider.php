@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -13,16 +13,14 @@ class CartServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->bind('cart', function () {
+        $this->app->bind('cart', function (): \App\Services\Cart\Cart {
             return new Cart($this->app['session'], $this->app['events']);
         });
 
-        $this->app['events']->listen(Logout::class, function () {
+        $this->app['events']->listen(Logout::class, function (): void {
             if ($this->app['config']->get('cart.destroy_on_logout')) {
                 $this->app->make(SessionManager::class)->forget('cart');
             }
@@ -31,10 +29,8 @@ class CartServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Seller;
 
@@ -9,10 +9,10 @@ use App\Repositories\Interfaces\ISellerRepository;
 
 class CreateSeller
 {
-    public function __construct(private ISellerRepository $repository) {}
+    public function __construct(private ISellerRepository $sellerRepository) {}
 
     public function handle(array $data): Profile
     {
-        return $this->repository->create($data);
+        return $this->sellerRepository->create($data);
     }
 }

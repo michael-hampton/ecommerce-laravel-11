@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -23,13 +23,13 @@ class CategoryController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $categories = $this->categoryRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText'), 'ignore_active' => true]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText'), 'ignore_active' => true]
         );
 
         return $this->sendPaginatedResponse($categories, CategoryResource::collection($categories));
@@ -38,15 +38,15 @@ class CategoryController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCategoryRequest $request, CreateCategory $createCategory)
+    public function store(StoreCategoryRequest $storeCategoryRequest, CreateCategory $createCategory)
     {
-        $result = $createCategory->handle($request->all());
+        $category = $createCategory->handle($storeCategoryRequest->all());
 
-        if (! $result) {
+        if (! $category) {
             return $this->error('Unable to create Category');
         }
 
-        return $this->success($result, 'Category created');
+        return $this->success($category, 'Category created');
 
     }
 
@@ -54,9 +54,8 @@ class CategoryController extends ApiController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): void
     {
         //
     }
@@ -64,9 +63,9 @@ class CategoryController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryRequest $request, int $id, UpdateCategory $updateCategory)
+    public function update(UpdateCategoryRequest $updateCategoryRequest, int $id, UpdateCategory $updateCategory)
     {
-        $result = $updateCategory->handle($request->except(['_token', '_method']), $id);
+        $result = $updateCategory->handle($updateCategoryRequest->except(['_token', '_method']), $id);
 
         if (! $result) {
             return $this->error('Unable to update Category');

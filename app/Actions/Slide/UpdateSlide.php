@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Slide;
 
@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\File;
 
 class UpdateSlide
 {
-    public function __construct(private ISlideRepository $repository) {}
+    public function __construct(private ISlideRepository $slideRepository) {}
 
     public function handle(array $data, int $id)
     {
-        $slide = $this->repository->getById($id);
+        $slide = $this->slideRepository->getById($id);
 
         if (! empty($data['image'])) {
             if (File::exists(public_path('uploads/slides/'.$slide->image))) {
@@ -32,6 +32,6 @@ class UpdateSlide
             $data['image'] = $filename;
         }
 
-        return $this->repository->update($id, $data);
+        return $this->slideRepository->update($id, $data);
     }
 }

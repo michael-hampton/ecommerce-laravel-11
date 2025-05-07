@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\DeliveryMethod;
 
@@ -9,7 +9,7 @@ use App\Repositories\DeliveryMethodRepository;
 
 class UpdateDeliveryMethod
 {
-    public function __construct(private DeliveryMethodRepository $repository) {}
+    public function __construct(private DeliveryMethodRepository $deliveryMethodRepository) {}
 
     public function handle(array $data, int $id): bool
     {
@@ -26,7 +26,7 @@ class UpdateDeliveryMethod
         foreach ($current as $item) {
             $found = false;
 
-            foreach ($array as $key => $value) {
+            foreach ($array as $value) {
                 if (! empty($value['id']) && $value['id'] === $item['id']) {
                     $found = true;
                 }
@@ -47,20 +47,16 @@ class UpdateDeliveryMethod
             $create[] = $method;
         }
 
-        if (! empty($create)) {
-            $this->repository->insert($create);
+        if ($create !== []) {
+            $this->deliveryMethodRepository->insert($create);
         }
 
-        if (! empty($update)) {
-            foreach ($update as $item) {
-                $this->repository->update($item['id'], $item);
-            }
+        foreach ($update as $item) {
+            $this->deliveryMethodRepository->update($item['id'], $item);
         }
 
-        if (! empty($delete)) {
-            foreach ($delete as $item) {
-                $this->repository->delete($item);
-            }
+        foreach ($delete as $item) {
+            $this->deliveryMethodRepository->delete($item);
         }
 
         return true;

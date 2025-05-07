@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -19,18 +19,18 @@ class UserController extends ApiController
     public function __construct(private IUserRepository $userRepository) {}
 
     /**
-     * @param  Request  $request
+     * @param Request $searchRequest
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|object
      *
      * @throws \Exception
      */
-    public function index(SearchRequest $request)
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
         $users = $this->userRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText'), 'ignore_active' => true]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText'), 'ignore_active' => true]
         );
 
         return $this->sendPaginatedResponse($users, UserResource::collection($users));
@@ -41,22 +41,21 @@ class UserController extends ApiController
      */
     public function store(Request $request, CreateUser $createUser)
     {
-        $result = $createUser->handle($request->all());
+        $user = $createUser->handle($request->all());
 
-        if (! $result) {
+        if (! $user) {
             return $this->error('Unable to create User');
         }
 
-        return $this->success($result, 'User created');
+        return $this->success($user, 'User created');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): void
     {
         //
     }
@@ -64,9 +63,9 @@ class UserController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request, $id, UpdateUser $updateUser)
+    public function update(UpdateUserRequest $updateUserRequest, int $id, UpdateUser $updateUser)
     {
-        $result = $updateUser->handle($request->except(['_token', '_method']), $id);
+        $result = $updateUser->handle($updateUserRequest->except(['_token', '_method']), $id);
 
         if (! $result) {
             return $this->error('Unable to update User');
@@ -75,7 +74,7 @@ class UserController extends ApiController
         return $this->success($result, 'User updated');
     }
 
-    public function updateActive(Request $request, $id, UpdateUser $updateUser)
+    public function updateActive(Request $request, int $id, UpdateUser $updateUser)
     {
         $result = $updateUser->handle(['active' => $request->boolean('active')], $id);
 
@@ -89,7 +88,7 @@ class UserController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, DeleteUser $deleteUser)
+    public function destroy(int $id, DeleteUser $deleteUser)
     {
         $result = $deleteUser->handle($id);
 

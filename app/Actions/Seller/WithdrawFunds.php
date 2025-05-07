@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Seller;
 
@@ -11,11 +11,6 @@ use App\Repositories\Interfaces\ISellerRepository;
 
 class WithdrawFunds
 {
-    public function __construct(private ISellerRepository $repository) {}
-
-    /**
-     * @return mixed
-     */
     public function handle(array $data): ?SellerBalance
     {
         $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->first();

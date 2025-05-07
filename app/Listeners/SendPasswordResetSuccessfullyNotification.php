@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -10,8 +10,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendPasswordResetSuccessfullyNotification implements ShouldQueue
 {
-    public function handle(PasswordReset $event)
+    public function handle(PasswordReset $passwordReset): void
     {
-        $event->user->notify(new PasswordResetSuccessfullyNotification);
+        $passwordReset->user->notify(new PasswordResetSuccessfullyNotification);
     }
 }

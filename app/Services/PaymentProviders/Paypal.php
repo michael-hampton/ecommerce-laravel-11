@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Services\PaymentProviders;
 
@@ -16,8 +16,8 @@ class Paypal extends BaseProvider
 {
     public function capture(Collection $orderLines, array $orderData)
     {
-        $provider = new PayPalClient;
-        $paypalToken = $provider->getAccessToken();
+        $payPal = new PayPalClient;
+        $payPal->getAccessToken();
 
         $items = collect($this->formatLineItems($orderLines));
 
@@ -37,7 +37,7 @@ class Paypal extends BaseProvider
                 $total -= $orderData['coupon']->value;
             }
 
-            $products = $products->map(function ($item) {
+            $products = $products->map(function (array $item): array {
                 unset($item['price'], $item['shipping']);
 
                 return $item;
@@ -57,7 +57,7 @@ class Paypal extends BaseProvider
                     ],
                     'insurance' => [
                         'currency_code' => config('shop.currency_code', 'GBP'),
-                        'value' => (float) round($commission, 2),
+                        'value' => round($commission, 2),
                     ],
                 ],
             ];
@@ -71,7 +71,7 @@ class Paypal extends BaseProvider
 
             // tax total The total tax for all items. Required if the request includes purchase_units.items.tax. Must equal the sum of (items[].tax * items[].quantity) for all items. tax_total.value can not be a negative number.
             $purchaseUnits[] = [
-                'invoice_id' => "{$orderData['orderId']}-{$sellerId}",
+                'invoice_id' => sprintf('%s-%s', $orderData['orderId'], $sellerId),
                 'reference_id' => $sellerId,
                 'amount' => $amounts,
                 'items' => $products->toArray(),
@@ -86,16 +86,16 @@ class Paypal extends BaseProvider
                 'total' => $total - $commission,
                 'commission' => $commission,
                 'shipping' => $shipping,
-                'discount' => ! empty($orderData['coupon']) ? $orderData['coupon']->value : 0,
+                'discount' => empty($orderData['coupon']) ? 0 : $orderData['coupon']->value,
             ];
 
             Transaction::create($transactionData);
         }
 
-        $provider->setApiCredentials(config('paypal'));
+        $payPal->setApiCredentials(config('paypal'));
 
         try {
-            $response = $provider->createOrder([
+            $response = $payPal->createOrder([
                 'intent' => 'CAPTURE',
                 'application_context' => [
                     'return_url' => route('paypal.payment.success', ['orderId' => $orderData['orderId']]),
@@ -136,18 +136,13 @@ class Paypal extends BaseProvider
      */
     public function paymentSuccess(Request $request): bool
     {
-        $provider = new PayPalClient;
+        $payPal = new PayPalClient;
 
-        $provider->setApiCredentials(config('paypal'));
+        $payPal->setApiCredentials(config('paypal'));
 
-        $provider->getAccessToken();
+        $payPal->getAccessToken();
 
-        $response = $provider->capturePaymentOrder($request->query('token'));
-
-        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-            return true;
-        }
-
-        return false;
+        $response = $payPal->capturePaymentOrder($request->query('token'));
+        return isset($response['status']) && $response['status'] == 'COMPLETED';
     }
 }

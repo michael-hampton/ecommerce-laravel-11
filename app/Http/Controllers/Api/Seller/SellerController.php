@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Seller;
 
@@ -27,7 +27,7 @@ class SellerController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $slides = $this->sellerRepository->getPaginated(
             $request->integer('limit'),
@@ -44,13 +44,13 @@ class SellerController extends ApiController
      */
     public function store(Request $request, CreateSeller $createSeller)
     {
-        $result = $createSeller->handle($request->all());
+        $profile = $createSeller->handle($request->all());
 
-        if (! $result) {
+        if (! $profile) {
             return $this->error('Unable to create Seller');
         }
 
-        return $this->success($result, 'Seller created');
+        return $this->success($profile, 'Seller created');
     }
 
     /**
@@ -81,9 +81,9 @@ class SellerController extends ApiController
         return $this->success($result, 'Seller updated');
     }
 
-    public function toggleActive(UpdateSellerActive $request): JsonResponse
+    public function toggleActive(UpdateSellerActive $updateSellerActive): JsonResponse
     {
-        $result = Profile::whereId($request->integer('sellerId'))->update(['active' => $request->boolean('active')]);
+        $result = Profile::whereId($updateSellerActive->integer('sellerId'))->update(['active' => $updateSellerActive->boolean('active')]);
 
         if (! $result) {
             return $this->error('Unable to create Seller');

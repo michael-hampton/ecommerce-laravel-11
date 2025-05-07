@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -50,9 +50,9 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class, 'order_id');
     }
 
-    protected function scopeSeller(Builder $query, int $sellerId): void
+    protected function scopeSeller(Builder $builder, int $sellerId): void
     {
-        $query->where('seller_id', '=', $sellerId);
+        $builder->where('seller_id', '=', $sellerId);
     }
 
     public function logs(): HasMany

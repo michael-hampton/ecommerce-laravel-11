@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductAttributeValue extends Model
 {
-    use HasFactory, SoftDeletes;
-
+    use HasFactory;
+    use SoftDeletes;
     protected $fillable = ['product_attribute_id', 'attribute_value_id', 'product_id'];
 
     public function productAttribute(): HasOne

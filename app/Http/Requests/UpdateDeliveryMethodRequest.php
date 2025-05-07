@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Requests;
 
@@ -35,7 +35,7 @@ class UpdateDeliveryMethodRequest extends FormRequest
         ];
     }
 
-    public function prepareForValidation()
+    protected function prepareForValidation()
     {
         return $this->merge(['methods' => json_decode($this->methods, true)]);
     }

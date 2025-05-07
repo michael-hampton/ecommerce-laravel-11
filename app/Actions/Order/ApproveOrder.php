@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Order;
 
@@ -15,9 +15,7 @@ use Exception;
 
 class ApproveOrder
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
-
-    public function handle(int $orderId, array $ids)
+    public function handle(int $orderId, array $ids): bool
     {
         try {
             $orderItems = OrderItem::with('order')->whereIn('id', $ids)->get();
@@ -28,11 +26,11 @@ class ApproveOrder
             foreach ($groupedBySeller as $sellerId => $items) {
                 $transaction = $transactions->where('seller_id', $sellerId)->first();
 
-                $totals = $items->map(function (OrderItem $item) {
-                    $total = $item->price * $item->quantity + $item->shipping_price;
+                $totals = $items->map(function (OrderItem $orderItem): int|float {
+                    $total = $orderItem->price * $orderItem->quantity + $orderItem->shipping_price;
 
-                    if ($item->discount > 0) {
-                        $total -= $item->discount;
+                    if ($orderItem->discount > 0) {
+                        $total -= $orderItem->discount;
                     }
 
                     return $total;
@@ -55,8 +53,8 @@ class ApproveOrder
 
             OrderItem::whereIn('id', $ids)->update(['approved_date' => now()]);
 
-        } catch (Exception $e) {
-            echo ''.$e->getMessage();
+        } catch (Exception $exception) {
+            echo ''.$exception->getMessage();
             exit;
         }
 

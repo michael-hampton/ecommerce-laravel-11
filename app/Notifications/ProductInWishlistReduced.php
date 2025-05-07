@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use App\Models\Product;
@@ -30,6 +32,7 @@ class ProductInWishlistReduced extends Notification implements ShouldQueue
     {
         return ['mail', 'database'];
     }
+
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
@@ -38,7 +41,7 @@ class ProductInWishlistReduced extends Notification implements ShouldQueue
             ->line('Thank you for using our application!');
     }
 
-    public function toDatabase($notifiable)
+    public function toDatabase($notifiable): array
     {
         return [
             'message' => 'The price on a product in your wishlist <strong>' . $this->product->name . '</strong> has been reduced to ' . $this->product->sale_price,

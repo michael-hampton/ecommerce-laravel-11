@@ -1,23 +1,26 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Services\PaymentProviders;
 
 class BaseProvider
 {
-    public function formatLineItems($orderLines)
+    /**
+     * @return \non-empty-list<array{name: mixed, description: mixed, sku: mixed, quantity: mixed, shipping: mixed, price: (float | int), unit_amount: array{currency_code: mixed, value: mixed}}>[]
+     */
+    public function formatLineItems($orderLines): array
     {
         $items = [];
-        foreach ($orderLines as $item) {
-            $lineTotal = $item->price * $item->qty;
+        foreach ($orderLines as $orderLine) {
+            $lineTotal = $orderLine->price * $orderLine->qty;
 
-            $items[$item->model->seller_id][] = [
-                'name' => $item->model->name,
-                'description' => $item->model->description,
-                'sku' => $item->model->SKU,
-                'quantity' => $item->qty,
-                'shipping' => $item->shipping,
+            $items[$orderLine->model->seller_id][] = [
+                'name' => $orderLine->model->name,
+                'description' => $orderLine->model->description,
+                'sku' => $orderLine->model->SKU,
+                'quantity' => $orderLine->qty,
+                'shipping' => $orderLine->shipping,
                 'price' => $lineTotal,
                 'unit_amount' => [
                     'currency_code' => config('shop.currency_code', 'GBP'),
@@ -35,6 +38,7 @@ class BaseProvider
         if ((int) $number == 0) {
             return $number;
         }
+
         // Are we negative?
         $negative = $number / abs($number);
         // Cast the number to a positive to solve rounding

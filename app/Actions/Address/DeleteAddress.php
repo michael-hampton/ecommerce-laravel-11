@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Repositories\Interfaces\IAddressRepository;
 
 class DeleteAddress
 {
-    public function __construct(private IAddressRepository $repository) {}
+    public function __construct(private IAddressRepository $addressRepository) {}
 
-    public function handle(int $id)
+    public function handle(int $id): void
     {
-        $this->repository->delete($id);
+        $this->addressRepository->delete($id);
     }
 }

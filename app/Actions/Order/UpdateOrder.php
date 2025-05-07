@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Order;
 
@@ -13,7 +13,7 @@ use function auth;
 
 class UpdateOrder
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
+    public function __construct(private IOrderRepository $orderRepository) {}
 
     public function handle(array $data, int $id): Order
     {
@@ -35,16 +35,16 @@ class UpdateOrder
             $orderData['courier_id'] = $data['courier_id'];
         }
 
-        $this->repository->update($id, $orderData);
+        $this->orderRepository->update($id, $orderData);
 
         if ($data['status'] === 'delivered') {
-            $order = $this->repository->getById($id);
+            $order = $this->orderRepository->getById($id);
             $transaction = $order->transaction->where('seller_id', auth()->id())->first();
             $transaction->payment_status = $data['status'] === 'delivered' ? 'approved' : 'refunded';
             $transaction->save();
         }
 
-        $order = $this->repository->getById($id);
+        $order = $this->orderRepository->getById($id);
 
         event(new OrderStatusUpdated($order, $order->orderItems, $data));
 

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Requests;
 
@@ -10,10 +10,8 @@ class UpdateCouponRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true; // TODO
     }
@@ -23,7 +21,7 @@ class UpdateCouponRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'code' => 'required|string|max:255|unique:coupons,code,'.request()->get('id'),

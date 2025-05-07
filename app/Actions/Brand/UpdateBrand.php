@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Brand;
 
 use App\Helper;
@@ -9,11 +11,11 @@ use Illuminate\Support\Str;
 
 class UpdateBrand
 {
-    public function __construct(private IBrandRepository $repository) {}
+    public function __construct(private IBrandRepository $brandRepository) {}
 
     public function handle(array $data, int $id)
     {
-        $brand = $this->repository->getById($id);
+        $brand = $this->brandRepository->getById($id);
         $data['slug'] = Str::slug($data['name']);
 
         if (! empty($data['image'])) {
@@ -32,6 +34,6 @@ class UpdateBrand
             $data['image'] = $filename;
         }
 
-        return $this->repository->update($id, $data);
+        return $this->brandRepository->update($id, $data);
     }
 }

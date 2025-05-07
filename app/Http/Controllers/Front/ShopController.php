@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\View;
 
 class ShopController extends Controller
 {
-    private $showOptions = [12, 24, 48, 102];
+    private array $showOptions = [12, 24, 48, 102];
 
-    private $sortOptions = [
+    private array $sortOptions = [
         ['id' => 1, 'name' => 'Featured', 'column' => 'featured', 'direction' => 'desc'],
         ['id' => 2, 'name' => 'Best selling', 'column' => 'featured', 'direction' => 'desc'],
         ['id' => 3, 'name' => 'Alphabetically, A-Z', 'column' => 'name', 'direction' => 'asc'],

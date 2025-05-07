@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Brand;
 
 use App\Helper;
@@ -9,11 +11,8 @@ use Illuminate\Support\Str;
 
 class CreateBrand
 {
-    public function __construct(private IBrandRepository $repository) {}
+    public function __construct(private IBrandRepository $brandRepository) {}
 
-    /**
-     * @return mixed
-     */
     public function handle(array $data): Brand
     {
         $data['slug'] = Str::slug($data['name']);
@@ -24,6 +23,6 @@ class CreateBrand
         Helper::generateThumbnailImage($data['image'], $filename, 'brands');
         $data['image'] = $filename;
 
-        return $this->repository->create($data);
+        return $this->brandRepository->create($data);
     }
 }

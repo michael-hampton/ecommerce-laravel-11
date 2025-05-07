@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
@@ -44,48 +44,48 @@ class CheckoutController extends Controller
         ]);
     }
 
-    public function placeOrder(CreateOrderRequest $request, CreateAddress $createAddress, CreateOrder $createOrder): RedirectResponse|View
+    public function placeOrder(CreateOrderRequest $createOrderRequest, CreateAddress $createAddress, CreateOrder $createOrder): RedirectResponse|View
     {
         $customerId = auth()->user()->id;
-        $addressId = $request->integer('address');
+        $addressId = $createOrderRequest->integer('address');
         $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
-        $address = ! empty($addressId) ? $addresses->where('id', $addressId)->first() : $addresses->first();
+        $address = empty($addressId) ? $addresses->first() : $addresses->where('id', $addressId)->first();
 
-        $adrressData = $request->except(['_token']);
+        $adrressData = $createOrderRequest->except(['_token']);
         $adrressData['customer_id'] = $customerId;
 
-        if ($request->has('address1')) {
+        if ($createOrderRequest->has('address1')) {
             $address = $createAddress->handle($adrressData);
         }
 
         $adrressData['address_id'] = $address->id;
 
-        if ($request->input('mode') !== 'card') {
+        if ($createOrderRequest->input('mode') !== 'card') {
             $order = $createOrder->handle($adrressData);
 
             Session::put('order_id', $order->id);
 
             return redirect()
-                ->route('checkout.orderConfirmation', compact('order'))
+                ->route('checkout.orderConfirmation', ['order' => $order])
                 ->with('success', 'Order placed successfully');
         }
 
         return view('front.checkout-card', ['addressId' => $addressId, 'addresses' => $addresses, 'currency' => config('shop.currency')]);
     }
 
-    public function placeCardOrder(CreateOrderRequest $request, CreateOrder $createOrder): RedirectResponse
+    public function placeCardOrder(CreateOrderRequest $createOrderRequest, CreateOrder $createOrder): RedirectResponse
     {
         $customerId = auth()->user()->id;
-        $addressData = $request->except(['_token']);
+        $addressData = $createOrderRequest->except(['_token']);
         $addressData['customer_id'] = $customerId;
-        $addressData['address_id'] = $request->integer('address');
+        $addressData['address_id'] = $createOrderRequest->integer('address');
 
         $order = $createOrder->handle($addressData);
 
         Session::put('order_id', $order->id);
 
         return redirect()
-            ->route('checkout.orderConfirmation', compact('order'))
+            ->route('checkout.orderConfirmation', ['order' => $order])
             ->with('success', 'Order placed successfully');
     }
 

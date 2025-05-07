@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Cart;
 
 use App\Models\Address;
@@ -55,10 +57,8 @@ class CartItem implements Arrayable, Jsonable
 
     /**
      * The address id of the user placing the order used to get the country for the delivery method
-     *
-     * @var int
      */
-    private $addressId = 0;
+    private int $addressId = 0;
 
     /**
      * The selected delivery method
@@ -67,10 +67,8 @@ class CartItem implements Arrayable, Jsonable
 
     /**
      * The FQN of the associated model.
-     *
-     * @var string|null
      */
-    private $associatedModel = null;
+    private ?string $associatedModel = null;
 
     /**
      * The tax rate for the cart item.
@@ -108,9 +106,11 @@ class CartItem implements Arrayable, Jsonable
         if (empty($id)) {
             throw new InvalidArgumentException('Please supply a valid identifier.');
         }
+
         if (empty($name)) {
             throw new InvalidArgumentException('Please supply a valid name.');
         }
+
         if (strlen($price) < 0 || ! is_numeric($price)) {
             throw new InvalidArgumentException('Please supply a valid price.');
         }
@@ -124,11 +124,8 @@ class CartItem implements Arrayable, Jsonable
 
     /**
      * Generate a unique id for the cart item.
-     *
-     * @param  string  $id
-     * @return string
      */
-    protected function generateRowId($id, array $options)
+    protected function generateRowId(string $id, array $options): string
     {
         ksort($options);
 
@@ -137,12 +134,10 @@ class CartItem implements Arrayable, Jsonable
 
     /**
      * Create a new instance from a Buyable.
-     *
-     * @return self
      */
-    public static function fromBuyable(Buyable $item, array $options = [])
+    public static function fromBuyable(Buyable $buyable, array $options = []): self
     {
-        return new self($item->getBuyableIdentifier($options), $item->getBuyableDescription($options), $item->getBuyablePrice($options), $options);
+        return new self($buyable->getBuyableIdentifier($options), $buyable->getBuyableDescription($options), $buyable->getBuyablePrice($options), $options);
     }
 
     /**
@@ -150,7 +145,7 @@ class CartItem implements Arrayable, Jsonable
      *
      * @return \Surfsidemedia\Shoppingcart\CartItem
      */
-    public static function fromArray(array $attributes)
+    public static function fromArray(array $attributes): self
     {
         $options = Arr::get($attributes, 'options', []);
 
@@ -159,10 +154,8 @@ class CartItem implements Arrayable, Jsonable
 
     /**
      * Create a new instance from the given attributes.
-     *
-     * @return self
      */
-    public static function fromAttributes($id, $name, $price, array $options = [])
+    public static function fromAttributes($id, $name, $price, array $options = []): self
     {
         return new self($id, $name, $price, $options);
     }
@@ -187,9 +180,8 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
-    private function numberFormat($value, $decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    private function numberFormat($value, $decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
         if (is_null($decimals)) {
             $decimals = is_null(config('cart.format.decimals')) ? 2 : config('cart.format.decimals');
@@ -225,7 +217,6 @@ class CartItem implements Arrayable, Jsonable
      * @param  int  $decimals
      * @param  string  $decimalPoint
      * @param  string  $thousandSeperator
-     * @return string
      */
     public function shipping(bool $hasBulk = false, int $addressId = 0, int $deliveryMethodId = 0, $decimals = null, $decimalPoint = null, $thousandSeperator = null): float
     {
@@ -254,7 +245,7 @@ class CartItem implements Arrayable, Jsonable
     public function getShippingId($hasBulk = false, int $deliveryMethodId = 0)
     {
         $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
-        $address = (! empty($this->addressId)) ? Address::whereId($this->addressId)->first() : ((auth()->check()) ? auth()->user()->defaultAddress() : null);
+        $address = (empty($this->addressId)) ? (auth()->check() ? auth()->user()->defaultAddress() : null) : (Address::whereId($this->addressId)->first());
 
         $query = DeliveryMethod::query()
             ->with('courier')
@@ -264,7 +255,7 @@ class CartItem implements Arrayable, Jsonable
             $query = $query->where('country_id', $address->country_id);
         }
 
-        if (! empty($deliveryMethodId)) {
+        if ($deliveryMethodId !== 0) {
             $deliveryMethod = DeliveryMethod::whereId($deliveryMethodId)->first();
             $deliveryMethod->name = 'Small';
 
@@ -356,7 +347,7 @@ class CartItem implements Arrayable, Jsonable
      *
      * @param  int|float  $qty
      */
-    public function setQuantity($qty)
+    public function setQuantity($qty): void
     {
         if (empty($qty) || ! is_numeric($qty)) {
             throw new InvalidArgumentException('Please supply a valid quantity.');
@@ -367,23 +358,19 @@ class CartItem implements Arrayable, Jsonable
 
     /**
      * Update the cart item from a Buyable.
-     *
-     * @return void
      */
-    public function updateFromBuyable(Buyable $item)
+    public function updateFromBuyable(Buyable $buyable): void
     {
-        $this->id = $item->getBuyableIdentifier($this->options);
-        $this->name = $item->getBuyableDescription($this->options);
-        $this->price = $item->getBuyablePrice($this->options);
+        $this->id = $buyable->getBuyableIdentifier($this->options);
+        $this->name = $buyable->getBuyableDescription($this->options);
+        $this->price = $buyable->getBuyablePrice($this->options);
         $this->priceTax = $this->price + $this->tax;
     }
 
     /**
      * Update the cart item from an array.
-     *
-     * @return void
      */
-    public function updateFromArray(array $attributes)
+    public function updateFromArray(array $attributes): void
     {
         $this->id = Arr::get($attributes, 'id', $this->id);
         $this->qty = Arr::get($attributes, 'qty', $this->qty);
@@ -400,7 +387,7 @@ class CartItem implements Arrayable, Jsonable
      *
      * @return $this
      */
-    public function associate($model)
+    public function associate($model): static
     {
         $this->associatedModel = is_string($model) ? $model : get_class($model);
 
@@ -412,14 +399,14 @@ class CartItem implements Arrayable, Jsonable
      *
      * @return $this
      */
-    public function setTaxRate($taxRate)
+    public function setTaxRate($taxRate): static
     {
         $this->taxRate = $taxRate;
 
         return $this;
     }
 
-    public function setShippingRate($shippingId, $shippingPrice)
+    public function setShippingRate($shippingId, $shippingPrice): static
     {
         $this->shippingId = $shippingId;
         $this->shippingPrice = $shippingPrice;
@@ -427,7 +414,7 @@ class CartItem implements Arrayable, Jsonable
         return $this;
     }
 
-    public function setShippingPrice($shippingPrice)
+    public function setShippingPrice($shippingPrice): static
     {
         $this->shippingPrice = $shippingPrice;
 
@@ -439,7 +426,7 @@ class CartItem implements Arrayable, Jsonable
      *
      * @return $this
      */
-    public function setSaved($bool)
+    public function setSaved($bool): static
     {
         $this->isSaved = $bool;
 
@@ -486,7 +473,7 @@ class CartItem implements Arrayable, Jsonable
             return number_format(($this->tax * $this->qty), 2, '.', '');
         }
 
-        if ($attribute === 'model' && isset($this->associatedModel)) {
+        if ($attribute === 'model' && $this->associatedModel !== null) {
             return with(new $this->associatedModel)->find($this->id);
         }
 
@@ -501,7 +488,7 @@ class CartItem implements Arrayable, Jsonable
      */
     public function toJson($options = 0)
     {
-        if (isset($this->associatedModel)) {
+        if ($this->associatedModel !== null) {
 
             return json_encode(array_merge($this->toArray(), ['model' => $this->model]), $options);
         }

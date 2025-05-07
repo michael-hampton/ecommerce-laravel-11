@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Product;
 
@@ -35,7 +35,7 @@ class SaveProduct
 
     protected function updateSellerBalance(int $bumpDays, Product $product): bool
     {
-        if (empty($bumpDays)) {
+        if ($bumpDays === 0) {
             return false;
         }
 

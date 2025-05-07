@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
@@ -25,8 +25,7 @@ class HomeController extends Controller
     public function __construct(
         private ICategoryRepository $categoryRepository,
         private IProductRepository $productRepository,
-        private ISlideRepository $slideRepository,
-        private IBrandRepository $brandRepository
+        private ISlideRepository $slideRepository
     ) {}
 
     public function index()
@@ -43,7 +42,7 @@ class HomeController extends Controller
 
         }
 
-        return view('front/index', compact('categories', 'products', 'currency', 'featuredProducts', 'slides'));
+        return view('front/index', ['categories' => $categories, 'products' => $products, 'currency' => $currency, 'featuredProducts' => $featuredProducts, 'slides' => $slides]);
     }
 
     public function changePassword()
@@ -51,16 +50,16 @@ class HomeController extends Controller
         return view('change-password');
     }
 
-    public function updatePassword(UpdatePasswordRequest $request)
+    public function updatePassword(UpdatePasswordRequest $updatePasswordRequest)
     {
         // Match The Old Password
-        if (! Hash::check($request->old_password, auth()->user()->password)) {
+        if (! Hash::check($updatePasswordRequest->old_password, auth()->user()->password)) {
             return back()->with('error', "Old Password Doesn't match!");
         }
 
         // Update the new Password
         User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->new_password),
+            'password' => Hash::make($updatePasswordRequest->new_password),
         ]);
 
         return back()->with('status', 'Password changed successfully!');
@@ -81,18 +80,18 @@ class HomeController extends Controller
         $categories = FaqCategory::all();
         // $questions = FaqQuestion::all()->groupBy('category_id');
 
-        return view('front.help', compact('categories'));
+        return view('front.help', ['categories' => $categories]);
     }
 
     public function helpTopic(string $slug)
     {
         $questions = FaqQuestion::with('category')
-            ->whereHas('category', function (Builder $query) use ($slug) {
-                $query->where('slug', '=', $slug);
+            ->whereHas('category', function (Builder $builder) use ($slug): void {
+                $builder->where('slug', '=', $slug);
             })
             ->get();
 
-        return view('front.help-topic', compact('questions'));
+        return view('front.help-topic', ['questions' => $questions]);
     }
 
     public function terms()
@@ -107,9 +106,9 @@ class HomeController extends Controller
      *
      * @return response()
      */
-    public function store(ContactUsRequest $request)
+    public function store(ContactUsRequest $contactUsRequest)
     {
-        Contact::create($request->all());
+        Contact::create($contactUsRequest->all());
 
         return redirect()->back()->with(['success' => 'Thank you for contact us. we will contact you shortly.']);
 

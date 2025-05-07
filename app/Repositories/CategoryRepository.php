@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -17,29 +17,29 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository
 
     protected function applyFilters(array $searchParams = []): Builder
     {
-        $query = $this->getQuery();
+        $builder = $this->getQuery();
 
         if (empty($searchParams['ignore_active'])) {
-            $query->where('active', true);
+            $builder->where('active', true);
         }
 
-        $query->when(! empty($searchParams['ignore_children']), function (Builder $query) {
-            $query->where('parent_id', '=', 0)->orWhere('parent_id', '=', null);
+        $builder->when(! empty($searchParams['ignore_children']), function (Builder $builder): void {
+            $builder->where('parent_id', '=', 0)->orWhere('parent_id', '=', null);
         });
 
-        $query->when(! empty($searchParams['is_featured']), function (Builder $query) use ($searchParams) {
-            $query->where('is_featured', '=', $searchParams['is_featured']);
+        $builder->when(! empty($searchParams['is_featured']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('is_featured', '=', $searchParams['is_featured']);
         });
 
-        $query->when(! empty($searchParams['name']), function (Builder $query) use ($searchParams) {
-            $query->where('name', 'like', "%{$searchParams['name']}%");
+        $builder->when(! empty($searchParams['name']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('name', 'like', sprintf('%%%s%%', $searchParams['name']));
         });
 
-        $query->when(! empty($searchParams['menu_status']), function (Builder $query) use ($searchParams) {
-            $query->where('menu_status', $searchParams['menu_status']);
+        $builder->when(! empty($searchParams['menu_status']), function (Builder $builder) use ($searchParams): void {
+            $builder->where('menu_status', $searchParams['menu_status']);
         });
 
-        return $query;
+        return $builder;
     }
 
     public function getCategoryAttributeValues(Category $category)

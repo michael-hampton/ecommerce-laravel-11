@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
@@ -23,7 +23,7 @@ class CartController extends Controller
         $currency = config('shop.currency');
         $productAttributes = ProductAttributeValue::all();
 
-        return view('front.cart', compact('items', 'currency', 'shippingMethods', 'productAttributes'));
+        return view('front.cart', ['items' => $items, 'currency' => $currency, 'shippingMethods' => $shippingMethods, 'productAttributes' => $productAttributes]);
     }
 
     public function addToCart(Request $request)
@@ -33,7 +33,7 @@ class CartController extends Controller
             $request->name,
             $request->quantity,
             $request->price
-        )->associate('App\Models\Product');
+        )->associate(\App\Models\Product::class);
 
         if ($request->ajax()) {
             return response()->json([
@@ -108,20 +108,20 @@ class CartController extends Controller
 
     public function updateShippingId(int $shippingId) {}
 
-    public function applyCoupon(ApplyCouponCodeRequest $request, ApplyCoupon $applyCoupon)
+    public function applyCoupon(ApplyCouponCodeRequest $applyCouponCodeRequest, ApplyCoupon $applyCoupon)
     {
-        $couponCode = $request->get('coupon_code');
+        $couponCode = $applyCouponCodeRequest->get('coupon_code');
 
         if (! $applyCoupon->handle($couponCode)) {
 
-            if ($request->ajax()) {
+            if ($applyCouponCodeRequest->ajax()) {
                 return response()->json(['error' => true]);
             }
 
             return redirect()->back()->withErrors(['error' => 'Coupon is invalid']);
         }
 
-        if ($request->ajax()) {
+        if ($applyCouponCodeRequest->ajax()) {
             return view('front/partials/cart-sidebar', ['currency' => config('shop.currency')]);
         }
 

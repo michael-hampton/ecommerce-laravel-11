@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Actions\Category;
 
@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class UpdateCategory
 {
-    public function __construct(private ICategoryRepository $repository) {}
+    public function __construct(private ICategoryRepository $categoryRepository) {}
 
     private function saveAttributes($attributes, Category $category): void
     {
@@ -31,7 +31,7 @@ class UpdateCategory
 
     public function handle(array $data, int $id)
     {
-        $category = $this->repository->getById($id);
+        $category = $this->categoryRepository->getById($id);
         $data['slug'] = Str::slug($data['name']);
 
         if (empty($data['parent_id'])) {
@@ -59,6 +59,6 @@ class UpdateCategory
             unset($data['attributes']);
         }
 
-        return $this->repository->update($id, $data);
+        return $this->categoryRepository->update($id, $data);
     }
 }

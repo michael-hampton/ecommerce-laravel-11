@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -16,8 +16,10 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *

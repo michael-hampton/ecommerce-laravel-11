@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
@@ -23,13 +23,13 @@ class MessageController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index(SearchRequest $request): JsonResponse
+    public function index(SearchRequest $searchRequest): JsonResponse
     {
         $messages = $this->messageRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText')]
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText')]
         );
 
         return $this->sendPaginatedResponse($messages, MessageResource::collection($messages));
@@ -38,15 +38,15 @@ class MessageController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostReplyRequest $request, CreateComment $createComment): JsonResponse
+    public function store(PostReplyRequest $postReplyRequest, CreateComment $createComment): JsonResponse
     {
-        Log::info($request->hasFile('images'));
+        Log::info($postReplyRequest->hasFile('images'));
 
         $result = $createComment->handle([
             'user_id' => auth('sanctum')->user()->id,
-            'post_id' => $request->integer('postId'),
-            'message' => $request->string('message'),
-            'images' => $request->file('images'),
+            'post_id' => $postReplyRequest->integer('postId'),
+            'message' => $postReplyRequest->string('message'),
+            'images' => $postReplyRequest->file('images'),
         ]);
 
         if (! $result) {

@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
@@ -18,7 +18,7 @@ class SellerController extends Controller
 
     public function index(int $sellerId)
     {
-        $seller = User::with(['reviews', 'reviews.replies'])->findOrFail($sellerId);
+        User::with(['reviews', 'reviews.replies'])->findOrFail($sellerId);
 
         $profile = Profile::where('user_id', $sellerId)->first();
 
@@ -26,7 +26,7 @@ class SellerController extends Controller
 
         $sellerProducts = $this->productRepository->getPaginated(10, 'created_at', 'desc', ['seller_id' => auth()->id()]);
 
-        return view('front.seller.index', compact('seller', 'profile', 'sellerProducts', 'currency'));
+        return view('front.seller.index', ['seller' => $seller, 'profile' => $profile, 'sellerProducts' => $sellerProducts, 'currency' => $currency]);
     }
 
     public function store(Request $request, int $sellerId)
