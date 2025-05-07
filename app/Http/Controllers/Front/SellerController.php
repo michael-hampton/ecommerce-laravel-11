@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use App\Models\User;
+use App\Notifications\FeedbackReceived;
 use App\Repositories\Interfaces\IProductRepository;
 use Auth;
 use Illuminate\Http\Request;
@@ -35,11 +36,13 @@ class SellerController extends Controller
         }
 
         $seller = User::whereId($sellerId)->first();
-        $seller->reviews()->create([
+        $review = $seller->reviews()->create([
             'comment' => $request->input('review'),
             'rating' => $request->input('rating'),
             'user_id' => auth()->user()->id,
         ]);
+
+        $seller->notify(new FeedbackReceived($review));
 
         return redirect()->back()->with('message', 'Review was added successfully!');
     }

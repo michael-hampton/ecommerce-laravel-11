@@ -499,6 +499,7 @@ class Cart
 
     public function getStoredItems()
     {
+
         $stored = $this->getConnection()->table($this->getTableName())
             ->where('instance', $this->currentInstance())->get();
 
@@ -508,6 +509,8 @@ class Cart
             $storedContent = unserialize(data_get($cartItem, 'content'));
 
             foreach ($storedContent as $cartItemRow) {
+
+                $cartItemRow->identifier = $cartItem->identifier;
 
                 $wishlistProducts[] = $cartItemRow;
             }

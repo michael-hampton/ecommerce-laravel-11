@@ -106,6 +106,7 @@
                                 <div class="fs-sm">{{$seller->reviews()->count()}}</div>
                             </div>
                         </div>
+
                         <div class="col-sm-8">
 
                             <!-- Rating breakdown by quantity -->
@@ -173,6 +174,42 @@
                             </div>
                         </div>
 
+                        <form name="customer-review-form"
+                            action="{{route('storeSellerReview', ['sellerId' => $seller->id])}}" method="post">
+                            @csrf
+                            @if(Session::has('message'))
+                                <div class="alert alert-success">{{Session::get('message')}}</div>
+                            @endif
+                            <h5>Be the first to review “{{$seller->name}}”</h5>
+                            <p>Your email address will not be published. Required fields are marked *</p>
+                            <div class="select-star-rating">
+                                <label>Your rating *</label>
+                                <span class="star-rating">
+                                    @for ($x = 0; $x < 5; $x++)
+                                        <i class="fa fa-star"></i>
+                                    @endfor
+                                </span>
+                                <input type="hidden" name="rating" id="form-input-rating" value="" />
+                                @error('rating') <span class="text-danger">{{$message}}</span>@enderror
+                            </div>
+                            <div class="mb-4">
+                                <textarea id="form-input-review" name="review" class="form-control form-control_gray"
+                                    placeholder="Your Review" cols="30" rows="8"></textarea>
+                                @error('review') <span class="text-danger">{{$message}}</span>@enderror
+                            </div>
+                            <input type="hidden" name="sellerId" value="{{$seller->id}}">
+                            <div class="form-check mb-4">
+                                <input class="form-check-input form-check-input_fill" type="checkbox" value=""
+                                    id="remember_checkbox">
+                                <label class="form-check-label" for="remember_checkbox">
+                                    Save my name, email, and website in this browser for the next time I comment.
+                                </label>
+                            </div>
+                            <div class="form-action">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+
                         @foreach($seller->reviews as $review)
                             <div class="border-bottom py-3 mb-3">
                                 <div class="d-flex align-items-center mb-3">
@@ -195,8 +232,9 @@
                                 <p class="fs-sm">{{$review->comment}}</p>
 
                                 @if(!empty($review->replies))
-                                <img class="ms-4" style="width:100px" loading="lazy"
-                                src="{{ asset('images/sellers') }}/{{ $profile->profile_picture }}" alt="" />{{ $review->replies->customer->name }} Replied {{ $review->replies->comment }}
+                                    <img class="ms-4" style="width:100px" loading="lazy"
+                                        src="{{ asset('images/sellers') }}/{{ $profile->profile_picture }}"
+                                        alt="" />{{ $review->replies->customer->name }} Replied {{ $review->replies->comment }}
                                 @endif
 
                                 <div class="nav align-items-center">

@@ -9,8 +9,10 @@ use App\Models\Coupon;
 use App\Models\DeliveryMethod;
 use App\Models\OrderItem;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\WithdrawalEnum;
 use App\Models\WithdrawalTypeEnum;
+use App\Notifications\ProductInWishlistSold;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
@@ -24,7 +26,9 @@ use Illuminate\Support\Facades\Session;
 
 class CreateOrder
 {
-    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository) {}
+    public function __construct(private IOrderRepository $repository, private IAddressRepository $addressRepository)
+    {
+    }
 
     public function handle(array $data)
     {
@@ -54,14 +58,14 @@ class CreateOrder
 
             $order = $this->repository->create($orderData);
 
-            if (! $order) {
+            if (!$order) {
                 DB::rollBack();
             }
 
             $groupBySeller = [];
 
             foreach ($cartItems as $item) {
-                if (! isset($groupBySeller[$item->model->seller_id])) {
+                if (!isset($groupBySeller[$item->model->seller_id])) {
                     $groupBySeller[$item->model->seller_id] = 1;
 
                     continue;
@@ -81,10 +85,10 @@ class CreateOrder
 
                 $discount = 0;
 
-                if (! empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
+                if (!empty($coupon) && $coupon->seller_id === $item->model->seller_id) {
                     if ($groupBySeller[$item->model->seller_id] === 1) {
                         $discount = $coupon->value;
-                    } elseif (Session::has('coupon') && ! empty(Session::get('coupon')['matched'])) {
+                    } elseif (Session::has('coupon') && !empty(Session::get('coupon')['matched'])) {
                         $matched = Session::get('coupon')['matched'];
                         $discount = in_array($item->id, $matched) ? $coupon->value : 0;
                     } else {
@@ -99,9 +103,9 @@ class CreateOrder
                     'price' => $item->price,
                     'seller_id' => $item->model->seller_id,
                     'order_id' => $order->id,
-                    'shipping_id' => ! empty($deliveryMethod) ? $deliveryMethod->id : null,
+                    'shipping_id' => !empty($deliveryMethod) ? $deliveryMethod->id : null,
                     'shipping_price' => round($shippingPrice, 4),
-                    'courier_id' => ! empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
+                    'courier_id' => !empty($deliveryMethod) ? $deliveryMethod->courier_id : null,
                 ];
 
                 if ($discount > 0) {
@@ -119,10 +123,22 @@ class CreateOrder
 
                 $result = OrderItem::create($orderItemData);
 
-                if (! $result) {
+                if (!$result) {
                     DB::rollBack();
                     break;
                 }
+
+                $item->model->decrement('quantity');
+
+                $wishlistItems = collect(Cart::instance('wishlist')->getStoredItems())->filter(function ($item) {
+                    return in_array($item->id, [(string) $item->id]);
+                });
+
+                $wishlistItems->each(function ($item) {
+                    $user = User::where('email', $item->identifier)->firstOrFail();
+
+                    $user->notify(new ProductInWishlistSold($item->model));
+                });
             }
 
             if ($data['mode'] === 'seller_balance') {
@@ -146,7 +162,7 @@ class CreateOrder
 
                     $result = Transaction::create($transactionData);
 
-                    if (! $result) {
+                    if (!$result) {
                         DB::rollBack();
                     }
                 }
@@ -160,7 +176,6 @@ class CreateOrder
                 ))->updateBalance();
             }
 
-            DB::table('products')->decrement('quantity');
             Cart::deleteStoredCart('cart');
             Cart::instance('cart')->destroy();
             Session::forget('checkout');
@@ -179,6 +194,8 @@ class CreateOrder
 
             return $order;
         } catch (Exception $ex) {
+            echo $ex->getMessage();
+            die;
             DB::rollBack();
         }
     }

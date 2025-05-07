@@ -4,6 +4,7 @@
 
 return [
     'show_multiple_delivery_methods' => false,
+    'admin_url' => 'http://localhost:4200/',
     'currency' => '£',
     'shop_name' => 'ShopPinoy',
     'shipping_calculation' => 'per_item',

@@ -5,12 +5,19 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Notifications\ProductAddedToWishlist;
+use App\Notifications\ProductInWishlistSold;
+use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Cart\Facade\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
 class WishListController extends Controller
 {
+    public function __construct(private IProductRepository $productRepository) {
+    }
+
     public function index()
     {
         $items = Cart::instance('wishlist')->content();
@@ -21,13 +28,15 @@ class WishListController extends Controller
 
     public function addToWishList(Request $request)
     {
-
         Cart::instance('wishlist')->add(
             $request->id,
             $request->name,
             $request->quantity,
             $request->price
         )->associate('App\Models\Product');
+
+        $item = $this->productRepository->setRequiredRelationships(['seller'])->getById($request->id);
+        $item->seller->notify(new ProductAddedToWishlist($item->seller, $item));
 
         if ($request->ajax()) {
             return response()->json([
