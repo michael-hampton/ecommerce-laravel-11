@@ -1,142 +1,255 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
-  <a class="navbar-brand" href="#">Admin Dashboard</a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#navbarNav"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <button
-      type="button"
-      class="btn btn-icon btn-lg fs-xl position-relative border-0 rounded-circle animate-scale cart-count-container"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#notificationScreen"
-      aria-controls="notificationScreen"
-      aria-label="Notifications"
-    >
-      <span
-        class="position-absolute top-0 start-100 badge fs-xs bg-primary rounded-pill mt-1 ms-n4 z-2 count wishlist-amount"
-        style="--cz-badge-padding-y: 0.25em; --cz-badge-padding-x: 0.42em"
-        >1</span
+  <div class="collapse navbar-collapse justify-content-between">
+    <div class="navbar-logo">
+      <button
+        class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarVerticalCollapse"
+        aria-controls="navbarVerticalCollapse"
+        aria-expanded="false"
+        aria-label="Toggle Navigation"
       >
-      <i class="fa fa-bell animate-target me-1"></i>
-    </button>
-    <!-- <ul class="navbar-nav ms-auto">
-      <app-status></app-status>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Profile</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Notifications</a>
-      </li>
-    </ul> -->
-  </div>
-</nav>
-
-<div
-  id="notificationScreen"
-  class="offcanvas offcanvas-end pb-sm-2 px-sm-2"
-  tabindex="-1"
-  aria-labelledby="navbarDropdownNotification"
->
-  <div class="card card-notification shadow-none">
-    <div class="card-header">
-      <div class="row justify-content-between align-items-center">
-        <div class="col-auto">
-          <h6 class="card-header-title mb-0">Notifications</h6>
+        <span class="navbar-toggle-icon"
+          ><span class="toggle-line"></span
+        ></span>
+      </button>
+      <a class="navbar-brand me-1 me-sm-3" href="index.html">
+        <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center">
+            <img src="assets/img/icons/logo.png" alt="shopPinoy" width="27" />
+            <h5 class="logo-text ms-2 d-none d-sm-block">Admin Dashboard</h5>
+          </div>
         </div>
-        <div class="col-auto ps-0 ps-sm-3">
-          <a class="card-link fw-normal" href="#">Mark all as read</a>
-        </div>
-      </div>
+      </a>
     </div>
-    <div
-      class="scrollbar-overlay simplebar-scrollable-y"
-      style="max-height: 19rem"
-      data-simplebar="init"
-    >
-      <div class="simplebar-wrapper" style="margin: 0px">
-        <div class="simplebar-height-auto-observer-wrapper">
-          <div class="simplebar-height-auto-observer"></div>
-        </div>
-        <div class="simplebar-mask">
-          <div class="simplebar-offset" style="right: 0px; bottom: 0px">
-            <div
-              class="simplebar-content-wrapper"
-              tabindex="0"
-              role="region"
-              aria-label="scrollable content"
-              style="height: auto; overflow: hidden scroll"
-            >
-              <div class="simplebar-content" style="padding: 0px">
-                <div class="list-group list-group-flush fw-normal fs-10">
-                  <div
-                    *ngFor="let notification of notifications"
-                    class="list-group-item"
-                  >
-                    <a
-                      class="notification notification-flush notification-unread"
-                      href="#!"
-                    >
-                      <div class="notification-avatar">
-                        <div class="avatar avatar-2xl me-3">
-                          <img
-                            class="rounded-circle"
-                            src="assets/img/team/1-thumb.png"
-                            alt=""
-                          />
-                        </div>
-                      </div>
-                      <div class="notification-body">
-                        <p class="mb-1">{{notification.message}}</p>
-                        <span class="notification-time"
-                          ><span class="me-2" role="img" aria-label="Emoji"
-                            >💬</span
-                          >{{notification.created_at}}</span
-                        >
-                      </div>
-                    </a>
-                  </div>
+    <ul class="navbar-nav navbar-nav-icons flex-row">
+      <!-- <li class="nav-item">
+        <div class="theme-control-toggle fa-icon-wait px-2"><input class="form-check-input ms-0 theme-control-toggle-input" type="checkbox" data-theme-control="phoenixTheme" value="dark" id="themeControlToggle"><label class="mb-0 theme-control-toggle-label theme-control-toggle-light" for="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Switch theme" style="height:32px;width:32px;"><svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></label><label class="mb-0 theme-control-toggle-label theme-control-toggle-dark" for="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Switch theme" style="height:32px;width:32px;"><svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></label></div>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="messages"
+          ><i style="font-size: 24px" class="fa fa-envelope"></i
+        ></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          (click)="openNotifications()"
+          class="nav-link"
+          href="#"
+          style="min-width: 2.25rem"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          data-bs-auto-close="outside"
+          ><span class="d-block" style="height: 20px; width: 20px">
+            <i class="fa fa-bell" style="font-size: 24px"></i></span
+        ></a>
+        <div
+        style="min-width: 400px;"
+          *ngIf="vm$ | async as vm"
+          class="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border navbar-dropdown-caret"
+          id="navbarDropdownNotfication"
+          aria-labelledby="navbarDropdownNotfication"
+        >
+          <div class="card card-notification shadow-none">
+            <div class="card-header">
+              <div class="row justify-content-between align-items-center">
+                <div class="col-auto">
+                  <h6 class="card-header-title mb-0">Notifications</h6>
+                </div>
+                <div class="col-auto ps-0 ps-sm-3">
+                  <a class="card-link fw-normal" href="#">Mark all as read</a>
                 </div>
               </div>
             </div>
+            <div
+              class="scrollbar-overlay simplebar-scrollable-y"
+              style="max-height: 19rem"
+              data-simplebar="init"
+            >
+              <div class="simplebar-wrapper" style="margin: 0px">
+                <div class="simplebar-height-auto-observer-wrapper">
+                  <div class="simplebar-height-auto-observer"></div>
+                </div>
+                <div class="simplebar-mask">
+                  <div class="simplebar-offset" style="right: 0px; bottom: 0px">
+                    <div
+                      class="simplebar-content-wrapper"
+                      tabindex="0"
+                      role="region"
+                      aria-label="scrollable content"
+                      style="height: auto; overflow: hidden scroll"
+                    >
+                      <div class="simplebar-content" style="padding: 0px">
+                        <div
+                          class="list-group list-group-flush fw-normal fs-10"
+                        >
+                          <div
+                            *ngFor="let notification of vm.notifications"
+                            class="list-group-item"
+                          >
+                            <a
+                              class="notification notification-flush notification-unread"
+                              href="#!"
+                            >
+                              <!-- <div class="notification-avatar">
+                                <div class="avatar avatar-2xl me-3">
+                                  <img
+                                    class="rounded-circle"
+                                    [src]="notification.user.image"
+                                    alt=""
+                                  />
+                                </div>
+                              </div> -->
+                              <div
+                                class="notification-body d-flex justify-content-between"
+                                style="font-size: 14px"
+                              >
+                                <p style="width: 64%;" class="mb-1">{{ notification.message }}</p>
+                                <span class="notification-time"
+                                  ><span
+                                    class="me-2"
+                                    role="img"
+                                    aria-label="Emoji"
+                                    >💬</span
+                                  >{{ notification.created_at }}</span
+                                >
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="simplebar-placeholder"
+                  style="width: 318px; height: 514px"
+                ></div>
+              </div>
+              <div
+                class="simplebar-track simplebar-horizontal"
+                style="visibility: hidden"
+              >
+                <div
+                  class="simplebar-scrollbar"
+                  style="width: 0px; display: none"
+                ></div>
+              </div>
+              <div
+                class="simplebar-track simplebar-vertical"
+                style="visibility: visible"
+              >
+                <div
+                  class="simplebar-scrollbar"
+                  style="
+                    height: 179px;
+                    display: block;
+                    transform: translate3d(0px, 0px, 0px);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="card-footer text-center border-top">
+              <a class="card-link d-block" href="app/social/notifications.html"
+                >View all</a
+              >
+            </div>
           </div>
         </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          routerLink="products"
+          class="nav-link"
+          id="navbarDropdownNindeDots"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          data-bs-auto-close="outside"
+          aria-expanded="false"
+          ><i style="font-size: 24px" class="fa fa-barcode"></i
+        ></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link lh-1 pe-0"
+          id="navbarDropdownUser"
+          href="#!"
+          role="button"
+          data-bs-toggle="dropdown"
+          data-bs-auto-close="outside"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <div class="avatar avatar-l">
+            <img
+              style="width: 40px"
+              class="rounded-circle"
+              [src]="user.image"
+              alt=""
+            />
+          </div>
+        </a>
         <div
-          class="simplebar-placeholder"
-          style="width: 318px; height: 514px"
-        ></div>
-      </div>
-      <div
-        class="simplebar-track simplebar-horizontal"
-        style="visibility: hidden"
-      >
-        <div
-          class="simplebar-scrollbar"
-          style="width: 0px; display: none"
-        ></div>
-      </div>
-      <div
-        class="simplebar-track simplebar-vertical"
-        style="visibility: visible"
-      >
-        <div
-          class="simplebar-scrollbar"
-          style="
-            height: 179px;
-            display: block;
-            transform: translate3d(0px, 0px, 0px);
-          "
-        ></div>
-      </div>
-    </div>
-    <div class="card-footer text-center border-top">
-      <a class="card-link d-block" href="app/social/notifications.html"
-        >View all</a
-      >
-    </div>
+          class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border"
+          aria-labelledby="navbarDropdownUser"
+        >
+          <div class="card position-relative border-0">
+            <div class="card-body p-0">
+              <div class="text-center pt-4 pb-3">
+                <div class="avatar avatar-xl">
+                  <img
+                    style="width: 100px"
+                    class="rounded-circle"
+                    [src]="user.image"
+                    alt=""
+                  />
+                </div>
+                <h6 class="mt-2 text-body-emphasis">{{ user.name }}</h6>
+              </div>
+            </div>
+            <div class="overflow-auto scrollbar" style="height: 10rem">
+              <ul class="nav d-flex flex-column mb-2 pb-1">
+                <li class="nav-item">
+                  <a
+                    class="nav-link px-3 d-block"
+                    href="#!"
+                    routerLink="settings/profile"
+                    >Profile</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link px-3 d-block"
+                    href="#!"
+                    routerLink="settings/settings"
+                    >Settings</a
+                  >
+                </li>
+
+                <li class="nav-item">
+                  <a
+                    class="nav-link px-3 d-block"
+                    href="#!"
+                    routerLink="settings/balance"
+                    >Balance</a
+                  >
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link px-3 d-block" href="#!" routerLink="orders"
+                    >My orders</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
-</div>
+</nav>

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Controllers\Front;
 
@@ -8,10 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Models\OrderItem;
 use App\Repositories\Interfaces\IProductRepository;
 use Illuminate\Http\Request;
+use View;
 
 class ReviewController extends Controller
 {
-    public function __construct(private readonly IProductRepository $productRepository) {}
+    public function __construct(private readonly IProductRepository $productRepository)
+    {
+    }
 
     public function store(Request $request, int $productId)
     {
@@ -32,6 +35,10 @@ class ReviewController extends Controller
 
         $product = $orderItem->product;
 
-        return view('user.user-review', ['product' => $product, 'orderItem' => $orderItem]);
+        if (request()->ajax()) {
+            return response()->json(['view' => View::make('front.user.partials.review-form', ['product' => $product, 'orderItem' => $orderItem])->render()]);
+        }
+
+        return view('front.user.user-review', ['product' => $product, 'orderItem' => $orderItem]);
     }
 }

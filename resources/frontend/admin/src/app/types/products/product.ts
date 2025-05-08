@@ -21,6 +21,7 @@ export type Product = {
   seller_id: number
   category?: Category
   brand?: Brand
+  sales?: number;
   has_stock?: boolean,
   attributes?: SelectedAttributes[],
   product_attributes?: ProductAttribute[]

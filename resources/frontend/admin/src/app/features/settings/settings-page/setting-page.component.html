@@ -1,0 +1,27 @@
+<div class="container py-5 bg-white" *ngIf="vm$ | async as vm">
+  <div class="row">
+    <div class="col-lg-3">
+      <app-side-menu
+        (menuItemChanged)="menuItemChanged($event)"
+      ></app-side-menu>
+    </div>
+
+    <div class="col-lg-9">
+      <div *ngIf="page === 'settings'">
+        <app-shop-details></app-shop-details>
+      </div>
+
+      <div *ngIf="page === 'security'"><app-security></app-security></div>
+
+      <div *ngIf="page === 'payments'">
+        <app-account-details></app-account-details>
+      </div>
+
+      <div *ngIf="page === 'billing'"><app-billing></app-billing></div>
+
+      <div *ngIf="page === 'notifications'">
+        <app-notifications></app-notifications>
+      </div>
+    </div>
+  </div>
+</div>

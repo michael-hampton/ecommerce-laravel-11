@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\FaqQuestionController;
 use App\Http\Controllers\Api\FaqTagController;
 use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\Seller\SellerAccountController;
@@ -102,6 +103,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // attribute values
     Route::apiResource('attribute-values', AttributeValueController::class);
+
+     // notificationss
+     Route::apiResource('notifications', NotificationController::class);
 
     // coupons
     Route::apiResource('coupons', CouponController::class);

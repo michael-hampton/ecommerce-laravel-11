@@ -69,7 +69,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
             });
         });
 
-        $query->when(! empty($searchParams['categoryIds']), function (Builder $builder) use ($searchParams): void {
+        $builder->when(! empty($searchParams['categoryIds']), function (Builder $builder) use ($searchParams): void {
             // get children
             $children = Category::whereIn('parent_id', explode(',', (string) $searchParams['categoryIds']))->get();
 

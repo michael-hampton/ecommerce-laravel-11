@@ -610,7 +610,7 @@ class Cart
 
     public function commission()
     {
-        return Helper::calculateCommission($this->subtotal());
+        return Helper::calculateCommission($this->getSubtotal());
 
     }
 
@@ -623,11 +623,13 @@ class Cart
      */
     public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null): string
     {
+        return $this->numberFormat($this->getSubtotal(), $decimals, $decimalPoint, $thousandSeperator);
+    }
+
+    public function getSubtotal(): float {
         $content = $this->getContent();
 
-        $subTotal = $content->reduce(fn ($subTotal, CartItem $cartItem): int|float => $subTotal + ($cartItem->qty * $cartItem->price), 0);
-
-        return $this->numberFormat($subTotal, $decimals, $decimalPoint, $thousandSeperator);
+        return $content->reduce(fn ($subTotal, CartItem $cartItem): int|float => $subTotal + ($cartItem->qty * $cartItem->price), 0);
     }
 
     /**

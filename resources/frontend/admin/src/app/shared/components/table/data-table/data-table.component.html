@@ -6,7 +6,7 @@
     <div class="card-body">
       <data-table-header *ngIf="header" (searchUpdated)="searchChanged($event)"></data-table-header>
       <div class="loading-cover" *ngIf="loading && reloading"></div>
-      <div class="table-responsive">
+      <div class="table-responsive" style="overflow: visible;">
         <table class="table table-condensed table-bordered data-table mt-3">
           <thead>
           <tr>

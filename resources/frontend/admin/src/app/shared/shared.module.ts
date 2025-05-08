@@ -16,16 +16,19 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
 import { ControlValueAccessorDirective } from './directives/control-value-accessor.directive';
 import { DatePassedDirective } from './directives/date-passed.directive';
+import { ProductFormComponent } from './components/product-form/product-form.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
-  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent, CategorySelectorComponent, ControlValueAccessorDirective, DatePassedDirective],
+  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent, CategorySelectorComponent, ControlValueAccessorDirective, DatePassedDirective, ProductFormComponent],
   imports: [
     CommonModule,
     ControlErrorComponent,
     Hide,
     FormsModule,
     PixelConverter,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ModalComponent
   ],
     exports: [
         FormSubmitDirective,
@@ -35,7 +38,8 @@ import { DatePassedDirective } from './directives/date-passed.directive';
         ToastComponent,
         LoaderComponent,
         CategorySelectorComponent,
-        DatePassedDirective
+        DatePassedDirective,
+        ProductFormComponent
     ]
 })
 export class SharedModule { }

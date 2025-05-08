@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -48,6 +46,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+        $user->image = asset('images/users').'/'.$user->image;
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
         return response()->json([

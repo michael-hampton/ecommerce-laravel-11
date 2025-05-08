@@ -109,16 +109,18 @@
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 data-hide-on-body-scroll="data-hide-on-body-scroll"><i class="fa fa-bell"></i></a> --}}
 
-            <button type="button"
-                class="btn btn-icon btn-lg fs-xl position-relative border-0 rounded-circle animate-scale cart-count-container"
-                data-bs-toggle="offcanvas" data-bs-target="#notificationScreen" aria-controls="notificationScreen"
-                aria-label="Notifications">
+            @if(auth()->check())
+                <button type="button"
+                    class="btn btn-icon btn-lg fs-xl position-relative border-0 rounded-circle animate-scale cart-count-container"
+                    data-bs-toggle="offcanvas" data-bs-target="#notificationScreen" aria-controls="notificationScreen"
+                    aria-label="Notifications">
 
-                <span
-                    class="position-absolute top-0 start-100 badge fs-xs bg-primary rounded-pill mt-1 ms-n4 z-2 count wishlist-amount"
-                    style="--cz-badge-padding-y: .25em; --cz-badge-padding-x: .42em">{{auth()->user()->notifications->where('read_at', null)->count()}}</span>
-                <i class="fa fa-bell animate-target me-1"></i>
-            </button>
+                    <span
+                        class="position-absolute top-0 start-100 badge fs-xs bg-primary rounded-pill mt-1 ms-n4 z-2 count wishlist-amount"
+                        style="--cz-badge-padding-y: .25em; --cz-badge-padding-x: .42em">{{auth()->user()->notifications->where('read_at', null)->count()}}</span>
+                    <i class="fa fa-bell animate-target me-1"></i>
+                </button>
+            @endif
 
             <!-- Wishlist button -->
             <button type="button"

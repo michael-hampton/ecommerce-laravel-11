@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Controllers\Front;
 
@@ -91,7 +91,7 @@ class ShopController extends Controller
         $categoryAttributes = [];
         $categoryAttributeValues = [];
 
-        if (! empty($category)) {
+        if (!empty($category)) {
             $categoryAttributes = CategoryAttributes::with('attribute')->where('category_id', $category->id)->get();
 
             $categoryAttributeValues = $this->categoryRepository->getCategoryAttributeValues($category);
@@ -127,44 +127,13 @@ class ShopController extends Controller
         return view('front.shop', $viewData);
     }
 
-    //    public function refreshShopBreadcrumbs(Request $request)
-    //    {
-    //        $brandIds = $request->get('brandId') ?? '';
-    //        $categoryIds = $request->get('categoryId') ?? '';
-    //        $showCategory = count(array_filter(explode(',', $categoryIds))) == 1;
-    //        $showBrand = count(array_filter(explode(',', $brandIds))) == 1 && $showCategory === false;
-    //
-    //        $brands = $this->brandRepository->getAll(null, 'name', 'asc');
-    //        $brandIds = $request->get('brandId') ?? '';
-    //        $brand = $showBrand  ? $brands->where('id', (int)$brandIds)->first() : null;
-    //
-    //        $categories = $this->categoryRepository->getAll(null, 'name', 'asc');
-    //        $categoryIds = $request->get('categoryId') ?? '';
-    //        $category = $showCategory ? $categories->where('id', (int)$categoryIds)->first() : null;
-    //
-    //        $size = (int)$request->get('size', 12) ?? 12;
-    //        $orderBy = $request->get('orderBy') ?? -1;
-    //
-    //        $viewData = [
-    //            'category' => $category,
-    //            'brand' => $brand,
-    //            'brands' => $brands,
-    //            'categories' => $categories,
-    //            'brandId' => $brandIds,
-    //            'categoryId' => $categoryIds,
-    //            'size' => $size,
-    //            'orderBy' => $orderBy,
-    //            'showOptions' => $this->showOptions,
-    //            'sortOptions' => $this->sortOptions,
-    //            'currency' => config('shop.currency')
-    //        ];
-    //
-    //        return view('front.partials.shop-topbar', $viewData);
-    //    }
-
     public function details(string $slug)
     {
-        $product = $this->productRepository->getItemByColumn($slug);
+        $product = $this->productRepository->setRequiredRelationships(['seller'])->getItemByColumn($slug);
+
+        $productAttributes = $product->productAttributes()->with(['productAttributeValue', 'productAttribute'])->get();
+        $attributes = $productAttributes->pluck('productAttribute')->unique();
+        $attributeValues = $productAttributes->pluck('productAttributeValue')->groupBy('attribute_id');
 
         $relatedProducts = $this->productRepository->getCollectionByColumn($product->category_id, 'category_id', 8);
         $otherSellerProducts = $this->productRepository->getPaginated(4, 'created_at', 'desc', ['seller_id' => auth()->id()]);
@@ -174,6 +143,8 @@ class ShopController extends Controller
             'relatedProducts' => $relatedProducts,
             'currency' => config('shop.currency'),
             'otherSellerProducts' => $otherSellerProducts,
+            'attributes' => $attributes,
+            'attributeValues' => $attributeValues
         ]);
     }
 }

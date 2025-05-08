@@ -1,0 +1,64 @@
+<div
+  class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-sm-4 g-lg-3 g-xl-4"
+  *ngIf="vm$ | async as vm"
+>
+  <!-- Product -->
+  <div class="col" *ngFor="let product of vm.data.data">
+    <div
+      class="card h-100 animate-underline hover-effect-opacity hover-effect-scale rounded-4 overflow-hidden"
+    >
+      <div
+        class="card-img-top position-relative bg-body-tertiary overflow-hidden"
+      >
+        <a
+          class="ratio d-block hover-effect-target"
+          style="--cz-aspect-ratio: calc(220 / 304 * 100%)"
+          href="shop-product-marketplace.html"
+        >
+          <img [src]="product.image" alt="Image" style="height: 200px" />
+        </a>
+        <div
+          class="position-absolute top-0 end-0 z-2 hover-effect-target opacity-0 pt-1 pt-sm-0 pe-1 pe-sm-0 mt-2 mt-sm-3 me-2 me-sm-3"
+        >
+          <button
+            type="button"
+            class="btn btn-sm btn-icon btn-light bg-light border-0 rounded-circle animate-pulse"
+            aria-label="Add to wishlist"
+          >
+            <i class="ci-heart animate-target fs-sm"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body p-3">
+        <div class="d-flex min-w-0 justify-content-between gap-2 gap-sm-3 mb-2">
+          <h3 class="nav min-w-0 mb-0">
+            <a
+              class="nav-link text-truncate p-0"
+              href="shop-product-marketplace.html"
+            >
+              <span class="text-truncate animate-target">{{
+                product.name
+              }}</span>
+            </a>
+          </h3>
+          <div class="h6 mb-0">{{ product.regular_price }}</div>
+        </div>
+        <div
+          class="d-flex flex-wrap align-items-center justify-content-between gap-2"
+        >
+        
+          <span *ngIf="product.active" class="badge bg-success">Published</span>
+          <span *ngIf="!product.active" class="badge bg-warning">Draft</span>
+
+          <div class="fs-xs text-body-secondary">{{ product.sales }} sales</div>
+        </div>
+
+        <div class="d-grid gap-2 mt-2">
+          <button class="btn btn-primary btn-block" (click)="edit(product)">Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #editModal></div>

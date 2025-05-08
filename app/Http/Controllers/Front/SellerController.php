@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Controllers\Front;
 
@@ -18,7 +18,7 @@ class SellerController extends Controller
 
     public function index(int $sellerId)
     {
-        User::with(['reviews', 'reviews.replies'])->findOrFail($sellerId);
+        $seller = User::with(['reviews', 'reviews.replies'])->findOrFail($sellerId);
 
         $profile = Profile::where('user_id', $sellerId)->first();
 

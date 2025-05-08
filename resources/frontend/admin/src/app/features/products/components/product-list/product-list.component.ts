@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 import { ModalService } from '../../../../services/modal.service';
 import {ProductStore} from "../../../../store/products/list.store";
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
-import {FormComponent} from '../form/form.component';
+import {ProductFormComponent} from '../../../../shared/components/product-form/product-form.component';
 import { FilterModel} from '../../../../types/filter.model';
 import {GlobalStore} from '../../../../store/global.store';
 
@@ -36,7 +36,7 @@ export class ProductListComponent implements OnInit {
 
   edit(data: any) {
     this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Product'})
+      .openModal(ProductFormComponent, this.entry, data, {modalTitle: 'Edit Product'})
       .subscribe((v) => {
         this._store.reset();
       });
@@ -58,7 +58,7 @@ export class ProductListComponent implements OnInit {
   add(event: Event) {
     event.preventDefault()
     this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Product'})
+      .openModal(ProductFormComponent, this.entry, null, {modalTitle: 'Create Product'})
       .subscribe((v) => {
         this._store.reset();
       });

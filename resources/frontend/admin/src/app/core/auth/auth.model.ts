@@ -19,7 +19,8 @@ export const NewAuthInfo = (data: any): IAuthInfo => {
       email: data.user.email,
       name: data.user.name,
       id: data.user.id,
-      role: data.user.utype
+      role: data.user.utype,
+      image: data.user.image
     },
     accessToken: data.token,
     //refreshToken: data.refreshToken,

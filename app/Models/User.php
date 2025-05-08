@@ -7,7 +7,9 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -69,5 +71,9 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     public function defaultAddress(): ?Address
     {
         return $this->hasOne(Address::class, 'customer_id', 'id')->first();
+    }
+
+    public function profile(): HasOne {
+        return $this->hasOne(Profile::class, 'user_id');
     }
 }

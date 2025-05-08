@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {SettingPageComponent} from '../settings/components/settings-page/setting-page.component';
+import {SettingPageComponent} from '../settings/settings-page/setting-page.component';
 import {ListComponent} from './components/list/list.component';
 import {FormComponent} from './components/form/form.component';
 

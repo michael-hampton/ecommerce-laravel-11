@@ -82,7 +82,6 @@
             <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
                 <ul class="list-unstyled">
                     <li>City: {{$profile->city}}</li>
-                    <li>Phone: {{$profile->phone}}</li>
                     <li>Website: {{$profile->website}}</li>
                 </ul>
 
@@ -174,42 +173,6 @@
                             </div>
                         </div>
 
-                        <form name="customer-review-form"
-                            action="{{route('storeSellerReview', ['sellerId' => $seller->id])}}" method="post">
-                            @csrf
-                            @if(Session::has('message'))
-                                <div class="alert alert-success">{{Session::get('message')}}</div>
-                            @endif
-                            <h5>Be the first to review “{{$seller->name}}”</h5>
-                            <p>Your email address will not be published. Required fields are marked *</p>
-                            <div class="select-star-rating">
-                                <label>Your rating *</label>
-                                <span class="star-rating">
-                                    @for ($x = 0; $x < 5; $x++)
-                                        <i class="fa fa-star"></i>
-                                    @endfor
-                                </span>
-                                <input type="hidden" name="rating" id="form-input-rating" value="" />
-                                @error('rating') <span class="text-danger">{{$message}}</span>@enderror
-                            </div>
-                            <div class="mb-4">
-                                <textarea id="form-input-review" name="review" class="form-control form-control_gray"
-                                    placeholder="Your Review" cols="30" rows="8"></textarea>
-                                @error('review') <span class="text-danger">{{$message}}</span>@enderror
-                            </div>
-                            <input type="hidden" name="sellerId" value="{{$seller->id}}">
-                            <div class="form-check mb-4">
-                                <input class="form-check-input form-check-input_fill" type="checkbox" value=""
-                                    id="remember_checkbox">
-                                <label class="form-check-label" for="remember_checkbox">
-                                    Save my name, email, and website in this browser for the next time I comment.
-                                </label>
-                            </div>
-                            <div class="form-action">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </form>
-
                         @foreach($seller->reviews as $review)
                             <div class="border-bottom py-3 mb-3">
                                 <div class="d-flex align-items-center mb-3">
@@ -259,35 +222,7 @@
             </div>
             <div class="tab-pane fade" id="ask-a-question" role="tabpanel" aria-labelledby="ask-a-question-tab">
                 <section>
-                    <form action="{{route('user.createQuestion')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="sellerId" value="{{$seller->id}}">
-
-                        <div class="mb-4 p-4">
-                            <div class="d-flex gap-3">
-                                <div></div>
-                                <div class="flex-grow-1">
-                                    <label>Title</label>
-                                    <input type="text" name="title" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-4 p-4">
-                            <div class="d-flex gap-3">
-                                <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="User Avatar"
-                                    class="user-avatar">
-                                <div class="flex-grow-1">
-                                    <textarea name="comment" class="form-control comment-input" rows="3"
-                                        placeholder="Write a comment..."></textarea>
-                                </div>
-                            </div>
-
-                            <div class="mt-3 text-end">
-                                <button type="submit" class="btn btn-primary">Post Comment</button>
-                            </div>
-                        </div>
-                    </form>
+                    @include('front.seller.partials.ask-a-question')
 
                 </section>
             </div>
@@ -300,53 +235,3 @@
 
 
 @endsection
-
-@push('scripts')
-    <script>
-        $(function () {
-            StarRating()
-        })
-
-        function StarRating() {
-            let stars = Array.from(document.querySelectorAll('.fa-star'));
-            let user_selected_star = document.querySelector('#form-input-rating');
-
-            stars.forEach(star => {
-                // Mouseover event
-                star.addEventListener('mouseover', (e) => {
-                    stars.forEach((item, current_index) => {
-                        if (current_index <= stars.indexOf(e.target)) {
-                            item.classList.add('text-warning');
-                        } else {
-                            if (!item.classList.contains('is-selected')) {
-                                item.classList.remove('text-warning');
-                            }
-                        }
-                    })
-                })
-
-                // Mouseover event
-                star.addEventListener('mouseleave', (e) => {
-                    stars.forEach((item) => {
-                        if (!item.classList.contains('is-selected')) {
-                            item.classList.remove('text-warning');
-                        }
-                    })
-                })
-
-                // Click event
-                star.addEventListener('click', (e) => {
-                    const selected_index = stars.indexOf(e.target);
-                    user_selected_star.value = selected_index + 1;
-                    stars.forEach((item, current_index) => {
-                        if (current_index <= stars.indexOf(e.target)) {
-                            item.classList.add('is-selected', 'text-warning');
-                        } else {
-                            item.classList.remove('is-selected', 'text-warning');
-                        }
-                    })
-                })
-            })
-        }
-    </script>
-@endpush

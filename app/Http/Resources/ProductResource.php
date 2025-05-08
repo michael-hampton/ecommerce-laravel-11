@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'active' => $this->active,
             'image' => asset('images/products').'/'.$this->image,
-            'images' => collect(explode(',', $this->images))->map(fn (string $image): string => asset('images/products').'/'.$image),
+            'images' => !empty($this->images) ? collect(explode(',', $this->images))->map(fn (string $image): string => asset('images/products').'/'.$image) : '',
             'category' => $this->category,
             'brand' => $this->brand,
             'short_description' => $this->short_description,

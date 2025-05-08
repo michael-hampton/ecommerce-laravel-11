@@ -14,6 +14,9 @@
                             <a class="btn btn-sm btn-danger" href="{{route('orders.ordersCustomer')}}">Back</a>
                         </div>
                     </div>
+
+                    <div id="alertMessage" class="alert alert-success alert-dismissable d-none"></div>
+
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-transaction">
                             <tbody>
@@ -89,16 +92,18 @@
                                         <td class="text-center"></td>
                                         <td class="text-center">{{$item->status == 0 ? 'No' : 'Yes'}}</td>
                                         <td class="text-center">
-                                            @if(empty($item->approved_date))
+                                            @if(empty($item->approved_date) && $order->status !== 'complete')
                                                 <a data-id="{{ $item->id }}" id="reportOrder" class="btn btn-warning btn-lg">Report
                                                     an issue</a>
                                             @else
-                                            <span class="badge bg-success">Approved</span @endif
-                                                @if($order->status === 'delivered') <a
-                                                        href="{{route('createReview', ['orderItemId' => $item->id])}}">
+                                                <span class="badge bg-success">Approved</span>
+                                            @endif
+                                            @if(in_array($order->status, ['complete', 'delivered']))
+                                                <button type="button" class="btn btn-primary review-product"
+                                                    data-id="{{ $item->id }}">
                                                     Review Product
-                                                    </a>
-                                                @endif
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -261,9 +266,43 @@
         </div>
     </div>
 
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Review Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="reviewForm">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @push('scripts')
         <script>
+            const reviewButton = document.getElementsByClassName('review-product')[0]
+
+            reviewButton.addEventListener('click', function (event) {
+                $.ajax({
+                    url: "{{ route('createReview', ['orderItemId' => 'test']) }}".replace('test', event.currentTarget.getAttribute('data-id')),
+                    type: "GET",
+                }).done(function (msg) {
+                    const reviewForm = document.getElementById('reviewForm')
+                    reviewForm.innerHTML = msg.view
+                    var myModal = new bootstrap.Modal(document.getElementById("reviewModal"), {});
+                    myModal.show();
+
+                    setTimeout(() => {
+                        StarRating()
+                        submitForm()
+                    }, 200);
+                });
+            });
+
             const reportButton = document.getElementById('reportOrder')
 
             reportButton.addEventListener('click', (e) => {
@@ -393,5 +432,74 @@
                     });
                 });
             });
+
+            function StarRating() {
+                alert('here')
+                let stars = Array.from(document.querySelectorAll('.fa-star'));
+                let user_selected_star = document.querySelector('#form-input-rating');
+
+                stars.forEach(star => {
+                    // Mouseover event
+                    star.addEventListener('mouseover', (e) => {
+                        stars.forEach((item, current_index) => {
+                            if (current_index <= stars.indexOf(e.target)) {
+                                item.classList.add('text-warning');
+                            } else {
+                                if (!item.classList.contains('is-selected')) {
+                                    item.classList.remove('text-warning');
+                                }
+                            }
+                        })
+                    })
+
+                    // Mouseover event
+                    star.addEventListener('mouseleave', (e) => {
+                        stars.forEach((item) => {
+                            if (!item.classList.contains('is-selected')) {
+                                item.classList.remove('text-warning');
+                            }
+                        })
+                    })
+
+                    // Click event
+                    star.addEventListener('click', (e) => {
+                        const selected_index = stars.indexOf(e.target);
+                        user_selected_star.value = selected_index + 1;
+                        stars.forEach((item, current_index) => {
+                            if (current_index <= stars.indexOf(e.target)) {
+                                item.classList.add('is-selected', 'text-warning');
+                            } else {
+                                item.classList.remove('is-selected', 'text-warning');
+                            }
+                        })
+                    })
+                })
+            }
+
+            function submitForm() {
+                const reviewForm = document.querySelector('[name="customer-review-form"]')
+
+                reviewForm.addEventListener('submit', (event) => {
+                    event.preventDefault()
+                    const action = event.currentTarget.getAttribute('action')
+
+                    $.ajax({
+                        url: action,
+                        type: "POST",
+                        data: {
+                            review: document.querySelector('[name="review"]').value,
+                            rating: document.querySelector('#form-input-rating').value,
+                            _token: "{{ csrf_token() }}"
+                        },
+                    }).done(function (msg) {
+                        const successMessage = document.getElementById('alertMessage')
+                        successMessage.innerHTML = 'Review was added successfully. Thankyou'
+                        successMessage.classList.remove('d-none')
+                        var myModalEl = document.getElementById('reviewModal');
+                        var modal = bootstrap.Modal.getInstance(myModalEl)
+                        modal.hide();
+                    });
+                })
+            }
         </script>
     @endpush

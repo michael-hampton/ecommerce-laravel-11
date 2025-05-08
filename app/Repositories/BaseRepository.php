@@ -131,10 +131,10 @@ class BaseRepository implements IBaseRepository
      * @param  string  $column  column to search
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getCollectionByColumn(string $term, string $column = 'slug', int $limit = 0)
+    public function getCollectionByColumn(string|int $term, string $column = 'slug', int $limit = 0)
     {
         $query = $this->model
-            // ->with($this->requiredRelationships)
+             ->with($this->requiredRelationships)
             ->where($column, '=', $term);
 
         if ($limit > 0) {

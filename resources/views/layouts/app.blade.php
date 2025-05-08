@@ -94,51 +94,54 @@
                     </div>
                 </div>
             </div>
-            <div class="scrollbar-overlay simplebar-scrollable-y" style="max-height:19rem" data-simplebar="init">
-                <div class="simplebar-wrapper" style="margin: 0px;">
-                    <div class="simplebar-height-auto-observer-wrapper">
-                        <div class="simplebar-height-auto-observer"></div>
-                    </div>
-                    <div class="simplebar-mask">
-                        <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                            <div class="simplebar-content-wrapper" tabindex="0" role="region"
-                                aria-label="scrollable content" style="height: auto; overflow: hidden scroll;">
-                                <div class="simplebar-content" style="padding: 0px;">
-                                    <div class="list-group list-group-flush fw-normal fs-10">
-                                        @foreach (auth()->user()->notifications as $notification )
-                                             <div class="list-group-item">
-                                            <a class="notification notification-flush notification-unread" href="#!">
-                                                <div class="notification-avatar">
-                                                    <div class="avatar avatar-2xl me-3">
-                                                        <img class="rounded-circle" src="assets/img/team/1-thumb.png"
-                                                            alt="">
-                                                    </div>
+
+            @if(auth()->check() && auth()->user()->notifications->count() > 0)
+                <div class="scrollbar-overlay simplebar-scrollable-y" style="max-height:19rem" data-simplebar="init">
+                    <div class="simplebar-wrapper" style="margin: 0px;">
+                        <div class="simplebar-height-auto-observer-wrapper">
+                            <div class="simplebar-height-auto-observer"></div>
+                        </div>
+                        <div class="simplebar-mask">
+                            <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                <div class="simplebar-content-wrapper" tabindex="0" role="region"
+                                    aria-label="scrollable content" style="height: auto; overflow: hidden scroll;">
+                                    <div class="simplebar-content" style="padding: 0px;">
+                                        <div class="list-group list-group-flush fw-normal fs-10">
+                                            @foreach (auth()->user()->notifications as $notification)
+                                                <div class="list-group-item">
+                                                    <a class="notification notification-flush notification-unread" href="#!">
+                                                        <div class="notification-avatar">
+                                                            <div class="avatar avatar-2xl me-3">
+                                                                <img class="rounded-circle" src="assets/img/team/1-thumb.png"
+                                                                    alt="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="notification-body">
+                                                            <p class="mb-1">{!! $notification->data['message'] !!}</p>
+                                                            <span class="notification-time"><span class="me-2" role="img"
+                                                                    aria-label="Emoji">💬</span>{{$notification->created_at->diffForHumans()}}</span>
+                                                        </div>
+                                                    </a>
                                                 </div>
-                                                <div class="notification-body">
-                                                    <p class="mb-1">{!! $notification->data['message'] !!}</p>
-                                                    <span class="notification-time"><span class="me-2" role="img"
-                                                            aria-label="Emoji">💬</span>{{$notification->created_at->diffForHumans()}}</span>
-                                                </div>
-                                            </a>
+                                            @endforeach
+
+
                                         </div>
-                                        @endforeach
-                                       
-                                       
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="simplebar-placeholder" style="width: 318px; height: 514px;"></div>
                     </div>
-                    <div class="simplebar-placeholder" style="width: 318px; height: 514px;"></div>
+                    <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+                        <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
+                    </div>
+                    <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+                        <div class="simplebar-scrollbar"
+                            style="height: 179px; display: block; transform: translate3d(0px, 0px, 0px);"></div>
+                    </div>
                 </div>
-                <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                    <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
-                </div>
-                <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
-                    <div class="simplebar-scrollbar"
-                        style="height: 179px; display: block; transform: translate3d(0px, 0px, 0px);"></div>
-                </div>
-            </div>
+            @endif
             <div class="card-footer text-center border-top"><a class="card-link d-block"
                     href="app/social/notifications.html">View all</a></div>
         </div>

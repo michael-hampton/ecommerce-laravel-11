@@ -30,7 +30,7 @@ class OrderRepository extends BaseRepository implements IOrderRepository
             });
         });
 
-        $query->when(! empty($searchParams['customer_id']), function (Builder $builder) use ($searchParams): void {
+        $builder->when(! empty($searchParams['customer_id']), function (Builder $builder) use ($searchParams): void {
             $builder->where('customer_id', $searchParams['customer_id']);
         });
 
