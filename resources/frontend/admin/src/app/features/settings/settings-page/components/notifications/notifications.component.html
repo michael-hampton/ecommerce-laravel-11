@@ -1,65 +1,21 @@
-<form [formGroup]="form">
+<form [formGroup]="form" *ngIf="vm$ | async as vm">
   <div class="vstack gap-4 pt-sm-1">
+    @for (option of vm.notification_types; track option.id) {
     <div class="form-check form-switch mb-0">
       <input
         type="checkbox"
         class="form-check-input"
         id="product-sold"
         checked=""
-        formControlName="product_added_to_wishlist"
+        [formControlName]="option.id"
       />
       <label class="form-check-label ps-2" for="product-sold">
-        <span class="d-block h6 mb-2">Product added to wishlist</span>
-        <span class="fs-sm"
-          >Send a notification when someone added your product to their
-          wishlist.</span
-        >
+        <span class="d-block h6 mb-2">{{ option.name }}</span>
+        <span class="fs-sm">{{ option.description }}</span>
       </label>
     </div>
-    <div class="form-check form-switch mb-0">
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="product-update"
-        checked=""
-        formControlName="product_in_wishlist_sold"
-      />
-      <label class="form-check-label ps-2" for="product-update">
-        <span class="d-block h6 mb-2"
-          >Notification when item in your wishlist is sold</span
-        >
-        <span class="fs-sm"
-          >Notification when item in your wishlist is sold</span
-        >
-      </label>
-    </div>
-    <div class="form-check form-switch mb-0">
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="surveys"
-        formControlName="product_in_wishlist_reduced"
-      />
-      <label class="form-check-label ps-2" for="surveys">
-        <span class="d-block h6 mb-2">Product in wishlist is reduced</span>
-        <span class="fs-sm"
-          >Notification when the price on a product in your wishlist is
-          reduced</span
-        >
-      </label>
-    </div>
-    <div class="form-check form-switch mb-0">
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="product-review"
-        checked=""
-        formControlName="feedback_received"
-      />
-      <label class="form-check-label ps-2" for="product-review">
-        <span class="d-block h6 mb-2">Notification when feedback received</span>
-        <span class="fs-sm">Notification when someone leaves you a review</span>
-      </label>
-    </div>
+    }
   </div>
+
+  <button type="submit" class="btn btn-primary mt-5" (click)="submitForm()">Save Preferences</button>
 </form>

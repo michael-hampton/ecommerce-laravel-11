@@ -19,4 +19,12 @@ export class NotificationApi {
   getData(filter: FilterModel): Observable<any>{
     return this.baseHttpClient.get(filter, MODULE);
   }
+
+  getTypes(): Observable<any>{
+    return this.httpClient.get(`${environment.apiUrl}/notification-types`);
+  }
+
+  saveNotifications(payload: any) {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}`, payload)
+  }
 }

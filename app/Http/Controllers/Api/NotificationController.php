@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Actions\Seller\SaveUserNotifications;
 use App\Http\Resources\NotificationResource;
+use App\Models\NotificationType;
 use Illuminate\Http\Request;
 
-class NotificationController extends Controller
+class NotificationController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -21,9 +22,11 @@ class NotificationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\SaveUserNotifications $request, SaveUserNotifications $saveUserNotifications)
     {
-        //
+        $result = $saveUserNotifications->handle(array_merge($request->all(), ['user_id' => auth('sanctum')->user()->id]));
+
+        return $this->success($result, 'notification saved successfully');
     }
 
     /**
@@ -48,5 +51,10 @@ class NotificationController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getTypes() {
+        $types = NotificationType::all();
+        return response()->json($types);
     }
 }

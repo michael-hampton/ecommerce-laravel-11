@@ -14,6 +14,8 @@ import { Withdrawal } from '../../types/seller/withdrawal';
 import { Billing } from '../../types/seller/billing';
 import { pipe, switchMap } from 'rxjs';
 import { Review } from '../../types/seller/review';
+import { Type } from '../../types/notifications/type';
+import { NotificationApi } from '../../apis/notification.api';
 
 export interface ProfileFormState {
   imagePreview: string;
@@ -26,7 +28,8 @@ export interface ProfileFormState {
   withdrawals: Withdrawal[],
   billing: Billing,
   loading: boolean,
-  reviews: Review[]
+  reviews: Review[],
+  notification_types: Type[]
 }
 
 const defaultState: ProfileFormState = {
@@ -40,12 +43,13 @@ const defaultState: ProfileFormState = {
   withdrawals: [],
   billing: {} as Billing,
   loading: false,
-  reviews: []
+  reviews: [],
+  notification_types: []
 };
 
 @Injectable()
 export class ProfileStore extends ComponentStore<ProfileFormState> {
-  constructor(private _api: SellerApi, private _globalStore: GlobalStore) {
+  constructor(private _api: SellerApi, private _notificationApi: NotificationApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
 
@@ -62,7 +66,8 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     withdrawals: state.withdrawals,
     loading: state.loading,
     reviews: state.reviews,
-    card_details: state.card_details
+    card_details: state.card_details,
+    notification_types: state.notification_types
   }))
 
   saveData = (payload: Partial<Seller>) => {
@@ -214,6 +219,20 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
     )
   }
 
+  saveNotificationTypes = (payload: Partial<any>) => {
+    return this._notificationApi.saveNotifications(payload).pipe(
+      tap(() => this._globalStore.setLoading(true)),
+      tapResponse({
+        next: (users) => this._globalStore.setSuccess('Saved successfully'),
+        error: (error: HttpErrorResponse) => {
+          this._globalStore.setLoading(false)
+          this._globalStore.setError(UiError(error))
+        },
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
   activateBalance = (payload: Partial<any>) => {
     return this._api.activateBalance(payload).pipe(
       tap(() => this._globalStore.setLoading(true)),
@@ -335,6 +354,17 @@ export class ProfileStore extends ComponentStore<ProfileFormState> {
       tap(() => this.patchState({ loading: true })),
       tapResponse({
         next: (data) => this.patchState({ bank_account_details: data as AccountDetails }),
+        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+        finalize: () => this.patchState({ loading: false }),
+      })
+    )
+  }
+
+  getNotificationTypes() {
+    return this._notificationApi.getTypes().pipe(
+      tap(() => this.patchState({ loading: true })),
+      tapResponse({
+        next: (data) => this.patchState({ notification_types: data as Type[] }),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
         finalize: () => this.patchState({ loading: false }),
       })

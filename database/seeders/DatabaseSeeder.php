@@ -14,16 +14,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(FaqTagsTableSeeder::class);
-        // $this->call(FaqCategories::class);
-        // $this->call(FaqQuestionSeeder::class);
-        // $this->call(AttributeSeeder::class);
-        // $this->call(AttributeValueSeeder::class);
-        // $this->call(CountrySeeder::class);
-        // $this->call(CourierSeeder::class);
-        // $this->call(DeliveryMethodSeeder::class);
-        $this->call(CategorySeeder::class);
+        $this->call(NotificationTypes::class);
         die('here');
+        $this->call(FaqTagsTableSeeder::class);
+
+        $this->call(FaqCategories::class);
+        $this->call(FaqQuestionSeeder::class);
+        $this->call(AttributeSeeder::class);
+        $this->call(AttributeValueSeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(CourierSeeder::class);
+        $this->call(DeliveryMethodSeeder::class);
+        $this->call(CategorySeeder::class);
         $this->call(BrandSeeder::class);
         $this->call(CouponSeeder::class);
         $this->call(ShippingSeeder::class);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications;
 
+use App\Models\NotificationTypeEnum;
 use App\Models\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,6 +31,13 @@ class ProductInWishlistReduced extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
+        $notificationTypes = $notifiable->notifications()->with('notificationType')->get()->keyBy('notificationType.id');
+
+        if (empty($notificationTypes->get(NotificationTypeEnum::ITEM_IN_WISHLIST_REDUCED->value))) {
+            return [];
+        }
+
+
         return ['mail', 'database'];
     }
 

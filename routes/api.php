@@ -106,6 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
      // notificationss
      Route::apiResource('notifications', NotificationController::class);
+     Route::get('notification-types', [NotificationController::class,'getTypes'])->name('notifications.getTypes');
 
     // coupons
     Route::apiResource('coupons', CouponController::class);

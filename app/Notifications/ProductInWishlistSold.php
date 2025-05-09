@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications;
 
+use App\Models\NotificationTypeEnum;
 use App\Models\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,13 +31,20 @@ class ProductInWishlistSold extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
+        $notificationTypes = $notifiable->notifications()->with('notificationType')->get()->keyBy('notificationType.id');
+
+        if (empty($notificationTypes->get(NotificationTypeEnum::ITEM_IN_WISHLIST_SOLD->value))) {
+            return [];
+        }
+
+
         return ['mail', 'database'];
     }
 
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line(new HtmlString('A product in your wishlist <strong>'.$this->product->name.'</strong> was sold to another buyer'))
+            ->line(new HtmlString('A product in your wishlist <strong>' . $this->product->name . '</strong> was sold to another buyer'))
             // ->action('Notification Action', url('/'))
             ->line('Thank you for using our application!');
     }
@@ -44,7 +52,7 @@ class ProductInWishlistSold extends Notification implements ShouldQueue
     public function toDatabase($notifiable): array
     {
         return [
-            'message' => 'A product in your wishlist <strong>'.$this->product->name.'</strong> was sold to another buyer',
+            'message' => 'A product in your wishlist <strong>' . $this->product->name . '</strong> was sold to another buyer',
             // Add any additional data you want to store in the database
         ];
     }
