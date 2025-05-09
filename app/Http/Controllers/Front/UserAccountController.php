@@ -4,6 +4,8 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Actions\Address\CreateAddress;
+use App\Actions\Address\UpdateAddress;
 use App\Actions\Message\CreateMessage;
 use App\Actions\Order\ApproveOrder;
 use App\Actions\Order\UpdateOrder;
@@ -15,12 +17,14 @@ use App\Http\Requests\PostReplyRequest;
 use App\Http\Requests\ReportIssueRequest;
 use App\Http\Requests\StoreCustomerAddressRequest;
 use App\Models\Comment;
+use App\Models\Country;
 use App\Models\OrderItem;
 use App\Models\Post;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
 
+use Illuminate\Support\Facades\View;
 use function auth;
 
 class UserAccountController extends Controller
@@ -100,9 +104,15 @@ class UserAccountController extends Controller
     {
         $addresses = $this->addressRepository->getCollectionByColumn(auth()->id(), 'customer_id');
         $defaultAddress = $addresses->where('is_default', 1)->first();
-        $otherAddress = $addresses->where('is_default', 0)->first();
+        $otherAddresses = $addresses->where('is_default', 0)->all();
+        $countries = Country::orderBy('name', 'asc')->get();
 
-        return view('front.user.account-address', ['addresses' => $addresses, 'defaultAddress' => $defaultAddress, 'otherAddress' => $otherAddress]);
+        return view('front.user.account-address', [
+            'addresses' => $addresses, 
+            'defaultAddress' => $defaultAddress, 
+            'otherAddresses' => $otherAddresses,
+            'countries' => $countries
+        ]);
     }
 
     public function addAddress()
@@ -110,23 +120,13 @@ class UserAccountController extends Controller
         return view('user.account-address-add');
     }
 
-    public function storeAddress(StoreCustomerAddressRequest $storeCustomerAddressRequest)
+    public function storeAddress(StoreCustomerAddressRequest $storeCustomerAddressRequest, CreateAddress $createAddress)
     {
+        $result = $createAddress->handle(array_merge($storeCustomerAddressRequest->all(), ['customer_id' => auth()->id()]));
+        $countries = Country::orderBy('name', 'asc')->get();
+        $view = View::make('front.user.partials.address-list', ['address' => $result, 'countries' => $countries])->render();
 
-        $this->addressRepository->create([
-            'customer_id' => auth()->id(),
-            'name' => $storeCustomerAddressRequest->get('name'),
-            'address1' => $storeCustomerAddressRequest->get('address1'),
-            'address2' => $storeCustomerAddressRequest->get('address2'),
-            'city' => $storeCustomerAddressRequest->get('city'),
-            'zip' => $storeCustomerAddressRequest->get('zip'),
-            'phone' => $storeCustomerAddressRequest->get('phone'),
-            'state' => $storeCustomerAddressRequest->get('state'),
-            'is_default' => empty($storeCustomerAddressRequest->get('isdefault')) ? 0 : 1,
-            'country' => $storeCustomerAddressRequest->get('country') ?? 'United Kingdom',
-        ]);
-
-        return back()->with('success', 'Address added');
+        return response()->json(['result' => $result, 'view' => $view]);
     }
 
     public function editAddress(int $addressId)
@@ -136,22 +136,11 @@ class UserAccountController extends Controller
         return view('front.user.account-address-edit', ['address' => $address]);
     }
 
-    public function updateAddress(StoreCustomerAddressRequest $storeCustomerAddressRequest, int $addressId)
+    public function updateAddress(StoreCustomerAddressRequest $storeCustomerAddressRequest, int $addressId, UpdateAddress $updateAddress)
     {
-        $this->addressRepository->update($addressId, [
-            'customer_id' => auth()->id(),
-            'name' => $storeCustomerAddressRequest->get('name'),
-            'address1' => $storeCustomerAddressRequest->get('address1'),
-            'address2' => $storeCustomerAddressRequest->get('address2'),
-            'city' => $storeCustomerAddressRequest->get('city'),
-            'zip' => $storeCustomerAddressRequest->get('zip'),
-            'phone' => $storeCustomerAddressRequest->get('phone'),
-            'state' => $storeCustomerAddressRequest->get('state'),
-            'is_default' => empty($storeCustomerAddressRequest->get('isdefault')) ? 0 : 1,
-            'country' => $storeCustomerAddressRequest->get('country') ?? 'United Kingdom',
-        ]);
+       $result = $updateAddress->handle($storeCustomerAddressRequest->all(), $addressId);
 
-        return back()->with('success', 'Address updated');
+       return response()->json($result);
     }
 
     public function wishlist()
