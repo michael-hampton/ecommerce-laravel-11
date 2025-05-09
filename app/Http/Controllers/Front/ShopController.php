@@ -48,7 +48,7 @@ class ShopController extends Controller
         $brandIds = $request->get('brandId') ?? '';
         $brand = $showBrand ? $brands->where('id', (int) $brandIds)->first() : null;
 
-        $categories = $this->categoryRepository->setRequiredRelationships(['products'])->getAll(null, 'name', 'asc');
+        $categories = $this->categoryRepository->setRequiredRelationships(['products', 'subcategories'])->getAll(null, 'name', 'asc');
         $categoryIds = $request->get('categoryId') ?? '';
         $category = $showCategory ? $categories->where('id', (int) $categoryIds)->first() : null;
 
@@ -68,7 +68,7 @@ class ShopController extends Controller
             }
         }
 
-        $products = $this->productRepository->getPaginated(
+        $products = $this->productRepository->setRequiredRelationships(['category', 'brand', 'reviews', 'seller'])->getPaginated(
             $size,
             $orderByColumn,
             $orderDir,
@@ -115,6 +115,8 @@ class ShopController extends Controller
             'showOptions' => $this->showOptions,
             'sortOptions' => $this->sortOptions,
             'currency' => config('shop.currency'),
+            'cart' => Cart::instance('cart')->content(),
+            'wishlist' => Cart::instance('wishlist')->content(),
         ];
 
         if ($request->ajax()) {

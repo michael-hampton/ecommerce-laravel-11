@@ -1,25 +1,67 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Coupons" (reload)="reload()"
-             [sortBy]="vm.filter?.sortBy" [sortDir]="vm.filter?.sortDir"
-             [itemCount]="vm.data?.total" [items]="vm.data?.data"
-             (changePage)="pageChanged($event)" [page]="vm.filter?.page">
-
-    <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
-    <data-table-column header="Code" property="code" [sortable]="true"></data-table-column>
-    <data-table-column header="Type" property="type" [sortable]="true"></data-table-column>
+  <app-table
+    (addButton)="add($event)"
+    [indexColumn]="false"
+    headerTitle="Coupons"
+    (reload)="reload()"
+    [sortBy]="vm.filter?.sortBy"
+    [sortDir]="vm.filter?.sortDir"
+    [itemCount]="vm.data?.total"
+    [items]="vm.data?.data"
+    [searchText]="vm.filter?.searchText"
+    (changePage)="pageChanged($event)"
+    [page]="vm.filter?.page"
+  >
+    <data-table-column
+      header="#"
+      property="id"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Code"
+      property="code"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Type"
+      property="type"
+      [sortable]="true"
+    ></data-table-column>
     <data-table-column header="Brands" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <div *ngFor="let brand of item.brands" class="d-flex align-items-center justify-content-between">{{brand.name}}</div>
+        <div
+          *ngFor="let brand of item.brands"
+          class="d-flex align-items-center justify-content-between"
+        >
+          {{ brand.name }}
+        </div>
       </ng-template>
     </data-table-column>
     <data-table-column header="Categories" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <div *ngFor="let category of item.categories" class="d-flex align-items-center justify-content-between">{{category.name}}</div>
+        <div
+          *ngFor="let category of item.categories"
+          class="d-flex align-items-center justify-content-between"
+        >
+          {{ category.name }}
+        </div>
       </ng-template>
     </data-table-column>
-    <data-table-column header="Value" property="value" [sortable]="true"></data-table-column>
-    <data-table-column header="Cart Value" property="cart_value" [sortable]="true"></data-table-column>
-    <data-table-column header="Expires At" property="expires_at" [sortable]="true"></data-table-column>
+    <data-table-column
+      header="Value"
+      property="value"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Cart Value"
+      property="cart_value"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Expires At"
+      property="expires_at"
+      [sortable]="true"
+    ></data-table-column>
 
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">

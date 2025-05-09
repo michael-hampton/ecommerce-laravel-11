@@ -5,6 +5,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Notifications\ProductAddedToWishlist;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Cart\Facade\Cart;
@@ -13,7 +14,9 @@ use Illuminate\Support\Facades\View;
 
 class WishListController extends Controller
 {
-    public function __construct(private readonly IProductRepository $productRepository) {}
+    public function __construct(private readonly IProductRepository $productRepository)
+    {
+    }
 
     public function index()
     {
@@ -35,11 +38,15 @@ class WishListController extends Controller
         $item = $this->productRepository->setRequiredRelationships(['seller'])->getById($request->id);
         $item->seller->notify(new ProductAddedToWishlist($item->seller, $item));
 
+        $wishlistItems = Cart::instance('wishlist')->content();
+        $products = Product::whereIn("id", $wishlistItems->pluck("id"))->get()->keyBy('id');
+
         if ($request->ajax()) {
             return response()->json([
                 'count' => Cart::instance('wishlist')->content()->count(),
                 'view' => View::make('front.partials.wishlist-header', [
-                    'items' => Cart::instance('wishlist')->content(),
+                    'items' => $wishlistItems,
+                    'products' => $products,
                     'currency' => config('shop.currency'),
                 ])->render(),
             ]);

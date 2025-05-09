@@ -7,6 +7,7 @@
     [sortBy]="vm.filter?.sortBy"
     [sortDir]="vm.filter?.sortDir"
     [itemCount]="vm.data?.total"
+    [searchText]="vm.filter?.searchText"
     [items]="vm.data?.data"
     (changePage)="pageChanged($event)"
     [page]="vm.filter?.page"

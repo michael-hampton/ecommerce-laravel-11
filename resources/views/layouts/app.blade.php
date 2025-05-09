@@ -65,10 +65,18 @@
         /*}*/
     </style>
 
+    <?php 
+    $items = \App\Services\Cart\Facade\Cart::instance('wishlist')->content(); 
+    $products = App\Models\Product::whereIn("id", $items->pluck("id"))->get()->keyBy('id');
+
+    $cartItems = \App\Services\Cart\Facade\Cart::instance('cart')->content(); 
+    $cartProducts = App\Models\Product::whereIn("id", $cartItems->pluck("id"))->get()->keyBy('id');
+    ?>
+
     <!-- Wishlist cart offcanvas -->
     <div class="offcanvas offcanvas-end pb-sm-2 px-sm-2" id="wishlist" tabindex="-1" aria-labelledby="shoppingCartLabel"
         style="width: 500px">
-        @include('front.partials.wishlist-header', ['items' => \App\Services\Cart\Facade\Cart::instance('wishlist')->content()])
+        @include('front.partials.wishlist-header', ['items' => $items, 'products' => $products])
 
 
     </div>
@@ -77,7 +85,7 @@
     <div class="offcanvas offcanvas-end pb-sm-2 px-sm-2" id="shoppingCart" tabindex="-1"
         aria-labelledby="shoppingCartLabel" style="width: 500px">
 
-        @include('front.partials.cart-header', ['items' => \App\Services\Cart\Facade\Cart::instance('cart')->content()])
+        @include('front.partials.cart-header', ['items' => $cartItems, 'products' => $cartProducts])
 
     </div>
 

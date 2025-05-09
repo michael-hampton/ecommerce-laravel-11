@@ -24,6 +24,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
             })
             ->where('quantity', '>', 0)
             ->where('active', true)
+            ->with($this->requiredRelationships)
             ->orderBy('name')
             ->limit(4)
             ->inRandomOrder()
@@ -36,6 +37,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
             ->whereRelation('seller', function (Builder $builder): void {
                 $builder->where('approved', true);
             })->where('quantity', '>', 0)
+            ->with($this->requiredRelationships)
             ->where('active', true)
             ->orderBy('name')
             ->inRandomOrder()

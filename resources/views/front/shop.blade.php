@@ -167,7 +167,7 @@
 
                                 <!-- subcategory -->
                                 @if($category->subcategories->count() > 0)
-                                    @foreach($category->subcategories as $subcategory)
+                                    @foreach($category->subcategories()->with('products')->get() as $subcategory)
                                         <div class="form-check mb-2 ms-5">
                                             <input class="form-check-input" type="checkbox" id="{{$subcategory->name}}"
                                                 value="{{$subcategory->id}}" name="categories" @if(in_array($subcategory->id, explode(',', $categoryId))) checked="checked" @endif>
@@ -178,7 +178,7 @@
                                         </div>
 
                                         @if($subcategory->subcategories->count() > 0)
-                                            @foreach($subcategory->subcategories as $grandparent)
+                                            @foreach($subcategory->subcategories()->with('products')->get() as $grandparent)
                                                 <div class="form-check mb-2" style="margin-left: 70px">
                                                     <input class="form-check-input" type="checkbox" id="{{$grandparent->name}}"
                                                         value="{{$grandparent->id}}" name="categories" @if(in_array($grandparent->id, explode(',', $categoryId))) checked="checked" @endif>

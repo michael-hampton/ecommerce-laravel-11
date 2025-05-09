@@ -30,8 +30,8 @@ class HomeController extends Controller
     public function index()
     {
         $categories = $this->categoryRepository->getAll(null, 'name', 'asc', ['is_featured' => true]);
-        $products = $this->productRepository->getHotDeals();
-        $featuredProducts = $this->productRepository->getFeaturedProducts();
+        $products = $this->productRepository->setRequiredRelationships(['brand', 'category', 'seller', 'reviews'])->getHotDeals();
+        $featuredProducts = $this->productRepository->setRequiredRelationships(['category', 'brand', 'seller', 'reviews'])->getFeaturedProducts();
         $currency = config('shop.currency');
         $slides = $this->slideRepository->getAll(null, 'created_at', 'desc');
 
@@ -41,7 +41,7 @@ class HomeController extends Controller
 
         }
 
-        return view('front/index', ['categories' => $categories, 'products' => $products, 'currency' => $currency, 'featuredProducts' => $featuredProducts, 'slides' => $slides]);
+        return view('front.index', ['categories' => $categories, 'products' => $products, 'currency' => $currency, 'featuredProducts' => $featuredProducts, 'slides' => $slides]);
     }
 
     public function changePassword()

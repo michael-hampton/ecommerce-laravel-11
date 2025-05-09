@@ -4,12 +4,13 @@
     [indexColumn]="false"
     headerTitle="Articles"
     (reload)="reload()"
-    [sortBy]="vm.filter.sortBy"
-    [sortDir]="vm.filter.sortDir"
-    [itemCount]="vm.data.total"
-    [items]="vm.data.data"
+    [sortBy]="vm.filter?.sortBy"
+    [searchText]="vm.filter?.searchText"
+    [sortDir]="vm.filter?.sortDir"
+    [itemCount]="vm.data?.total"
+    [items]="vm.data?.data"
     (changePage)="pageChanged($event)"
-    [page]="vm.filter.page"
+    [page]="vm.filter?.page"
   >
     <data-table-column
       header="#"

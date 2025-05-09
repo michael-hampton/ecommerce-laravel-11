@@ -41,7 +41,7 @@ export class DataTableHeaderComponent {
   }
 
   clearSearch() {
-   //this.filterValue.nativeElement.value = ''
+   this.filterValue.nativeElement.value = ''
     this.dataTable.reloadItems();
   }
 }

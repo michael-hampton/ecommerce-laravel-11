@@ -33,15 +33,15 @@
                             @foreach($items as $item)
                                 <div class="row cart-item mb-3">
                                     <div class="col-md-3">
-                                        <img src="{{asset('images/products/thumbnails')}}/{{$item->model->image}}"
+                                        <img src="{{asset('images/products/thumbnails')}}/{{$products->get($item->id)->image}}"
                                             alt="{{$item->name}}" class="img-fluid rounded">
                                     </div>
                                     <div class="col-md-4">
                                         <h5 class="card-title">{{$item->name}}</h5>
-                                        <p class="text-muted">Category: {{$item->model->category->name}}</p>
-                                        <p class="text-muted">Brand: {{$item->model->brand->name}}</p>
+                                        <p class="text-muted">Category: {{$products->get($item->id)->category->name}}</p>
+                                        <p class="text-muted">Brand: {{$products->get($item->id)->brand->name}}</p>
                                         <ul class="shopping-cart__product-item__options">
-                                            @foreach($item->model->productAttributes as $productAttribute)
+                                            @foreach($products->get($item->id)->productAttributes as $productAttribute)
                                                 <li>{{$productAttribute->productAttribute->name}}
                                                     : {{$productAttribute->productAttributeValue->name}}</li>
                                             @endforeach

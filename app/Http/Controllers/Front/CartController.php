@@ -8,6 +8,7 @@ use App\Actions\Coupon\ApplyCoupon;
 use App\Actions\DeliveryMethod\GetAvailiableDeliveryMethods;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplyCouponCodeRequest;
+use App\Models\Product;
 use App\Models\ProductAttributeValue;
 use App\Services\Cart\Facade\Cart;
 use Illuminate\Http\Request;
@@ -19,11 +20,12 @@ class CartController extends Controller
     public function index(GetAvailiableDeliveryMethods $getAvailiableDeliveryMethods)
     {
         $items = Cart::instance('cart')->content();
+        $products = Product::whereIn("id", $items->pluck("id"))->with(['category', 'brand', 'productAttributes'])->get()->keyBy('id');
         $shippingMethods = $getAvailiableDeliveryMethods->handle($items);
         $currency = config('shop.currency');
         $productAttributes = ProductAttributeValue::all();
 
-        return view('front.cart', ['items' => $items, 'currency' => $currency, 'shippingMethods' => $shippingMethods, 'productAttributes' => $productAttributes]);
+        return view('front.cart', ['items' => $items, 'currency' => $currency, 'shippingMethods' => $shippingMethods, 'productAttributes' => $productAttributes, 'products' => $products]);
     }
 
     public function addToCart(Request $request)
@@ -35,11 +37,16 @@ class CartController extends Controller
             $request->price
         )->associate(\App\Models\Product::class);
 
+        $cart = Cart::instance('cart');
+        $cartProducts = Product::whereIn("id", $$cart->content()->pluck("id"))->get()->keyBy('id');
+
         if ($request->ajax()) {
             return response()->json([
-                'count' => Cart::instance('cart')->content()->count(),
+                'count' => $cart->content()->count(),
                 'view' => View::make('front.partials.cart-header', [
-                    'items' => Cart::instance('cart')->content(),
+                    'items' => $cart->content(),
+                    'products' => $cartProducts,
+                    'total' => $cart->total(),
                     'currency' => config('shop.currency'),
                 ])->render(),
             ]);

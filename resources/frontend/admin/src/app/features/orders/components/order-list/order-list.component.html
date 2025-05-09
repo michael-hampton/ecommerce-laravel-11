@@ -1,53 +1,96 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <app-table [indexColumn]="false" headerTitle="Orders" (reload)="reload()"
-             [sortBy]="vm.filter.sortBy" [sortDir]="vm.filter.sortDir"
-             [itemCount]="vm.data.total" [items]="vm.data.data"
-             (changePage)="pageChanged($event)" [page]="vm.filter.page">
-
-    <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
+  <app-table
+    [indexColumn]="false"
+    headerTitle="Orders"
+    (reload)="reload()"
+    [sortBy]="vm.filter?.sortBy"
+    [sortDir]="vm.filter?.sortDir"
+    [searchText]="vm.filter?.searchText"
+    [itemCount]="vm.data?.total"
+    [items]="vm.data?.data"
+    (changePage)="pageChanged($event)"
+    [page]="vm.filter?.page"
+  >
+    <data-table-column
+      header="#"
+      property="id"
+      [sortable]="true"
+    ></data-table-column>
     <data-table-column header="Customer" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
         <div class="d-flex align-items-center justify-content-between me-3">
-          <img style="width: 100px" src="{{item.customer.image}}" alt="{{item.customer.name}}" class="image">
+          <img
+            style="width: 100px"
+            src="{{ item.customer.image }}"
+            alt="{{ item.customer.name }}"
+            class="image"
+          />
           <div class="">
             <a href="#" class="fw-bold">{{ item.customer.name }}</a>
           </div>
         </div>
       </ng-template>
     </data-table-column>
-<!--    <data-table-column header="Subtotal" property="subtotal" [sortable]="true"></data-table-column>-->
-<!--    <data-table-column header="Shipping" property="shipping" [sortable]="true"></data-table-column>-->
-<!--    <data-table-column header="Commission" property="commission" [sortable]="true"></data-table-column>-->
-<!--    <data-table-column header="Tax" property="tax" [sortable]="true"></data-table-column>-->
-    <data-table-column header="Total" property="total" [sortable]="true"></data-table-column>
+    <!--    <data-table-column header="Subtotal" property="subtotal" [sortable]="true"></data-table-column>-->
+    <!--    <data-table-column header="Shipping" property="shipping" [sortable]="true"></data-table-column>-->
+    <!--    <data-table-column header="Commission" property="commission" [sortable]="true"></data-table-column>-->
+    <!--    <data-table-column header="Tax" property="tax" [sortable]="true"></data-table-column>-->
+    <data-table-column
+      header="Total"
+      property="total"
+      [sortable]="true"
+    ></data-table-column>
     <data-table-column header="Status" property="status" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
         @if(item.status.toLowerCase() === 'complete') {
-           <span class="badge fs-xs text-success bg-success-subtle rounded-pill">Completed</span>
+        <span class="badge fs-xs text-success bg-success-subtle rounded-pill"
+          >Completed</span
+        >
         } @else if (item.status.toLowerCase() === 'ordered') {
-          <span class="badge fs-xs text-info bg-info-subtle rounded-pill">Pending</span>
+        <span class="badge fs-xs text-info bg-info-subtle rounded-pill"
+          >Pending</span
+        >
         } @else if (item.status.toLowerCase() === 'cancelled') {
-          <span class="badge fs-xs text-danger bg-danger-subtle rounded-pill">Canceled</span>
+        <span class="badge fs-xs text-danger bg-danger-subtle rounded-pill"
+          >Canceled</span
+        >
         } @else {
-          <span class="badge fs-xs text-success bg-success-subtle rounded-pill">{{item.status}}</span>
+        <span class="badge fs-xs text-success bg-success-subtle rounded-pill">{{
+          item.status
+        }}</span>
         }
-       
       </ng-template>
     </data-table-column>
-    <data-table-column header="Order Date" property="order_date" [sortable]="true">
+    <data-table-column
+      header="Order Date"
+      property="order_date"
+      [sortable]="true"
+    >
       <ng-template #dataTableCell let-item="item">
-        {{item.order_date | date}}
+        {{ item.order_date | date }}
       </ng-template>
     </data-table-column>
-    <data-table-column header="No of Items" property="number_of_items" [sortable]="true"></data-table-column>
-    <data-table-column header="Delivered Date" property="delivered_date" [sortable]="true">
+    <data-table-column
+      header="No of Items"
+      property="number_of_items"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Delivered Date"
+      property="delivered_date"
+      [sortable]="true"
+    >
       <ng-template #dataTableCell let-item="item">
-        {{item.delivered_date | date}}
+        {{ item.delivered_date | date }}
       </ng-template>
     </data-table-column>
-    <data-table-column header="Cancelled Date" property="cancelled_date" [sortable]="true">
+    <data-table-column
+      header="Cancelled Date"
+      property="cancelled_date"
+      [sortable]="true"
+    >
       <ng-template #dataTableCell let-item="item">
-        {{item.cancelled_date | date}}
+        {{ item.cancelled_date | date }}
       </ng-template>
     </data-table-column>
     <data-table-column header="Action" [sortable]="false">
@@ -82,4 +125,3 @@
     </data-table-column>
   </app-table>
 </ng-container>
-

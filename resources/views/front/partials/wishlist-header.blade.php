@@ -2,7 +2,7 @@
 <div class="offcanvas-header flex-column align-items-start py-3 pt-lg-4">
     <div class="d-flex align-items-center justify-content-between w-100">
         <h4 class="offcanvas-title" id="shoppingCartLabel">Wishlist
-            ({{\App\Services\Cart\Facade\Cart::instance('wishlist')->count()}})</h4>
+            ({{$items->count()}})</h4>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 </div>
@@ -12,10 +12,10 @@
     @foreach($items as $item)
         <!-- Item -->
         <div class="d-flex align-items-center">
-            <a class="flex-sm-shrink-0" href="{{route('shop.product.details', ['slug' => $item->model->slug])}}"
+            <a class="flex-sm-shrink-0" href="{{route('shop.product.details', ['slug' => $products->get($item->id)->slug])}}"
                 style="width: 142px">
                 <div class="bg-body-tertiary rounded overflow-hidden" style="--cz-aspect-ratio: calc(110 / 142 * 100%)">
-                    <img src="{{asset('images/products/thumbnails')}}/{{$item->model->image}}" alt="Thumbnail">
+                    <img src="{{asset('images/products/thumbnails')}}/{{$products->get($item->id)->image}}" alt="Thumbnail">
                 </div>
             </a>
             <div class="w-100 min-w-0 ps-3">
@@ -37,9 +37,5 @@
 
 <!-- Footer -->
 <div class="offcanvas-header flex-column align-items-start">
-    <div class="d-flex align-items-center justify-content-between w-100 mb-3 mb-md-4">
-        <span class="text-light-emphasis">Subtotal:</span>
-        <span class="h6 mb-0">{{\App\Services\Cart\Facade\Cart::instance('wishlist')->total()}}</span>
-    </div>
     <a class="btn btn-lg btn-dark w-100 rounded-pill" href="{{route('wishlist.index')}}">Go to wishlist</a>
 </div>

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\DeliveryMethod;
 
+use App\Models\Product;
+
 class GetAvailiableDeliveryMethods
 {
     /**
@@ -13,14 +15,19 @@ class GetAvailiableDeliveryMethods
 
     public function handle($items)
     {
-        if ($this->isBulk($items)) {
+        $products = Product::whereIn("id", $items->pluck("id"))->get()->keyBy('id');
+
+
+        if ($this->isBulk($products)) {
             return [];
         }
+        
 
-        $availiableMethods = $items->map(function ($item) {
+        $availiableMethods = $items->map(function ($item) use($products) {
+            $product = $products->get($item->id);
             $shipping = $item->getShippingId();
             if (config('shop.show_multiple_delivery_methods') === true) {
-                $shipping->courier->name = $item->model->name.' - '.$shipping->courier->name;
+                $shipping->courier->name = $product->name.' - '.$shipping->courier->name;
             }
 
             return $shipping;
@@ -64,7 +71,7 @@ class GetAvailiableDeliveryMethods
         $bySellers = [];
         $this->shippingSet = [];
         foreach ($items as $item) {
-            $bySellers[$item->model->seller_id][] = $item->model->id;
+            $bySellers[$item->seller_id][] = $item->id;
         }
 
         return count(value: $bySellers) === 1;

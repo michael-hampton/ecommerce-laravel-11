@@ -1,21 +1,47 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Users" (reload)="reload()"
-             [sortBy]="vm.filter?.sortBy" [sortDir]="vm.filter?.sortDir"
-             [itemCount]="vm.data?.total" [items]="vm.data?.data"
-             (changePage)="pageChanged($event)" [page]="vm.filter.page">
-    <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
+  <app-table
+    (addButton)="add($event)"
+    [indexColumn]="false"
+    headerTitle="Users"
+    (reload)="reload()"
+    [sortBy]="vm.filter?.sortBy"
+    [sortDir]="vm.filter?.sortDir"
+    [searchText]="vm.filter?.searchText"
+    [itemCount]="vm.data?.total"
+    [items]="vm.data?.data"
+    (changePage)="pageChanged($event)"
+    [page]="vm.filter?.page"
+  >
+    <data-table-column
+      header="#"
+      property="id"
+      [sortable]="true"
+    ></data-table-column>
     <data-table-column header="Name" property="name" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
         <div class="d-flex align-items-center justify-content-between me-3">
-          <img style="width: 100px;" src="{{item.image}}" alt="{{item.name}}" class="image">
+          <img
+            style="width: 100px"
+            src="{{ item.image }}"
+            alt="{{ item.name }}"
+            class="image"
+          />
           <div class="">
             <a href="#" class="fw-bold">{{ item.name }}</a>
           </div>
         </div>
       </ng-template>
     </data-table-column>
-    <data-table-column header="Email" property="email" [sortable]="true"></data-table-column>
-    <data-table-column header="Mobile" property="mobile" [sortable]="true"></data-table-column>
+    <data-table-column
+      header="Email"
+      property="email"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Mobile"
+      property="mobile"
+      [sortable]="true"
+    ></data-table-column>
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
         <div class="dropdown">

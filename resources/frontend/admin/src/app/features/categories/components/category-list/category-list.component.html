@@ -1,29 +1,74 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <app-table (addButton)="add($event)" [indexColumn]="false" headerTitle="Categories" (reload)="reload()"
-             [sortBy]="vm.filter?.sortBy" [sortDir]="vm.filter?.sortDir"
-             [itemCount]="vm.data?.total" [items]="vm.data?.data"
-             (changePage)="pageChanged($event)" [page]="vm.filter.page">
-    <data-table-column header="#" property="id" [sortable]="true"></data-table-column>
+  <app-table
+    (addButton)="add($event)"
+    [indexColumn]="false"
+    headerTitle="Categories"
+    (reload)="reload()"
+    [sortBy]="vm.filter?.sortBy"
+    [sortDir]="vm.filter?.sortDir"
+    [searchText]="vm.filter?.searchText"
+    [itemCount]="vm.data?.total"
+    [items]="vm.data?.data"
+    (changePage)="pageChanged($event)"
+    [page]="vm.filter?.page"
+  >
+    <data-table-column
+      header="#"
+      property="id"
+      [sortable]="true"
+    ></data-table-column>
     <data-table-column header="Name" property="name" [sortable]="true">
       <ng-template #dataTableCell let-item="item">
         <div class="d-flex align-items-center justify-content-between me-3">
-          <img style="width: 100px" src="{{item.image}}" alt="{{item.name}}" class="image">
+          <img
+            style="width: 100px"
+            src="{{ item.image }}"
+            alt="{{ item.name }}"
+            class="image"
+          />
           <div class="">
             <a href="#" class="fw-bold">{{ item.name }}</a>
           </div>
         </div>
       </ng-template>
     </data-table-column>
-    <data-table-column header="Slug" property="slug" [sortable]="true"></data-table-column>
-    <data-table-column header="Products" property="products" [sortable]="true"></data-table-column>
-    <data-table-column header="Subcategories" property="subcategories" [sortable]="false">
+    <data-table-column
+      header="Slug"
+      property="slug"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Products"
+      property="products"
+      [sortable]="true"
+    ></data-table-column>
+    <data-table-column
+      header="Subcategories"
+      property="subcategories"
+      [sortable]="false"
+    >
       <ng-template #dataTableCell let-item="item">
-        <div *ngFor="let subcategory of item.subcategories" class="d-flex align-items-center justify-content-between">
+        <div
+          *ngFor="let subcategory of item.subcategories"
+          class="d-flex align-items-center justify-content-between"
+        >
           {{ subcategory.name }}
-          <a data-url="#" data-id="{{subcategory.id}}" href="#" target="_blank" class="edit">
+          <a
+            data-url="#"
+            data-id="{{ subcategory.id }}"
+            href="#"
+            target="_blank"
+            class="edit"
+          >
             <i class="fa fa-eye"></i>
           </a>
-          <a data-url="#" data-id="{{subcategory.id}}" href="#" target="_blank" class="delete">
+          <a
+            data-url="#"
+            data-id="{{ subcategory.id }}"
+            href="#"
+            target="_blank"
+            class="delete"
+          >
             <i class="fa fa-trash"></i>
           </a>
         </div>
@@ -81,7 +126,6 @@
     </data-table-column>
   </app-table>
 </ng-container>
-
 
 <div #confirmationModal></div>
 
