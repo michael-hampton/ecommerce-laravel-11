@@ -25,7 +25,7 @@ class MessageController extends ApiController
      */
     public function index(SearchRequest $searchRequest): JsonResponse
     {
-        $messages = $this->messageRepository->getPaginated(
+        $messages = $this->messageRepository->setRequiredRelationships(['comments', 'user'])->getPaginated(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),

@@ -27,7 +27,6 @@ class CategoryResource extends JsonResource
             'slug' => $this->slug,
             'parent_id' => $this->parent_id,
             'attributes' => $this->attributes->pluck('attribute_id')->toArray(),
-            'has_grandchild' => $this->hasGrandchildren(),
             'image' => asset('images/categories').'/'.$this->image,
             'products' => $this->products->count(),
             'subcategories' => $this->subcategories->toArray(),

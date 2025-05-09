@@ -5,5 +5,4 @@ export type Courier = {
   name: string
   active: boolean;
   code: string;
-  countries_active: Country[]
 }

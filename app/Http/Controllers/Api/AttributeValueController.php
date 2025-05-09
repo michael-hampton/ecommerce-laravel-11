@@ -23,7 +23,7 @@ class AttributeValueController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $attributeValues = $this->attributeValueRepository->getPaginated(
+        $attributeValues = $this->attributeValueRepository->setRequiredRelationships(['attribute'])->getPaginated(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),

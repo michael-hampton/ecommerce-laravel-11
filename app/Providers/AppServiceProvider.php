@@ -55,8 +55,10 @@ class AppServiceProvider extends ServiceProvider
      * @var string[]
      */
     private array $repositories = [
-        ICourierRepository::class, CourierRepository::class,
-        IDeliveryMethodRepository::class, DeliveryMethodRepository::class,
+        ICourierRepository::class,
+        CourierRepository::class,
+        IDeliveryMethodRepository::class,
+        DeliveryMethodRepository::class,
         ISellerRepository::class => SellerRepository::class,
         IProductRepository::class => ProductRepository::class,
         IOrderRepository::class => OrderRepository::class,
@@ -82,11 +84,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
+
         foreach ($this->repositories as $interface => $repository) {
             $this->app->bind($interface, $repository);
         }
 
-        $this->app->singleton('Image', fn ($app): Image => new Image);
+        $this->app->singleton('Image', fn($app): Image => new Image);
     }
 
     /**
@@ -94,12 +101,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        VerifyEmail::toMailUsing(fn (object $notifiable, string $url) => (new MailMessage)
+        VerifyEmail::toMailUsing(fn(object $notifiable, string $url) => (new MailMessage)
             ->subject('Verify Email Address')
             ->line('Click the button below to verify your email address.')
             ->action('Verify Email Address', $url));
 
-        ResetPassword::createUrlUsing(fn (User $user, string $token) => url(route('password.reset', [
+        ResetPassword::createUrlUsing(fn(User $user, string $token) => url(route('password.reset', [
             'token' => $token,
             'email' => $user->getEmailForPasswordReset(),
         ], false)));
@@ -111,13 +118,13 @@ class AppServiceProvider extends ServiceProvider
             ], false));
 
             return (new MailMessage)
-                ->subject(config('app.name').': '.__('Reset Password Request'))
+                ->subject(config('app.name') . ': ' . __('Reset Password Request'))
                 ->greeting(__('Hello!'))
                 ->line(__('You are receiving this email because we received a password reset request for your account.'))
                 ->action(__('Reset Password'), $url)
-                ->line(__('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
+                ->line(__('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
                 ->line(__('If you did not request a password reset, no further action is required.'))
-                ->salutation(__('Regards,')."\n".config('app.name').' Team');
+                ->salutation(__('Regards,') . "\n" . config('app.name') . ' Team');
         });
     }
 }

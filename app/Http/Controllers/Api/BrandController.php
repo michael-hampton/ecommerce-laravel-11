@@ -22,7 +22,7 @@ class BrandController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $brands = $this->brandRepository->getPaginated(
+        $brands = $this->brandRepository->setRequiredRelationships(['products'])->getPaginated(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),

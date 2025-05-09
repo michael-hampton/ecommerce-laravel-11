@@ -24,7 +24,7 @@ class OrderController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $orders = $this->orderRepository->getPaginated(
+        $orders = $this->orderRepository->setRequiredRelationships(['customer', 'courier', 'orderItems'])->getPaginated(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),

@@ -27,7 +27,7 @@ class ProductController extends ApiController
      */
     public function index(SearchRequest $searchRequest): JsonResponse
     {
-        $products = $this->productRepository->setRequiredRelationships(['orderItems'])->getPaginated(
+        $products = $this->productRepository->setRequiredRelationships(['orderItems', 'category', 'brand', 'productAttributes'])->getPaginated(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),

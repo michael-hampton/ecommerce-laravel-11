@@ -23,7 +23,7 @@ class CategoryController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $categories = $this->categoryRepository->getPaginated(
+        $categories = $this->categoryRepository->setRequiredRelationships(['products', 'attributes', 'subcategories', 'subcategories.attributes'])->getPaginated(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
