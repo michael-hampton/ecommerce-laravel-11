@@ -1,0 +1,28 @@
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <div
+    class="accordion-item"
+    *ngFor="let item of items; index as i"
+    [class.disabled]="item.disabled"
+  >
+    <h2 class="accordion-header" (click)="item.disabled ? {} : toggleState(i)">
+      <button
+        class="accordion-button"
+        [disabled]="item.disabled"
+        type="button"
+        [class.collapsed]="!expanded.has(i)"
+      >
+        {{ item?.title }}
+      </button>
+    </h2>
+    <div
+      id="flush-collapseOne"
+      class="accordion-collapse"
+
+      [class.collapse]="!expanded.has(i)"
+    >
+      <div class="accordion-body">
+        <ng-container *ngTemplateOutlet="item?.content"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>

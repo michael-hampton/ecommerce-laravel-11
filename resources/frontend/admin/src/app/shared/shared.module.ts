@@ -21,9 +21,29 @@ import { ModalComponent } from './components/modal/modal.component';
 import { UiTabsComponent } from './components/ui-tabs/ui-tabs.component';
 import { UiTabItemComponent } from './components/ui-tab-item/ui-tab-item.component';
 import { UiSideMenuComponent } from './components/ui-side-menu/ui-side-menu.component';
+import { AccordionComponent } from './components/accordion/accordion.component';
+import { AccordionItemComponent } from './components/accordion-item/accordion-item.component';
 
 @NgModule({
-  declarations: [FieldValidationFlagDirective, FormSubmitDirective, DataTableComponent, DataTableHeaderComponent, RowComponent, ColumnComponent, DataTablePaginationComponent, ToastComponent, LoaderComponent, CategorySelectorComponent, ControlValueAccessorDirective, DatePassedDirective, ProductFormComponent, UiTabsComponent, UiTabItemComponent, UiSideMenuComponent],
+  declarations: [
+    FieldValidationFlagDirective, 
+    FormSubmitDirective, 
+    DataTableComponent, 
+    DataTableHeaderComponent, 
+    RowComponent, 
+    ColumnComponent, 
+    DataTablePaginationComponent, 
+    ToastComponent, 
+    LoaderComponent, 
+    CategorySelectorComponent, 
+    ControlValueAccessorDirective,
+    DatePassedDirective, 
+    ProductFormComponent, 
+    UiTabsComponent, 
+    UiTabItemComponent, 
+    UiSideMenuComponent, 
+    AccordionComponent, AccordionItemComponent
+  ],
   imports: [
     CommonModule,
     ControlErrorComponent,
@@ -45,7 +65,9 @@ import { UiSideMenuComponent } from './components/ui-side-menu/ui-side-menu.comp
     ProductFormComponent,
     UiTabsComponent,
     UiTabItemComponent, 
-    UiSideMenuComponent
+    UiSideMenuComponent,
+    AccordionComponent,
+    AccordionItemComponent
   ]
 })
 export class SharedModule { }
