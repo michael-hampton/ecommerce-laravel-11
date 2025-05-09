@@ -1,0 +1,16 @@
+<div class="tab-container">
+  <div class="nav">
+    <div
+      [ngClass]="{ active: tab == activeComponent }"
+      class="nav-item"
+      *ngFor="let tab of tabs"
+    >
+      <span (click)="activateTab(tab)">{{ tab.tabName }}</span>
+    </div>
+  </div>
+
+  <ng-template
+    [ngTemplateOutlet]="activeComponent.templateRef"
+    [ngTemplateOutletContext]="{ content: activeComponent.content }"
+  ></ng-template>
+</div>

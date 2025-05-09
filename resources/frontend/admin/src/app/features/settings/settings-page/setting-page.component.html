@@ -1,27 +1,40 @@
 <div class="container py-5 bg-white" *ngIf="vm$ | async as vm">
-  <div class="row">
-    <div class="col-lg-3">
-      <app-side-menu
-        (menuItemChanged)="menuItemChanged($event)"
-      ></app-side-menu>
-    </div>
+  <app-ui-side-menu>
+    <app-ui-tab-item
+      tabName="Profile"
+      [templateRef]="settings"
+    ></app-ui-tab-item>
+    <app-ui-tab-item
+      tabName="Account Settings"
+      [templateRef]="security"
+    ></app-ui-tab-item>
+    <app-ui-tab-item
+      tabName="Payments"
+      [templateRef]="payments"
+    ></app-ui-tab-item>
+    <app-ui-tab-item
+      tabName="Billing Information"
+      [templateRef]="billing"
+    ></app-ui-tab-item>
+    <app-ui-tab-item
+      tabName="Notifications"
+      [templateRef]="notifications"
+    ></app-ui-tab-item>
+  </app-ui-side-menu>
 
-    <div class="col-lg-9">
-      <div *ngIf="page === 'settings'">
-        <app-shop-details></app-shop-details>
-      </div>
+  <ng-template #settings>
+    <app-shop-details></app-shop-details>
+  </ng-template>
 
-      <div *ngIf="page === 'security'"><app-security></app-security></div>
+  <ng-template #security> <app-security></app-security> </ng-template>
 
-      <div *ngIf="page === 'payments'">
-        <app-account-details></app-account-details>
-      </div>
+  <ng-template #billing> <app-billing></app-billing> </ng-template>
 
-      <div *ngIf="page === 'billing'"><app-billing></app-billing></div>
+  <ng-template #payments>
+    <app-account-details></app-account-details>
+  </ng-template>
 
-      <div *ngIf="page === 'notifications'">
-        <app-notifications></app-notifications>
-      </div>
-    </div>
-  </div>
+  <ng-template #notifications>
+    <app-notifications></app-notifications>
+  </ng-template>
 </div>

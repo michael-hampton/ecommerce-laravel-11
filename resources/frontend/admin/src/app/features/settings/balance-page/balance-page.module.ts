@@ -7,6 +7,7 @@ import { TransactionsComponent } from './components/transactions/transactions.co
 import { WithdrawalsComponent } from './components/withdrawals/withdrawals.component';
 import { BalancePageComponent } from './balance-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from "../../../shared/shared.module";
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     BalancePageRoutingModule,
-    ReactiveFormsModule
-  ]
+    ReactiveFormsModule,
+    SharedModule
+]
 })
 export class BalancePageModule { }

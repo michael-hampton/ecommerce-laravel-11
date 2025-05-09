@@ -10,10 +10,9 @@ import { BankDetailsComponent } from './components/bank-details/bank-details.com
 import { CardDetailsComponent } from './components/card-details/card-details.component';
 import { SecurityComponent } from './components/security/security.component';
 import { ShopDetailsComponent } from './components/shop-details/shop-details.component';
-import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DatePassedDirective } from '../../../shared/directives/date-passed.directive';
 import { SharedModule } from '../../../shared/shared.module';
+import { CoreModule } from "../../../core/core.module";
 
 
 @NgModule({
@@ -21,7 +20,6 @@ import { SharedModule } from '../../../shared/shared.module';
     SettingPageComponent, 
     NotificationsComponent, 
     BillingComponent, 
-    SideMenuComponent, 
     AccountDetailsComponent,
     BankDetailsComponent,
     CardDetailsComponent,
@@ -34,6 +32,7 @@ import { SharedModule } from '../../../shared/shared.module';
     ReactiveFormsModule,
     SharedModule,
     FormsModule,
-  ]
+    CoreModule
+]
 })
 export class SettingsPageModule { }

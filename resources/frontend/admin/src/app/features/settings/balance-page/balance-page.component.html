@@ -1,47 +1,25 @@
 <div class="container py-5 bg-white">
-    <div class="row">
-      <div class="col-lg-3">
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-              <a href="javascript:void()" (click)="menuItemChanged('balance')" class="nav-link link-dark" aria-current="page" [class.active]="page === 'balance'">
-                <svg class="bi me-2" width="16" height="16">
-                  <use xlink:href="#home"></use>
-                </svg>
-                Balance
-              </a>
-            </li>
-            <li>
-              <a class="nav-link link-dark" (click)="menuItemChanged('withdrawals')" [class.active]="page === 'withdrawals'">
-                <svg class="bi me-2" width="16" height="16">
-                  <use xlink:href="#speedometer2"></use>
-                </svg>
-               History
-              </a>
-            </li>
+  <app-ui-side-menu>
+    <app-ui-tab-item
+      tabName="Balance"
+      [templateRef]="balance"
+    ></app-ui-tab-item>
+    <app-ui-tab-item
+      tabName="History"
+      [templateRef]="history"
+    ></app-ui-tab-item>
+    <app-ui-tab-item
+      tabName="Invoices"
+      [templateRef]="invoices"
+    ></app-ui-tab-item>
+  </app-ui-side-menu>
 
-            <li>
-                <a class="nav-link link-dark" (click)="menuItemChanged('invoices')" [class.active]="page === 'invoices'">
-                  <svg class="bi me-2" width="16" height="16">
-                    <use xlink:href="#speedometer2"></use>
-                  </svg>
-                  Invoices
-                </a>
-              </li>
-          </ul>
-      </div>
-  
-      <div class="col-lg-9">
-        <div *ngIf="page === 'balance'">
-          <app-balance></app-balance>
-          <app-withdrawals></app-withdrawals>
-        </div>
-  
-        <div *ngIf="page === 'withdrawals'">
-          <app-transactions></app-transactions>
-        </div>
-  
-        <div *ngIf="page === 'invoices'">Invoices coming soon</div>
-      </div>
-    </div>
-  </div>
-  
+  <ng-template #balance>
+    <app-balance></app-balance>
+    <app-withdrawals></app-withdrawals>
+  </ng-template>
+
+  <ng-template #history> <app-transactions></app-transactions></ng-template>
+
+  <ng-template #invoices> Coming soon </ng-template>
+</div>
