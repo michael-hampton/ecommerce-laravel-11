@@ -1,5 +1,5 @@
 <ul class="dropdown-menu">
-    @foreach(\App\Models\Category::where('active', true)->orderBy('name', 'asc')->where('menu_status', true)->get() as $allCategory)
+    @foreach(\App\Models\Category::where('active', true)->orderBy('name', 'asc')->where('menu_status', true)->where('parent_id', 0)->get() as $allCategory)
         <li><a class="dropdown-item" href="{{route('shop.index', ['categoryId' => $allCategory->id])}}">
                 {{$allCategory->name}}
                 @if($allCategory->subcategories->count() > 0)  &raquo; @endif
