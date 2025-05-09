@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, forwardRef, Inject, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, forwardRef, Inject, Input, Output, ViewChild} from '@angular/core';
 import {DataTableComponent} from '../data-table/data-table.component';
 import {debounceTime, distinctUntilChanged, fromEvent, switchMap} from 'rxjs';
 
@@ -13,6 +13,7 @@ export class DataTableHeaderComponent {
   columnSelectorOpen = false;
   @Output() searchUpdated = new EventEmitter();
   @ViewChild('filterValue') filterValue: ElementRef
+  @Input() searchText: string = ''
 
   ngOnInit() {
     const searchInput = document.getElementById('search') as HTMLInputElement;
@@ -40,7 +41,7 @@ export class DataTableHeaderComponent {
   }
 
   clearSearch() {
-   this.filterValue.nativeElement.value = ''
+   //this.filterValue.nativeElement.value = ''
     this.dataTable.reloadItems();
   }
 }

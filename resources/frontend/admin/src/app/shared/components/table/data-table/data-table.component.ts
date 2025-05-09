@@ -41,6 +41,8 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   @Input() itemCount: number;
 
+   @Input() searchText: string = ''
+
   // UI components:
 
   @ContentChildren(ColumnComponent) columns: QueryList<ColumnComponent>;
