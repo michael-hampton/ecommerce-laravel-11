@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\Product;
+use App\Rules\NumberOfProductImages;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,7 +41,9 @@ class StoreProductRequest extends FormRequest
             'stock_status' => 'required',
             'featured' => 'required',
             'quantity' => 'required',
-            'image' => 'required|mimes:png,jpg,jpeg|max:2048',
+            'image' => ['required', 'mimes:png,jpg,jpeg', 'max:2048'],
+            'images.*' => ['sometimes', 'mimes:png,jpg,jpeg', 'max:2048'],
+            'images' => new NumberOfProductImages
         ];
     }
 }

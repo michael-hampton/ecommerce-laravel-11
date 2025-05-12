@@ -96,6 +96,33 @@ class ProductTest extends TestCase
         $this->assertDatabaseHas('products', $payload);
     }
 
+    public function test_maximum_number_of_allowed_images()
+    {
+        $payload = Product::factory()->make(['seller_id' => $this->seller->id])->toArray();
+        $payload['images'] = [
+            UploadedFile::fake()->image('file1.png', 600, 600),
+            UploadedFile::fake()->image('file1.png', 600, 600),
+            UploadedFile::fake()->image('file1.png', 600, 600),
+            UploadedFile::fake()->image('file1.png', 600, 600),
+            UploadedFile::fake()->image('file1.png', 600, 600),
+            UploadedFile::fake()->image('file1.png', 600, 600)
+        ];
+
+         $this->json('post', 'api/products', $payload)
+            ->assertStatus(422)
+            ->assertJson(
+                [
+                    'success' => false,
+                    'message' => "Validation failed.",
+                    'errors' => [
+                        'images' => [
+                            'You can only upload 5 images'
+                        ],
+                    ]
+                ]
+            );
+    }
+
     public function testUserIsDestroyed()
     {
         $user = Product::factory()->create();
