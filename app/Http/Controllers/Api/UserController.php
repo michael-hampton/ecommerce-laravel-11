@@ -8,6 +8,7 @@ use App\Actions\User\ActivateUser;
 use App\Actions\User\CreateUser;
 use App\Actions\User\DeleteUser;
 use App\Actions\User\UpdateUser;
+use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
@@ -39,7 +40,7 @@ class UserController extends ApiController
     /**
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, CreateUser $createUser)
+    public function store(CreateUserRequest $request, CreateUser $createUser)
     {
         $user = $createUser->handle($request->all());
 

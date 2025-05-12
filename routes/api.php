@@ -77,6 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // couriers
     Route::apiResource('couriers', CourierController::class);
+    Route::delete('/couriers/{id}/active', [CourierController::class, 'toggleActive'])->name('couriers.active');
+
 
     // delivery methods
     // messages
@@ -104,9 +106,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // attribute values
     Route::apiResource('attribute-values', AttributeValueController::class);
 
-     // notificationss
-     Route::apiResource('notifications', NotificationController::class);
-     Route::get('notification-types', [NotificationController::class,'getTypes'])->name('notifications.getTypes');
+    // notificationss
+    Route::apiResource('notifications', NotificationController::class);
+    Route::get('notification-types', [NotificationController::class, 'getTypes'])->name('notifications.getTypes');
 
     // coupons
     Route::apiResource('coupons', CouponController::class);

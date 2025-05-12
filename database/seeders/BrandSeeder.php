@@ -21,7 +21,6 @@ class BrandSeeder extends Seeder
             ['name' => 'Apple', 'slug' => 'apple', 'image' => '1744746051.png'],
             ['name' => 'Barbie', 'slug' => 'barbie', 'image' => '1744746051.png'],
             ['name' => 'Burberry', 'slug' => 'burberry', 'image' => '1744746051.png'],
-            ['name' => 'Converse', 'slug' => 'converse', 'image' => '1744746051.png'],
             ['name' => 'Chicco', 'slug' => 'chicco', 'image' => '1744746051.png'],
             ['name' => 'Calvin Klein', 'slug' => 'calvin-klein', 'image' => '1744746051.png'],
             ['name' => 'Clarks', 'slug' => 'clarks', 'image' => '1744746051.png'],

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('zip')->nullable();
             $table->string('state')->nullable();
-            $table->string('country')->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
             $table->unsignedBigInteger('seller_id');

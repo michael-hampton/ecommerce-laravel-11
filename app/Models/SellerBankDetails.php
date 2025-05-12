@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SellerBankDetails extends Model
 {
+    use HasFactory;
+    
     protected $fillable = [
         'account_name',
         'account_number',
@@ -23,4 +26,9 @@ class SellerBankDetails extends Model
         'card_sort_code',
         'type',
     ];
+
+    public function casts()
+    {
+        return ['card_number' => 'string'];
+    }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('mobile')->unique();
+            $table->string('mobile')->unique()->nullable();
             $table->string('utype')->default('USR')->comment('ADM for Admin User USR For user SUPER For Super Admin');
         });
     }

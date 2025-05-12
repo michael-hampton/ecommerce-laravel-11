@@ -12,7 +12,9 @@ use function auth;
 
 class UpdateOrder
 {
-    public function __construct(private readonly IOrderRepository $orderRepository) {}
+    public function __construct(private readonly IOrderRepository $orderRepository)
+    {
+    }
 
     public function handle(array $data, int $id): Order
     {
@@ -26,7 +28,7 @@ class UpdateOrder
             $orderData['cancelled_date'] = now();
         }
 
-        if (! empty($data['tracking_number'])) {
+        if (!empty($data['tracking_number'])) {
             $orderData['tracking_number'] = $data['tracking_number'];
         }
 
@@ -39,8 +41,12 @@ class UpdateOrder
         if ($data['status'] === 'delivered') {
             $order = $this->orderRepository->getById($id);
             $transaction = $order->transaction->where('seller_id', auth()->id())->first();
-            $transaction->payment_status = $data['status'] === 'delivered' ? 'approved' : 'refunded';
-            $transaction->save();
+
+            if (!empty($transaction)) {
+                $transaction->payment_status = $data['status'] === 'delivered' ? 'approved' : 'refunded';
+                $transaction->save();
+            }
+
         }
 
         $order = $this->orderRepository->getById($id);

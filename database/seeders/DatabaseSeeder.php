@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(NotificationTypes::class);
-        die('here');
         $this->call(FaqTagsTableSeeder::class);
 
         $this->call(FaqCategories::class);

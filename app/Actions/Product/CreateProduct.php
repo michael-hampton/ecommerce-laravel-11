@@ -38,7 +38,7 @@ class CreateProduct extends SaveProduct
         $galleryArr = [];
         $galleryImages = '';
         $counter = 1;
-        if ($data['images']) {
+        if (!empty($data['images'])) {
             $allowedfileExtension = ['jpg', 'png', 'jpeg'];
             $files = $data['images'];
             foreach ($files as $file) {
@@ -58,7 +58,7 @@ class CreateProduct extends SaveProduct
 
         $data['images'] = $galleryImages;
 
-        $bumpDays = $data['bump_days'];
+        $bumpDays = $data['bump_days'] ?? 0;
         unset($data['bump_days']);
 
         $product = $this->productRepository->create($data);

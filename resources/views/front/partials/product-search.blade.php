@@ -20,8 +20,8 @@
                     </h5>
                     <div class="mb-4">
                         <p class="card-text">{{$product->short_description}}</p>
-                        <p class="pc__category">Category: <a href="{{route('shop.index', ['categoryId' => $product->category_id])}}">{{$product->category->name}}</a></p>
-                        <p class="pc__category">Brand: <a href="{{route('shop.index', ['brandId' => $product->brand_id])}}">{{$product->brand->name}}</a> </p>
+                        {{-- <p class="pc__category">Category: <a href="{{route('shop.index', ['categoryId' => $product->category_id])}}">{{$product->category->name}}</a></p>
+                        <p class="pc__category">Brand: <a href="{{route('shop.index', ['brandId' => $product->brand_id])}}">{{$product->brand->name}}</a> </p> --}}
                         <p class="pc__category">Seller: <a
                                 href="{{route('seller.details', ['id' => $product->seller_id])}}">{{$product->seller->name}}</a>
                         </p>

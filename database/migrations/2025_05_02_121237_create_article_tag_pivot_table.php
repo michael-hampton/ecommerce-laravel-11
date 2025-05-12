@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('faq_article_faq_tag', function (Blueprint $table) {
             $table->unsignedBigInteger('faq_article_id');
 
-            $table->foreign('article_id', 'article_id_fk_455948')->references('id')->on('faq_articles')->onDelete('cascade');
+            $table->foreign('faq_article_id', 'article_id_fk_455948')->references('id')->on('faq_articles')->onDelete('cascade');
 
             $table->unsignedBigInteger('faq_tag_id');
 
-            $table->foreign('tag_id', 'tag_id_fk_455948')->references('id')->on('faq_tags')->onDelete('cascade');
+            $table->foreign('faq_tag_id', 'tag_id_fk_455948')->references('id')->on('faq_tags')->onDelete('cascade');
         });
     }
 

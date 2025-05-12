@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('notification_type');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('notification_type_id')->references('id')->on('notification_types');
+            $table->foreign('notification_type')->references('id')->on('notification_types');
             $table->timestamps();
         });
     }

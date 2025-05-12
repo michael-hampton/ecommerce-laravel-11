@@ -15,7 +15,7 @@ class DeliveryMethodSeeder extends Seeder
     {
         $couriers = Courier::all();
 
-        $countryIds = [243, 244, 245, 286, 287, 290, 297, 342, 412, 468];
+        $countryIds = [1, 44, 45, 48, 55, 100, 101, 104, 109, 119, 131, 170, 192, 226];
         $sizes = ['Large' => 3.99, 'Medium' => 2.88, 'Small' => 1.99];
 
         foreach ($countryIds as $country) {

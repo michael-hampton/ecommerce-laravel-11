@@ -5,11 +5,11 @@
 namespace App\Http\Controllers\Api\Seller;
 
 use App\Actions\Seller\SaveBillingInformation;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Models\SellerBillingInformation;
 use Illuminate\Http\Request;
 
-class SellerBillingInformationController extends Controller
+class SellerBillingInformationController extends ApiController
 {
     /**
      * Display a listing of the resource.

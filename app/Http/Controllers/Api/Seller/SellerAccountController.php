@@ -52,7 +52,7 @@ class SellerAccountController extends ApiController
      */
     public function update(Request $request, string $id, UpdateCard $updateCard)
     {
-        $result = $updateCard->handle($request);
+        $result = $updateCard->handle($request, $id);
 
         return $result ? $this->success(CardDetailsResource::make($result), 'Card Updated') : $this->error($result);
     }

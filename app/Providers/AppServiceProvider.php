@@ -55,10 +55,8 @@ class AppServiceProvider extends ServiceProvider
      * @var string[]
      */
     private array $repositories = [
-        ICourierRepository::class,
-        CourierRepository::class,
-        IDeliveryMethodRepository::class,
-        DeliveryMethodRepository::class,
+        ICourierRepository::class => CourierRepository::class,
+        IDeliveryMethodRepository::class => DeliveryMethodRepository::class,
         ISellerRepository::class => SellerRepository::class,
         IProductRepository::class => ProductRepository::class,
         IOrderRepository::class => OrderRepository::class,

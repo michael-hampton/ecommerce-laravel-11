@@ -13,6 +13,7 @@ class WithdrawFunds
     public function handle(array $data): ?SellerBalance
     {
         $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->first();
+
         $affectedRows = SellerBalance::create([
             'balance' => $sellerBalance->balance - $data['amount'],
             'previous_balance' => $sellerBalance->balance,
@@ -33,6 +34,6 @@ class WithdrawFunds
             ]);
         }
 
-        return $sellerBalance->fresh();
+        return SellerBalance::latest('id')->first();
     }
 }

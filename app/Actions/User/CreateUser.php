@@ -26,7 +26,7 @@ class CreateUser
             $data['image'] = $filename;
         }
 
-        $data['active'] = (empty($data['active']) ? 0 : $data['active'] === 'on') ? 1 : 0;
+        $data['active'] = !empty($data['active']) ? 1 : 0;
 
         return $this->userRepository->create($data);
     }

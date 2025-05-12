@@ -70,7 +70,7 @@ class SellerController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id, UpdateSeller $updateSeller): Response
+    public function update(Request $request, string $id, UpdateSeller $updateSeller): JsonResponse
     {
         $result = $updateSeller->handle($request->all(), $id);
 

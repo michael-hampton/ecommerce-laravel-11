@@ -17,7 +17,9 @@ use Illuminate\Http\Request;
 
 class SlideController extends ApiController
 {
-    public function __construct(private readonly ISlideRepository $slideRepository) {}
+    public function __construct(private readonly ISlideRepository $slideRepository)
+    {
+    }
 
     /**
      * @param  Request  $searchRequest
@@ -41,7 +43,7 @@ class SlideController extends ApiController
     {
         $slide = $createSlide->handle($createSlideRequest->all());
 
-        if (! $slide) {
+        if (!$slide) {
             return $this->error('Unable to create Slide');
         }
 
@@ -63,7 +65,7 @@ class SlideController extends ApiController
     {
         $result = $updateSlide->handle($updateSlideRequest->except(['_method']), $id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to update Slide');
         }
 
@@ -77,7 +79,7 @@ class SlideController extends ApiController
     {
         $result = $deleteSlide->handle($id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to delete Slide');
         }
 
@@ -88,7 +90,7 @@ class SlideController extends ApiController
     {
         $result = $activateSlide->handle($id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to update Slide');
         }
 

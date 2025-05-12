@@ -9,9 +9,9 @@ use Illuminate\Http\Request;
 
 class UpdateCard
 {
-    public function handle(Request $request)
+    public function handle(Request $request, int $id)
     {
-        $card = SellerBankDetails::findOrFail($request->integer('id'));
+        $card = SellerBankDetails::findOrFail($id);
         $card->update([
             'card_name' => $request->string('card_name'),
             'card_expiry_date' => $request->string('card_expiry_date'),

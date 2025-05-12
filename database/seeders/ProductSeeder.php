@@ -30,7 +30,7 @@ class ProductSeeder extends Seeder
                 'stock_status' => 'instock',
                 'featured' => $faker->boolean(),
                 'quantity' => 100,
-                'seller_id' => $faker->numberBetween(1, 2),
+                'seller_id' => 1,
                 'name' => $faker->word(),
                 'slug' => $faker->slug(),
                 'image' => Str::replace('products/', '', collect(Storage::disk('public')->files('products'))->random()),

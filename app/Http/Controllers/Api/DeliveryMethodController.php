@@ -10,15 +10,15 @@ use App\Http\Requests\StoreDeliveryMethodRequest;
 use App\Http\Requests\UpdateDeliveryMethodRequest;
 use App\Http\Resources\DeliveryCountryResource;
 use App\Http\Resources\DeliveryMethodResource;
-use App\Repositories\DeliveryMethodRepository;
 use App\Repositories\Interfaces\ICountryRepository;
+use App\Repositories\Interfaces\IDeliveryMethodRepository;
 use Illuminate\Http\Request;
 
 class DeliveryMethodController extends ApiController
 {
     public function __construct(
         private readonly ICountryRepository $countryRepository,
-        private readonly DeliveryMethodRepository $deliveryMethodRepository,
+        private readonly IDeliveryMethodRepository $deliveryMethodRepository,
     ) {}
 
     /**

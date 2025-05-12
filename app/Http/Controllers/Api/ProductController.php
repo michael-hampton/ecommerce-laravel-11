@@ -77,7 +77,7 @@ class ProductController extends ApiController
             return $this->error('Unable to update Product');
         }
 
-        return $this->success($result, 'Product updated');
+        return $this->success(ProductResource::make($result), 'Product updated');
     }
 
     /**
@@ -113,9 +113,9 @@ class ProductController extends ApiController
         $result = $activateProduct->handle($id);
 
         if (! $result) {
-            return $this->error('Unable to update Category');
+            return $this->error('Unable to update Product');
         }
 
-        return null;
+       return $this->success($result, 'Product updated');
     }
 }
