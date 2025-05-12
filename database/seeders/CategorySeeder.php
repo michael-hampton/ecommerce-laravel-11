@@ -266,7 +266,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 20,
+                'parent_id' => 19,
                 'name' => 'Garden',
                 'slug' => 'garden',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -278,7 +278,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 21,
+                'parent_id' => 20,
                 'name' => 'Power Tools',
                 'slug' => 'power-tools',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -290,7 +290,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 21,
+                'parent_id' => 20,
                 'name' => 'Outdoor Lighting',
                 'slug' => 'outdoor-lighting',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -302,7 +302,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 21,
+                'parent_id' => 20,
                 'name' => 'Plants',
                 'slug' => 'plants',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -314,7 +314,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 21,
+                'parent_id' => 20,
                 'name' => 'Patio Furniture',
                 'slug' => 'patio',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -326,7 +326,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 20,
+                'parent_id' => 19,
                 'name' => 'Kitchen Appliances',
                 'slug' => 'kitchen',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -362,7 +362,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 25,
+                'parent_id' => 19,
                 'name' => 'Cooking Appliances',
                 'slug' => 'cooking-appliances',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -374,7 +374,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 20,
+                'parent_id' => 19,
                 'name' => 'Cooking',
                 'slug' => 'cooking',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -386,7 +386,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 31,
+                'parent_id' => 29,
                 'name' => 'Drinkware',
                 'slug' => 'drinkware',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -398,7 +398,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 31,
+                'parent_id' => 29,
                 'name' => 'Cookware',
                 'slug' => 'cookware',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
@@ -410,7 +410,7 @@ class CategorySeeder extends Seeder
                 'meta_keywords' => $faker->word(),
             ],
             [
-                'parent_id' => 31,
+                'parent_id' => 29,
                 'name' => 'Utensils',
                 'slug' => 'utensils',
                 'image' => Str::replace('categories/', '', collect(Storage::disk('public')->files('categories'))->random()),
