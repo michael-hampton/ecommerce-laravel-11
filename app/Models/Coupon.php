@@ -27,11 +27,11 @@ class Coupon extends Model
 
     public function categories()
     {
-        return Category::whereIn('id', explode(',', $this->categories))->get();
+        return empty($this->categories) ? collect() : Category::whereIn('id', explode(',', $this->categories))->get();
     }
 
     public function brands()
     {
-        return Brand::whereIn('id', explode(',', $this->brands))->get();
+        return empty($this->brands) ? collect() : Brand::whereIn('id', explode(',', $this->brands))->get();
     }
 }

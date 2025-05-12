@@ -8,7 +8,7 @@ export class AuthApi {
   constructor(private _http: HttpClient) {}
 
   public Login(username: string, password: string) {
-    return this._http.post(`${environment.apiUrl}/login`, {email: 'admin.user@yahoo.com', password: 'test1234'})
+    return this._http.post(`${environment.apiUrl}/login`, {email: username, password: password})
       // const response = {data: { accessToken: 'some_acces_token',
       //   refreshToken: 'some_refresh_token',
       //   payload: {

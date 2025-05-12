@@ -44,7 +44,7 @@ class SellerController extends ApiController
      */
     public function store(Request $request, CreateSeller $createSeller)
     {
-        $profile = $createSeller->handle($request->all());
+        $profile = $createSeller->handle(array_merge($request->all(), ['user_id' => auth('sanctum')->user()->id]));
 
         if (! $profile) {
             return $this->error('Unable to create Seller');
@@ -59,10 +59,6 @@ class SellerController extends ApiController
     public function show(string $id): JsonResponse
     {
         $result = $this->sellerRepository->getCollectionByColumn(auth('sanctum')->user()->id, 'user_id', 1)->first();
-
-        if (empty($result)) {
-            $result = $this->userRepository->getById(auth('sanctum')->user()->id);
-        }
 
         return response()->json(SellerResource::make($result));
     }

@@ -78,8 +78,11 @@ class UpdateProduct extends SaveProduct
 
         $bumpDays = $data['bump_days'] ?? 0;
 
-        if (!empty($bumpDays)) {
+        if (array_key_exists('bump_days', $data)) {
             unset($data['bump_days']);
+        }
+
+        if (!empty($bumpDays)) {
             $this->updateSellerBalance($bumpDays, $product);
         }
 
@@ -88,14 +91,14 @@ class UpdateProduct extends SaveProduct
         ProductAttributeValue::where('product_id', $id)->forceDelete();
 
         if (!empty($attributeValues)) {
-            $this->saveAttributes($attributeValues);
+            $this->saveAttributes($attributeValues, $product);
         }
 
         if ($priceReduced) {
             $this->sendNotification($data, $product->fresh());
         }
 
-        return $product;
+        return $product->fresh();
     }
 
     private function sendNotification(array $data, Product $product): void
