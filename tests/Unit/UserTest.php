@@ -3,9 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\NotificationTypes;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -140,5 +143,34 @@ class UserTest extends TestCase
         $newRow = User::where('id', $user['id'])->first();
 
         $this->assertSame($newRow->active, false);
+    }
+
+    public function test_register_user()
+    {
+        Event::fake();
+        $this->seed(NotificationTypes::class);
+
+        $data = [
+            'name' => $this->faker->name(),
+            'email' => $this->faker->email(),
+            'mobile' => $this->faker->e164PhoneNumber(),
+            'password' => $this->faker->password(),
+            'seller_account' => true
+        ];
+
+        $this->json('post', 'api/register', $data)
+            ->assertStatus(200)
+            ->assertJsonFragment(
+                [
+                    'success' => true,
+                    'message' => 'User registered successfully.',
+                ]
+            );
+
+
+        $this->assertDatabaseHas('users', ['email' => $data['email']]);
+        $this->assertDatabaseHas('profiles', ['email' => $data['email']]);
+        $this->assertDatabaseHas('user_notifications', ['user_id' => User::where('email', $data['email'])->first()->id]);
+        Event::assertDispatched(Registered::class);
     }
 }

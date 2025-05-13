@@ -23,6 +23,10 @@ class SellerBalanceController extends ApiController
     {
         $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->get();
 
+        if ($sellerBalance->isEmpty()) {
+            return $this->success([], 'No record');
+        }
+
         return response()->json([
             'balances' => SellerBalanceResource::collection($sellerBalance),
             'current' => SellerBalanceResource::make($sellerBalance->sortByDesc('created_at')->first()),
@@ -50,8 +54,8 @@ class SellerBalanceController extends ApiController
     {
         $result1 = $saveBillingInformation->handle($request);
         $sellerBankDetails = $saveBankAccount->handle($request);
-        $result3 = $updateSeller->handle(array_merge($request->all(), ['balance_activated' => true]), auth('sanctum')->user()->id);
-
+        $result3 = $updateSeller->handle(array_merge($request->all(), ['balance_activated' => true]), auth('sanctum')->user()->profile->id);
+        
         return $result1 && $sellerBankDetails && $result3 ? $this->success($result1, 'Balance Activated') : $this->error('Balance could not be activated');
 
     }

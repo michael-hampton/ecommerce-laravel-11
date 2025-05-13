@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\User\RegisterUser;
 use App\Http\Controllers\Controller;
 use App\Models\NotificationTypeEnum;
 use App\Models\Profile;
@@ -66,36 +67,9 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function create(Request $request): RedirectResponse
+    protected function create(Request $request, RegisterUser $registerUser): RedirectResponse
     {
-        $notifications = NotificationTypeEnum::cases();
-
-        $user = User::create([
-            'name' => $request->string('name'),
-            'email' => $request->string('email'),
-            'mobile' => $request->string('mobile'),
-            'password' => Hash::make($request->string('password')),
-            'active' => true,
-            'utype' => empty($request->get('seller_account')) ? 'USR' : 'ADM',
-        ]);
-
-        $user->createToken('MyAppToken')->plainTextToken;
-
-        if (!empty($request->get('seller_account'))) {
-            Profile::create([
-                'name' => $request->string('name'),
-                'email' => $request->string('email'),
-                'phone' => $request->string('mobile'),
-                'user_id' => $user->id,
-                'active' => false,
-            ]);
-
-            foreach ($notifications as $notification) {
-                UserNotification::create(['user_id' => $user->id, 'notification_type' => $notification->value]);
-            }
-        }
-
-        event(new Registered($user));
+       $registerUser->handle($request->all());
 
         return redirect(route('verification.notice'));
     }

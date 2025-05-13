@@ -16,6 +16,7 @@ use App\Repositories\Interfaces\IUserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Log;
 
 class SellerController extends ApiController
 {

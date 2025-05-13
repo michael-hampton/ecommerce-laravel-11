@@ -5,4 +5,5 @@ export type Courier = {
   name: string
   active: boolean;
   code: string;
+  country_id: number
 }

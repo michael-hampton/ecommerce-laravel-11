@@ -22,6 +22,8 @@ class CourierResource extends JsonResource
             'name' => $this->name,
             'code' => $this->code,
             'active' => $this->active,
+            'country' => CountryResource::make($this->country),
+            'country_id' => $this->country_id
         ];
     }
 }

@@ -7,6 +7,7 @@ use App\Actions\Courier\CreateCourier;
 use App\Actions\Courier\DeleteCourier;
 use App\Actions\Courier\UpdateCourier;
 use App\Http\Requests\CreateCourierRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateCourierRequest;
 use App\Http\Resources\CourierResource;
 use App\Repositories\CourierRepository;
@@ -22,11 +23,16 @@ class CourierController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        return response()->json(
-            CourierResource::collection($this->courierRepository->getAll(null, 'name', 'asc'))
+        $couriers = $this->courierRepository->setRequiredRelationships(['country'])->getPaginated(
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            ['name' => $searchRequest->get('searchText'), 'shipping_active' => true]
         );
+
+        return $this->sendPaginatedResponse($couriers, CourierResource::collection($couriers));
     }
 
     /**

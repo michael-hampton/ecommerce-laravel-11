@@ -1,17 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { Review } from '../../../../../types/seller/review';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProfileStore } from '../../../../../store/profile/form.store';
+import { ReviewStore } from './review.store';
 
 @Component({
   selector: 'app-reviews',
   standalone: false,
   templateUrl: './reviews.component.html',
-  styleUrl: './reviews.component.scss'
+  styleUrl: './reviews.component.scss',
+  providers: [ReviewStore]
 })
 export class ReviewsComponent {
   ordersForm!: FormGroup;
-  private _store = inject(ProfileStore)
+  private _store = inject(ReviewStore)
   vm$ = this._store.vm$
 
   constructor(

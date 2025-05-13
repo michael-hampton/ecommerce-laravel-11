@@ -1,19 +1,18 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ProfileStore } from '../../../../../store/profile/form.store';
 import { AuthService } from '../../../../../core/auth/auth.service';
+import { SecurityStore } from './security.store';
 
 @Component({
   selector: 'app-security',
   standalone: false,
   templateUrl: './security.component.html',
   styleUrl: './security.component.scss',
-  providers: [ProfileStore]
+  providers: [SecurityStore]
 })
 export class SecurityComponent {
 
-  private _store = inject(ProfileStore)
-  vm$ = this._store.vm$
+  private _store = inject(SecurityStore)
   private fb = inject(FormBuilder)
   form: FormGroup;
   @ViewChild("mycheckbox") mycheckbox;
@@ -51,5 +50,13 @@ export class SecurityComponent {
 
   get deleteAccepted(): boolean {
     return this.deletePressed && !this.mycheckbox.nativeElement.checked
+  }
+
+  updatePassword() {
+    this._store.resetPassword({
+      old_password: this.form.value['password'],
+      new_password: this.form.value['newPassword'],
+      new_password_confirmation: this.form.value['confirmPassword']
+    }).subscribe()
   }
 }

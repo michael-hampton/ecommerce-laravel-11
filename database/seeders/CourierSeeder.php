@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Country;
 use App\Models\Courier;
 use Illuminate\Database\Seeder;
 
@@ -12,15 +13,37 @@ class CourierSeeder extends Seeder
      */
     public function run(): void
     {
-        $categories = [
-            ['name' => 'Evri', 'countries_active' => '243,412,468'],
-            ['name' => 'Yodel', 'countries_active' => '243,412,468'],
-            ['name' => 'DPD', 'countries_active' => '243,412,468'],
-            ['name' => 'Royal Mail', 'countries_active' => '243,412,468'],
-        ];
+        $countries = Country::where('shipping_active', true)->get();
 
-        foreach ($categories as $category) {
-            Courier::create($category);
+        $categories = collect([
+            ['name' => 'Evri', 'country_id' => 226],
+            ['name' => 'Yodel', 'country_id' => 226],
+            ['name' => 'DPD', 'country_id' => 226],
+            ['name' => 'Royal Mail', 'country_id' => 226],
+            ['name' => 'LBC Express', 'country_id' => 170],
+            ['name' => 'DHL Express', 'country_id' => 170],
+            ['name' => 'JRS Express', 'country_id' => 170],
+            ['name' => 'UPS', 'country_id' => 170],
+            ['name' => 'FastTrack', 'country_id' => 170],
+        ]);
+
+        $currentCouriers = Courier::all();
+
+        foreach ($countries as $country) {
+            $couriers = $categories->where('country_id', $country->id);
+            if ($couriers->isEmpty()) {
+                $couriers = $categories->where('country_id', 226);
+            }
+
+            foreach ($couriers as $courier) {
+                $exists = $currentCouriers->where('name', $courier['name'])->where('country_id', $country->id);
+
+                if ($exists->count() > 0) {
+                    continue;
+                }
+
+                Courier::create(['country_id' => $country->id, 'name' => $courier['name']]);
+            }
         }
     }
 }

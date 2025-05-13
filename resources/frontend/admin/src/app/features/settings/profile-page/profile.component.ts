@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
-import { ProfileStore } from '../../../store/profile/form.store';
 import { FormGroup } from '@angular/forms';
+import { ProfileStore } from './profile.store';
+import { Seller } from '../../../types/seller/seller';
 
 @Component({
   selector: 'app-profile',
@@ -11,12 +12,23 @@ import { FormGroup } from '@angular/forms';
   providers: [ProfileStore]
 })
 export class ProfileComponent {
-  private _store = inject(ProfileStore)
+  _store = inject(ProfileStore)
   vm$ = this._store.vm$
   form?: FormGroup;
   private _authService = inject(AuthService)
+  sellerId: number;
 
   ngOnInit() {
-    this._store.getData(Number(this._authService.GetUser().payload.id)).subscribe()
+    const sellerId = Number(this._authService.GetUser().payload.id)
+    this._store.getData(sellerId).subscribe((result: Seller) => {
+     this.sellerId = result.id
+    })
+
+    this._store.currentFile$.subscribe(result => {
+      if (result) {
+        this._store.saveData(result, this.sellerId).subscribe()
+      }
+
+    })
   }
 }

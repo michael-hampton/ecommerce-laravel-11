@@ -1,20 +1,18 @@
 import {Component, inject} from '@angular/core';
-import {ProfileStore} from '../../../../../store/profile/form.store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Seller} from '../../../../../types/seller/seller';
-import {AccountDetails} from '../../../../../types/seller/account-details';
-import {Billing} from '../../../../../types/seller/billing';
+import { ShopStore } from './shop.store';
 
 @Component({
   selector: 'app-shop-details',
   standalone: false,
   templateUrl: './shop-details.component.html',
   styleUrl: './shop-details.component.scss',
-  providers: [ProfileStore]
+  providers: [ShopStore]
 })
 export class ShopDetailsComponent {
 
-  private _store = inject(ProfileStore)
+  private _store = inject(ShopStore)
   vm$ = this._store.vm$
   form?: FormGroup;
   private fb = inject(FormBuilder)

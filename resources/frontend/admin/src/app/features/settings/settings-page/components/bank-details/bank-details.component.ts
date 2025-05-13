@@ -1,20 +1,22 @@
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { ProfileStore } from '../../../../../store/profile/form.store';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AccountDetails } from '../../../../../types/seller/account-details';
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { ModalService } from '../../../../../services/modal.service';
+import { BankDetailsStore } from './bank-details.store';
+import { SellerApi } from '../../../../../apis/seller.api';
 
 @Component({
   selector: 'app-bank-details',
   standalone: false,
   templateUrl: './bank-details.component.html',
   styleUrl: './bank-details.component.scss',
-  providers: [ProfileStore]
+  providers: [BankDetailsStore]
 })
 export class BankDetailsComponent {
 
-  private _store = inject(ProfileStore)
+  private _store = inject(BankDetailsStore)
+  private _api = inject(SellerApi)
   vm$ = this._store.vm$
   private fb = inject(FormBuilder)
   form: FormGroup;
@@ -25,7 +27,7 @@ export class BankDetailsComponent {
   ngOnInit() {
     this.initBankDetailsForm();
 
-    this._store.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
+    this._api.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
       this.form.patchValue({
         id: result.id,
         accountHolderName: result.account_name,

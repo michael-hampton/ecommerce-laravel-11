@@ -1,23 +1,19 @@
 import { Component, inject, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { ProfileStore } from '../../../../../store/profile/form.store';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Seller } from '../../../../../types/seller/seller';
-import { AccountDetails } from '../../../../../types/seller/account-details';
-import { Billing } from '../../../../../types/seller/billing';
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { ModalService } from '../../../../../services/modal.service';
-import { firstValueFrom } from 'rxjs';
+import { CardDetailsStore } from './card-details.store';
 
 @Component({
   selector: 'app-card-details',
   standalone: false,
   templateUrl: './card-details.component.html',
   styleUrl: './card-details.component.scss',
-  providers: [ProfileStore]
+  providers: [CardDetailsStore]
 })
 export class CardDetailsComponent {
 
-  private _store = inject(ProfileStore)
+  private _store = inject(CardDetailsStore)
   private _modalService = inject(ModalService)
   vm$ = this._store.vm$
   private fb = inject(FormBuilder)

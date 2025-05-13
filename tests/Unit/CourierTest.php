@@ -50,12 +50,16 @@ class CourierTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure(
                 [
-                    '*' => [
-                        'id',
-                        'name',
+                    'data' => [
+                        '*' => [
+                            'id',
+                            'name',
+                            'country_id',
+                            'country'
+                        ],
                     ],
                 ]
-            );
+            )->assertJsonFragment(['current_page' => 1, 'per_page' => 10]);
     }
 
     public function test_create_product_successful()

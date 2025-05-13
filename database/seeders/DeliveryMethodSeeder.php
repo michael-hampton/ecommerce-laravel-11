@@ -20,7 +20,8 @@ class DeliveryMethodSeeder extends Seeder
 
         foreach ($countryIds as $country) {
             foreach ($sizes as $key => $size) {
-                DeliveryMethod::create(['name' => $key, 'price' => $size, 'country_id' => $country, 'courier_id' => $couriers->first()->id]);
+                $courier = $couriers->where('country_id', $country)->first();
+                DeliveryMethod::create(['name' => $key, 'price' => $size, 'country_id' => $country, 'courier_id' => $courier->id]);
             }
         }
     }

@@ -15,8 +15,8 @@ export class LookupApi {
   constructor(private baseHttpClient: BaseHttpClient) {
   }
 
-  getCouriers() {
-    return this.baseHttpClient.getAll('couriers');
+  getCouriers(countryId: number | undefined) {
+    return countryId !== undefined ? this.baseHttpClient.getAll(`lookup/couriers/${countryId}`) : this.baseHttpClient.getAll(`lookup/couriers`);
   }
 
   getBrands() {

@@ -10,17 +10,20 @@ import { tap } from 'rxjs/operators';
 import { of, pipe, switchMap } from 'rxjs';
 import { Courier } from '../../types/couriers/courier';
 import { Country } from '../../types/countries/country';
+import { LookupApi } from '../../apis/lookup.api';
 
 
 export interface ShippingFormState {
-  couriers: Courier[],
+  allCouriers: Courier[],
+  filteredCouriers: Courier[],
   loading: boolean,
   shippings: Shipping[]
   countries: Country[]
 }
 
 const defaultState: ShippingFormState = {
-  couriers: [],
+  allCouriers: [],
+  filteredCouriers: [],
   loading: false,
   shippings: [],
   countries: []
@@ -28,12 +31,12 @@ const defaultState: ShippingFormState = {
 
 @Injectable()
 export class ShippingFormStore extends ComponentStore<ShippingFormState> {
-  constructor(private _api: ShippingApi, private _globalStore: GlobalStore) {
+  constructor(private _api: ShippingApi, private _lookupApi: LookupApi, private _globalStore: GlobalStore) {
     super(defaultState);
   }
 
   vm$ = this.select(state => ({
-    couriers: state.couriers,
+    couriers: state.filteredCouriers,
     countries: state.countries,
     loading: state.loading
   }))
@@ -69,12 +72,12 @@ export class ShippingFormStore extends ComponentStore<ShippingFormState> {
     )
   );
 
-  readonly getCouriers = this.effect<void>(
-    (trigger$) => trigger$.pipe(
-      switchMap(() =>
-        this._api.getCouriers().pipe(
+  readonly getCouriers = this.effect<number>(
+    (countryId$) => countryId$.pipe(
+      switchMap((countryId) =>
+        this._lookupApi.getCouriers(countryId).pipe(
           tapResponse({
-            next: (data) => this.patchState({ couriers: data as Courier[] }),
+            next: (data) => this.patchState({ allCouriers: data as Courier[], filteredCouriers: data as Courier[] }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
             finalize: () => this._globalStore.setLoading(false),
           })
@@ -82,6 +85,13 @@ export class ShippingFormStore extends ComponentStore<ShippingFormState> {
       )
     )
   );
+
+  readonly filterCouriers = this.updater((state, countryId: number) => ({
+    ...state,
+    filteredCouriers: state.allCouriers.find(x => x.country_id === countryId) ? state.allCouriers.filter(courier =>
+      courier.country_id === countryId
+    ) : state.allCouriers
+  }));
 
   loadDataForCountry(countryId: number) {
     this.patchState({ loading: true })

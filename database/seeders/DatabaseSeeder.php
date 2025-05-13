@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(NotificationTypes::class);
         $this->call(FaqTagsTableSeeder::class);
-
         $this->call(FaqCategories::class);
         $this->call(FaqQuestionSeeder::class);
         $this->call(AttributeSeeder::class);

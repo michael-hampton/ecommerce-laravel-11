@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import {Seller} from '../types/seller/seller';
-import {BaseHttpClient} from './base.http-client';
-import {environment} from '../../environments/environment';
-import {FilterModel} from '../types/filter.model';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { Seller } from '../types/seller/seller';
+import { BaseHttpClient } from './base.http-client';
+import { environment } from '../../environments/environment';
+import { FilterModel } from '../types/filter.model';
 import { Review } from '../types/seller/review';
 
 export const MODULE = 'sellers'
@@ -85,6 +85,19 @@ export class SellerApi {
     return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }
 
+  updateImage(id: number, payload: any) {
+    const formData = new FormData();
+    formData.append('image', payload);
+    formData.append('_method', 'put')
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'multipart/form-data',
+        'Accept': 'application/json'
+      })
+    };
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/${id}`, formData);
+  }
+
   getSeller(id: number) {
     return this.baseHttpClient.getById(`${MODULE}/${id}`);
   }
@@ -102,10 +115,14 @@ export class SellerApi {
   }
 
   toggleActive(sellerId: number, active: boolean) {
-    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/active`, {active: active, sellerId: sellerId});
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/active`, { active: active, sellerId: sellerId });
   }
 
   getData(filter: FilterModel): Observable<any> {
     return this.baseHttpClient.get(filter, MODULE);
+  }
+
+  resetPassword(payload: any) {
+    return this.httpClient.post(`${environment.apiUrl}/password/reset`, payload)
   }
 }

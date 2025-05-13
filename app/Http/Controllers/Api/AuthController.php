@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Actions\User\RegisterUser;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -9,25 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
-    public function register(Request $request)
+    public function register(Request $request, RegisterUser $registerUser)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+       $user = $registerUser->handle($request->all());
 
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
@@ -41,12 +28,12 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        if (! Auth::attempt($request->only('email', 'password'))) {
+        if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $user = Auth::user();
-        $user->image = asset('images/users').'/'.$user->image;
+        $user->image = asset('images/users') . '/' . $user->image;
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
         return response()->json([
@@ -63,5 +50,23 @@ class AuthController extends Controller
             'success' => true,
             'user' => $request->user(),
         ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required|min:6',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = auth('sanctum')->user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json(['message' => 'Invalid token'], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $result = $user->save();
+        return $this->success($result, 'Password reset successful.');
     }
 }

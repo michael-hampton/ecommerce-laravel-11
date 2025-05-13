@@ -103,9 +103,9 @@ export class LookupStore extends ComponentStore<GlobalState> {
       )
     ));
 
-  getCouriers() {
+  getCouriers(countryId: number | undefined) {
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
-    return this._lookupService.getCouriers().pipe(
+    return this._lookupService.getCouriers(countryId).pipe(
       tapResponse({
         next: (couriers) => this.patchState({couriers: couriers as Courier[]}),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),

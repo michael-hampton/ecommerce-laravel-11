@@ -37,10 +37,7 @@ export class BrandFormStore extends ComponentStore<BrandFormState> {
 
     return request$.pipe(
       tapResponse({
-        next: (users) => {
-          this._globalStore.setSuccess('Saved successfully');
-          //this.patchState({loading: false, saveSuccess: true})
-        },
+        next: (users) => this._globalStore.setSuccess('Saved successfully'),
         error: (error: HttpErrorResponse) => {
           //this.patchState({loading: false, saveSuccess: false})
           this._globalStore.setLoading(false)

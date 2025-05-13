@@ -1,28 +1,29 @@
 import {Component, inject} from '@angular/core';
-import {ProfileStore} from '../../../../../store/profile/form.store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Seller} from '../../../../../types/seller/seller';
-import {AccountDetails} from '../../../../../types/seller/account-details';
 import {Billing} from '../../../../../types/seller/billing';
+import { BillingStore } from './billing.store';
+import { SellerApi } from '../../../../../apis/seller.api';
 
 @Component({
   selector: 'app-billing',
   standalone: false,
   templateUrl: './billing.component.html',
   styleUrl: './billing.component.scss',
-  providers: [ProfileStore]
+  providers: [BillingStore]
 })
 export class BillingComponent {
 
-  private _store = inject(ProfileStore)
+  private _store = inject(BillingStore)
   vm$ = this._store.vm$
+  private _api = inject(SellerApi)
   private fb = inject(FormBuilder)
   form: FormGroup;
 
   ngOnInit() {
     this.initBillingForm();
 
-    this._store.getBilling().subscribe((result: Billing) => {
+    this._api.getBilling().subscribe((result: Billing) => {
       this.form.patchValue({
         address1: result.address1,
         address2: result.address2,

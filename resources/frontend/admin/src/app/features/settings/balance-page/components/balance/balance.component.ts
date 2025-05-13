@@ -1,24 +1,25 @@
 import {Component, inject, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
-import {ProfileStore} from '../../../../../store/profile/form.store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Seller} from '../../../../../types/seller/seller';
 import {AccountDetails} from '../../../../../types/seller/account-details';
 import {Billing} from '../../../../../types/seller/billing';
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { ModalService } from '../../../../../services/modal.service';
-import { forkJoin, map, withLatestFrom } from 'rxjs';
+import { forkJoin, map } from 'rxjs';
 import { AuthService } from '../../../../../core/auth/auth.service';
+import { BalancePageStore } from '../../balance-page.store';
+import { SellerApi } from '../../../../../apis/seller.api';
 
 @Component({
   selector: 'app-balance',
   standalone: false,
   templateUrl: './balance.component.html',
   styleUrl: './balance.component.scss',
-  providers: [ProfileStore]
+  providers: [BalancePageStore]
 })
 export class BalanceComponent {
 
-  private _store = inject(ProfileStore)
+  private _store = inject(BalancePageStore)
+  private _api = inject(SellerApi)
   vm$ = this._store.vm$
   private fb = inject(FormBuilder)
   form: FormGroup;
@@ -68,7 +69,7 @@ export class BalanceComponent {
   activateBalance() {
     this.initActivateBalanceForm();
 
-    forkJoin([this._store.getBilling(), this._store.getSellerBankAccountDetails()])
+    forkJoin([this._api.getBilling(), this._api.getSellerBankAccountDetails()])
     .pipe(
       map(([billingData, bankAccountData]) => {
         return {

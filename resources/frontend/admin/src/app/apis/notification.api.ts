@@ -20,8 +20,12 @@ export class NotificationApi {
     return this.baseHttpClient.get(filter, MODULE);
   }
 
-  getTypes(): Observable<any>{
+  getTypes(userId: number | undefined): Observable<any>{
     return this.httpClient.get(`${environment.apiUrl}/notification-types`);
+  }
+
+   getNotificationsForUser(id: number): Observable<any>{
+    return this.httpClient.get(`${environment.apiUrl}/notifications/${id}`);
   }
 
   saveNotifications(payload: any) {

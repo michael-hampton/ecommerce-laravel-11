@@ -1,4 +1,4 @@
-<div class="container py-5 bg-white" *ngIf="vm$ | async as vm">
+<div class="container py-5 bg-white">
   <app-ui-side-menu>
     <app-ui-tab-item
       tabName="Profile"
@@ -31,7 +31,8 @@
   <ng-template #billing> <app-billing></app-billing> </ng-template>
 
   <ng-template #payments>
-    <app-account-details></app-account-details>
+    <app-card-details></app-card-details>
+    <app-bank-details></app-bank-details>
   </ng-template>
 
   <ng-template #notifications>

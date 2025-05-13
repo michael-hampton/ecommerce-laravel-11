@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\Seller\SaveUserNotifications;
 use App\Http\Resources\NotificationResource;
+use App\Http\Resources\UserNotificationCollectionResource;
+use App\Http\Resources\UserNotificationResource;
 use App\Models\NotificationType;
 use Illuminate\Http\Request;
 
@@ -53,8 +55,11 @@ class NotificationController extends ApiController
         //
     }
 
-    public function getTypes() {
-        $types = NotificationType::all();
-        return response()->json($types);
+    public function getTypes()
+    {
+        $notifications = NotificationType::all();
+        $userNotifications = auth('sanctum')->user()->notifications;
+
+        return response()->json(new UserNotificationCollectionResource($notifications, ['user_notifications' => $userNotifications]));
     }
 }

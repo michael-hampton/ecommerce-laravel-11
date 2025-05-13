@@ -1,9 +1,9 @@
-import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ShippingFormStore} from '../../../../store/shipping/form.store';
-import {PackageSizeEnum} from '../../../../types/shipping/package-size.enum';
-import {Shipping} from '../../../../types/shipping/shipping';
-import {ModalComponent} from '../../../../shared/components/modal/modal.component';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ShippingFormStore } from '../../../../store/shipping/form.store';
+import { PackageSizeEnum } from '../../../../types/shipping/package-size.enum';
+import { Shipping } from '../../../../types/shipping/shipping';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 
 @Component({
   selector: 'app-form',
@@ -22,14 +22,19 @@ export class FormComponent extends ModalComponent implements OnInit {
 
   ngOnInit() {
     this.initForm()
-    this._store.getCouriers()
+    this._store.getCouriers(this.formData?.id)
     this._store.getCountries(this.formData?.id ? false : true)
+
+    this.form.get('country_id').valueChanges.subscribe(val => {
+      if (val) {
+        this._store.filterCouriers(val)
+      }
+    });
 
     if (this.formData?.id) {
       this._store.loadDataForCountry(this.formData?.id).subscribe((results: Shipping[]) => {
-        console.log('res', results)
 
-        this.form.patchValue({country_id: this.formData.id})
+        this.form.patchValue({ country_id: this.formData.id })
 
         const methodFormArray = this.form.get('methods') as FormArray;
 
@@ -53,6 +58,11 @@ export class FormComponent extends ModalComponent implements OnInit {
       country_id: [this.formData?.id || '', Validators.required],
       methods: this.formBuilder.array([]),
     });
+
+    if(this.formData?.id) {
+      this.form.controls['country_id'].disable();
+
+    }
   }
 
   addMethod() {
@@ -83,20 +93,15 @@ export class FormComponent extends ModalComponent implements OnInit {
     }
 
     const quizFormData = new FormData();
-    if(this.formData?.id) {
+    if (this.formData?.id) {
       quizFormData.append('id', this.formData.id);
     }
-    
-    // Append basic quiz data to FormData
-    Object.keys(this.form.value).forEach((key) => {
-      if (key !== 'methods') {
-        quizFormData.append(key, this.form.value[key]);
-      }
-    });
 
+    quizFormData.append('country_id', this.form.getRawValue().country_id);
+   
     // Append Topics data to FormData
     const methods = this.form.value.methods.map((method: any) => {
-      return {name: method.name, id: method.id ,courier_id: method.courier_id, price: method.price, tracking: method.tracking};
+      return { name: method.name, id: method.id, courier_id: method.courier_id, price: method.price, tracking: method.tracking };
     });
 
     quizFormData.append('methods', JSON.stringify(methods));

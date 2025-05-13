@@ -5,12 +5,14 @@ namespace Tests\Unit;
 use App\Http\Resources\ProductReviewResource;
 use App\Http\Resources\SellerReviewResource;
 use App\Models\Country;
+use App\Models\NotificationType;
 use App\Models\Profile;
 use App\Models\SellerBalance;
 use App\Models\SellerBankDetails;
 use App\Models\SellerBillingInformation;
 use App\Models\SellerWithdrawal;
 use App\Models\User;
+use Database\Seeders\NotificationTypes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -35,6 +37,7 @@ class SellerTest extends TestCase
 
         $this->user = User::factory()->create();
         $this->review = $this->seller->reviews()->create(['comment' => $this->faker->sentence(), 'rating' => 5, 'user_id' => $this->user->id]);
+
     }
 
     public function test_update_profile()
@@ -289,7 +292,7 @@ class SellerTest extends TestCase
             'account_number' => $this->faker->randomNumber(),
             'bank_name' => 'Halifax',
             'type' => 'bank',
-             'seller_id' => $this->seller->id
+            'seller_id' => $this->seller->id
         ];
         $user = SellerBankDetails::create(
             $payload
@@ -322,8 +325,6 @@ class SellerTest extends TestCase
 
     public function test_withdrawal_validation_fails()
     {
-
-
         $payload = [
             'amount' => '',
         ];
@@ -357,5 +358,29 @@ class SellerTest extends TestCase
                     ],
                 ]
             )->assertJsonFragment(['current_page' => 1, 'per_page' => 10]);
+    }
+
+    public function test_save_notifications()
+    {
+
+        $this->seed(class: NotificationTypes::class);
+
+        $payload = [
+            'notification_types' => [
+                1 => true,
+                2 => true,
+                3 => true,
+                4 => true,
+            ],
+        ];
+
+        $response = $this->json('post', "api/notifications", $payload)
+            ->assertStatus(200)
+            ->assertJson(
+                [
+                    'success' => true,
+                    'message' => "notification saved successfully",
+                ]
+            );
     }
 }

@@ -93,7 +93,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('attributes', AttributeController::class);
 
     // lookup
-    Route::get('lookup/orders', [LookupController::class, 'getOrders'])->name('admin.dashboard');
+    Route::get('lookup/couriers/{countryId?}', action: [LookupController::class, 'getCouriers'])->name('admin.couriers');
+    Route::get('lookup/orders', action: [LookupController::class, 'getOrders'])->name('admin.dashboard');
     Route::get('lookup/categories/{parentOnly?}', [LookupController::class, 'getCategories'])->name('admin.dashboard');
     Route::get('lookup/brands', [LookupController::class, 'getBrands'])->name('admin.dashboard');
     Route::get('lookup/attributes', [LookupController::class, 'getAttributes'])->name('admin.dashboard');
@@ -132,6 +133,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('reviews', [App\Http\Controllers\Api\Seller\ReviewController::class, 'index'])->name('sellers.reviews');
     Route::post('reviews/reply', [App\Http\Controllers\Api\Seller\ReviewController::class, 'createReply'])->name('sellers.reviews');
     Route::post('sellers/account/balance/activate', [SellerBalanceController::class, 'activate'])->name('sellers.getWithdrawals');
+    Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('');
+
 
     // Faq Articles
     Route::apiResource('faq-articles', FaqArticleController::class);

@@ -26,7 +26,7 @@ class ReviewController extends ApiController
         $seller = $this->userRepository->getById(auth('sanctum')->user()->id);
         $anonymousResourceCollection = SellerReviewResource::collection($seller->reviews()->whereNull('parent_id')->get());
 
-        $reviews = $seller->products()->with(['reviews', 'commentable', 'customer'])
+        $reviews = $seller->products()->with(['reviews', 'reviews.customer', 'reviews.commentable'])
             ->whereHas('reviews', fn (Builder $builder) => $builder->whereNull('parent_id'))
             ->get()->map(function ($item) {
                 if ($item->has('reviews')) {

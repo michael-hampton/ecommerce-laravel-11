@@ -1,6 +1,6 @@
 <form [formGroup]="form" *ngIf="vm$ | async as vm">
   <div class="vstack gap-4 pt-sm-1">
-    @for (option of vm.notification_types; track option.id) {
+    @for (option of vm.notification_types.types; track option.id) {
     <div class="form-check form-switch mb-0">
       <input
         type="checkbox"

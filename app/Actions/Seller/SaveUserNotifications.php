@@ -13,6 +13,7 @@ class SaveUserNotifications
         foreach ($data['notification_types'] as $notificationType => $notificationType) {
             UserNotification::create(['user_id' => $data['user_id'], 'notification_type' => $notificationType]);
         }
+
         return true;
     }
 }

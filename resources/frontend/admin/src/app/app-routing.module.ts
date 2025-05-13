@@ -1,7 +1,7 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {LoginResolve} from './core/auth/login.resolve';
-import {AuthGuard} from './core/auth/auth.guard';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginResolve } from './core/auth/login.resolve';
+import { AuthGuard } from './core/auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -22,6 +22,11 @@ const routes: Routes = [
   {
     path: 'shipping',
     loadChildren: () => import('./features/shipping/shipping.module').then(m => m.ShippingModule),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'couriers',
+    loadChildren: () => import('./features/couriers/couriers.module').then(m => m.CouriersModule),
     canActivate: [AuthGuard],
   },
   {
