@@ -1,4 +1,4 @@
-import {User} from './users/user';
+import { User } from './users/user';
 
 export type FilterModel = {
   page: number;
@@ -6,6 +6,18 @@ export type FilterModel = {
   sortBy: string;
   sortDir: string;
   searchText?: string
+  searchFilters?: SearchFilter[]
+
+}
+
+export type SearchFilterModel = {
+  searchFilters?: SearchFilter[]
+}
+
+export type SearchFilter = {
+  column: string
+  value: string
+  operator: string
 }
 
 export const defaultPaging: FilterModel = {
@@ -14,6 +26,7 @@ export const defaultPaging: FilterModel = {
   sortBy: 'name',
   sortDir: 'asc',
   searchText: '',
+  searchFilters: []
 }
 
 export type PagedData<T> = {

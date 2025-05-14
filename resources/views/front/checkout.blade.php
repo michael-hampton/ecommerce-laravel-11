@@ -107,6 +107,16 @@
                                         </div>
                                     </div>
                                 @endif
+
+                                <div id="card-container" class="d-none">
+                                     <label for="card-element">
+                                    Credit or debit card
+                                </label>
+                                <div id="card-element">
+                                    <!-- A Stripe Element will be inserted here. -->
+                                </div>
+                                </div>
+                                
                             </div>
                             <div class="col-md-3 order-2">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -247,12 +257,69 @@
     </main>
 @endsection
 
+<script src="https://js.stripe.com/v3/"></script>
 @push('scripts')
     <script>
+         let stripe = null;
+         let card = null
+        let mode = ''
         $(function () {
-            $('#btn-checkout').on('click', function () {
+            const form = document.getElementById('btn-checkout');
+        form.addEventListener('click', async (event) => {
+                event.preventDefault()
+                if(mode === 'card') {
+                     const {token, error} = await stripe.createToken(card);
+
+            if (error) {
+                alert(error)
+                // Inform the customer that there was an error.
+                const errorElement = document.getElementById('card-errors');
+                errorElement.textContent = error.message;
+            } else {
+                alert(token.id)
+                document.getElementById('token').value = token.id;
+                // Send the token to your server.
+                console.log(document.getElementById('checkout-form'))
+                document.getElementById('checkout-form').submit();
+            }
+                }
                 document.getElementById('checkout-form').submit();
             });
+
+            const modes = document.querySelectorAll('[name="mode"]')
+            modes.forEach(el => {
+               el.addEventListener('click', (event) => {
+                if(event.currentTarget.value === 'card') {
+                   loadCard()
+                }
+               })
+            })
         });
+
+        function loadCard() {
+
+            stripe = Stripe('{{env('STRIPE_KEY')}}');
+           
+        const elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        const style = {
+            base: {
+                // Add your base input styles here. For example:
+                fontSize: '16px',
+                color: '#32325d',
+            },
+        };
+
+        // Create an instance of the card Element.
+        card = elements.create('card', {hidePostalCode: true, style});
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+        document.getElementById('card-container').classList.remove('d-none')
+
+        mode = 'card'
+        }
     </script>
 @endpush

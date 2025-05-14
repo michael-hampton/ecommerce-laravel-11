@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, forwardRef, Inject, Input, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, forwardRef, Inject, Input, Output, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {DataTableComponent} from '../data-table/data-table.component';
 import {debounceTime, distinctUntilChanged, fromEvent, switchMap} from 'rxjs';
 

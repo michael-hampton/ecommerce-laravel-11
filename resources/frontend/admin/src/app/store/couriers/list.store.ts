@@ -12,7 +12,7 @@ import { CourierApi } from '../../apis/courier.api';
 
 const defaultState: FilterState<Courier> = {
   data: {} as PagedData<Courier>,
-  filter: {...defaultPaging, ...{sortBy: 'code'}}
+  filter: {...defaultPaging, ...{sortBy: 'code'}},
 };
 
 @Injectable()

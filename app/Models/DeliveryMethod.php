@@ -13,7 +13,7 @@ class DeliveryMethod extends Model
 
     protected $fillable = ['name', 'country_id', 'price', 'courier_id'];
 
-    protected $casts = ['tracking' => 'bool'];
+    protected $casts = ['tracking' => 'bool', 'price' => 'float'];
 
     public function courier()
     {

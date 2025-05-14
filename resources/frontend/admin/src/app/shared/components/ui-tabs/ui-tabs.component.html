@@ -1,16 +1,15 @@
-<div class="tab-container">
-  <div class="nav">
-    <div
-      [ngClass]="{ active: tab == activeComponent }"
-      class="nav-item"
-      *ngFor="let tab of tabs"
+<ul class="nav nav-pills">
+  <li class="nav-item" *ngFor="let tab of tabs">
+    <a
+      class="nav-link"
+      [class.active]="tab === activeComponent"
+      (click)="activateTab(tab)"
+      >{{ tab.tabName }}</a
     >
-      <span (click)="activateTab(tab)">{{ tab.tabName }}</span>
-    </div>
-  </div>
+  </li>
+</ul>
 
-  <ng-template
-    [ngTemplateOutlet]="activeComponent.templateRef"
-    [ngTemplateOutletContext]="{ content: activeComponent.content }"
-  ></ng-template>
-</div>
+<ng-template
+  [ngTemplateOutlet]="activeComponent.templateRef"
+  [ngTemplateOutletContext]="{ content: activeComponent.content }"
+></ng-template>

@@ -19,13 +19,14 @@ class WithdrawalService implements IWithdrawalService
         private readonly WithdrawalTypeEnum $withdrawalTypeEnum,
         private readonly WithdrawalEnum $withdrawalEnum,
         private readonly ?int $id
-    ) {}
+    ) {
+    }
 
     public function updateBalance()
     {
         $previousBalance = SellerBalance::where('seller_id', $this->sellerId)->orderByDesc('created_at')->first();
 
-        $newBalance = $this->withdrawalEnum === WithdrawalEnum::Decrease ? $previousBalance->balance - $this->amount : $previousBalance->balance + $this->amount;
+        $newBalance = (empty($previousBalance)) ? $this->amount : (($this->withdrawalEnum === WithdrawalEnum::Decrease) ? $previousBalance->balance - $this->amount : $previousBalance->balance + $this->amount);
 
         if (empty($previousBalance) || $previousBalance->balance <= 0) {
             throw new Exception('Insufficient balance');
@@ -58,7 +59,7 @@ class WithdrawalService implements IWithdrawalService
             $data['order_id'] = $this->id;
         }
 
-        SellerWithdrawal::create($withdrawalData);
+        //SellerWithdrawal::create($withdrawalData);
 
         return SellerBalance::create($data);
     }

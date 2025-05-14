@@ -1,21 +1,27 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {environment} from '../../environments/environment';
-import {MODULE} from './product.api';
-import {FilterModel} from '../types/filter.model';
-import {Injectable} from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { MODULE } from './product.api';
+import { FilterModel } from '../types/filter.model';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BaseHttpClient
-{
+export class BaseHttpClient {
   constructor(private httpclient: HttpClient) { }
   get(filter: FilterModel, url: string) {
-    const params = new HttpParams({fromObject: filter})
-    return this.httpclient.get(`${environment.apiUrl}/${url}`, {params: params});
+    const test = {
+      page: filter.page,
+      limit: filter.limit,
+      sortBy: filter.sortBy,
+      sortDir: filter.sortDir,
+      searchText: filter.searchText
+    }
+    const params = new HttpParams({ fromObject: test })
+    return this.httpclient.get(`${environment.apiUrl}/${url}`, { params: params });
   }
 
-  getAll(url:string) {
+  getAll(url: string) {
     return this.httpclient.get(`${environment.apiUrl}/${url}`);
   }
 
@@ -29,12 +35,12 @@ export class BaseHttpClient
 
     return this.httpclient.post(`${url}`,
       formData,
-      {headers: new HttpHeaders({ContentType: 'application/json'})}
+      { headers: new HttpHeaders({ ContentType: 'application/json' }) }
     );
   }
 
-  getFormData(object: any, formData: FormData | undefined = undefined): FormData  {
-    if(!formData) {
+  getFormData(object: any, formData: FormData | undefined = undefined): FormData {
+    if (!formData) {
       formData = new FormData();
     }
 

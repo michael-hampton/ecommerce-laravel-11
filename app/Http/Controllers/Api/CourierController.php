@@ -25,11 +25,11 @@ class CourierController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $couriers = $this->courierRepository->setRequiredRelationships(['country'])->getPaginated(
+       $couriers = $this->courierRepository->setRequiredRelationships(['country'])->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['name' => $searchRequest->get('searchText'), 'shipping_active' => true]
+            $searchRequest->array('searchFilters')
         );
 
         return $this->sendPaginatedResponse($couriers, CourierResource::collection($couriers));

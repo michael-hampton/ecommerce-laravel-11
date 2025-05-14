@@ -38,7 +38,7 @@ class CartController extends Controller
         )->associate(\App\Models\Product::class);
 
         $cart = Cart::instance('cart');
-        $cartProducts = Product::whereIn("id", $$cart->content()->pluck("id"))->get()->keyBy('id');
+        $cartProducts = Product::whereIn("id", $cart->content()->pluck("id"))->get()->keyBy('id');
 
         if ($request->ajax()) {
             return response()->json([

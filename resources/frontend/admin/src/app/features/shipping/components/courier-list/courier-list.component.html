@@ -12,6 +12,19 @@
     (changePage)="pageChanged($event)"
     [page]="vm.filter?.page"
   >
+    <ng-template #filterBar>
+      <select
+      (change)="filterSelectChanged($event)"
+        class="form-control"
+        name="country_id"
+        *ngIf="lookupVm$ | async as lookUpVm"
+      >
+        <option value="">Select Country</option>
+        <option *ngFor="let country of lookUpVm.countries" [value]="country.id">
+          {{ country.name }}
+        </option>
+      </select>
+    </ng-template>
     <data-table-column
       header="#"
       property="id"
@@ -22,11 +35,11 @@
       property="name"
       [sortable]="true"
     ></data-table-column>
-     <data-table-column
-      header="Country"
-      property="country"
-      [sortable]="true"
-    ><ng-template #dataTableCell let-item="item">{{item.country?.name}}</ng-template></data-table-column>
+    <data-table-column header="Country" property="country" [sortable]="true"
+      ><ng-template #dataTableCell let-item="item">{{
+        item.country?.name
+      }}</ng-template></data-table-column
+    >
 
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">

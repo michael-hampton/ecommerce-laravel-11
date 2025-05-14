@@ -40,6 +40,7 @@ class ProductFactory extends Factory
             'featured' => true,
             'stock_status' => 'instock',
             'seller_id' => $user->id,
+            'package_size' => 'Large',
             'SKU' => $this->faker->ean13(),
         ];
     }

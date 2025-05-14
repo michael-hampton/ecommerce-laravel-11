@@ -37,6 +37,7 @@ class Paypal extends BaseProvider
                 $total -= $orderData['coupon']->value;
             }
 
+
             $products = $products->map(function (array $item): array {
                 unset($item['price'], $item['shipping']);
 
@@ -49,11 +50,11 @@ class Paypal extends BaseProvider
                 'breakdown' => [ // discount
                     'item_total' => [
                         'currency_code' => config('shop.currency_code', 'GBP'),
-                        'value' => $subtotal,
+                        'value' => round($subtotal, 2),
                     ],
                     'shipping' => [
                         'currency_code' => config('shop.currency_code', 'GBP'),
-                        'value' => $shipping,
+                        'value' => round($shipping, 2),
                     ],
                     'insurance' => [
                         'currency_code' => config('shop.currency_code', 'GBP'),
@@ -77,20 +78,24 @@ class Paypal extends BaseProvider
                 'items' => $products->toArray(),
             ];
 
-            $transactionData = [
-                'order_id' => $orderData['orderId'],
-                'seller_id' => $sellerId,
-                'status' => 'in-progress',
-                'payment_method' => 'paypal',
-                'customer_id' => Auth::id(),
-                'total' => $total - $commission,
-                'commission' => $commission,
-                'shipping' => $shipping,
-                'discount' => empty($orderData['coupon']) ? 0 : $orderData['coupon']->value,
-            ];
+            // $transactionData = [
+            //     'order_id' => $orderData['orderId'],
+            //     'seller_id' => $sellerId,
+            //     'status' => 'in-progress',
+            //     'payment_method' => 'paypal',
+            //     'customer_id' => Auth::id(),
+            //     'total' => $total - $commission,
+            //     'commission' => $commission,
+            //     'shipping' => $shipping,
+            //     'discount' => empty($orderData['coupon']) ? 0 : $orderData['coupon']->value,
+            // ];
 
-            Transaction::create($transactionData);
+            // Transaction::create($transactionData);
         }
+
+        //   echo '<pre>';
+        //     print_r($purchaseUnits);
+        //     die;
 
         $payPal->setApiCredentials(config('paypal'));
 

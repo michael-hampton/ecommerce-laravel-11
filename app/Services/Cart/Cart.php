@@ -36,13 +36,13 @@ class Cart
      * Cart constructor.
      */
     public function __construct(/**
-     * Instance of the session manager.
-     */
+       * Instance of the session manager.
+       */
         protected SessionManager $session, /**
-     * Instance of the event dispatcher.
-     */
-        private readonly Dispatcher $dispatcher)
-    {
+            * Instance of the event dispatcher.
+            */
+        private readonly Dispatcher $dispatcher
+    ) {
         $this->instance(self::DEFAULT_INSTANCE);
     }
 
@@ -63,7 +63,7 @@ class Cart
     public function add($id, $name = null, $qty = null, $price = null, array $options = [], $taxrate = null)
     {
         if ($this->isMulti($id)) {
-            return array_map(fn ($item) => $this->add($item), $id);
+            return array_map(fn($item) => $this->add($item), $id);
         }
 
         $cartItem = $id instanceof CartItem ? $id : $this->createCartItem($id, $name, $qty, $price, $options, $taxrate);
@@ -91,7 +91,7 @@ class Cart
      */
     private function isMulti($item)
     {
-        if (! is_array($item)) {
+        if (!is_array($item)) {
             return false;
         }
 
@@ -129,7 +129,7 @@ class Cart
      */
     public function associate($rowId, $model): void
     {
-        if (is_string($model) && ! class_exists($model)) {
+        if (is_string($model) && !class_exists($model)) {
             throw new UnknownModelException(sprintf('The supplied model %s does not exist.', $model));
         }
 
@@ -148,7 +148,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        if (! $content->has($rowId)) {
+        if (!$content->has($rowId)) {
             throw new InvalidRowIDException(sprintf('The cart does not contain rowId %s.', $rowId));
         }
 
@@ -406,7 +406,7 @@ class Cart
      */
     public function restore($identifier): void
     {
-        if (! $this->storedCartWithIdentifierExists($identifier)) {
+        if (!$this->storedCartWithIdentifierExists($identifier)) {
             return;
         }
 
@@ -457,7 +457,7 @@ class Cart
             $storedContent = unserialize(data_get($cartItem, 'content'));
 
             foreach ($storedContent as $cartItemRow) {
-                if (! isset($wishlistProducts[$cartItemRow->id])) {
+                if (!isset($wishlistProducts[$cartItemRow->id])) {
                     $wishlistProducts[$cartItemRow->id] = 1;
 
                     continue;
@@ -542,7 +542,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $total = $content->reduce(fn ($total, CartItem $cartItem): float|int => $total + ($cartItem->qty * $cartItem->priceTax), 0);
+        $total = $content->reduce(fn($total, CartItem $cartItem): float|int => $total + ($cartItem->qty * $cartItem->priceTax), 0);
 
         $total += $this->shipping() + $this->commission();
 
@@ -573,6 +573,7 @@ class Cart
 
         $shipping = $content->reduce(function ($shipping, CartItem $cartItem) use ($bySellers) {
             if (isset($this->shippingSet[$cartItem->model->seller_id])) {
+                $cartItem->setDeliveryMethod(true, $this->shippingId);
                 return $shipping;
             }
 
@@ -626,10 +627,11 @@ class Cart
         return $this->numberFormat($this->getSubtotal(), $decimals, $decimalPoint, $thousandSeperator);
     }
 
-    public function getSubtotal(): float {
+    public function getSubtotal(): float
+    {
         $content = $this->getContent();
 
-        return $content->reduce(fn ($subTotal, CartItem $cartItem): int|float => $subTotal + ($cartItem->qty * $cartItem->price), 0);
+        return $content->reduce(fn($subTotal, CartItem $cartItem): int|float => $subTotal + ($cartItem->qty * $cartItem->price), 0);
     }
 
     /**
@@ -643,7 +645,7 @@ class Cart
     {
         $content = $this->getContent();
 
-        $tax = $content->reduce(fn ($tax, CartItem $cartItem): float|int => $tax + ($cartItem->qty * $cartItem->tax), 0);
+        $tax = $content->reduce(fn($tax, CartItem $cartItem): float|int => $tax + ($cartItem->qty * $cartItem->tax), 0);
 
         return $this->numberFormat($tax, $decimals, $decimalPoint, $thousandSeperator);
     }

@@ -54,10 +54,10 @@ export class ProductApi {
   }
 
   getData(filter: FilterModel): Observable<any> {
-    return this.baseHttpClient.get(filter, MODULE);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/search`, filter);
   }
 
   toggleActive(id: number) {
-      return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}/active`)
-    }
+    return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}/active`)
+  }
 }

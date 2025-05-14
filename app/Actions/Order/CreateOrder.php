@@ -47,11 +47,14 @@ class CreateOrder
                 'shipping' => Session::get('checkout.shipping'),
                 'address_id' => $data['address_id'],
                 'commission' => Session::get('checkout.commission'),
+                'status' => 'pending'
             ];
 
             $cartItems = Cart::instance('cart')->content();
+
             $address = $this->addressRepository->getById($data['address_id']);
             $shipping = DeliveryMethod::where('country_id', $address->country_id)->get();
+
             $bulkPrice = config('shop.bulk_price');
 
             $order = $this->orderRepository->create($orderData);
@@ -76,9 +79,9 @@ class CreateOrder
 
             foreach ($cartItems as $item) {
                 $deliveryMethod = $item->getDeliveryMethod();
-                $shippingPrice = empty($deliveryMethod) ? $bulkPrice / $groupBySeller[$item->model->seller_id] : $deliveryMethod->price;
+                $shippingPrice = empty($deliveryMethod) || $item->hasBulk ? $bulkPrice / $groupBySeller[$item->model->seller_id] : $deliveryMethod->price;
 
-                $commission = count($groupBySeller) > 1 ? Session::get('checkout.commission') / count($groupBySeller) : Session::get('checkout.commission');
+                $commission = $groupBySeller[$item->model->seller_id] > 1 ? Session::get('checkout.commission') / $groupBySeller[$item->model->seller_id] : Session::get('checkout.commission');
 
                 $item->setShippingPrice(round($shippingPrice, 4));
 
@@ -164,10 +167,10 @@ class CreateOrder
 
                 (new WithdrawalService(
                     auth()->id(),
-                    Session::get('checkout.total'),
+                    (float)Session::get('checkout.total'),
                     WithdrawalTypeEnum::OrderSpent,
                     WithdrawalEnum::Decrease,
-                    8
+                    $order->id
                 ))->updateBalance();
             }
 

@@ -58,7 +58,7 @@ class NotificationController extends ApiController
     public function getTypes()
     {
         $notifications = NotificationType::all();
-        $userNotifications = auth('sanctum')->user()->notifications;
+        $userNotifications = auth('sanctum')->user()->notificationTypes;
 
         return response()->json(new UserNotificationCollectionResource($notifications, ['user_notifications' => $userNotifications]));
     }

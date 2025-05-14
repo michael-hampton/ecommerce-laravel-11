@@ -61,6 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('products', ProductController::class);
     Route::post('products/subcategories', [ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
     Route::delete('/products/{id}/active', [ProductController::class, 'toggleActive'])->name('categories.active');
+    Route::post('products/search', [ProductController::class, 'index'])->name('');
+
 
     // users
     Route::apiResource('users', UserController::class);
@@ -78,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // couriers
     Route::apiResource('couriers', CourierController::class);
     Route::delete('/couriers/{id}/active', [CourierController::class, 'toggleActive'])->name('couriers.active');
+    Route::post('couriers/search', [CourierController::class, 'index'])->name('');
 
 
     // delivery methods
@@ -86,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // orders
     Route::apiResource('orders', OrderController::class);
+    Route::post('orders/search', [OrderController::class, 'index'])->name('');
     Route::put('orders/details/{orderItemId}', [OrderController::class, 'updateItemDetails'])->name('admin.orders.updateItemDetails');
     Route::get('orders/logs/{orderId}', [OrderController::class, 'logs'])->name('admin.orders.updateItemDetails');
 
@@ -93,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('attributes', AttributeController::class);
 
     // lookup
+    Route::get('lookup/countries', action: [LookupController::class, 'getCountries'])->name('admin.countries');
     Route::get('lookup/couriers/{countryId?}', action: [LookupController::class, 'getCouriers'])->name('admin.couriers');
     Route::get('lookup/orders', action: [LookupController::class, 'getOrders'])->name('admin.dashboard');
     Route::get('lookup/categories/{parentOnly?}', [LookupController::class, 'getCategories'])->name('admin.dashboard');

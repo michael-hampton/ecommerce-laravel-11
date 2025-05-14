@@ -8,11 +8,11 @@ import { Courier } from '../../../../types/couriers/courier';
 @Component({
   selector: 'app-form',
   standalone: false,
-  templateUrl: './form.component.html',
-  styleUrl: './form.component.scss',
+  templateUrl: './courier-form.component.html',
+  styleUrl: './courier-form.component.scss',
   providers: [CourierFormStore]
 })
-export class FormComponent extends ModalComponent implements OnInit {
+export class CourierFormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;
   form?: FormGroup;
 

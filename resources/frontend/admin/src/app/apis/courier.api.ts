@@ -33,7 +33,7 @@ export class CourierApi {
   }
 
   getData(filter: FilterModel) {
-   return this.baseHttpClient.get(filter, MODULE);
+   return this.httpClient.post(`${environment.apiUrl}/${MODULE}/search`, filter);
   }
 
   update(id: number, payload: Partial<Courier>) {

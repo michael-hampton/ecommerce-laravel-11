@@ -19,6 +19,11 @@ export class LookupApi {
     return countryId !== undefined ? this.baseHttpClient.getAll(`lookup/couriers/${countryId}`) : this.baseHttpClient.getAll(`lookup/couriers`);
   }
 
+   getCountries() {
+    alert('mike')
+    return this.baseHttpClient.getAll(`lookup/countries`);
+  }
+
   getBrands() {
     return this.baseHttpClient.getAll('lookup/brands');
   }

@@ -1,12 +1,10 @@
 import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
-import {Config} from "datatables.net";
 import {Subscription} from "rxjs";
 import {ModalService} from "../../../../services/modal.service";
 import {UserStore} from '../../../../store/users/list.store';
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
 import {FormComponent} from '../form/form.component';
-import {defaultPaging, FilterModel} from '../../../../types/filter.model';
-import {CategoryStore} from '../../../../store/categories/list.store';
+import { FilterModel } from '../../../../types/filter.model';
 
 @Component({
   selector: 'app-user-list',

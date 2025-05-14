@@ -1,0 +1,10 @@
+<app-ui-tabs>
+  <app-ui-tab-item
+    [templateRef]="tab1"
+    tabName="Delivery Methods"
+  ></app-ui-tab-item>
+  <app-ui-tab-item [templateRef]="tab2" tabName="Couriers"></app-ui-tab-item>
+</app-ui-tabs>
+
+<ng-template #tab1><app-list></app-list></ng-template>
+<ng-template #tab2><app-courier-list></app-courier-list></ng-template>

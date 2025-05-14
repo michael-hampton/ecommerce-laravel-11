@@ -2,6 +2,7 @@ import {
   Component,
   ContentChild,
   ContentChildren,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -17,9 +18,9 @@ import {
   defaultTranslations,
   RowCallback
 } from '../types';
-import {RowComponent} from '../row/row.component';
-import {ColumnComponent} from '../column/column.component';
-import {FilterModel} from '../../../../types/filter.model';
+import { RowComponent } from '../row/row.component';
+import { ColumnComponent } from '../column/column.component';
+import { FilterModel } from '../../../../types/filter.model';
 
 @Component({
   selector: 'app-table',
@@ -41,13 +42,12 @@ export class DataTableComponent implements DataTableParams, OnInit {
 
   @Input() itemCount: number;
 
-   @Input() searchText: string = ''
-
-  // UI components:
+  @Input() searchText: string = ''
 
   @ContentChildren(ColumnComponent) columns: QueryList<ColumnComponent>;
   @ViewChildren(RowComponent) rows: QueryList<RowComponent>;
   @ContentChild('dataTableExpand') expandTemplate: TemplateRef<any>;
+   @ContentChild('filterBar') filterBar: any;
 
   // One-time optional bindings with default values:
 
@@ -174,10 +174,9 @@ export class DataTableComponent implements DataTableParams, OnInit {
     this.customSort = customSort;
   }
 
-  // init
-
-
+  //init
   ngOnInit() {
+    
     this._initDefaultValues();
     this._initDefaultClickEvents();
     this._updateDisplayParams();
@@ -265,7 +264,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
     } as FilterModel)
   }
 
-  searchChanged(search: {search: string}) {
+  searchChanged(search: { search: string }) {
     this.search = search.search;
     this.pageChanged()
   }
@@ -286,24 +285,24 @@ export class DataTableComponent implements DataTableParams, OnInit {
   @Output() rowExpandChange = new EventEmitter();
 
   rowClicked(row: RowComponent, event: Event) {
-    this.rowClick.emit({row, event});
+    this.rowClick.emit({ row, event });
   }
 
   rowDoubleClicked(row: RowComponent, event: Event) {
-    this.rowDoubleClick.emit({row, event});
+    this.rowDoubleClick.emit({ row, event });
   }
 
   headerClicked(column: ColumnComponent, event: MouseEvent) {
     if (!this._resizeInProgress && column.sortable) {
       let ascending = this.sortBy === column.property ? !this.sortAsc : true;
-      this.changePage.emit({page: this.page, limit: this.limit, sortBy: column.property, sortDir: ascending === true ? 'asc' : 'desc'})
+      this.changePage.emit({ page: this.page, limit: this.limit, sortBy: column.property, sortDir: ascending === true ? 'asc' : 'desc' })
     } else {
       this._resizeInProgress = false; // this is because I can't prevent click from mousup of the drag end
     }
   }
 
   private cellClicked(column: ColumnComponent, row: RowComponent, event: MouseEvent) {
-    this.cellClick.emit({row, column, event});
+    this.cellClick.emit({ row, column, event });
   }
 
   // functions:
@@ -403,7 +402,7 @@ export class DataTableComponent implements DataTableParams, OnInit {
   // other:
 
   get substituteItems() {
-    return Array.from({length: this.displayParams.limit - this.items.length});
+    return Array.from({ length: this.displayParams.limit - this.items.length });
   }
 
   // column resizing:

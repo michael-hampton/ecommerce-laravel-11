@@ -20,22 +20,22 @@ class ProductController extends ApiController
 {
     public function __construct(
         private readonly IProductRepository $productRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @param  Request  $searchRequest
      */
     public function index(SearchRequest $searchRequest): JsonResponse
     {
-        $products = $this->productRepository->setRequiredRelationships(['orderItems', 'category', 'brand', 'productAttributes'])->getPaginated(
+        $searchFilters = $searchRequest->array('searchFilters');
+        $searchFilters[] = ['column' => 'seller_id', 'value' => auth('sanctum')->user()->id, 'operator' => '='];
+
+        $products = $this->productRepository->setRequiredRelationships(['orderItems', 'category', 'brand', 'productAttributes'])->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            [
-                'seller_id' => auth('sanctum')->user()->id,
-                'name' => $searchRequest->get('searchText'),
-                'ignore_active' => true,
-            ]
+            $searchFilters
         );
 
         return $this->sendPaginatedResponse($products, ProductResource::collection($products));
@@ -49,7 +49,7 @@ class ProductController extends ApiController
     {
         $result = $createProduct->handle($storeProductRequest->all());
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to create Product');
         }
 
@@ -73,7 +73,7 @@ class ProductController extends ApiController
     {
         $result = $updateProduct->handle($updateProductRequest->except(['_token', '_method', 'attr', 'charge_featured']), $id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to update Product');
         }
 
@@ -87,7 +87,7 @@ class ProductController extends ApiController
     {
         $result = $deleteProduct->handle($id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to delete Product');
         }
 
@@ -112,10 +112,10 @@ class ProductController extends ApiController
     {
         $result = $activateProduct->handle($id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to update Product');
         }
 
-       return $this->success($result, 'Product updated');
+        return $this->success($result, 'Product updated');
     }
 }

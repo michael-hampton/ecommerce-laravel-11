@@ -1,8 +1,9 @@
-import {Component, inject, OnInit, Renderer2} from '@angular/core';
-import {Config} from 'datatables.net';
-import {OrderStore} from '../../../../store/orders/list.store';
-import {defaultPaging, FilterModel} from '../../../../types/filter.model';
-import {CategoryStore} from '../../../../store/categories/list.store';
+import { Component, inject, OnInit, Renderer2 } from '@angular/core';
+import { Config } from 'datatables.net';
+import { OrderStore } from '../../../../store/orders/list.store';
+import { defaultPaging, FilterModel, SearchFilter } from '../../../../types/filter.model';
+import { CategoryStore } from '../../../../store/categories/list.store';
+import { OrderStatusEnum } from '../../../../types/orders/orderStatus.enum';
 
 @Component({
   selector: 'app-order-list',
@@ -11,13 +12,17 @@ import {CategoryStore} from '../../../../store/categories/list.store';
   styleUrl: './order-list.component.scss',
   providers: [OrderStore]
 })
-export class OrderListComponent implements OnInit{
+export class OrderListComponent implements OnInit {
 
   private _store: OrderStore = inject(OrderStore)
   vm$ = this._store.vm$
+  currentTab: string;
 
   ngOnInit(): void {
     this._store.loadData(this._store.filter$);
+    this._store.filter$.subscribe(result => {
+      console.log('filter', result.searchFilters)
+    })
   }
 
   pageChanged(filter: FilterModel) {
@@ -27,4 +32,19 @@ export class OrderListComponent implements OnInit{
   reload() {
     this._store.reset();
   }
+
+  filterCahnged(column: string, value: string) {
+    this.currentTab = value
+    const searchFilters = []
+    searchFilters.push({
+      column: column,
+      value: value,
+      operator: '='
+    })
+    const obj: FilterModel = { ...defaultPaging, ...{ searchFilters: searchFilters, sortBy: 'id', sortDir: 'desc' } }
+
+    this._store.updateFilter(obj)
+  }
+
+  protected readonly OrderStatusEnum = OrderStatusEnum;
 }

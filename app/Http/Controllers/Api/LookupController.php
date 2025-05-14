@@ -7,10 +7,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\AttributeResource;
 use App\Http\Resources\BrandResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CountryResource;
 use App\Http\Resources\CourierResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Country;
 use App\Models\Courier;
 use App\Models\Order;
 use App\Models\ProductAttribute;
@@ -31,6 +33,13 @@ class LookupController
         $countryId = $countryId == null ? 226 : $countryId;
         $couriers = Courier::whereCountryId($countryId)->get();
         return response()->json(CourierResource::collection($couriers), 200);
+    }
+
+    public function getCountries()
+    {
+        $countries = Country::orderBy('name', 'asc')->get();
+
+        return response()->json(CountryResource::collection($countries), 200);
     }
 
     public function getBrands()

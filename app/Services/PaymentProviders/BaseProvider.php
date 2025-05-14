@@ -11,8 +11,10 @@ class BaseProvider
      */
     public function formatLineItems($orderLines): array
     {
+    
         $items = [];
         foreach ($orderLines as $orderLine) {
+           
             $lineTotal = $orderLine->price * $orderLine->qty;
 
             $items[$orderLine->model->seller_id][] = [
@@ -24,7 +26,7 @@ class BaseProvider
                 'price' => $lineTotal,
                 'unit_amount' => [
                     'currency_code' => config('shop.currency_code', 'GBP'),
-                    'value' => $this->truncateNumber($lineTotal),
+                    'value' => $lineTotal,
                 ],
             ];
         }

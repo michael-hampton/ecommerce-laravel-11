@@ -15,22 +15,23 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
+use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
     public function __construct(
         private readonly IAddressRepository $addressRepository,
         private readonly IOrderRepository $orderRepository,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request)
     {
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        if (! empty($request->integer('shipping_id'))) {
+        if (!empty($request->integer('shipping_id'))) {
             \App\Services\Cart\Facade\Cart::instance('cart')->setShippingId($request->integer('shipping_id'));
         }
 
@@ -60,27 +61,7 @@ class CheckoutController extends Controller
 
         $adrressData['address_id'] = $address->id;
 
-        if ($createOrderRequest->input('mode') !== 'card') {
-            $order = $createOrder->handle($adrressData);
-
-            Session::put('order_id', $order->id);
-
-            return redirect()
-                ->route('checkout.orderConfirmation', ['order' => $order])
-                ->with('success', 'Order placed successfully');
-        }
-
-        return view('front.checkout-card', ['addressId' => $addressId, 'addresses' => $addresses, 'currency' => config('shop.currency')]);
-    }
-
-    public function placeCardOrder(CreateOrderRequest $createOrderRequest, CreateOrder $createOrder): RedirectResponse
-    {
-        $customerId = auth()->user()->id;
-        $addressData = $createOrderRequest->except(['_token']);
-        $addressData['customer_id'] = $customerId;
-        $addressData['address_id'] = $createOrderRequest->integer('address');
-
-        $order = $createOrder->handle($addressData);
+        $order = $createOrder->handle($adrressData);
 
         Session::put('order_id', $order->id);
 

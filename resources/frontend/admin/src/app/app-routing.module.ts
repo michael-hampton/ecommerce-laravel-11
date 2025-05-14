@@ -25,11 +25,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'couriers',
-    loadChildren: () => import('./features/couriers/couriers.module').then(m => m.CouriersModule),
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'sellers',
     loadChildren: () => import('./features/sellers/sellers.module').then(m => m.SellersModule),
     canActivate: [AuthGuard],

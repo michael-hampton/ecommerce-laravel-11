@@ -146,8 +146,9 @@ Route::post('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 
 Route::get('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.index');
 Route::get('/checkout/card', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.card');
 Route::post('/checkout/place-order', [App\Http\Controllers\Front\CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
-Route::post('/checkout/place-card-order', [App\Http\Controllers\Front\CheckoutController::class, 'placeCardOrder'])->name('checkout.placeCardOrder');
+Route::post('/checkout/card/place-card-order', [App\Http\Controllers\Front\CheckoutController::class, 'placeCardOrder'])->name('checkout.placeCardOrder');
 Route::get('/checkout/order-confirmation', [App\Http\Controllers\Front\CheckoutController::class, 'orderConfirmation'])->name('checkout.orderConfirmation');
+
 
 Route::get('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
 Route::post('/change-password', [HomeController::class, 'updatePassword'])->name('update-password');

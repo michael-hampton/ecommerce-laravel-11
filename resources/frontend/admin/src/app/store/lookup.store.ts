@@ -1,16 +1,17 @@
-import {Injectable} from '@angular/core';
-import {ComponentStore} from '@ngrx/component-store';
-import {tapResponse} from '@ngrx/operators'
-import {Observable, pipe, switchMap, tap} from 'rxjs';
-import {HttpErrorResponse} from '@angular/common/http';
-import {GlobalStore} from './global.store';
-import {Category} from '../types/categories/category';
-import {Attribute} from '../types/attributes/attribute';
-import {Brand} from '../types/brands/brand';
-import {LookupApi} from '../apis/lookup.api';
-import {Order} from '../types/orders/order';
-import {UiError} from '../core/services/exception.service';
-import {Courier} from '../types/couriers/courier';
+import { Injectable } from '@angular/core';
+import { ComponentStore } from '@ngrx/component-store';
+import { tapResponse } from '@ngrx/operators'
+import { Observable, pipe, switchMap, tap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { GlobalStore } from './global.store';
+import { Category } from '../types/categories/category';
+import { Attribute } from '../types/attributes/attribute';
+import { Brand } from '../types/brands/brand';
+import { LookupApi } from '../apis/lookup.api';
+import { Order } from '../types/orders/order';
+import { UiError } from '../core/services/exception.service';
+import { Courier } from '../types/couriers/courier';
+import { Country } from '../types/countries/country';
 
 
 export interface GlobalState {
@@ -23,7 +24,7 @@ export interface GlobalState {
   brands: Brand[];
   orders: Order[]
   couriers: Courier[]
-
+  countries: Country[]
 }
 
 const defaultState: GlobalState = {
@@ -35,7 +36,8 @@ const defaultState: GlobalState = {
   subcategories: [],
   attributes: [],
   orders: [],
-  couriers: []
+  couriers: [],
+  countries: []
 };
 
 @Injectable({
@@ -54,20 +56,21 @@ export class LookupStore extends ComponentStore<GlobalState> {
     attributes: state.attributes,
     subcategories: state.subcategories,
     orders: state.orders,
-    couriers: state.couriers
+    couriers: state.couriers,
+    countries: state.countries
   }))
 
 
   getCategories = this.effect<void>(
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
     pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       switchMap(filter =>
         this._lookupService.getCategories().pipe(
           tapResponse({
-            next: (categories) => this.patchState({categories: categories as Category[]}),
+            next: (categories) => this.patchState({ categories: categories as Category[] }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )
@@ -76,13 +79,13 @@ export class LookupStore extends ComponentStore<GlobalState> {
   getOrders = this.effect<void>(
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
     pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       switchMap(filter =>
         this._lookupService.getOrders().pipe(
           tapResponse({
-            next: (orders) => this.patchState({orders: orders as Order[]}),
+            next: (orders) => this.patchState({ orders: orders as Order[] }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )
@@ -91,41 +94,57 @@ export class LookupStore extends ComponentStore<GlobalState> {
   getBrands = this.effect<void>(
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
     pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       switchMap(filter =>
         this._lookupService.getBrands().pipe(
           tapResponse({
-            next: (brands) => this.patchState({brands: brands as Brand[]}),
+            next: (brands) => this.patchState({ brands: brands as Brand[] }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )
     ));
 
+  readonly getCountries = this.effect<void>(
+    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good 
+    // names. We encourage to choose one of these and use them consistently in your codebase.
+    (trigger$) => trigger$.pipe(
+      switchMap(() =>
+        this._lookupService.getCountries().pipe(
+          tapResponse({
+            next: (countries) => this.patchState({ countries: countries as Country[] }),
+            error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+            finalize: () => this.patchState({ loading: false }),
+          })
+        )
+      )
+    )
+  );
+
   getCouriers(countryId: number | undefined) {
     // Standalone observable chain. An Observable<void> will be attached by ComponentStore.
     return this._lookupService.getCouriers(countryId).pipe(
       tapResponse({
-        next: (couriers) => this.patchState({couriers: couriers as Courier[]}),
+        next: (couriers) => this.patchState({ couriers: couriers as Courier[] }),
         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-        finalize: () => this.patchState({loading: false}),
+        finalize: () => this.patchState({ loading: false }),
       })
     )
   }
 
   readonly getAttributesForCategory = this.effect((categoryId$: Observable<number>) => {
     return categoryId$.pipe(
-      tap(() => this.patchState({loading: true})),
+      tap(() => this.patchState({ loading: true })),
       switchMap(categoryId =>
         this._lookupService.getAttributesForCategory(categoryId).pipe(
           tapResponse({
             next: (attributes) => {
               console.log('attr', attributes)
-              this.patchState({attributes: attributes as Attribute[]})
+              this.patchState({ attributes: attributes as Attribute[] })
             },
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )
@@ -139,9 +158,9 @@ export class LookupStore extends ComponentStore<GlobalState> {
       switchMap(() =>
         this._lookupService.getAttributes().pipe(
           tapResponse({
-            next: (attributes) => this.patchState({attributes: attributes as Attribute[]}),
+            next: (attributes) => this.patchState({ attributes: attributes as Attribute[] }),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-            finalize: () => this.patchState({loading: false}),
+            finalize: () => this.patchState({ loading: false }),
           })
         )
       )

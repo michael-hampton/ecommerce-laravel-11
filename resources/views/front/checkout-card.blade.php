@@ -8,7 +8,7 @@
 
             @include('front.partials.cart-steps')
 
-            <form method="post" name="checkout-form" id="checkout-form" action="{{route('checkout.placeOrder')}}">
+            <form method="post" name="checkout-form" id="checkout-form" action="{{route('checkout.placeCardOrder')}}">
                 @csrf
                 <input type="hidden" name="token" id="token">
                 <div class="checkout-form">
@@ -16,11 +16,12 @@
                         <div class="row">
                             <div class="col-md-9 order-1">
                                 <h4>SHIPPING DETAILS</h4>
-                                @if($addresses)
+                                @if($addresses->count() > 0)
                                     @foreach($addresses as $address)
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="address"
-                                                   id="address-{{$address->id}}" value="{{$address->id}}" @if($addressId === $address->id) checked="checked"@endif>
+                                                   id="address-{{$address->id}}" value="{{$address->id}}"
+                                                   @if(old('address') === $address->id) checked="checked" @endif>
                                             <label class="form-check-label" for="address-{{$address->id}}">
                                         <span class="my-account__address-item__detail">
                                             <p>{{$address->name}}</p>
@@ -33,7 +34,7 @@
                                         </div>
                                     @endforeach
                                     @error('address')
-                                    <div class="invalid-feedback">
+                                    <div class="invalid-feedback d-block">
                                         {{$message}}
                                     </div>
                                     @enderror
@@ -67,9 +68,10 @@
                                         <div class="col">
                                             <label for="country">Country</label>
                                             <select class="form-select" name="country_id">
+                                                <option value="">Select Country</option>
                                                 @foreach($countries as $country)
                                                     <option
-                                                        value="{{Str::lower($country['name'])}}">{{$country['name']}}</option>
+                                                        value="{{$country['id']}}">{{$country['name']}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -106,7 +108,7 @@
                                     </div>
                                 @endif
 
-                                <label for="card-element">
+                                 <label for="card-element">
                                     Credit or debit card
                                 </label>
                                 <div id="card-element">
@@ -190,8 +192,11 @@
                                         @endif
                                     </div>
 
+                                    
                                     <div class="p-3 text-center">
-                                        <button type="button" id="btn-checkout" class="btn btn-primary btn-lg rounded-pill">Place Order</button>
+                                        <button type="button" id="btn-checkout"
+                                                class="btn btn-primary btn-lg rounded-pill">Place Order
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -252,6 +257,7 @@
                 alert(token.id)
                 document.getElementById('token').value = token.id;
                 // Send the token to your server.
+                console.log(document.getElementById('checkout-form'))
                 document.getElementById('checkout-form').submit();
             }
         });

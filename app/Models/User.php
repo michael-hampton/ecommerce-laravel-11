@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Notification;
 
 class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
 {
@@ -77,7 +78,7 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         return $this->hasOne(Profile::class, 'user_id');
     }
 
-    public function notifications(): HasMany {
+    public function notificationTypes(): HasMany {
         return $this->hasMany(UserNotification::class,'user_id');
     }
 }

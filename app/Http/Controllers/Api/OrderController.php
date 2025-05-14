@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Order\CreateOrder;
 use App\Actions\Order\UpdateOrder;
 use App\Actions\Order\UpdateOrderLine;
 use App\Http\Requests\SearchRequest;
@@ -12,6 +13,7 @@ use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Repositories\Interfaces\IOrderRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -24,11 +26,12 @@ class OrderController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $orders = $this->orderRepository->setRequiredRelationships(['customer', 'courier', 'orderItems'])->getPaginated(
+        $orders = $this->orderRepository->setRequiredRelationships(['customer', 'courier', 'orderItems'])->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['seller_id' => auth('sanctum')->user()->id, 'name' => $searchRequest->get('searchText')]
+            $searchRequest->array('searchFilters'),
+            ['seller_id' => auth('sanctum')->user()->id]
         );
 
         return $this->sendPaginatedResponse($orders, OrderResource::collection($orders));
@@ -37,9 +40,11 @@ class OrderController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): void
+    public function store(Request $request, CreateOrder $createOrder): JsonResponse
     {
-        //
+        $createOrder->handle($request->all());
+
+        return response()->json(['success'=> true]);
     }
 
     /**

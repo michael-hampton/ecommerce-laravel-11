@@ -1,3 +1,25 @@
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [class.active]="activeTab === 'published'"
+        aria-current="page"
+        href="javascript:void(0)"
+        (click)="filterChanged('active', 'published')"
+        >Published</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [class.active]="activeTab === 'draft'"
+        href="javascript:void(0)"
+        (click)="filterChanged('active', 'draft')"
+        >Draft</a
+      >
+    </li>
+  </ul>
+
 <div
   class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-sm-4 g-lg-3 g-xl-4"
   *ngIf="vm$ | async as vm"
@@ -46,7 +68,6 @@
         <div
           class="d-flex flex-wrap align-items-center justify-content-between gap-2"
         >
-        
           <span *ngIf="product.active" class="badge bg-success">Published</span>
           <span *ngIf="!product.active" class="badge bg-warning">Draft</span>
 
@@ -54,7 +75,9 @@
         </div>
 
         <div class="d-grid gap-2 mt-2">
-          <button class="btn btn-primary btn-block" (click)="edit(product)">Edit</button>
+          <button class="btn btn-primary btn-block" (click)="edit(product)">
+            Edit
+          </button>
         </div>
       </div>
     </div>

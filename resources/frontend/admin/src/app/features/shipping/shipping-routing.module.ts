@@ -3,9 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import {SettingPageComponent} from '../settings/settings-page/setting-page.component';
 import {ListComponent} from './components/list/list.component';
 import {FormComponent} from './components/form/form.component';
+import { DeliveryPageComponent } from './delivery-page.component';
 
 const routes: Routes = [
-  {path: '', component:ListComponent},
+  {path: '', component:DeliveryPageComponent},
   {path: 'form', component:FormComponent}
 ];
 

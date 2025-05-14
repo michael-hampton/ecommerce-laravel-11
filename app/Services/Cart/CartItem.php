@@ -61,7 +61,7 @@ class CartItem implements Arrayable, Jsonable
     /**
      * The selected delivery method
      */
-    private DeliveryMethod $deliveryMethod;
+    private DeliveryMethod|null $deliveryMethod = null;
 
     /**
      * The FQN of the associated model.
@@ -92,6 +92,8 @@ class CartItem implements Arrayable, Jsonable
      */
     private $isSaved = false;
 
+    public bool $hasBulk;
+
     /**
      * CartItem constructor.
      *
@@ -109,7 +111,7 @@ class CartItem implements Arrayable, Jsonable
             throw new InvalidArgumentException('Please supply a valid name.');
         }
 
-        if (strlen($price) < 0 || ! is_numeric($price)) {
+        if (strlen($price) < 0 || !is_numeric($price)) {
             throw new InvalidArgumentException('Please supply a valid price.');
         }
 
@@ -127,7 +129,7 @@ class CartItem implements Arrayable, Jsonable
     {
         ksort($options);
 
-        return md5($id.serialize($options));
+        return md5($id . serialize($options));
     }
 
     /**
@@ -207,6 +209,11 @@ class CartItem implements Arrayable, Jsonable
         return $this->numberFormat($this->priceTax, $decimals, $decimalPoint, $thousandSeperator);
     }
 
+    public function setDeliveryMethod(bool $hasBulk = false, int $deliveryMethodId = 0) {
+        $this->deliveryMethod = $this->getShippingId($hasBulk, $deliveryMethodId);
+        $this->hasBulk = $hasBulk;
+    }
+
     /**
      * Returns the formatted price with TAX.
      *
@@ -218,36 +225,32 @@ class CartItem implements Arrayable, Jsonable
     {
         $this->addressId = $addressId;
 
-        if ($hasBulk) {
-            $shippingPrice = config('shop.bulk_price');
-        } else {
-            $this->deliveryMethod = $this->getShippingId($hasBulk, $deliveryMethodId);
+        $this->setDeliveryMethod($hasBulk, $deliveryMethodId);
 
-            if (empty($this->deliveryMethod)) {
-                throw new InvalidArgumentException('Please supply a valid delivery method.');
-            }
-
-            $shippingPrice = $this->deliveryMethod->price;
+        if (empty($this->deliveryMethod)) {
+            throw new InvalidArgumentException('Please supply a valid delivery method.');
         }
+
+        $shippingPrice = $hasBulk ? config('shop.bulk_price') : $this->deliveryMethod->price;
 
         return $this->numberFormat($shippingPrice, $decimals, $decimalPoint, $thousandSeperator);
     }
 
-    public function getDeliveryMethod(): DeliveryMethod
+    public function getDeliveryMethod(): DeliveryMethod|null
     {
         return $this->deliveryMethod;
     }
 
     public function getShippingId($hasBulk = false, int $deliveryMethodId = 0)
     {
-        $packageSize = $hasBulk === true ? 'Bulk' : $this->getPackageSize();
+        $packageSize = $hasBulk === true ? 'Large' : $this->getPackageSize();
         $address = ($this->addressId === 0) ? (auth()->check() ? auth()->user()->defaultAddress() : null) : (Address::whereId($this->addressId)->first());
 
         $query = DeliveryMethod::query()
             ->with('courier')
             ->where('name', $packageSize);
 
-        if (! empty($address)) {
+        if (!empty($address)) {
             $query = $query->where('country_id', $address->country_id);
         }
 
@@ -255,7 +258,7 @@ class CartItem implements Arrayable, Jsonable
             $deliveryMethod = DeliveryMethod::whereId($deliveryMethodId)->first();
             $deliveryMethod->name = 'Small';
 
-            if (! empty($deliveryMethod)) {
+            if (!empty($deliveryMethod)) {
                 // if the package size and the selected delivery method match use that
                 if ($deliveryMethod->name == $packageSize) {
                     return $deliveryMethod;
@@ -282,7 +285,9 @@ class CartItem implements Arrayable, Jsonable
         return $size;
     }
 
-    public function setAddressId(int $addressId) {}
+    public function setAddressId(int $addressId)
+    {
+    }
 
     /**
      * Returns the formatted subtotal.
@@ -341,7 +346,7 @@ class CartItem implements Arrayable, Jsonable
      */
     public function setQuantity($qty): void
     {
-        if (empty($qty) || ! is_numeric($qty)) {
+        if (empty($qty) || !is_numeric($qty)) {
             throw new InvalidArgumentException('Please supply a valid quantity.');
         }
 

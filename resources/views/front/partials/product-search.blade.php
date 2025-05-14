@@ -46,7 +46,7 @@
                         @if($product->reviews->count() > 0)
                             <div>
                                 @for ($x = 0; $x < $product->reviews->avg('rating'); $x++)
-                                    <i class="fa fa-star-fill text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
                                 @endfor
                                 <small class="text-muted">({{$product->reviews->count()}})</small>
                             </div>

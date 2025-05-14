@@ -27,6 +27,15 @@ interface IBaseRepository
     public function getPaginated(int $paged = 15, string $orderBy = 'created_at', string $sort = 'desc');
 
     /**
+     * Get paged items
+     *
+     * @param  int  $paged  Items per page
+     * @param  string  $orderBy  Column to sort by
+     * @param  string  $sort  Sort direction
+     */
+    public function getPaginatedWithFilters(int $paged = 15, string $orderBy = 'created_at', string $sort = 'desc', array $searchFilters = [], array $customFilters = []);
+
+    /**
      * Items for select options
      *
      * @param  string  $data  column to display in the option

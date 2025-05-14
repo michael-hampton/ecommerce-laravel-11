@@ -1,11 +1,11 @@
-import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
-import {Subscription} from 'rxjs';
+import { Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ModalService } from '../../../../services/modal.service';
-import {ProductStore} from "../../../../store/products/list.store";
-import {ModalComponent} from "../../../../shared/components/modal/modal.component";
-import {ProductFormComponent} from '../../../../shared/components/product-form/product-form.component';
-import { FilterModel} from '../../../../types/filter.model';
-import {GlobalStore} from '../../../../store/global.store';
+import { ProductStore } from "../../../../store/products/list.store";
+import { ModalComponent } from "../../../../shared/components/modal/modal.component";
+import { ProductFormComponent } from '../../../../shared/components/product-form/product-form.component';
+import { defaultPaging, FilterModel } from '../../../../types/filter.model';
+import { GlobalStore } from '../../../../store/global.store';
 
 @Component({
   selector: 'app-product-list',
@@ -15,9 +15,10 @@ import {GlobalStore} from '../../../../store/global.store';
   providers: [ProductStore]
 })
 export class ProductListComponent implements OnInit {
-  @ViewChild('modal', {read: ViewContainerRef})
+  @ViewChild('modal', { read: ViewContainerRef })
   entry!: ViewContainerRef;
   sub!: Subscription;
+  activeTab = ''
 
   private _store: ProductStore = inject(ProductStore)
   vm$ = this._store.vm$
@@ -36,7 +37,7 @@ export class ProductListComponent implements OnInit {
 
   edit(data: any) {
     this.sub = this.modalService
-      .openModal(ProductFormComponent, this.entry, data, {modalTitle: 'Edit Product'})
+      .openModal(ProductFormComponent, this.entry, data, { modalTitle: 'Edit Product' })
       .subscribe((v) => {
         this._store.reset();
       });
@@ -58,14 +59,23 @@ export class ProductListComponent implements OnInit {
   add(event: Event) {
     event.preventDefault()
     this.sub = this.modalService
-      .openModal(ProductFormComponent, this.entry, null, {modalTitle: 'Create Product'})
+      .openModal(ProductFormComponent, this.entry, null, { modalTitle: 'Create Product' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
+    const searchFilters = []
+    searchFilters.push({
+      column: 'name',
+      value: filter.searchText ? `%${filter.searchText}%` : undefined,
+      operator: 'like'
+    })
+    filter = { ...filter, ...{ searchFilters: searchFilters } }
+
     this._store.updateFilter(filter)
+
   }
 
   reload() {
@@ -76,9 +86,22 @@ export class ProductListComponent implements OnInit {
     const message = data.active ? 'This will hide the product from everywhere in the website' : 'This will show the product in all relevant places'
     const saveButtonText = data.active ? 'Hide' : 'Publish'
     this.sub = this.modalService
-    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
-    .subscribe((v) => {
-      this._store.makeActive(data).subscribe()
-    });
+      .openConfirmationModal(ModalComponent, this.entry, data, { modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText })
+      .subscribe((v) => {
+        this._store.makeActive(data).subscribe()
+      });
+  }
+
+  filterChanged(column: string, value: string) {
+    this.activeTab = value
+    const searchFilters = []
+    searchFilters.push({
+      column: column,
+      value: value === 'published' ? true : false,
+      operator: '='
+    })
+    const obj: FilterModel = { ...defaultPaging, ...{ searchFilters: searchFilters } }
+
+    this._store.updateFilter(obj)
   }
 }

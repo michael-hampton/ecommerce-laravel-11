@@ -16,7 +16,9 @@ class BaseRepository implements IBaseRepository
 
     protected $requiredRelationships = [];
 
-    public function __construct(protected Model $model) {}
+    public function __construct(protected Model $model)
+    {
+    }
 
     /**
      * Get all items
@@ -38,7 +40,7 @@ class BaseRepository implements IBaseRepository
     {
         $query = $this->model->query();
 
-        $query->when(! empty($this->with), function (Builder $builder): void {
+        $query->when(!empty($this->with), function (Builder $builder): void {
             $builder->with($this->with);
         });
 
@@ -67,6 +69,29 @@ class BaseRepository implements IBaseRepository
             ->paginate($paged);
     }
 
+    public function getPaginatedWithFilters(int $paged = 15, string $orderBy = 'created_at', string $sort = 'desc', array $searchFilters = [], array $customFilters = [])
+    {
+        //        dd($this->applyFilters($search)
+        //            //->with($this->requiredRelationships)
+        //            ->orderBy($orderBy, $sort)->toSql());
+
+
+        $query = $this->model->newQuery();
+
+        if (!empty($customFilters)) {
+            $query = $this->applyFilters($customFilters);
+        }
+
+        foreach ($searchFilters as $searchFilter) {
+            $query = $query->where($searchFilter['column'], $searchFilter['operator'], $searchFilter['value']);
+        }
+
+        return $query->with($this->requiredRelationships)
+            ->orderBy($orderBy, $sort)
+           // ->toRawSql();
+        ->paginate($paged);
+    }
+
     /**
      * Choose what relationships to return with query.
      *
@@ -80,7 +105,7 @@ class BaseRepository implements IBaseRepository
         if ($relationships == 'all') {
             $this->requiredRelationships = $this->relationships;
         } elseif (is_array($relationships)) {
-            $this->requiredRelationships = array_filter($relationships, fn ($value): bool => in_array($value, $this->relationships));
+            $this->requiredRelationships = array_filter($relationships, fn($value): bool => in_array($value, $this->relationships));
         } elseif (is_string($relationships)) {
             $this->requiredRelationships[] = $relationships;
         }
@@ -115,7 +140,7 @@ class BaseRepository implements IBaseRepository
      */
     public function getForSelect($data, $key = 'id', $orderBy = 'created_at', $sort = 'desc')
     {
-        $query = (fn () => $this->model
+        $query = (fn() => $this->model
             ->with($this->requiredRelationships)
             ->orderBy($orderBy, $sort)
             ->lists($data, $key)
@@ -134,7 +159,7 @@ class BaseRepository implements IBaseRepository
     public function getCollectionByColumn(string|int $term, string $column = 'slug', int $limit = 0)
     {
         $query = $this->model
-             ->with($this->requiredRelationships)
+            ->with($this->requiredRelationships)
             ->where($column, '=', $term);
 
         if ($limit > 0) {
