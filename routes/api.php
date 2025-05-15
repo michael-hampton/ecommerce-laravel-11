@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
     Route::put('/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
