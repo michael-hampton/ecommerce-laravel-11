@@ -6,17 +6,12 @@ import {
   Input,
   Output, TemplateRef, ViewChild,
 } from '@angular/core';
-import {CommonModule, NgIf, NgTemplateOutlet} from '@angular/common';
-import {ModalService} from '../../../services/modal.service';
+import { CommonModule, NgIf, NgTemplateOutlet } from '@angular/common';
 
 
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
-  imports: [
-    NgTemplateOutlet,
-    NgIf
-  ],
   styleUrl: './modal.component.scss'
 })
 export class ModalComponent {
@@ -30,36 +25,20 @@ export class ModalComponent {
   @Input() saveButtonText: string = 'Save';
   @Input() saveButtonClass: string = 'btn-primary'
   @Input() formData: any;
-  @Input() modalService: ModalService | undefined
   @Input() showFooter: boolean = false;
-  @Input() contentRef: ElementRef;
   @Input() template: TemplateRef<any>;
+  //_modalService = inject(ModalService)
 
-
-  private el = inject(ElementRef)
-
-
-  ngAfterViewInit() {
-    const hostElem = this.el.nativeElement;
-    console.log(hostElem.children);
-    console.log(hostElem.parentNode);
-  }
-
-
-  ngOnInit(): void {
-    console.log('child', this.child)
-    console.log('Modal init', this.template);
-  }
 
   closeMe() {
     this.closeMeEvent.emit();
   }
-  confirm() {
+  async confirm() {
     this.confirmEvent.emit();
   }
 
   close() {
-    this.modalService?.closeModal()
+    //this._modalService?.closeModal()
   }
 
   ngOnDestroy(): void {

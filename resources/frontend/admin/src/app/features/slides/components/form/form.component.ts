@@ -23,9 +23,7 @@ export class FormComponent extends ModalComponent implements OnInit {
     super();
   }
 
-  override ngOnInit() {
-    super.ngOnInit();
-
+   ngOnInit() {
     this.initializeForm();
 
     if (this.formData?.id) {

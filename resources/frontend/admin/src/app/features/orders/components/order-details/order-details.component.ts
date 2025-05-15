@@ -112,7 +112,7 @@ export class OrderDetailsComponent implements OnInit {
   showMessages(orderItemId: number) {
     this._store.filterMessages(orderItemId)
     this.modalService
-      .openConfirmationModal(ModalComponent, this.featureModal, {}, {
+      .openConfirmationModal({
         modalTitle: 'Message',
         template: this.input,
         showFooter: false

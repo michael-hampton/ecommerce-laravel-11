@@ -8,6 +8,7 @@ use App\Actions\Seller\CreateSeller;
 use App\Actions\Seller\DeleteSeller;
 use App\Actions\Seller\UpdateSeller;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateSellerActive;
 use App\Http\Resources\SellerResource;
 use App\Models\Profile;
@@ -28,16 +29,16 @@ class SellerController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): JsonResponse
+    public function index(SearchRequest $searchRequest): JsonResponse
     {
-        $slides = $this->sellerRepository->getPaginated(
-            $request->integer('limit'),
-            $request->string('sortBy'),
-            $request->string('sortDir'),
-            ['name' => $request->get('searchText')]
+        $sellers = $this->sellerRepository->getPaginatedWithFilters(
+            $searchRequest->integer('limit'),
+            $searchRequest->string('sortBy'),
+            $searchRequest->string('sortDir'),
+            $searchRequest->array('searchFilters')
         );
 
-        return $this->sendPaginatedResponse($slides, SellerResource::collection($slides));
+        return $this->sendPaginatedResponse($sellers, SellerResource::collection($sellers));
     }
 
     /**

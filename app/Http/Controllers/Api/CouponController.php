@@ -22,11 +22,11 @@ class CouponController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $coupons = $this->couponRepository->getPaginated(
+         $coupons = $this->couponRepository->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['name' => $searchRequest->get('searchText')]
+            $searchRequest->array('searchFilters')
         );
 
         return $this->sendPaginatedResponse($coupons, CouponResource::collection($coupons));

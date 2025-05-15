@@ -50,10 +50,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Brands
     Route::apiResource('brands', BrandController::class);
     Route::delete('/brands/{id}/active', [BrandController::class, 'toggleActive'])->name('brands.active');
+    Route::post('brands/search', [BrandController::class, 'index'])->name('');
+
 
     // Categories
     Route::apiResource('categories', controller: CategoryController::class);
     Route::delete('/categories/{id}/active', [CategoryController::class, 'toggleActive'])->name('categories.active');
+    Route::post('categories/search', [CategoryController::class, 'index'])->name('');
+
 
     Route::get('/countries', [CountryController::class, 'index'])->name('getCountries');
 
@@ -67,12 +71,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // users
     Route::apiResource('users', UserController::class);
     Route::delete('/users/{id}/active', [UserController::class, 'toggleActive'])->name('users.active');
+    Route::post('users/search', [UserController::class, 'index'])->name('');
+
 
     Route::put('users/updateActive/{id}', [UserController::class, 'updateActive'])->name('admin.users.updateActive');
 
     // slides
     Route::apiResource('slides', SlideController::class);
     Route::delete('/slides/{id}/active', [SlideController::class, 'toggleActive'])->name('slides.active');
+    Route::post('slides/search', [SlideController::class, 'index'])->name('');
+
 
     // messages
     Route::apiResource('messages', MessageController::class);
@@ -81,11 +89,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('couriers', CourierController::class);
     Route::delete('/couriers/{id}/active', [CourierController::class, 'toggleActive'])->name('couriers.active');
     Route::post('couriers/search', [CourierController::class, 'index'])->name('');
+    Route::post('couriers/search', [CourierController::class, 'index'])->name('');
+
 
 
     // delivery methods
     // messages
     Route::apiResource('delivery-methods', DeliveryMethodController::class);
+    Route::post('delivery-methods/search', [DeliveryMethodController::class, 'index'])->name('');
+
 
     // orders
     Route::apiResource('orders', OrderController::class);
@@ -95,6 +107,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // attributes
     Route::apiResource('attributes', AttributeController::class);
+    Route::post('attributes/search', [AttributeController::class, 'index'])->name('');
+
 
     // lookup
     Route::get('lookup/countries', action: [LookupController::class, 'getCountries'])->name('admin.countries');
@@ -111,6 +125,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // attribute values
     Route::apiResource('attribute-values', AttributeValueController::class);
+    Route::post('attribute-values/search', [AttributeValueController::class, 'index'])->name('');
+
 
     // notificationss
     Route::apiResource('notifications', NotificationController::class);
@@ -118,9 +134,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // coupons
     Route::apiResource('coupons', CouponController::class);
+    Route::post('coupons/search', [CouponController::class, 'index'])->name('');
 
     // seller
     Route::apiResource('sellers', SellerController::class);
+    Route::post('sellers/search', [SellerController::class, 'index'])->name('');
+
     Route::post('sellers/active', [SellerController::class, 'toggleActive'])->name('admin.sellers.toggleActive');
     Route::post('sellers/account/bank', [SellerAccountController::class, 'saveBankDetails'])->name('admin.sellers.updateBankDetails');
     Route::post('sellers/account/card', [SellerAccountController::class, 'store'])->name('admin.sellers.updateCardDetails');
@@ -143,12 +162,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Faq Articles
     Route::apiResource('faq-articles', FaqArticleController::class);
+    Route::post('faq-articles/search', [FaqArticleController::class, 'index'])->name('');
+
 
     // Faq Categories
     Route::apiResource('faq-categories', FaqCategoryController::class);
+    Route::post('faq-categories/search', [FaqCategoryController::class, 'index'])->name('');
+
 
     // Faq Questions
     Route::apiResource('faq-questions', FaqQuestionController::class);
+    Route::post('faq-questions/search', [FaqQuestionController::class, 'index'])->name('');
+
 
     // Faq Tags
     Route::apiResource('faq-tags', FaqTagController::class);

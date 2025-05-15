@@ -6,6 +6,7 @@ import { ModalService } from '../../../../services/modal.service';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { ArticleFormComponent } from '../article-form/article-form.component';
 import { FilterModel } from '../../../../types/filter.model';
+import { formatSearchText } from '../../../../core/common';
 
 @Component({
   selector: 'app-article-list',
@@ -15,14 +16,6 @@ import { FilterModel } from '../../../../types/filter.model';
    providers: [SupportArticleStore]
 })
 export class ArticleListComponent implements OnInit {
-  dtOptions: Config = {};
-
-  @ViewChild('confirmationModal', {read: ViewContainerRef})
-  deleteModalComponent!: ViewContainerRef;
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
-
   private _store: SupportArticleStore = inject(SupportArticleStore)
   vm$ = this._store.vm$
 
@@ -36,8 +29,8 @@ export class ArticleListComponent implements OnInit {
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.deleteModalComponent, data, {
+    this.modalService
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close'
       })
@@ -49,24 +42,33 @@ export class ArticleListComponent implements OnInit {
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
-      .openModal(ArticleFormComponent, this.entry, null, {modalTitle: 'Create Question'})
+    this.modalService
+      .openModal(ArticleFormComponent, null, {modalTitle: 'Create Question'})
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(ArticleFormComponent, this.entry, data, {modalTitle: 'Edit Question'})
+    this.modalService
+      .openModal(ArticleFormComponent, data, {modalTitle: 'Edit Question'})
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
-    this._store.updateFilter(filter)
-  }
+      const searchFilters = []
+      searchFilters.push({
+        column: 'name',
+        value: formatSearchText(filter),
+        operator: 'like'
+      })
+      filter = { ...filter, ...{ searchFilters: searchFilters } }
+  
+      this._store.updateFilter(filter)
+  
+    }
 
   reload() {
     this._store.reset()

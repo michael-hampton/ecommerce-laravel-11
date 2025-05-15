@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Attribute} from '../types/attributes/attribute';
-import {FilterModel} from '../types/filter.model';
-import {BaseHttpClient} from './base.http-client';
-import {environment} from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Attribute } from '../types/attributes/attribute';
+import { FilterModel } from '../types/filter.model';
+import { BaseHttpClient } from './base.http-client';
+import { environment } from '../../environments/environment';
 
 export const MODULE = 'attributes'
 
@@ -28,6 +28,6 @@ export class AttributeApi {
   }
 
   getData(filter: FilterModel): Observable<any> {
-    return this.baseHttpClient.get(filter, MODULE);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/search`, filter);
   }
 }

@@ -26,11 +26,11 @@ class SlideController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $slides = $this->slideRepository->getPaginated(
+        $slides = $this->slideRepository->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['name' => $searchRequest->get('searchText'), 'ignore_active' => true]
+            $searchRequest->array('searchFilters')
         );
 
         return $this->sendPaginatedResponse($slides, SlideResource::collection($slides));

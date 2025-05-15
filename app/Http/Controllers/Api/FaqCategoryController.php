@@ -18,12 +18,12 @@ class FaqCategoryController extends ApiController
 
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $values = $this->categoryRepository->getPaginated(
+       $values = $this->categoryRepository->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['name' => $searchRequest->get('searchText')]
-        );
+            $searchRequest->array('searchFilters')
+         );
 
         return $this->sendPaginatedResponse($values, CategoryResource::collection($values));
     }

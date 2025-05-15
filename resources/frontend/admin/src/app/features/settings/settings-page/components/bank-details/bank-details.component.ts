@@ -40,7 +40,7 @@ export class BankDetailsComponent {
 
   deleteBankAccount() {
     this._modalService
-      .openConfirmationModal(ModalComponent, this.entry, this.form.value, {
+      .openConfirmationModal( {
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close',
         //size: 'modal-sm'

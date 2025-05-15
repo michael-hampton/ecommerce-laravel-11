@@ -22,8 +22,7 @@ export class ArticleFormComponent extends ModalComponent implements OnInit {
     super();
   }
 
-  override ngOnInit() {
-    super.ngOnInit();
+  ngOnInit() {
 
     this.initializeForm();
 

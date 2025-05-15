@@ -26,12 +26,12 @@ class DeliveryMethodController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $countries = $this->countryRepository->setRequiredRelationships(['deliveryMethods', 'deliveryMethods.courier'])->getPaginated(
+         $countries = $this->countryRepository->setRequiredRelationships(['deliveryMethods', 'deliveryMethods.courier'])->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['name' => $searchRequest->get('searchText'), 'shipping_active' => true]
-        );
+            $searchRequest->array('searchFilters')
+         );
 
         return $this->sendPaginatedResponse($countries, DeliveryCountryResource::collection($countries));
     }

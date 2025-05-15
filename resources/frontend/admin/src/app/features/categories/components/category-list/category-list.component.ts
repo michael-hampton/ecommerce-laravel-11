@@ -1,12 +1,12 @@
-import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
-import {Config} from 'datatables.net';
-import {Subscription} from 'rxjs';
-import {CategoryStore} from "../../../../store/categories/list.store";
-import {ModalService} from "../../../../services/modal.service";
-import {Category} from "../../../../types/categories/category";
-import {ModalComponent} from '../../../../shared/components/modal/modal.component';
-import {FormComponent} from '../form/form.component';
-import {defaultPaging, FilterModel} from '../../../../types/filter.model';
+import { Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import { Config } from 'datatables.net';
+import { Subscription } from 'rxjs';
+import { CategoryStore } from "../../../../store/categories/list.store";
+import { ModalService } from "../../../../services/modal.service";
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { FormComponent } from '../form/form.component';
+import { defaultPaging, FilterModel } from '../../../../types/filter.model';
+import { formatSearchText } from '../../../../core/common';
 
 @Component({
   selector: 'app-category-list',
@@ -16,10 +16,6 @@ import {defaultPaging, FilterModel} from '../../../../types/filter.model';
   providers: [CategoryStore]
 })
 export class CategoryListComponent implements OnInit {
-  dtOptions: Config = {};
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
 
   private _store: CategoryStore = inject(CategoryStore)
   vm$ = this._store.vm$
@@ -34,8 +30,8 @@ export class CategoryListComponent implements OnInit {
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: 'click confirm or close'})
+    this.modalService
+      .openConfirmationModal({ modalTitle: 'Are you sure?', modalBody: 'click confirm or close' })
       .subscribe((v) => {
         this._store.delete(data.id)
         this._store.reset();
@@ -43,8 +39,8 @@ export class CategoryListComponent implements OnInit {
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Category'})
+    this.modalService
+      .openModal(FormComponent, data, { modalTitle: 'Edit Category' })
       .subscribe((v) => {
         this.modalService.closeModal();
         this._store.reset();
@@ -52,15 +48,24 @@ export class CategoryListComponent implements OnInit {
   }
 
   add(event: Event) {
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Category'})
+    this.modalService
+      .openModal(FormComponent, null, { modalTitle: 'Create Category' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
+    const searchFilters = []
+    searchFilters.push({
+      column: 'name',
+      value: formatSearchText(filter),
+      operator: 'like'
+    })
+    filter = { ...filter, ...{ searchFilters: searchFilters } }
+
     this._store.updateFilter(filter)
+
   }
 
   reload() {
@@ -70,10 +75,10 @@ export class CategoryListComponent implements OnInit {
   makeActive(data: any) {
     const message = data.active ? 'This will hide the category from the website, including the menu. Any products listed within the category will no longer be accessible' : 'This will show the category from the website including the menu. Any products listed within the category will become accessible'
     const saveButtonText = data.active ? 'Hide' : 'Publish'
-    this.sub = this.modalService
-    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
-    .subscribe((v) => {
-      this._store.makeActive(data).subscribe()
-    });
+    this.modalService
+      .openConfirmationModal({ modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText })
+      .subscribe((v) => {
+        this._store.makeActive(data).subscribe()
+      });
   }
 }

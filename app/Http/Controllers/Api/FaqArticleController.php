@@ -18,12 +18,12 @@ class FaqArticleController extends ApiController
 
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $values = $this->iArticleRepository->getPaginated(
+       $values = $this->iArticleRepository->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['title' => $searchRequest->get('searchText')]
-        );
+            $searchRequest->array('searchFilters')
+         );
 
         return $this->sendPaginatedResponse($values, ArticleResource::collection($values));
     }

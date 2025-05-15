@@ -56,7 +56,7 @@ export class CardDetailsComponent {
   addPaymentMethod() {
     this.initCardDetailsForm()
     this._modalService
-      .openConfirmationModal(ModalComponent, this.addCardModal, {}, {
+      .openConfirmationModal({
         modalTitle: 'Add new payment method',
         template: this.cardForm,
         showFooter: true,
@@ -81,7 +81,7 @@ export class CardDetailsComponent {
     })
 
     this._modalService
-      .openConfirmationModal(ModalComponent, this.addCardModal, {}, {
+      .openConfirmationModal( {
         modalTitle: 'Edit payment method',
         template: this.cardForm,
         showFooter: true,

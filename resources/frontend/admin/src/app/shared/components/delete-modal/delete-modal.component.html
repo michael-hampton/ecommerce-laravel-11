@@ -1,0 +1,15 @@
+<div #content>
+  <ng-container *ngIf="template" [ngTemplateOutlet]="template"></ng-container>
+  <div *ngIf="showFooter === true" class="modal-footer">
+    <button class="btn btn-success" data-bs-dismiss="modal" (click)="confirm()">
+      {{ saveButtonText }}
+    </button>
+    <button
+      class="btn btn-secondary"
+      data-bs-dismiss="modal"
+      (click)="closeMe()"
+    >
+      Close
+    </button>
+  </div>
+</div>

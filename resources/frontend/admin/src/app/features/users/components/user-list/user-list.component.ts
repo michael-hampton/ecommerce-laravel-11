@@ -1,10 +1,11 @@
-import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
-import {Subscription} from "rxjs";
-import {ModalService} from "../../../../services/modal.service";
-import {UserStore} from '../../../../store/users/list.store';
-import {ModalComponent} from "../../../../shared/components/modal/modal.component";
-import {FormComponent} from '../form/form.component';
+import { Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import { Subscription } from "rxjs";
+import { ModalService } from "../../../../services/modal.service";
+import { UserStore } from '../../../../store/users/list.store';
+import { ModalComponent } from "../../../../shared/components/modal/modal.component";
+import { FormComponent } from '../form/form.component';
 import { FilterModel } from '../../../../types/filter.model';
+import { formatSearchText } from '../../../../core/common';
 
 @Component({
   selector: 'app-user-list',
@@ -14,9 +15,6 @@ import { FilterModel } from '../../../../types/filter.model';
   providers: [UserStore]
 })
 export class UserListComponent implements OnInit {
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
 
   private _store: UserStore = inject(UserStore)
   vm$ = this._store.vm$
@@ -31,16 +29,16 @@ export class UserListComponent implements OnInit {
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit User'})
+    this.modalService
+      .openModal(FormComponent, data, { modalTitle: 'Edit User' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.entry, data, {
+    this.modalService
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close'
       })
@@ -53,25 +51,34 @@ export class UserListComponent implements OnInit {
   makeActive(data: any) {
     const message = data.active ? 'This will prevent the user from being able to log in. They will no longer be able to access their account' : 'This will mean the user can log in and access their account'
     const saveButtonText = data.active ? 'Hide' : 'Publish'
-    this.sub = this.modalService
-    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
-    .subscribe((v) => {
-      this._store.makeActive(data).subscribe()
-    });
+    this.modalService
+      .openConfirmationModal({ modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText })
+      .subscribe((v) => {
+        this._store.makeActive(data).subscribe()
+      });
   }
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create User'})
+    this.modalService
+      .openModal(FormComponent, null, { modalTitle: 'Create User' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
-    this._store.updateFilter(filter)
-  }
+      const searchFilters = []
+      searchFilters.push({
+        column: 'name',
+        value: formatSearchText(filter),
+        operator: 'like'
+      })
+      filter = { ...filter, ...{ searchFilters: searchFilters } }
+  
+      this._store.updateFilter(filter)
+  
+    }
 
   reload() {
     this._store.reset();

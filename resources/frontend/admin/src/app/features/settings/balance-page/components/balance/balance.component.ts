@@ -91,7 +91,7 @@ export class BalanceComponent {
     });
 
     this._modalService
-          .openConfirmationModal(ModalComponent, this.activateBalanceModal, {}, {
+          .openConfirmationModal({
             modalTitle: 'Activate Balance',
             template: this.activateBalanceModalForm,
             showFooter: true,

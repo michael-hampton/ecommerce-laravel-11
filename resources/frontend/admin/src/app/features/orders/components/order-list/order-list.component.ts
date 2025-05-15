@@ -33,12 +33,12 @@ export class OrderListComponent implements OnInit {
     this._store.reset();
   }
 
-  filterCahnged(column: string, value: string) {
-    this.currentTab = value
+  filterChanged(column: string, value: string) {
+    this.currentTab = value === this.currentTab ? '' : value
     const searchFilters = []
     searchFilters.push({
       column: column,
-      value: value,
+      value: this.currentTab === '' ? undefined : this.currentTab,
       operator: '='
     })
     const obj: FilterModel = { ...defaultPaging, ...{ searchFilters: searchFilters, sortBy: 'id', sortDir: 'desc' } }

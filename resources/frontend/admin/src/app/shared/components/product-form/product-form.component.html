@@ -1,233 +1,375 @@
+<div class="card p-3" *ngIf="lookupVm$ | async as vm">
+  <div class="card-body" *ngIf="form">
+    <form
+      admin-form
+      method="POST"
+      enctype="multipart/form-data"
+      [formGroup]="form"
+    >
+      <input
+        type="hidden"
+        name="charge_featured"
+        id="charge_featured"
+        value="0"
+      />
+      <div class="d-flex">
+        <div class="card p-3 col-lg-6">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="inputAddress" class="form-label">Name</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter product name"
+                  name="name"
+                  formControlName="name"
+                />
+                <div class="form-text">
+                  Do not exceed 100 characters when entering the product name.
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="inputAddress" class="form-label">Slug</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter product slug"
+                  name="slug"
+                  formControlName="slug"
+                />
+              </div>
+              <app-category-selector
+                formControlName="category_id"
+                [displayGrandchildren]="true"
+                [disableGrandchildren]="false"
+              ></app-category-selector>
+
+              <!--                  <div class="col-md-6">-->
+              <!--                    <label for="inputPassword4" class="form-label">Subcategory</label>-->
+              <!--                    <select class="form-control" id="subcategoryDropdown" name="subcategory_id"-->
+              <!--                            formControlName="subcategory_id">-->
+              <!--                      <option value="">Choose Subcategory</option>-->
+              <!--                      <option *ngFor="let subcategory of vm.subcategories"-->
+              <!--                              [value]="subcategory.id">-->
+              <!--                        {{ subcategory.name }}-->
+              <!--                      </option>-->
+              <!--                    </select>-->
+              <!--                  </div>-->
+
+              <div class="col-12">
+                <label for="inputAddress" class="form-label">Brand</label>
+                <select
+                  class="form-control"
+                  name="brand_id"
+                  formControlName="brand_id"
+                >
+                  <option value="">Choose Brand</option>
+                  <option *ngFor="let brand of vm.brands" [value]="brand.id">
+                    {{ brand.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label for="inputAddress" class="form-label"
+                  >Short Description</label
+                >
+                <textarea
+                  class="form-control"
+                  name="short_description"
+                  id="short_description"
+                  formControlName="short_description"
+                >
+                </textarea>
+                <div id="emailHelp" class="form-text">
+                  Do not exceed 100 characters when entering the product name.
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="inputAddress" class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  name="description"
+                  id="description"
+                  formControlName="description"
+                >
+                </textarea>
+                <div class="form-text">
+                  Do not exceed 100 characters when entering the product name.
+                </div>
+              </div>
+
+              <div class="form-check mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="active"
+                  id="flexCheckDefault"
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  Save as Draft
+                </label>
+              </div>
+
+              <app-accordion>
+                <app-accordion-item
+                  *ngFor="let attribute of vm.attributes"
+                  [title]="attribute.name"
+                >
+                  <ng-template #content>
+                    <div
+                      class="form-check"
+                      *ngFor="let attributeValue of attribute.attribute_values"
+                    >
+                      <input
+                        class="form-check-input attribute-checkbox"
+                        type="checkbox"
+                        [formControlName]="'attribute-' + attributeValue.id"
+                      />
+                      <label class="form-check-label" for="flexCheckDefault">
+                        {{ attributeValue.name }}
+                      </label>
+                    </div>
+                  </ng-template>
+                </app-accordion-item>
+              </app-accordion>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-3 ms-3 col-lg-6">
+          <div class="card-body">
+            <div class="row g-3">
+              <div>
+                <div class="body-title">
+                  Upload images <span class="tf-color-1">*</span>
+                </div>
+                <div class="upload-image flex-grow">
+                  <div
+                    *ngIf="_formStore.image$ | async as image"
+                    class="item"
+                    id="imgpreview"
+                  >
+                    <img
+                      style="width: 220px"
+                      [src]="image"
+                      class="effect8"
+                      alt=""
+                    />
+                  </div>
+                  <div id="upload-file" class="item up-load">
+                    <label class="uploadfile" for="myFile">
+                      <span class="icon">
+                        <i class="fa fa-upload"></i>
+                      </span>
+                      <span class="body-text"
+                        >Drop your images here or select
+                        <span class="tf-color">click to browse</span></span
+                      >
+                      <input
+                        type="file"
+                        id="myFile"
+                        name="image"
+                        accept="image/*"
+                        formControlName="image"
+                        (change)="_formStore.selectFile($event)"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="body-title">Upload Gallery Images</div>
+                <div class="upload-image mb-16">
+                  <div id="galUpload" class="item up-load">
+                    <label class="uploadfile" for="gFile">
+                      <span class="icon">
+                        <i class="fa fa-upload"></i>
+                      </span>
+                      <span class="text-tiny"
+                        >Drop your images here or select
+                        <span class="tf-color">click to browse</span></span
+                      >
+                      <input
+                        formControlName="images"
+                        type="file"
+                        id="gFile"
+                        name="images[]"
+                        accept="image/*"
+                        multiple
+                        (change)="_formStore.bulkUpload($event)"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div
+                  *ngIf="_formStore.galleryImages$ | async as galleryImages"
+                  class="d-flex align-items-center justify-content-between"
+                >
+                  <img
+                    style="width: 100px"
+                    [src]="image"
+                    *ngFor="let image of galleryImages"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="inputEmail4" class="form-label"
+                  >Regular Price</label
+                >
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter regular price"
+                  name="regular_price"
+                  formControlName="regular_price"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="inputPassword4" class="form-label"
+                  >Sale Price</label
+                >
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter sale price"
+                  name="sale_price"
+                  formControlName="sale_price"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="inputEmail4" class="form-label">SKU</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter SKU"
+                  name="SKU"
+                  tabindex="0"
+                  formControlName="sku"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Quantity</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter quantity"
+                  name="quantity"
+                  formControlName="quantity"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="inputEmail4" class="form-label">Stock</label>
+                <select
+                  class="form-control"
+                  name="stock_status"
+                  formControlName="stock_status"
+                >
+                  <option value="">Select Option</option>
+                  <option
+                    *ngFor="let stock_status of StockStatus | keyvalue"
+                    value="{{ stock_status.key }}"
+                  >
+                    {{ stock_status.value }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Featured</label>
+                <select
+                  class="form-control"
+                  name="featured"
+                  id="featured"
+                  formControlName="featured"
+                >
+                  <option value="">Select Option</option>
+                  <option
+                    *ngFor="let featured of FeaturedEnum | keyvalue"
+                    value="{{ featured.key }}"
+                  >
+                    {{ featured.value }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="package_size" class="form-label">Package Size</label>
+              <select
+                class="form-control"
+                name="package_size"
+                id="package_size"
+                formControlName="package_size"
+              >
+                <option value="">Select Option</option>
+                <option
+                  *ngFor="let packageSize of PackageSizeEnum | keyvalue"
+                  value="{{ packageSize.value }}"
+                >
+                  {{ packageSize.value }}
+                </option>
+              </select>
+              <div class="form-text">
+                Small (up to 500g), Medium (up to 1kg), Large (up to 2kg)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="closeMe()"
+        >
+          Close
+        </button>
+        <button
+          [disabled]="saveButtonDisabled"
+          type="submit"
+          class="btn {{ saveButtonClass }}"
+          (click)="confirm()"
+        >
+          {{ saveButtonText }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Feature Modal -->
 <ng-template #username>
   <p *ngIf="days">
-    @if(days === 3) {
-      £1.00 will be deposited from your seller balance
-    } @else {
-      £1.55 will be deposited from your seller balance
-    }
+    @if(days === 3) { £1.00 will be deposited from your seller balance } @else {
+    £1.55 will be deposited from your seller balance }
   </p>
   <div class="form-check">
-    <input class="form-check-input" type="radio" name="days" id="flexRadioDefault1" value="3" (change)="changeBumpDays($event)">
-    <label class="form-check-label" for="flexRadioDefault1">
-      3 days
-    </label>
+    <input
+      class="form-check-input"
+      type="radio"
+      name="days"
+      id="flexRadioDefault1"
+      value="3"
+      (change)="changeBumpDays($event)"
+    />
+    <label class="form-check-label" for="flexRadioDefault1"> 3 days </label>
   </div>
   <div class="form-check">
-    <input class="form-check-input" type="radio" name="days" id="flexRadioDefault2" value="7" (change)="changeBumpDays($event)">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="days"
+      id="flexRadioDefault2"
+      value="7"
+      (change)="changeBumpDays($event)"
+    />
     <label class="form-check-label" for="flexRadioDefault2">
       7 days <span class="badge bg-success">Best value</span>
     </label>
   </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-success" data-bs-dismiss="modal" (click)="confirm()">Confirm</button>
-    <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
-  </div>
 </ng-template>
-
-<app-modal [title]="title" [saveButtonDisabled]="form?.invalid || false" [child]="child" (closeMeEvent)="close()"
-           (confirmEvent)="save()">
-  <ng-template #child>
-    <div class="card p-3" *ngIf="lookupVm$ | async as vm">
-      <div class="card-body" *ngIf="form">
-        <form admin-form method="POST" enctype="multipart/form-data" [formGroup]="form">
-          <input type="hidden" name="charge_featured" id="charge_featured" value="0">
-          <div class="d-flex">
-            <div class="card p-3 col-lg-6">
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-12">
-                    <label for="inputAddress" class="form-label">Name</label>
-                    <input class="form-control" type="text" placeholder="Enter product name" name="name"
-                           formControlName="name">
-                    <div class="form-text">Do not exceed 100 characters when entering the product name.
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <label for="inputAddress" class="form-label">Slug</label>
-                    <input class="form-control" type="text" placeholder="Enter product slug" name="slug"
-                           formControlName="slug">
-                  </div>
-                  <app-category-selector formControlName="category_id" [displayGrandchildren]="true"
-                                         [disableGrandchildren]="false"></app-category-selector>
-
-                  <!--                  <div class="col-md-6">-->
-                  <!--                    <label for="inputPassword4" class="form-label">Subcategory</label>-->
-                  <!--                    <select class="form-control" id="subcategoryDropdown" name="subcategory_id"-->
-                  <!--                            formControlName="subcategory_id">-->
-                  <!--                      <option value="">Choose Subcategory</option>-->
-                  <!--                      <option *ngFor="let subcategory of vm.subcategories"-->
-                  <!--                              [value]="subcategory.id">-->
-                  <!--                        {{ subcategory.name }}-->
-                  <!--                      </option>-->
-                  <!--                    </select>-->
-                  <!--                  </div>-->
-
-                  <div class="col-12">
-                    <label for="inputAddress" class="form-label">Brand</label>
-                    <select class="form-control" name="brand_id" formControlName="brand_id">
-                      <option value="">Choose Brand</option>
-                      <option *ngFor="let brand of vm.brands"
-                              [value]="brand.id">
-                        {{ brand.name }}
-                      </option>
-                    </select>
-                  </div>
-
-                  <div class="col-12">
-                    <label for="inputAddress" class="form-label">Short Description</label>
-                    <textarea class="form-control" name="short_description" id="short_description"
-                              formControlName="short_description">
-                        </textarea>
-                    <div id="emailHelp" class="form-text">Do not exceed 100 characters when entering the product
-                      name.
-                    </div>
-                  </div>
-
-                  <div class="col-12">
-                    <label for="inputAddress" class="form-label">Description</label>
-                    <textarea class="form-control" name="description" id="description" formControlName="description">
-                        </textarea>
-                    <div class="form-text">Do not exceed 100 characters when entering the product
-                      name.
-                    </div>
-                  </div>
-
-                  <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" formControlName="active" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Save as Draft
-                    </label>
-                  </div>
-
-                
-                  <app-accordion>
-                    <app-accordion-item *ngFor="let attribute of vm.attributes" [title]="attribute.name">
-                      <ng-template #content>
-                        <div class="form-check" *ngFor="let attributeValue of attribute.attribute_values">
-                          <input class="form-check-input attribute-checkbox" type="checkbox" [formControlName]="'attribute-'+attributeValue.id"/>
-                          <label class="form-check-label" for="flexCheckDefault">
-                            {{ attributeValue.name }}
-                          </label>
-                        </div>
-                      </ng-template>
-                    </app-accordion-item>
-                  </app-accordion>
-                </div>
-              </div>
-            </div>
-
-            <div class="card p-3 ms-3 col-lg-6">
-              <div class="card-body">
-                <div class="row g-3">
-                  <div>
-                    <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
-                    <div class="upload-image flex-grow">
-                      <div *ngIf="_formStore.image$ | async as image" class="item" id="imgpreview">
-                        <img style="width: 220px" [src]="image" class="effect8" alt="">
-                      </div>
-                      <div id="upload-file" class="item up-load">
-                        <label class="uploadfile" for="myFile">
-                                    <span class="icon">
-                                        <i class="fa fa-upload"></i>
-                                    </span>
-                          <span class="body-text">Drop your images here or select <span
-                            class="tf-color">click to browse</span></span>
-                          <input type="file" id="myFile" name="image" accept="image/*" formControlName="image"
-                                 (change)="_formStore.selectFile($event)">
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="body-title">Upload Gallery Images</div>
-                    <div class="upload-image mb-16">
-                      <div id="galUpload" class="item up-load">
-                        <label class="uploadfile" for="gFile">
-                                    <span class="icon">
-                                        <i class="fa fa-upload"></i>
-                                    </span>
-                          <span class="text-tiny">Drop your images here or select <span
-                            class="tf-color">click to browse</span></span>
-                          <input formControlName="images" type="file" id="gFile" name="images[]" accept="image/*" multiple (change)="_formStore.bulkUpload($event)">
-                        </label>
-                      </div>
-                    </div>
-
-                    <div *ngIf="_formStore.galleryImages$ | async as galleryImages" class="d-flex align-items-center justify-content-between">
-                      <img style="width: 100px" [src]="image" *ngFor="let image of galleryImages">
-                    </div>
-
-                  </div>
-
-                  <div class="col-md-6">
-                    <label for="inputEmail4" class="form-label">Regular Price</label>
-                    <input class="form-control" type="text" placeholder="Enter regular price" name="regular_price"
-                           formControlName="regular_price">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Sale Price</label>
-                    <input class="form-control" type="text" placeholder="Enter sale price" name="sale_price"
-                           formControlName="sale_price">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="inputEmail4" class="form-label">SKU</label>
-                    <input class="form-control" type="text" placeholder="Enter SKU" name="SKU" tabindex="0"
-                           formControlName="sku">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Quantity</label>
-                    <input class="form-control" type="text" placeholder="Enter quantity" name="quantity"
-                           formControlName="quantity">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="inputEmail4" class="form-label">Stock</label>
-                    <select class="form-control" name="stock_status" formControlName="stock_status">
-                      <option value="">Select Option</option>
-                      <option *ngFor="let stock_status of StockStatus | keyvalue"
-                              value="{{stock_status.key}}">{{ stock_status.value }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Featured</label>
-                    <select class="form-control" name="featured" id="featured" formControlName="featured">
-                      <option value="">Select Option</option>
-                      <option *ngFor="let featured of FeaturedEnum | keyvalue"
-                              value="{{featured.key}}">{{ featured.value }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label for="package_size" class="form-label">Package Size</label>
-                  <select class="form-control" name="package_size" id="package_size" formControlName="package_size">
-                    <option value="">Select Option</option>
-                    <option *ngFor="let packageSize of PackageSizeEnum | keyvalue"
-                            value="{{packageSize.value}}">{{ packageSize.value }}
-                    </option>
-                  </select>
-                  <div class="form-text">Small (up to 500g), Medium (up to 1kg), Large (up to 2kg)</div>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
-            <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
-                    (click)="save()">{{ saveButtonText }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </ng-template>
-</app-modal>
-
-<div class="modal" tabindex="-1" #featureModal id="testModal"> ...</div>
-

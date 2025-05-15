@@ -1,63 +1,104 @@
-<app-modal [child]="child" [title]="title" (closeMeEvent)="close()" (confirmEvent)="save()">
-    <ng-template #child>
-      <div class="card p-3">
-        <div class="card-body" *ngIf="form">
-          <form admin-form class="form-horizontal" method="post" [formGroup]="form" *ngIf="vm$ | async as vm">
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Title</label>
-              <input type="text" class="form-control" id="title" name="title" placeholder="Title"
-                     formControlName="title">
-            </div>
-
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Slug</label>
-                <input type="text" class="form-control" id="slug" name="slug" placeholder="Slug"
-                       formControlName="slug">
-              </div>
-
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Short Text</label>
-                <textarea class="form-control" id="short_text" name="short_text"
-                       formControlName="short_text"></textarea>
-              </div>
-
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Full Text</label>
-                <textarea class="form-control" id="full_text" name="full_text"
-                       formControlName="full_text"></textarea>
-              </div>
-  
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Category</label>
-              <select class="form-control" id="category_id" name="category_id" formControlName="category_id">
-                <option value="">Select Category</option>
-                <option *ngFor="let category of vm.categories"
-                        [value]="category.id">
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Tags</label>
-                <select class="form-control" id="tags" name="tags" formControlName="tags" multiple>
-                  <option value="">Select Tag</option>
-                  <option *ngFor="let tag of vm.tags"
-                          [value]="tag.id">
-                    {{ tag.name }}
-                  </option>
-                </select>
-              </div>
-  
-            <div class="modal-footer">
-              <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
-              <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
-                      (click)="save()">{{ saveButtonText }}
-              </button>
-            </div>
-          </form>
-        </div>
+<div class="card p-3">
+  <div class="card-body" *ngIf="form">
+    <form
+      admin-form
+      class="form-horizontal"
+      method="post"
+      [formGroup]="form"
+      *ngIf="vm$ | async as vm"
+    >
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Title</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          name="title"
+          placeholder="Title"
+          formControlName="title"
+        />
       </div>
-    </ng-template>
-  </app-modal>
-  
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Slug</label>
+        <input
+          type="text"
+          class="form-control"
+          id="slug"
+          name="slug"
+          placeholder="Slug"
+          formControlName="slug"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Short Text</label>
+        <textarea
+          class="form-control"
+          id="short_text"
+          name="short_text"
+          formControlName="short_text"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Full Text</label>
+        <textarea
+          class="form-control"
+          id="full_text"
+          name="full_text"
+          formControlName="full_text"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Category</label>
+        <select
+          class="form-control"
+          id="category_id"
+          name="category_id"
+          formControlName="category_id"
+        >
+          <option value="">Select Category</option>
+          <option *ngFor="let category of vm.categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Tags</label>
+        <select
+          class="form-control"
+          id="tags"
+          name="tags"
+          formControlName="tags"
+          multiple
+        >
+          <option value="">Select Tag</option>
+          <option *ngFor="let tag of vm.tags" [value]="tag.id">
+            {{ tag.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="closeMe()"
+        >
+          Close
+        </button>
+        <button
+          [disabled]="saveButtonDisabled"
+          type="submit"
+          class="btn {{ saveButtonClass }}"
+          (click)="save()"
+        >
+          {{ saveButtonText }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,5 +1,4 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {LookupStore} from "../../../../store/lookup.store";
 import {ModalComponent} from "../../../../shared/components/modal/modal.component";
@@ -27,9 +26,7 @@ export class FormComponent extends ModalComponent implements OnInit {
     super();
   }
 
-  override ngOnInit() {
-    super.ngOnInit();
-
+  ngOnInit() {
     this.initializeForm();
 
     this._lookupStore.getCategories();

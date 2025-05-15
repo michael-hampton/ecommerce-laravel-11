@@ -1,12 +1,13 @@
-import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import { Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { Config } from 'datatables.net';
 import { Subscription } from 'rxjs';
-import {ModalService} from '../../../../services/modal.service';
-import {ModalComponent} from '../../../../shared/components/modal/modal.component';
-import {FormComponent} from '../form/form.component';
-import { defaultPaging, FilterModel} from '../../../../types/filter.model';
+import { ModalService } from '../../../../services/modal.service';
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { FormComponent } from '../form/form.component';
+import { defaultPaging, FilterModel } from '../../../../types/filter.model';
 import { CourierStore } from '../../../../store/couriers/list.store';
 import { LookupStore } from '../../../../store/lookup.store';
+import { formatSearchText } from '../../../../core/common';
 
 @Component({
   selector: 'app-courier-list',
@@ -16,10 +17,6 @@ import { LookupStore } from '../../../../store/lookup.store';
   providers: [CourierStore]
 })
 export class CourierListComponent implements OnInit {
-  dtOptions: Config = {};
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
 
   private _store: CourierStore = inject(CourierStore)
   vm$ = this._store.vm$
@@ -37,8 +34,8 @@ export class CourierListComponent implements OnInit {
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.entry, data, {
+    this.modalService
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close'
       })
@@ -49,8 +46,8 @@ export class CourierListComponent implements OnInit {
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Courier'})
+    this.modalService
+      .openModal(FormComponent, data, { modalTitle: 'Edit Courier' })
       .subscribe((v) => {
         this._store.reset();
       });
@@ -58,15 +55,24 @@ export class CourierListComponent implements OnInit {
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Courier'})
+    this.modalService
+      .openModal(FormComponent, null, { modalTitle: 'Create Courier' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
+    const searchFilters = []
+    searchFilters.push({
+      column: 'name',
+      value: formatSearchText(filter),
+      operator: 'like'
+    })
+    filter = { ...filter, ...{ searchFilters: searchFilters } }
+
     this._store.updateFilter(filter)
+
   }
 
   reload() {
@@ -81,8 +87,8 @@ export class CourierListComponent implements OnInit {
       value: el.value,
       operator: '='
     })
-    const obj: FilterModel = {...defaultPaging, ...{searchFilters: searchFilters}}
-    
+    const obj: FilterModel = { ...defaultPaging, ...{ searchFilters: searchFilters } }
+
     this._store.updateFilter(obj)
   }
 }

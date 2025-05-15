@@ -1,3 +1,5 @@
+import { FilterModel } from "../types/filter.model";
+
 export const makeDate = (dateString: string): Date | null => {
   if (dateString) {
     // do check to make sure it is valid date
@@ -9,6 +11,8 @@ export const makeDate = (dateString: string): Date | null => {
   }
   return null;
 };
+
+export const formatSearchText = (filter: FilterModel) => filter.searchText ? `%${filter.searchText}%` : undefined
 
 // generate a random quick key
 export const uuid = (): string => {

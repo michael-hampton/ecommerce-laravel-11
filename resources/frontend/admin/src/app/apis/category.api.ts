@@ -33,6 +33,6 @@ export class CategoryApi {
   }
 
   getData(filter: FilterModel): Observable<any> {
-    return this.baseHttpClient.get(filter, MODULE);
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/search`, filter);
   }
 }

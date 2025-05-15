@@ -17,12 +17,7 @@ export class FilterStore<T extends object> extends ComponentStore<FilterState<T>
     this.patchState((state) => ({
       filter: {
         ...state.filter, ...{
-          sortBy: filters.sortBy,
-          sortDir: filters.sortDir,
-          page: filters.page,
-          limit: filters.limit,
-          searchText: filters.searchText,
-          searchFilters: this.applyFilters(state, filters)
+          ...filters, ...{ searchFilters: this.applyFilters(state, filters) }
         }
       }
     }));

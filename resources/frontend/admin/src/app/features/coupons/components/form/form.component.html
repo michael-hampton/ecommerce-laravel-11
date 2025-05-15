@@ -1,65 +1,120 @@
-<app-modal [title]="title" [saveButtonDisabled]="form?.invalid || false" [child]="child"
-           (closeMeEvent)="close()" (confirmEvent)="save()">
-  <ng-template #child>
-    <div class="card p-3" *ngIf="lookupVm$ | async as vm">
-      <div class="card-body" *ngIf="form">
-        <form admin-form method="POST" [formGroup]="form">
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Coupon Code</label>
-            <input type="text" class="form-control" id="code" name="code" placeholder="Code" formControlName="code">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Coupon Type</label>
-            <select class="form-select" name="type" formControlName="type">
-              <option value="">Select</option>
-              <option *ngFor="let coupon_type of CouponTypeEnum | keyvalue" value="{{coupon_type.key}}">{{coupon_type.value}}</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Coupon Value</label>
-            <input type="text" class="form-control" id="name" name="value" placeholder="Value" formControlName="value">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Cart Value</label>
-            <input type="text" class="form-control" id="cart_value" name="cart_value"
-                   placeholder="Cart Value" formControlName="cart_value">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">No of times coupon can be used</label>
-            <input type="text" class="form-control" id="usages" name="usages" placeholder="Usages"
-                   formControlName="usages">
-          </div>
-
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Expiry Date</label>
-            <input crinput validator="future" type="date" class="form-control" id="expires_at" name="expires_at" formControlName="expires_at">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Categories</label>
-            <select class="form-select" multiple name="categories[]" formControlName="categories">
-              <option *ngFor="let category of vm.categories"
-                      [value]="category.id">
-                {{ category.name }}
-              </option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Brands</label>
-            <select class="form-select" multiple name="brands[]" formControlName="brands">
-              <option *ngFor="let brand of vm.brands"
-                      [value]="brand.id">
-                {{ brand.name }}
-              </option>
-            </select>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
-            <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
-                    (click)="save()">{{ saveButtonText }}
-            </button>
-          </div>
-        </form>
+<div class="card p-3" *ngIf="lookupVm$ | async as vm">
+  <div class="card-body" *ngIf="form">
+    <form admin-form method="POST" [formGroup]="form">
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Coupon Code</label>
+        <input
+          type="text"
+          class="form-control"
+          id="code"
+          name="code"
+          placeholder="Code"
+          formControlName="code"
+        />
       </div>
-    </div>
-  </ng-template>
-</app-modal>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Coupon Type</label>
+        <select class="form-select" name="type" formControlName="type">
+          <option value="">Select</option>
+          <option
+            *ngFor="let coupon_type of CouponTypeEnum | keyvalue"
+            value="{{ coupon_type.key }}"
+          >
+            {{ coupon_type.value }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Coupon Value</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="value"
+          placeholder="Value"
+          formControlName="value"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Cart Value</label>
+        <input
+          type="text"
+          class="form-control"
+          id="cart_value"
+          name="cart_value"
+          placeholder="Cart Value"
+          formControlName="cart_value"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label"
+          >No of times coupon can be used</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="usages"
+          name="usages"
+          placeholder="Usages"
+          formControlName="usages"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Expiry Date</label>
+        <input
+          crinput
+          validator="future"
+          type="date"
+          class="form-control"
+          id="expires_at"
+          name="expires_at"
+          formControlName="expires_at"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Categories</label>
+        <select
+          class="form-select"
+          multiple
+          name="categories[]"
+          formControlName="categories"
+        >
+          <option *ngFor="let category of vm.categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Brands</label>
+        <select
+          class="form-select"
+          multiple
+          name="brands[]"
+          formControlName="brands"
+        >
+          <option *ngFor="let brand of vm.brands" [value]="brand.id">
+            {{ brand.name }}
+          </option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="closeMe()"
+        >
+          Close
+        </button>
+        <button
+          [disabled]="saveButtonDisabled"
+          type="submit"
+          class="btn {{ saveButtonClass }}"
+          (click)="save()"
+        >
+          {{ saveButtonText }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

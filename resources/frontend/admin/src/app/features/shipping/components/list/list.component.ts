@@ -6,6 +6,7 @@ import {ModalComponent} from '../../../../shared/components/modal/modal.componen
 import {FormComponent} from '../form/form.component';
 import { FilterModel} from '../../../../types/filter.model';
 import {ShippingStore} from '../../../../store/shipping/list.store';
+import { formatSearchText } from '../../../../core/common';
 
 @Component({
   selector: 'app-list',
@@ -15,10 +16,6 @@ import {ShippingStore} from '../../../../store/shipping/list.store';
   providers: [ShippingStore]
 })
 export class ListComponent implements OnInit {
-  dtOptions: Config = {};
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
 
   private _store: ShippingStore = inject(ShippingStore)
   vm$ = this._store.vm$
@@ -33,8 +30,8 @@ export class ListComponent implements OnInit {
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.entry, data, {
+    this.modalService
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close'
       })
@@ -45,8 +42,8 @@ export class ListComponent implements OnInit {
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Shipping'})
+    this.modalService
+      .openModal(FormComponent, data, {modalTitle: 'Edit Shipping'})
       .subscribe((v) => {
         this._store.reset();
       });
@@ -54,16 +51,25 @@ export class ListComponent implements OnInit {
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Shipping'})
+    this.modalService
+      .openModal(FormComponent, null, {modalTitle: 'Create Shipping'})
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
-  pageChanged(filter: FilterModel) {
-    this._store.updateFilter(filter)
-  }
+ pageChanged(filter: FilterModel) {
+     const searchFilters = []
+     searchFilters.push({
+       column: 'name',
+       value: formatSearchText(filter),
+       operator: 'like'
+     })
+     filter = { ...filter, ...{ searchFilters: searchFilters } }
+ 
+     this._store.updateFilter(filter)
+ 
+   }
 
   reload() {
     this._store.reset();

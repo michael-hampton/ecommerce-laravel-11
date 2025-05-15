@@ -6,6 +6,7 @@ import { ModalComponent } from "../../../../shared/components/modal/modal.compon
 import { ProductFormComponent } from '../../../../shared/components/product-form/product-form.component';
 import { defaultPaging, FilterModel } from '../../../../types/filter.model';
 import { GlobalStore } from '../../../../store/global.store';
+import { formatSearchText } from '../../../../core/common';
 
 @Component({
   selector: 'app-product-list',
@@ -37,7 +38,7 @@ export class ProductListComponent implements OnInit {
 
   edit(data: any) {
     this.sub = this.modalService
-      .openModal(ProductFormComponent, this.entry, data, { modalTitle: 'Edit Product' })
+      .openModal(ProductFormComponent, data, { modalTitle: 'Edit Product' })
       .subscribe((v) => {
         this._store.reset();
       });
@@ -45,7 +46,7 @@ export class ProductListComponent implements OnInit {
 
   delete = async (data: any) => {
     this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.entry, data, {
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close',
         //size: 'modal-sm'
@@ -59,7 +60,7 @@ export class ProductListComponent implements OnInit {
   add(event: Event) {
     event.preventDefault()
     this.sub = this.modalService
-      .openModal(ProductFormComponent, this.entry, null, { modalTitle: 'Create Product' })
+      .openModal(ProductFormComponent, null, { modalTitle: 'Create Product' })
       .subscribe((v) => {
         this._store.reset();
       });
@@ -69,7 +70,7 @@ export class ProductListComponent implements OnInit {
     const searchFilters = []
     searchFilters.push({
       column: 'name',
-      value: filter.searchText ? `%${filter.searchText}%` : undefined,
+      value: formatSearchText(filter),
       operator: 'like'
     })
     filter = { ...filter, ...{ searchFilters: searchFilters } }
@@ -86,18 +87,18 @@ export class ProductListComponent implements OnInit {
     const message = data.active ? 'This will hide the product from everywhere in the website' : 'This will show the product in all relevant places'
     const saveButtonText = data.active ? 'Hide' : 'Publish'
     this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.entry, data, { modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText })
+      .openConfirmationModal({ modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText })
       .subscribe((v) => {
         this._store.makeActive(data).subscribe()
       });
   }
 
   filterChanged(column: string, value: string) {
-    this.activeTab = value
+    this.activeTab = value === this.activeTab ? '' : value
     const searchFilters = []
     searchFilters.push({
       column: column,
-      value: value === 'published' ? true : false,
+      value: this.activeTab === '' ? undefined : this.activeTab === 'published' ? true : false,
       operator: '='
     })
     const obj: FilterModel = { ...defaultPaging, ...{ searchFilters: searchFilters } }

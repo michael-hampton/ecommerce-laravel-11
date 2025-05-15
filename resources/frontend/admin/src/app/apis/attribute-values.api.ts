@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import {AttributeValue} from '../types/attribute-values/attribute-value';
-import {FilterModel, PagedData} from '../types/filter.model';
-import {BaseHttpClient} from './base.http-client';
-import {environment} from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { AttributeValue } from '../types/attribute-values/attribute-value';
+import { FilterModel, PagedData } from '../types/filter.model';
+import { BaseHttpClient } from './base.http-client';
+import { environment } from '../../environments/environment';
 
 export const MODULE = 'attribute-values'
 
@@ -23,11 +23,11 @@ export class AttributeValuesApi {
     return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload);
   }
 
-  delete(id: number){
+  delete(id: number) {
     return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
-  getData(filter: FilterModel): Observable<any>{
-    return this.baseHttpClient.get(filter, MODULE);
+  getData(filter: FilterModel): Observable<any> {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/search`, filter);
   }
 }

@@ -1,11 +1,12 @@
-import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import { Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { Config } from 'datatables.net';
-import {Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ModalService } from '../../../../services/modal.service';
-import {BrandStore} from "../../../../store/brands/list.store";
-import {ModalComponent} from '../../../../shared/components/modal/modal.component';
-import {FormComponent} from '../form/form.component';
-import { FilterModel} from '../../../../types/filter.model';
+import { BrandStore } from "../../../../store/brands/list.store";
+import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { FormComponent } from '../form/form.component';
+import { FilterModel } from '../../../../types/filter.model';
+import { formatSearchText } from '../../../../core/common';
 
 @Component({
   selector: 'app-brand-list',
@@ -15,10 +16,6 @@ import { FilterModel} from '../../../../types/filter.model';
   providers: [BrandStore]
 })
 export class BrandListComponent implements OnInit {
-  dtOptions: Config = {};
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
 
   private _store: BrandStore = inject(BrandStore)
   vm$ = this._store.vm$
@@ -33,8 +30,8 @@ export class BrandListComponent implements OnInit {
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.entry, data, {
+    this.modalService
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close'
       })
@@ -45,8 +42,8 @@ export class BrandListComponent implements OnInit {
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Brand'})
+    this.modalService
+      .openModal(FormComponent, data, { modalTitle: 'Edit Brand' })
       .subscribe((v) => {
         this._store.reset();
       });
@@ -54,15 +51,24 @@ export class BrandListComponent implements OnInit {
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Brand'})
+    this.modalService
+      .openModal(FormComponent, null, { modalTitle: 'Create Brand' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
+    const searchFilters = []
+    searchFilters.push({
+      column: 'name',
+      value: formatSearchText(filter),
+      operator: 'like'
+    })
+    filter = { ...filter, ...{ searchFilters: searchFilters } }
+
     this._store.updateFilter(filter)
+
   }
 
   reload() {
@@ -72,10 +78,10 @@ export class BrandListComponent implements OnInit {
   makeActive(data: any) {
     const message = data.active ? 'This will hide the brand from the website, including the menu. Any products listed within the brand will no longer be accessible from inside the brand. They may still be accessible from any categories they are listed in' : 'This will show the brand from the website including the menu. Any products listed within the brand will become accessible from within it'
     const saveButtonText = data.active ? 'Hide' : 'Publish'
-    this.sub = this.modalService
-    .openConfirmationModal(ModalComponent, this.entry, data, {modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText})
-    .subscribe((v) => {
-      this._store.makeActive(data).subscribe()
-    });
+    this.modalService
+      .openConfirmationModal({ modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText })
+      .subscribe((v) => {
+        this._store.makeActive(data).subscribe()
+      });
   }
 }

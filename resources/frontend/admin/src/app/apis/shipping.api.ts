@@ -5,7 +5,6 @@ import {FilterModel, PagedData} from '../types/filter.model';
 import {BaseHttpClient} from './base.http-client';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {Country} from '../types/countries/country';
 
 export const MODULE = 'delivery-methods'
 
@@ -34,7 +33,7 @@ export class ShippingApi {
   }
 
   getData(filter: FilterModel) {
-   return this.baseHttpClient.get(filter, MODULE);
+   return this.httpClient.post(`${environment.apiUrl}/${MODULE}/search`, filter);
   }
 
   update(id: number, payload: any) {

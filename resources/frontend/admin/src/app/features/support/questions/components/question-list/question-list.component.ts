@@ -1,11 +1,12 @@
-import {Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
-import {Config} from 'datatables.net';
-import {Subscription} from 'rxjs';
+import { Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import { Config } from 'datatables.net';
+import { Subscription } from 'rxjs';
 import { SupportQuestionStore } from '../../../../../store/support/questions/list.store';
 import { ModalService } from '../../../../../services/modal.service';
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { FilterModel } from '../../../../../types/filter.model';
 import { QuestionFormComponent } from '../question-form/question-form.component';
+import { formatSearchText } from '../../../../../core/common';
 
 @Component({
   selector: 'app-question-list',
@@ -15,13 +16,6 @@ import { QuestionFormComponent } from '../question-form/question-form.component'
   providers: [SupportQuestionStore]
 })
 export class QuestionListComponent implements OnInit {
-  dtOptions: Config = {};
-
-  @ViewChild('confirmationModal', {read: ViewContainerRef})
-  deleteModalComponent!: ViewContainerRef;
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
 
   private _store: SupportQuestionStore = inject(SupportQuestionStore)
   vm$ = this._store.vm$
@@ -36,8 +30,8 @@ export class QuestionListComponent implements OnInit {
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.deleteModalComponent, data, {
+    this.modalService
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close'
       })
@@ -49,24 +43,33 @@ export class QuestionListComponent implements OnInit {
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
-      .openModal(QuestionFormComponent, this.entry, null, {modalTitle: 'Create Question'})
+    this.modalService
+      .openModal(QuestionFormComponent, null, { modalTitle: 'Create Question' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(QuestionFormComponent, this.entry, data, {modalTitle: 'Edit Question'})
+    this.modalService
+      .openModal(QuestionFormComponent, data, { modalTitle: 'Edit Question' })
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
-    this._store.updateFilter(filter)
-  }
+      const searchFilters = []
+      searchFilters.push({
+        column: 'name',
+        value: formatSearchText(filter),
+        operator: 'like'
+      })
+      filter = { ...filter, ...{ searchFilters: searchFilters } }
+  
+      this._store.updateFilter(filter)
+  
+    }
 
   reload() {
     this._store.reset()

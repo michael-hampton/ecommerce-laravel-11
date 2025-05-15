@@ -1,0 +1,39 @@
+<!-- Feature Modal -->
+
+<p *ngIf="days">
+  @if(days === 3) { £1.00 will be deposited from your seller balance } @else {
+  £1.55 will be deposited from your seller balance }
+</p>
+<div class="form-check">
+  <input
+    class="form-check-input"
+    type="radio"
+    name="days"
+    id="flexRadioDefault1"
+    value="3"
+    (change)="changeBumpDays($event)"
+  />
+  <label class="form-check-label" for="flexRadioDefault1"> 3 days </label>
+</div>
+<div class="form-check">
+  <input
+    class="form-check-input"
+    type="radio"
+    name="days"
+    id="flexRadioDefault2"
+    value="7"
+    (change)="changeBumpDays($event)"
+  />
+  <label class="form-check-label" for="flexRadioDefault2">
+    7 days <span class="badge bg-success">Best value</span>
+  </label>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-success" data-bs-dismiss="modal" (click)="confirm()">
+    Confirm
+  </button>
+  <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">
+    Close
+  </button>
+</div>

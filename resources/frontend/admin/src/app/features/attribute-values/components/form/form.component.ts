@@ -25,9 +25,7 @@ export class FormComponent extends ModalComponent implements OnInit {
     super();
   }
 
-  override ngOnInit() {
-    super.ngOnInit();
-
+  ngOnInit() {
     this.initializeForm();
 
     this._lookupStore.getAttributes();

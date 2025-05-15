@@ -6,6 +6,7 @@ import { SupportCategoryStore } from '../../../../../store/support/categories/li
 import { ModalService } from '../../../../../services/modal.service';
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { FilterModel } from '../../../../../types/filter.model';
+import { formatSearchText } from '../../../../../core/common';
 
 @Component({
     selector: 'app-list',
@@ -15,13 +16,6 @@ import { FilterModel } from '../../../../../types/filter.model';
     providers: [SupportCategoryStore]
   })
   export class ListComponent implements OnInit {
-  dtOptions: Config = {};
-
-  @ViewChild('confirmationModal', {read: ViewContainerRef})
-  deleteModalComponent!: ViewContainerRef;
-  @ViewChild('modal', {read: ViewContainerRef})
-  entry!: ViewContainerRef;
-  sub!: Subscription;
 
   private _store: SupportCategoryStore = inject(SupportCategoryStore)
   vm$ = this._store.vm$
@@ -36,8 +30,8 @@ import { FilterModel } from '../../../../../types/filter.model';
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
-      .openConfirmationModal(ModalComponent, this.deleteModalComponent, data, {
+    this.modalService
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close'
       })
@@ -49,24 +43,33 @@ import { FilterModel } from '../../../../../types/filter.model';
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, null, {modalTitle: 'Create Attribute Value'})
+    this.modalService
+      .openModal(FormComponent,null, {modalTitle: 'Create Attribute Value'})
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   edit(data: any) {
-    this.sub = this.modalService
-      .openModal(FormComponent, this.entry, data, {modalTitle: 'Edit Attribute Value'})
+    this.modalService
+      .openModal(FormComponent, data, {modalTitle: 'Edit Attribute Value'})
       .subscribe((v) => {
         this._store.reset();
       });
   }
 
   pageChanged(filter: FilterModel) {
-    this._store.updateFilter(filter)
-  }
+      const searchFilters = []
+      searchFilters.push({
+        column: 'name',
+        value: formatSearchText(filter),
+        operator: 'like'
+      })
+      filter = { ...filter, ...{ searchFilters: searchFilters } }
+  
+      this._store.updateFilter(filter)
+  
+    }
 
   reload() {
     this._store.reset()

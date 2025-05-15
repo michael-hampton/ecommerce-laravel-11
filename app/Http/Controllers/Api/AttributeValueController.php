@@ -23,11 +23,11 @@ class AttributeValueController extends ApiController
      */
     public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
     {
-        $attributeValues = $this->attributeValueRepository->setRequiredRelationships(['attribute'])->getPaginated(
+         $attributeValues = $this->attributeValueRepository->setRequiredRelationships(['attribute'])->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
-            ['name' => $searchRequest->get('searchText')]
+            $searchRequest->array('searchFilters')
         );
 
         return $this->sendPaginatedResponse($attributeValues, AttributeValueResource::collection($attributeValues));

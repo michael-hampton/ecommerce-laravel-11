@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { ModalComponent } from '../modal/modal.component';
@@ -10,6 +10,7 @@ import { FeaturedEnum } from '../../../types/products/featured.enum';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AttributeValue } from '../../../types/attribute-values/attribute-value';
 import { PackageSizeEnum } from '../../../types/products/package-size.enum';
+import { ModalService } from '../../../services/modal.service';
 
 
 @Component({
@@ -17,16 +18,13 @@ import { PackageSizeEnum } from '../../../types/products/package-size.enum';
   standalone: false,
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.scss',
-  providers: [ProductFormStore]
+  providers: [ProductFormStore],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductFormComponent extends ModalComponent implements OnInit {
-  @ViewChild('modal') content!: ElementRef;
-  @ViewChild('username') input: TemplateRef<any>;
-  @ViewChild('child') child2: TemplateRef<any>;
+  @ViewChild('username') input: TemplateRef<any>
 
   form?: FormGroup;
-  @ViewChild('featureModal', { static: true, read: ViewContainerRef })
-  featureModal!: ViewContainerRef;
   days: number
 
   private _lookupStore = inject(LookupStore);
@@ -37,13 +35,13 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
   private attributeValues: AttributeValue[] = [];
   testModal: any;
 
+  private _modalService = inject(ModalService)
+
   public constructor(private fb: FormBuilder) {
     super();
   }
 
-  override ngOnInit() {
-    super.ngOnInit();
-
+  ngOnInit() {
     forkJoin([
       this._lookupStore.getCategories(),
       this._lookupStore.getBrands(),
@@ -88,8 +86,8 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
   ngAfterViewInit() {
     this.form?.controls['featured'].valueChanges.subscribe(value => {
       if (value === 'yes') {
-        this.modalService
-          .openConfirmationModal(ModalComponent, this.featureModal, {}, {
+        this._modalService
+          .openConfirmationModal({
             modalTitle: 'Make this product featured?',
             template: this.input,
             showFooter: false
@@ -101,7 +99,7 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
     });
   }
 
-  async save() {
+  async confirm() {
     const file = await firstValueFrom(this._formStore.file$)
 
     const user = this._authService.GetUser()

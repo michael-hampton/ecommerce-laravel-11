@@ -1,40 +1,67 @@
-<app-modal [child]="child" [title]="title" (closeMeEvent)="close()" (confirmEvent)="save()">
-    <ng-template #child>
-      <div class="card p-3">
-        <div class="card-body" *ngIf="form">
-          <form admin-form class="form-horizontal" method="post" [formGroup]="form" *ngIf="vm$ | async as vm">
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Question</label>
-              <input type="text" class="form-control" id="name" name="question" placeholder="Question"
-                     formControlName="question">
-            </div>
-
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Answer</label>
-                <textarea class="form-control" id="answer" name="answer" placeholder="Answer"
-                       formControlName="answer"></textarea>
-              </div>
-  
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Category</label>
-              <select class="form-control" id="category_id" name="category_id" formControlName="category_id">
-                <option value="">Select Category</option>
-                <option *ngFor="let category of vm.categories"
-                        [value]="category.id">
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
-  
-            <div class="modal-footer">
-              <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeMe()">Close</button>
-              <button [disabled]="saveButtonDisabled" type="submit" class="btn {{saveButtonClass}}"
-                      (click)="save()">{{ saveButtonText }}
-              </button>
-            </div>
-          </form>
-        </div>
+<div class="card p-3">
+  <div class="card-body" *ngIf="form">
+    <form
+      admin-form
+      class="form-horizontal"
+      method="post"
+      [formGroup]="form"
+      *ngIf="vm$ | async as vm"
+    >
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Question</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="question"
+          placeholder="Question"
+          formControlName="question"
+        />
       </div>
-    </ng-template>
-  </app-modal>
-  
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Answer</label>
+        <textarea
+          class="form-control"
+          id="answer"
+          name="answer"
+          placeholder="Answer"
+          formControlName="answer"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Category</label>
+        <select
+          class="form-control"
+          id="category_id"
+          name="category_id"
+          formControlName="category_id"
+        >
+          <option value="">Select Category</option>
+          <option *ngFor="let category of vm.categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="closeMe()"
+        >
+          Close
+        </button>
+        <button
+          [disabled]="saveButtonDisabled"
+          type="submit"
+          class="btn {{ saveButtonClass }}"
+          (click)="save()"
+        >
+          {{ saveButtonText }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
