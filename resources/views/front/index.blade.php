@@ -8,7 +8,7 @@
             }
         </style>
 
-        <div class="container col-8">
+        <div class="container col-12 col-lg-8">
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
   @foreach($slides as $count => $slide)
@@ -169,7 +169,7 @@
 
             <!-- Featured Products -->
             @if($featuredProducts->count() > 0)
-                @include('front/partials/product-row', ['products' => $featuredProducts, 'title' => 'Featured Products'])
+                @include('front.partials.product-row', ['products' => $featuredProducts, 'title' => 'Featured Products'])
             @endif
         </div>
 

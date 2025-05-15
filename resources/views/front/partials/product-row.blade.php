@@ -1,7 +1,7 @@
 @php use App\Helper;use App\Services\Cart\Facade\Cart; @endphp
 
-<div class="container mt-5">
-    <div class="row g4">
+<div class="mt-5">
+    {{-- <div class="row g4"> --}}
         <h2>{{$title}}</h2>
         <div class="products-grid row ps-3 pe-3" id="products-grid">
             @foreach($products as $product)
@@ -95,4 +95,4 @@
             @endforeach
         </div>
     </div>
-</div>
+{{-- </div> --}}

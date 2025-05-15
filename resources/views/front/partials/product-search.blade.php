@@ -4,7 +4,7 @@
         font-size: 10px !important;
     }
 </style>
-<div class="products-grid row row-cols-2 row-cols-md-3" id="products-grid">
+<div class="products-grid row row-cols-md-3" id="products-grid">
     @forelse($products as $product)
         <div class="col-md-4 mb-3 mb-md-4 mb-xxl-5">
             <div class="card">
