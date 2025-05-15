@@ -9,6 +9,7 @@ use App\Models\DeliveryMethod;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\SellerBalance;
+use App\Models\SellerWithdrawal;
 use App\Models\User;
 use App\Services\Cart\Facade\Cart;
 use Database\Factories\UserFactory;
@@ -190,6 +191,7 @@ class OrderTest extends TestCase
 
 
         $this->assertDatabaseHas('seller_balance', ['balance' => 500 - $expectedTotal, 'seller_id' => $this->seller->id]);
+        $this->assertDatabaseHas('seller_withdrawals', ['amount' => $expectedTotal, 'seller_id' => $this->seller->id]);
         $this->assertDatabaseHas('orders', ['customer_id' => $this->seller->id, 'address_id' => $address->id, 'total' => $expectedTotal, 'shipping' => $deliveryMethod->price * 3]);
 
         foreach ($orderItems as $product) {
@@ -240,6 +242,7 @@ class OrderTest extends TestCase
 
 
         $this->assertDatabaseHas('seller_balance', ['balance' => 500 - $expectedTotal, 'seller_id' => $this->seller->id]);
+        $this->assertDatabaseHas('seller_withdrawals', ['amount' => $expectedTotal, 'seller_id' => $this->seller->id]);
         $this->assertDatabaseHas('orders', ['customer_id' => $this->seller->id, 'address_id' => $address->id, 'total' => $expectedTotal, 'shipping' => 10.99]);
         $this->assertDatabaseHas('transactions', ['seller_id' => $this->seller->id, 'total' => $sellerTotal, 'shipping' => $sellerShippingPrice]);
     }
@@ -285,11 +288,12 @@ class OrderTest extends TestCase
 
         $this->assertDatabaseHas('order_items', $orderItem);
         $this->assertDatabaseHas('seller_balance', ['balance' => 500 - $orderTotal, 'seller_id' => $this->seller->id]);
+        $this->assertDatabaseHas('seller_withdrawals', ['amount' => $orderTotal, 'seller_id' => $this->seller->id]);
         $this->assertDatabaseHas('orders', ['customer_id' => $this->seller->id, 'address_id' => $address->id, 'total' => $orderTotal, 'shipping' => $deliveryMethod->price]);
         $this->assertDatabaseHas('transactions', ['seller_id' => $this->seller->id, 'total' => ($product->regular_price + $deliveryMethod->price), 'shipping' => $deliveryMethod->price]);
     }
 
-     public function test_create_order_single_item_multiple_quantities()
+    public function test_create_order_single_item_multiple_quantities()
     {
         $product = Product::factory()->create(['seller_id' => $this->seller->id]);
 
@@ -330,6 +334,7 @@ class OrderTest extends TestCase
 
         $this->assertDatabaseHas('order_items', $orderItem);
         $this->assertDatabaseHas('seller_balance', ['balance' => 500 - $orderTotal, 'seller_id' => $this->seller->id]);
+        $this->assertDatabaseHas('seller_withdrawals', ['amount' => $orderTotal, 'seller_id' => $this->seller->id]);
         $this->assertDatabaseHas('orders', ['customer_id' => $this->seller->id, 'address_id' => $address->id, 'total' => $orderTotal, 'shipping' => $deliveryMethod->price]);
         $this->assertDatabaseHas('transactions', ['seller_id' => $this->seller->id, 'total' => (($product->regular_price * 3) + $deliveryMethod->price), 'shipping' => $deliveryMethod->price]);
     }

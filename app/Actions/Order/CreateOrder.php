@@ -171,7 +171,7 @@ class CreateOrder
                     WithdrawalTypeEnum::OrderSpent,
                     WithdrawalEnum::Decrease,
                     $order->id
-                ))->updateBalance();
+                ))->updateBalance()->withdraw();
             }
 
             Cart::deleteStoredCart('cart');

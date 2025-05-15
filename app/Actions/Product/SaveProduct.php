@@ -49,7 +49,7 @@ class SaveProduct
             WithdrawalTypeEnum::BumpProduct,
             WithdrawalEnum::Decrease,
             $product->id
-        ))->updateBalance();
+        ))->updateBalance()->withdraw();
 
         return true;
     }

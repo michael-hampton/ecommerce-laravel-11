@@ -1,6 +1,5 @@
 import { ComponentStore } from '@ngrx/component-store';
 import { FilterModel, FilterState, SearchFilter, SearchFilterModel } from '../types/filter.model';
-import { firstValueFrom } from 'rxjs';
 
 export class FilterStore<T extends object> extends ComponentStore<FilterState<T>> {
 
@@ -23,7 +22,7 @@ export class FilterStore<T extends object> extends ComponentStore<FilterState<T>
     }));
   }
 
-  applyFilters(state, filter) {
+  applyFilters(state: FilterState<T>, filter: FilterModel) {
     if (!state.filter.searchFilters.length) {
       return filter.searchFilters.filter(x => x.value !== undefined)
     }

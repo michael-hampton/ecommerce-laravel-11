@@ -22,7 +22,7 @@ class WithdrawalService implements IWithdrawalService
     ) {
     }
 
-    public function updateBalance()
+    public function updateBalance(): static
     {
         $previousBalance = SellerBalance::where('seller_id', $this->sellerId)->orderByDesc('created_at')->first();
 
@@ -32,11 +32,6 @@ class WithdrawalService implements IWithdrawalService
             throw new Exception('Insufficient balance');
         }
 
-        $withdrawalData = [
-            'amount' => $this->amount,
-            'seller_id' => $this->sellerId,
-        ];
-
         $data = [
             'seller_id' => auth()->id(),
             'balance' => $newBalance,
@@ -45,22 +40,43 @@ class WithdrawalService implements IWithdrawalService
         ];
 
         if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderReceived) {
-            $withdrawalData['transaction_id'] = $this->id;
             $data['transaction_id'] = $this->id;
         }
 
         if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::BumpProduct) {
-            $withdrawalData['product_id'] = $this->id;
             $data['product_id'] = $this->id;
         }
 
         if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderSpent) {
-            $withdrawalData['order_id'] = $this->id;
             $data['order_id'] = $this->id;
         }
 
-        //SellerWithdrawal::create($withdrawalData);
+        SellerBalance::create($data);
 
-        return SellerBalance::create($data);
+        return $this;
+    }
+
+    public function withdraw(): static
+    {
+        $withdrawalData = [
+            'amount' => $this->amount,
+            'seller_id' => $this->sellerId,
+        ];
+
+        if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderReceived) {
+            $withdrawalData['transaction_id'] = $this->id;
+        }
+
+        if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::BumpProduct) {
+            $withdrawalData['product_id'] = $this->id;
+        }
+
+        if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderSpent) {
+            $withdrawalData['order_id'] = $this->id;
+        }
+
+        SellerWithdrawal::create($withdrawalData);
+
+        return $this;
     }
 }
