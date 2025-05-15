@@ -42,6 +42,23 @@
       property="products"
       [sortable]="true"
     ></data-table-column>
+    <data-table-column header="Active" property="active" [sortable]="false">
+      <ng-template #dataTableCell let-item="item">
+        @if (item.active === true) {
+        <i
+          style="cursor: pointer"
+          class="fa fa-check"
+          (click)="makeActive(item)"
+        ></i>
+        } @else {
+        <i
+          style="cursor: pointer"
+          class="fa fa-times-circle"
+          (click)="makeActive(item)"
+        ></i>
+        }
+      </ng-template>
+    </data-table-column>
     <data-table-column header="Action" [sortable]="false">
       <ng-template #dataTableCell let-item="item">
         <div class="dropdown">
