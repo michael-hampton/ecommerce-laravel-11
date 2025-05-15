@@ -8,7 +8,7 @@
             }
         </style>
 
-        <div class="container col-12 col-lg-8">
+        <div class="container col-12 col-lg-8 mt-5">
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
   @foreach($slides as $count => $slide)
