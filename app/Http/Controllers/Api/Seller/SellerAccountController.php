@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers\Api\Seller;
 
+use App;
 use App\Actions\Seller\CreateCard;
 use App\Actions\Seller\DeleteBankAccount;
 use App\Actions\Seller\RemoveCard;
@@ -23,10 +24,19 @@ class SellerAccountController extends ApiController
      */
     public function index()
     {
+        $test = (new App\Services\PaymentProviders\Stripe())->getPaymentMethodsForCustomer(auth()->user()->id);
 
-        return response()->json(CardDetailsResource::collection(SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
-            ->where('type', 'card')
-            ->get()));
+        $results = collect($test['data'])->map(function ($item) {
+            return [
+                'card_type' => $item['card']['brand'],
+                'card_expiry_date' => $item['card']['exp_month'] . '/' . $item['card']['exp_year'],
+                'formatted_card_number' => $item['card']['last4'],
+                'card_number' => $item['card']['last4'],
+            ];
+        });
+
+
+        return response()->json($results);
     }
 
     /**
@@ -36,7 +46,7 @@ class SellerAccountController extends ApiController
     {
         $result = $createCard->handle($updateSellerCardDetails);
 
-        return $result ? $this->success(CardDetailsResource::make($result), 'Card Created') : $this->error($result);
+        return $result ? $this->success($result, 'Card Created') : $this->error($result);
     }
 
     /**
@@ -87,7 +97,7 @@ class SellerAccountController extends ApiController
     {
         $sellerBankDetails = $saveBankAccount->handle($updateSellerBankDetails);
 
-        if (! $sellerBankDetails) {
+        if (!$sellerBankDetails) {
             return $this->error('Unable to save bank details');
         }
 

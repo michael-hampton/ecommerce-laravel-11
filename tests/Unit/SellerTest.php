@@ -11,11 +11,13 @@ use App\Models\SellerBalance;
 use App\Models\SellerBankDetails;
 use App\Models\SellerBillingInformation;
 use App\Models\SellerWithdrawal;
+use App\Models\Transaction;
 use App\Models\User;
 use Database\Seeders\NotificationTypes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -38,6 +40,38 @@ class SellerTest extends TestCase
         $this->user = User::factory()->create();
         $this->review = $this->seller->reviews()->create(['comment' => $this->faker->sentence(), 'rating' => 5, 'user_id' => $this->user->id]);
 
+        // Artisan::call('migrate');
+    }
+
+    /*public function test_activate_account()
+    {
+        $country = Country::factory()->create(['name' => 'United Kingdom']);
+
+        Profile::factory()->create(['user_id' => $this->seller->id]);
+
+        $payload = [
+            'name' => $this->faker->name(),
+            'email' => $this->faker->email(),
+            'phone' => $this->faker->e164PhoneNumber(),
+            'city' => $this->faker->city(),
+            'state' => $this->faker->state(),
+            'address1' => $this->faker->streetName(),
+            'address2' => $this->faker->streetAddress(),
+            'country_id' => $country->id,
+            'zip' => $this->faker->postcode(),
+        ];
+
+        $this->json('post', "api/sellers/account/balance/activate", $payload)
+            ->assertStatus(200);
+    }*/
+
+    public function test_setup_intent() {
+        $profile = Profile::factory()->create(['external_customer_id' => 'cus_SJyqzdInrrlYJn', 'user_id' => $this->seller->id, 'external_account_id' => 'acct_1RPlYaIuwquf029r']);
+        $country = Country::factory()->create(['name' => 'United Kingdom', 'code' => 'GB']);
+        $stripe = new \App\Services\PaymentProviders\Stripe();
+
+        $test = (new \App\Services\PaymentProviders\Stripe())->getBankAccount($profile->user_id, 'ba_1RPlfPIuwquf029rfdqShj0k' );
+    
     }
 
     public function test_update_profile()
@@ -208,10 +242,10 @@ class SellerTest extends TestCase
     public function test_create_card_details()
     {
         $payload = [
-            'card_name' => $this->faker->name(),
-            'card_number' => $this->faker->creditCardNumber(),
-            'card_expiry_date' => $this->faker->creditCardExpirationDateString(),
-            'card_cvv' => '123',
+            'payment_method_id' => $this->faker->word()
+            // 'card_number' => $this->faker->creditCardNumber(),
+            // 'card_expiry_date' => $this->faker->creditCardExpirationDateString(),
+            // 'card_cvv' => '123',
         ];
 
         $response = $this->json('post', "api/sellers/account/card", $payload)
@@ -247,10 +281,10 @@ class SellerTest extends TestCase
     public function test_credit_card_validation_fails()
     {
         $payload = [
-            'card_name' => '',
-            'card_number' => '',
-            'card_expiry_date' => '',
-            'card_cvv' => '',
+            'payment_method_id' => '',
+            // 'card_number' => '',
+            // 'card_expiry_date' => '',
+            // 'card_cvv' => '',
         ];
 
         $response = $this->json('post', "api/sellers/account/card", $payload)
@@ -260,15 +294,15 @@ class SellerTest extends TestCase
                     'success' => false,
                     'message' => "Validation failed.",
                     'errors' => [
-                        'card_name' => [
-                            'The card name field is required.'
+                        'payment_method_id' => [
+                            'The payment method id field is required.'
                         ],
-                        'card_number' => [
-                            'The card number field is required.'
-                        ],
-                        'card_expiry_date' => [
-                            'The card expiry date field is required.'
-                        ]
+                        // 'card_number' => [
+                        //     'The card number field is required.'
+                        // ],
+                        // 'card_expiry_date' => [
+                        //     'The card expiry date field is required.'
+                        // ]
                     ]
                 ]
             );

@@ -158,6 +158,7 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
     Route::post('reviews/reply', [App\Http\Controllers\Api\Seller\ReviewController::class, 'createReply'])->name('sellers.reviews');
     Route::post('sellers/account/balance/activate', [SellerBalanceController::class, 'activate'])->name('sellers.getWithdrawals');
     Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('');
+    Route::get('stripe/create-payment-intent', [SellerBalanceController::class,'createPaymentIntent'])->name('createPaymentIntent');
 
 
     // Faq Articles

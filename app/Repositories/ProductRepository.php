@@ -23,12 +23,24 @@ class ProductRepository extends BaseRepository implements IProductRepository
                 $builder->where('approved', true);
             })
             ->where('quantity', '>', 0)
+            ->where('featured', true)
             ->where('active', true)
             ->with($this->requiredRelationships)
-            ->orderBy('name')
+            ->orderBy('name', 'asc')
+            ->orderBy('featured', 'desc')
             ->limit(4)
             ->inRandomOrder()
             ->get();
+    }
+
+    public function getProductsForShop(int $paged = 15, string $orderBy = 'created_at', string $sort = 'desc', $search = [])
+    {
+
+        return $this->applyFilters($search)
+            ->with($this->requiredRelationships)
+            ->orderBy($orderBy, $sort)
+            ->orderBy('featured', 'desc')
+            ->paginate($paged);
     }
 
     public function getFeaturedProducts()

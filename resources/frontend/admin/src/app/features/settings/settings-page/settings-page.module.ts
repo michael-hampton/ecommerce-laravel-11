@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SettingsPageRoutingModule } from './settings-page-routing.module';
@@ -12,6 +12,8 @@ import { ShopDetailsComponent } from './components/shop-details/shop-details.com
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
 import { CoreModule } from "../../../core/core.module";
+import { NgxStripeModule, provideNgxStripe } from 'ngx-stripe';
+import { environment } from '../../../../environments/environment';
 
 
 @NgModule({
@@ -30,7 +32,15 @@ import { CoreModule } from "../../../core/core.module";
     ReactiveFormsModule,
     SharedModule,
     FormsModule,
-    CoreModule
+    CoreModule,
+    NgxStripeModule.forRoot()
 ]
 })
-export class SettingsPageModule { }
+export class SettingsPageModule {
+   static forRoot(){
+    return {
+      ngModule: SettingsPageModule,
+      providers: [ provideNgxStripe ]
+    }
+  }
+ }

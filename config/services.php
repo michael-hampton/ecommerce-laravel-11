@@ -14,6 +14,11 @@ return [
     |
     */
 
+    'paymongo' => [
+        'api_key' => env('PAYMONGO_API_KEY'),
+        'secret_key' => env('PAYMONGO_SECRET_KEY')
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

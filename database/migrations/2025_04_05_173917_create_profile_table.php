@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('biography')->nullable();
             $table->text('allowed_shipping_methods')->nullable();
+            $table->string('external_account_id')->nullable();
+            $table->string('external_customer_id')->nullable();
             $table->string('city')->nullable();
             $table->string('zip')->nullable();
             $table->string('state')->nullable();

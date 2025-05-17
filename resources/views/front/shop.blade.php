@@ -228,7 +228,7 @@
                     @if(!empty($brands))
                         <div class="filter-group">
                             <h6 class="mb-3">Brands</h6>
-                            @foreach($brands->where('parent_id', 0) as $brand)
+                            @foreach($brands->where('parent_id', 0)->take(10) as $brand)
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="{{$brand->name}}" value="{{$brand->id}}"
                                         name="brands" @if(in_array($brand->id, explode(',', $brandId))) checked="checked" @endif>

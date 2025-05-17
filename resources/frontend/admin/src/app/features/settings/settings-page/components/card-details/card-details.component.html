@@ -55,7 +55,7 @@
         class="card-body position-relative z-2 nav align-items-center justify-content-center py-5"
       >
         <a
-          class="nav-link animate-underline stretched-link min-w-0 fs-base px-0" href="javascript:void()"
+          class="nav-link animate-underline stretched-link min-w-0 fs-base px-0" href="javascript:void(0)"
           (click)="addPaymentMethod()"
         >
           <i class="ci-plus fs-lg ms-n2 me-2"></i>
@@ -70,7 +70,8 @@
 
 <ng-template #cardForm>
   <form class="needs-validation" novalidate="" [formGroup]="form">
-    <div class="mb-3">
+    <ng-container *ngIf="!useStripe">
+      <div class="mb-3">
       <label for="card-number" class="form-label">Card number</label>
       <div class="position-relative" data-input-format="{&quot;creditCard&quot;: true}">
         <input type="text" class="form-control form-icon-end rounded-pill" id="card-number" style="background-image: none" placeholder="XXXX XXXX XXXX XXXX" required="" formControlName="cardNumber">
@@ -91,6 +92,16 @@
         <input type="text" class="form-control rounded-pill" id="card-cvc" data-input-format="{&quot;numericOnly&quot;: true, &quot;blocks&quot;: [3]}" placeholder="XXX" required="" formControlName="cvvCode">
       </div>
     </div>
+    </ng-container>
+  
   </form>
 </ng-template>
+
+<ng-container *ngIf="useStripe">
+   <div id="card-element">
+          <!--Stripe.js injects the Payment Element-->
+        </div>
+
+      <button class="btn btn-primary" (click)="addCard()">Add Card</button>
+    </ng-container>
 

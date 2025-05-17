@@ -11,6 +11,8 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Models\Country;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
+use App\Services\PaymentProviders\PayMongo;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,5 +78,31 @@ class CheckoutController extends Controller
         Session::forget('order_id');
 
         return view('front.order-confirmation', ['order' => $order]);
+    }
+
+    public function createPayMongoPaymentIntent(Request $request): JsonResponse
+    {
+        $intent = (new PayMongo())->createPaymentIntent($request->all());
+
+        return response()->json(['id' => $intent]);
+    }
+
+    public function checkoutPayMongo(Request $request) {
+         if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (!empty($request->integer('shipping_id'))) {
+            \App\Services\Cart\Facade\Cart::instance('cart')->setShippingId($request->integer('shipping_id'));
+        }
+
+        $countries = Country::orderBy('name', 'asc')->get();
+        $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
+
+        return view('front.checkout-paymongo', [
+            'addresses' => $addresses,
+            'countries' => $countries,
+            'currency' => config('shop.currency'),
+        ]);
     }
 }

@@ -31,6 +31,8 @@ class Profile extends Model
         'email',
         'balance_activated',
         'date_of_birth',
+        'external_customer_id',
+        'external_account_id'
     ];
 
     protected $casts = ['active' => 'boolean'];

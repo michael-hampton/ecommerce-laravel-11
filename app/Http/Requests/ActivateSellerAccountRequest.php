@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateSellerCardDetails extends FormRequest
+class ActivateSellerAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +22,15 @@ class UpdateSellerCardDetails extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_method_id' => 'required',
-            // 'card_name' => 'required',
-            // 'card_number' => 'required',
-            // 'card_expiry_date' => 'required',
-            // 'card_cvv' => 'required',
-            // 'card_sort_code' => 'required',
-            // 'card_type' => 'required',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'address1' => 'required|string|max:255',
+            'address2' => 'sometimes|string|max:255',
+            'country_id' => 'required',
+            'zip' => 'required|string|max:100',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required|string|max:255',
         ];
     }
 }

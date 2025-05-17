@@ -25,6 +25,7 @@ class Transaction extends Model
         'shipping',
         'discount',
         'withdrawn',
+        'external_payment_id'
     ];
 
     public function order()

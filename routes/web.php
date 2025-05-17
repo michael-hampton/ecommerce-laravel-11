@@ -4,6 +4,7 @@ use App\Http\Controllers\AngularController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\PaymentProviders\PaypalController;
 use App\Http\Middleware\AuthAdmin;
@@ -145,9 +146,11 @@ Route::post('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 
 // checkout
 Route::get('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.index');
 Route::get('/checkout/card', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.card');
+Route::get('/checkout/pay-mongo', [App\Http\Controllers\Front\CheckoutController::class, 'checkoutPayMongo'])->name('checkout.payMongo');
 Route::post('/checkout/place-order', [App\Http\Controllers\Front\CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
 Route::post('/checkout/card/place-card-order', [App\Http\Controllers\Front\CheckoutController::class, 'placeCardOrder'])->name('checkout.placeCardOrder');
 Route::get('/checkout/order-confirmation', [App\Http\Controllers\Front\CheckoutController::class, 'orderConfirmation'])->name('checkout.orderConfirmation');
+Route::post('/checkout/paymongo/create-intent', [CheckoutController::class,'createPayMongoPaymentIntent'])->name('checkout.createPayMongoPaymentIntent');
 
 
 Route::get('/change-password', [HomeController::class, 'changePassword'])->name('change-password');

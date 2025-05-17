@@ -25,6 +25,7 @@ class SellerBankDetails extends Model
         'card_name',
         'card_sort_code',
         'type',
+        'payment_method_id'
     ];
 
     public function casts()

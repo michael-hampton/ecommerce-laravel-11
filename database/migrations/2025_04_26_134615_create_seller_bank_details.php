@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('card_sort_code')->nullable();
             $table->string('card_cvv')->nullable();
             $table->unsignedBigInteger('seller_id');
+            $table->string('payment_method_id')->nullable();
             $table->foreign('seller_id')->references('id')->on('users');
 
             $table->timestamps();

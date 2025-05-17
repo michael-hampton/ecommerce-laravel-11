@@ -7,24 +7,28 @@ import { UiError } from "../../../../../core/error.model";
 import { SellerApi } from "../../../../../apis/seller.api";
 import { GlobalStore } from "../../../../../store/global.store";
 import { HttpErrorResponse } from "@angular/common/http";
+import { StripeApi } from "../../../../../apis/stripe.api";
 
 export interface CardDetailsState {
     card_details: AccountDetails[],
-    loading: boolean
+    loading: boolean,
+    id: string
 }
 
 const defaultState: CardDetailsState = {
     card_details: [],
-    loading: false
+    loading: false,
+    id: ''
 };
 
 @Injectable()
 export class CardDetailsStore extends ComponentStore<CardDetailsState> {
-    constructor(private _api: SellerApi, private _globalStore: GlobalStore) {
+    constructor(private _api: SellerApi, private _globalStore: GlobalStore, private _stripeApi: StripeApi) {
         super(defaultState);
     }
 
     readonly cards$ = this.select(({ card_details }) => card_details);
+    readonly id$ = this.select(({ id }) => id);
 
     vm$ = this.select(state => ({
         loading: state.loading,
@@ -38,6 +42,21 @@ export class CardDetailsStore extends ComponentStore<CardDetailsState> {
                 this._api.getSellerCardDetails().pipe(
                     tapResponse({
                         next: (data) => this.patchState({ card_details: data as AccountDetails[] }),
+                        error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
+                        finalize: () => this.patchState({ loading: false }),
+                    })
+                )
+            )
+        )
+    );
+
+    readonly createPaymentIntent = this.effect<void>(
+        (trigger$) => trigger$.pipe(
+            tap(() => this.patchState({ loading: true })),
+            switchMap(() =>
+                this._stripeApi.createPaymentIntent().pipe(
+                    tapResponse({
+                        next: (data) => this.patchState({ id: data.id }),
                         error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
                         finalize: () => this.patchState({ loading: false }),
                     })

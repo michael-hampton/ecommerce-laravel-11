@@ -68,7 +68,7 @@ class ShopController extends Controller
             }
         }
 
-        $products = $this->productRepository->setRequiredRelationships(['category', 'brand', 'reviews', 'seller'])->getPaginated(
+        $products = $this->productRepository->setRequiredRelationships(['category', 'brand', 'reviews', 'seller'])->getProductsForShop(
             $size,
             $orderByColumn,
             $orderDir,
@@ -80,6 +80,9 @@ class ShopController extends Controller
                 'attributeValueIds' => $attributeValueIds,
             ]
         );
+
+        $foundBrandIds = $products->pluck('brand_id')->unique();
+        $availiableBrands = $brands->whereIn('id', $foundBrandIds);
 
         if (Auth::check()) {
             // Cart::instance('cart')->store(Auth::user()->email);
@@ -103,7 +106,7 @@ class ShopController extends Controller
             'categoryAttributeValues' => $categoryAttributeValues,
             'category' => $category,
             'brand' => $brand,
-            'brands' => $brands,
+            'brands' => $availiableBrands,
             'attributeValueIds' => $attributeValueIds,
             'categories' => $categories,
             'brandId' => $brandIds,

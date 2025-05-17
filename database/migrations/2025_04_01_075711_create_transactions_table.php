@@ -28,6 +28,7 @@ return new class extends Migration
             $table->foreign('order_id')->references('id')->on('orders');
             $table->boolean('withdrawn')->default(false);
             $table->foreign('seller_id')->references('id')->on('users');
+            $table->string('external_payment_id')->nullable();
             $table->timestamps();
         });
     }

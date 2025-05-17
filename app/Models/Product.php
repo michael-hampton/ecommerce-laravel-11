@@ -68,7 +68,7 @@ class Product extends Model
 
     public function reviews(): MorphMany
     {
-        return $this->morphMany(Review::class, 'commentable');
+        return $this->morphMany(Review::class, 'commentable')->orderBy('rating', 'desc');
     }
 
     public function productAttributes(): HasMany

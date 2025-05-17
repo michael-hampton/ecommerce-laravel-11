@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Http\UploadedFile;
 
@@ -17,8 +18,12 @@ class ProfileFactory extends Factory
      */
     public function definition(): array
     {
+        $user = User::factory()->create();
         return [
+            'user_id' => $user->id,
             'biography' => $this->faker->paragraph(),
+            'external_customer_id' => $this->faker->word(),
+            'external_account_id' => $this->faker->word(),
             'city' => $this->faker->city(),
             'zip' => $this->faker->postcode(),
             'state' => $this->faker->city(),
