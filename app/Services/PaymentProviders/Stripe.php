@@ -270,6 +270,11 @@ class Stripe extends BaseProvider
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
         $profile = Profile::where('user_id', $sellerId)->first();
+
+        if (empty($profile->user->external_customer_id)) {
+            $this->createCustomer($data, $sellerId);
+        }
+
         $country = Country::where('id', $profile->country_id)->first();
 
         $account = $stripeClient->accounts->update($profile->external_account_id, [ //TODO Tos acceptance
