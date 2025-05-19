@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Profile;
 use App\Models\SellerBankDetails;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -174,48 +175,97 @@ class Stripe extends BaseProvider
 
     public function attachPaymentMethodToCustomer(string $paymentMethodId, int $sellerId): PaymentMethod
     {
-        $profile = Profile::where('user_id', $sellerId)->first();
-
-        if (empty($profile)) {
-            throw new Exception('Profile Not found');
-        }
-
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
         return $stripeClient->paymentMethods->attach(
             $paymentMethodId,
-            ['customer' => $profile->external_customer_id]
+            ['customer' => auth()->user()->external_customer_id]
         );
     }
 
     public function createAccount(array $data, int $sellerId): Account
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        return $stripeClient->accounts->create([
-            'country' => $data['country_code'],
+        $profile = Profile::where('user_id', $sellerId)->first();
+        $country = Country::where('id', $data['country_id'])->first();
+        $account = $stripeClient->accounts->create([ //TODO Tos acceptance
+            'country' => $country->code,
+            'business_type' => 'individual',
             'email' => $data['email'],
             'controller' => [
-                'fees' => ['payer' => 'account'],
-                'losses' => ['payments' => 'stripe'],
+                'fees' => ['payer' => 'application'],
+                'losses' => ['payments' => 'application'],
                 'stripe_dashboard' => ['type' => 'none'],
+                'requirement_collection' => 'application'
             ],
             'capabilities' => [
                 'card_payments' => ['requested' => true],
                 'transfers' => ['requested' => true],
             ],
+            'company' => [
+                'address' => [
+                    'city' => $data['city'],
+                    'country' => $country->code,
+                    'line1' => $data['address1'],
+                    'line2' => $data['address2'],
+                    'postal_code' => $data['zip'],
+                    'state' => $data['state']
+                ],
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+            ],
+             'business_profile' => [
+                'url' => $profile->website,
+            ],
+            'tos_acceptance' => [
+                'date' => Carbon::now()->timestamp,
+                'ip' => \Request::getClientIp()
+            ]
         ]);
+
+        $profile->update(['external_account_id' => $account['id'], 'balance_activated' => true]);
+        return $account;
+    }
+
+    public function updateAccount(array $data, int $sellerId): Account
+    {
+        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
+        $profile = Profile::where('user_id', $sellerId)->first();
+        $country = Country::where('id', $profile->country_id)->first();
+
+        $account = $stripeClient->accounts->update($profile->external_account_id, [ //TODO Tos acceptance
+            'email' => $profile->email,
+            'company' => [
+                'address' => [
+                    'city' => $data['city'],
+                    'country' => $country->code,
+                    'line1' => $data['address1'],
+                    'line2' => $data['address2'],
+                    'postal_code' => $data['zip'],
+                    'state' => $data['state']
+                ],
+                'name' => $profile->name,
+                'phone' => $profile->phone,
+
+            ],
+            'business_profile' => [
+                'url' => $profile->website,
+            ]
+        ]);
+
+        return $account;
     }
 
     public function createBankAccount(array $data, int $sellerId): BankAccount
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $country = Country::where('id', $data['country_id'])->first();
         $profile = Profile::where('user_id', $sellerId)->first();
+        $country = Country::where('id', $profile->country_id)->first();
 
         // 1. Generate a Btok
         $token = $stripeClient->tokens->create([
             'bank_account' => [
                 'country' => $country->code, // Replace with the country
-                'currency' => 'gbp', // Replace with the currency
+                'currency' => config('shop.currency_code'), // Replace with the currency
                 'account_number' => $data['account_number'],
                 'account_holder_name' => $data['account_name'],
                 'routing_number' => $data['sort_code'],
@@ -265,8 +315,8 @@ class Stripe extends BaseProvider
             $paymentMethodId,
             [
                 'card' => [
-                    'exp_month' => $data['exp_month'],
-                    'exp_year' => $data['exp_year']
+                    'exp_month' => $data['expiry_month'],
+                    'exp_year' => $data['expiry_year']
                 ]
             ]
         );
@@ -294,10 +344,9 @@ class Stripe extends BaseProvider
 
     public function getPaymentMethodsForCustomer(int $sellerId)
     {
-        $profile = Profile::where('user_id', $sellerId)->first();
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
         return $stripeClient->customers->allPaymentMethods(
-            $profile->external_customer_id
+            auth()->user()->external_customer_id
         );
     }
 
@@ -314,8 +363,6 @@ class Stripe extends BaseProvider
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
 
         $charge = $stripeClient->charges->capture($transaction->external_payment_id);
-
-        $transaction->update(['status' => 'approved']);
 
         return $charge;
     }

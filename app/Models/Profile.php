@@ -17,21 +17,19 @@ class Profile extends Model
         'user_id',
         'name',
         'website',
-        'country',
         'zip',
         'phone',
         'address1',
         'address2',
         'city',
         'state',
-        'country',
+        'country_id',
         'profile_picture',
         'biography',
         'username',
         'email',
         'balance_activated',
         'date_of_birth',
-        'external_customer_id',
         'external_account_id'
     ];
 

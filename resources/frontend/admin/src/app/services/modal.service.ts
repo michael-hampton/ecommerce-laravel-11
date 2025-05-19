@@ -73,7 +73,7 @@ export class ModalService {
   }
 
   openConfirmationModal(config: ModalConfig) {
-    const { modal, modalBody } = this.buildModal(config, 'modal-md')
+    const { modal, modalBody } = this.buildModal(config, config.size || 'modal-md')
 
     this.componentRef = createComponent(DeleteModalComponent, {
       environmentInjector: this.app.injector,

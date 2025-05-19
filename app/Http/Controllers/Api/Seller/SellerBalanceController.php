@@ -15,6 +15,7 @@ use App\Http\Resources\SellerBalanceResource;
 use App\Http\Resources\SellerWithdrawalResource;
 use App\Models\SellerBalance;
 use App\Models\SellerWithdrawal;
+use App\Services\PaymentProviders\PaymentProviderFactory;
 use App\Services\PaymentProviders\Stripe;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,7 +55,9 @@ class SellerBalanceController extends ApiController
 
     public function activate(ActivateSellerAccountRequest $request, SaveBillingInformation $saveBillingInformation, SaveBankAccount $saveBankAccount, UpdateSeller $updateSeller)
     {
-        (new Stripe())->createCustomer($request->all(), auth('sanctum')->user()->id);
+        (new PaymentProviderFactory())
+            ->getClass()
+            ->createAccount($request->all(), auth('sanctum')->user()->id);
 
         $result1 = $saveBillingInformation->handle($request);
         $sellerBankDetails = $saveBankAccount->handle($request);

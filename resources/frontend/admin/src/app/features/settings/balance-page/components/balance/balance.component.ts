@@ -8,6 +8,7 @@ import { forkJoin, map } from 'rxjs';
 import { AuthService } from '../../../../../core/auth/auth.service';
 import { BalancePageStore } from '../../balance-page.store';
 import { SellerApi } from '../../../../../apis/seller.api';
+import { LookupStore } from '../../../../../store/lookup.store';
 
 @Component({
   selector: 'app-balance',
@@ -30,10 +31,13 @@ export class BalanceComponent {
   @ViewChild('activateBalanceModalForm') activateBalanceModalForm: TemplateRef<any>;
 
   private _authService = inject(AuthService)
+  private _lookupStore = inject(LookupStore)
+  lookupVm$ = this._lookupStore.vm$
 
   ngOnInit() {
     this._store.getData(Number(this._authService.GetUser().payload.id)).subscribe()
     this.initWithdrawBalanceForm()
+    this._lookupStore.getCountries()
 
     this._store.getBalance()
   }
@@ -47,13 +51,15 @@ export class BalanceComponent {
   initActivateBalanceForm() {
     this.activateBalanceForm = this.fb.group({
       date_of_birth: new FormControl(''),
-      account_holders_name: new FormControl(''),
+      name: new FormControl(''),
+      email: new FormControl(''),
       address1: new FormControl(''),
       address2: new FormControl(''),
       city: new FormControl(''),
       state: new FormControl(''),
       zip: new FormControl(''),
       country_id: new FormControl(''),
+      phone: new FormControl('')
     })
   }
 
@@ -80,13 +86,13 @@ export class BalanceComponent {
     )
     .subscribe(results => {
       this.activateBalanceForm.patchValue({
-        address1: results.billingData.address1,
-        address2: results.billingData.address2,
-        city: results.billingData.city,
-        state: results.billingData.state,
-        zip: results.billingData.zip,
+        address1: results.billingData.address1 || '',
+        address2: results.billingData.address2 || '',
+        city: results.billingData.city || '',
+        state: results.billingData.state || '',
+        zip: results.billingData.zip || '',
         country_id: results.billingData.country_id,
-        account_holders_name: results.bankAccountData.account_name
+        name: results.bankAccountData.account_name || ''
       })
     });
 
@@ -100,7 +106,6 @@ export class BalanceComponent {
           })
           .subscribe((v) => {
             this._store.activateBalance(this.activateBalanceForm.value).subscribe()
-           alert('here')
           });
   }
 }

@@ -28,6 +28,7 @@ export class BankDetailsComponent {
     this.initBankDetailsForm();
 
     this._api.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
+      console.log('result',)
       this.form.patchValue({
         id: result.id,
         accountHolderName: result.account_name,

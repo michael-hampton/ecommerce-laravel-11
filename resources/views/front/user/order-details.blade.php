@@ -286,22 +286,26 @@
         <script>
             const reviewButton = document.getElementsByClassName('review-product')[0]
 
-            reviewButton.addEventListener('click', function (event) {
-                $.ajax({
-                    url: "{{ route('createReview', ['orderItemId' => 'test']) }}".replace('test', event.currentTarget.getAttribute('data-id')),
-                    type: "GET",
-                }).done(function (msg) {
-                    const reviewForm = document.getElementById('reviewForm')
-                    reviewForm.innerHTML = msg.view
-                    var myModal = new bootstrap.Modal(document.getElementById("reviewModal"), {});
-                    myModal.show();
+            if (reviewButton) {
+                reviewButton.addEventListener('click', function (event) {
+                    $.ajax({
+                        url: "{{ route('createReview', ['orderItemId' => 'test']) }}".replace('test', event.currentTarget.getAttribute('data-id')),
+                        type: "GET",
+                    }).done(function (msg) {
+                        const reviewForm = document.getElementById('reviewForm')
+                        reviewForm.innerHTML = msg.view
+                        var myModal = new bootstrap.Modal(document.getElementById("reviewModal"), {});
+                        myModal.show();
 
-                    setTimeout(() => {
-                        StarRating()
-                        submitForm()
-                    }, 200);
+                        setTimeout(() => {
+                            StarRating()
+                            submitForm()
+                        }, 200);
+                    });
                 });
-            });
+            }
+
+
 
             const reportButton = document.getElementById('reportOrder')
 

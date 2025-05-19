@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\Actions\Seller;
 
 use App\Models\SellerBankDetails;
+use App\Services\PaymentProviders\PaymentProviderFactory;
 use Illuminate\Http\Request;
 
 class UpdateCard
 {
-    public function handle(Request $request, int $id)
+    public function handle(Request $request, string $id)
     {
-        $card = SellerBankDetails::findOrFail($id);
+          return (new PaymentProviderFactory())
+            ->getClass()
+            ->updateCard($id, $request->all());
+
+        /*$card = SellerBankDetails::findOrFail($id);
         $card->update([
             'card_name' => $request->string('card_name'),
             'card_expiry_date' => $request->string('card_expiry_date'),
@@ -19,6 +24,6 @@ class UpdateCard
             'card_number' => $request->string('card_number'),
         ]);
 
-        return $card->fresh();
+        return $card->fresh();*/
     }
 }

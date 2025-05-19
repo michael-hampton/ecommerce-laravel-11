@@ -32,6 +32,7 @@ export class CardDetailsComponent {
   vm$ = this._store.vm$
   private fb = inject(FormBuilder)
   @ViewChild('cardForm') cardForm: TemplateRef<any>;
+  @ViewChild('updateCardForm') updateCardForm: TemplateRef<any>;
   form: FormGroup;
   @ViewChild('addCardModal', { static: true, read: ViewContainerRef })
   addCardModal!: ViewContainerRef;
@@ -60,10 +61,10 @@ export class CardDetailsComponent {
         const paymentMethodId = result.setupIntent.payment_method
         this.saveCardDetails(paymentMethodId)
       }
-
-      this.invokeStripe()
-
     })
+
+    this.invokeStripe()
+
   }
 
   invokeStripe() {
@@ -83,22 +84,23 @@ export class CardDetailsComponent {
   }
 
   saveCardDetails(paymentMethodId: string) {
-   // if (this.form?.valid) {
-      const model = {
-        id: this.form.value.id,
-        payment_method_id: paymentMethodId
-      };
+    // if (this.form?.valid) {
+    const model = {
+      id: this.form.value.id,
+      payment_method_id: paymentMethodId
+    };
 
-      console.log('model', model)
+    console.log('model', model)
 
-      this._store.saveCardDetails(model).subscribe()
+    this._store.saveCardDetails(model).subscribe()
     //}
   }
   initCardDetailsForm() {
     this.form = this.fb.group({
       id: new FormControl(null),
       nameOnCard: new FormControl('', [Validators.required]),
-      expiry: new FormControl('', [Validators.required]),
+      expiry_month: new FormControl('', [Validators.required]),
+      expiry_year: new FormControl('', [Validators.required]),
       cvvCode: new FormControl('', [Validators.required]),
       cardNumber: new FormControl('', [Validators.required]),
     })
@@ -133,21 +135,24 @@ export class CardDetailsComponent {
       this.form?.patchValue({
         id: card.id,
         nameOnCard: card.card_name,
-        expiry: card.card_expiry_date,
-        cvvCode: card.card_cvv,
-        cardNumber: card.card_number,
+        //expiry_month: card.card_expiry_date,
+        //cvvCode: card.card_cvv,
+        //cardNumber: card.card_number,
       })
     })
+
+    console.log(this.updateCardForm)
 
     this._modalService
       .openConfirmationModal({
         modalTitle: 'Edit payment method',
-        template: this.cardForm,
+        template: this.updateCardForm,
         showFooter: true,
         saveButtonLabel: 'Add card'
       })
       .subscribe((v) => {
-        //this.saveCardDetails()
+
+        this._store.saveCardDetails(this.form.value).subscribe()
       });
   }
 

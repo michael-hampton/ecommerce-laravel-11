@@ -13,18 +13,7 @@ return new class extends Migration
     {
         Schema::create('seller_bank_details', function (Blueprint $table) {
             $table->id();
-            $table->string('account_name')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('bank_code')->nullable();
-            $table->string('bank_name')->nullable();
             $table->enum('type', ['bank', 'card']);
-            $table->string('sort_code')->nullable();
-            $table->string('card_type')->nullable();
-            $table->string('card_number')->nullable();
-            $table->string('card_name')->nullable();
-            $table->string('card_expiry_date')->nullable();
-            $table->string('card_sort_code')->nullable();
-            $table->string('card_cvv')->nullable();
             $table->unsignedBigInteger('seller_id');
             $table->string('payment_method_id')->nullable();
             $table->foreign('seller_id')->references('id')->on('users');

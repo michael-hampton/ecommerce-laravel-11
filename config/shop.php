@@ -2,6 +2,7 @@
 
 return [
     'show_multiple_delivery_methods' => false,
+    'payment_provider' => 'stripe',
     'admin_url' => 'http://localhost:4200/',
     'currency' => '£',
     'shop_name' => 'ShopPinoy',

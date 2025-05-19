@@ -21,11 +21,10 @@ return new class extends Migration
             $table->string('biography')->nullable();
             $table->text('allowed_shipping_methods')->nullable();
             $table->string('external_account_id')->nullable();
-            $table->string('external_customer_id')->nullable();
             $table->string('city')->nullable();
             $table->string('zip')->nullable();
             $table->string('state')->nullable();
-            $table->string('country')->nullable();
+            $table->integer('country_id')->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
             $table->string('phone')->nullable();

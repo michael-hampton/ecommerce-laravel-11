@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('usages')->nullable();
             $table->unsignedBigInteger('coupon_id')->nullable();
             $table->foreign('coupon_id')->references('id')->on('coupons');
-            $table->date('expires_at')->default(Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'));
+            $table->date('expires_at')->nullable();
             $table->timestamps();
         });
     }

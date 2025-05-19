@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use App\Models\User;
 use App\Models\WithdrawalEnum;
 use App\Models\WithdrawalTypeEnum;
+use App\Services\PaymentProviders\PaymentProviderFactory;
 use App\Services\WithdrawalService;
 use Exception;
 
@@ -23,6 +24,10 @@ class ApproveOrder
 
             foreach ($groupedBySeller as $sellerId => $items) {
                 $transaction = $transactions->where('seller_id', $sellerId)->first();
+
+                (new PaymentProviderFactory())
+                    ->getClass()
+                    ->capturePayment($transaction);
 
                 $totals = $items->map(function (OrderItem $orderItem): int|float {
                     $total = $orderItem->price * $orderItem->quantity + $orderItem->shipping_price;
@@ -52,7 +57,7 @@ class ApproveOrder
             OrderItem::whereIn('id', $ids)->update(['approved_date' => now()]);
 
         } catch (Exception $exception) {
-            echo ''.$exception->getMessage();
+            echo '' . $exception->getMessage();
             exit;
         }
 

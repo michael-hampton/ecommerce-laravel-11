@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateSellerBankDetails;
 use App\Http\Requests\UpdateSellerCardDetails;
 use App\Http\Resources\CardDetailsResource;
 use App\Models\SellerBankDetails;
+use App\Services\PaymentProviders\PaymentProviderFactory;
 use Illuminate\Http\Request;
 
 class SellerAccountController extends ApiController
@@ -24,10 +25,13 @@ class SellerAccountController extends ApiController
      */
     public function index()
     {
-        $test = (new App\Services\PaymentProviders\Stripe())->getPaymentMethodsForCustomer(auth()->user()->id);
+        $cards = (new PaymentProviderFactory())
+            ->getClass()
+            ->getPaymentMethodsForCustomer(auth('sanctum')->user()->id);
 
-        $results = collect($test['data'])->map(function ($item) {
+        $results = collect($cards['data'])->map(function ($item) {
             return [
+                'id' => $item['id'],
                 'card_type' => $item['card']['brand'],
                 'card_expiry_date' => $item['card']['exp_month'] . '/' . $item['card']['exp_year'],
                 'formatted_card_number' => $item['card']['last4'],
@@ -64,7 +68,15 @@ class SellerAccountController extends ApiController
     {
         $result = $updateCard->handle($request, $id);
 
-        return $result ? $this->success(CardDetailsResource::make($result), 'Card Updated') : $this->error($result);
+        $response = [
+                'id' => $result['id'],
+                'card_type' => $result['card']['brand'],
+                'card_expiry_date' => $result['card']['exp_month'] . '/' . $result['card']['exp_year'],
+                'formatted_card_number' => $result['card']['last4'],
+                'card_number' => $result['card']['last4'],
+            ];
+
+        return $result ? $this->success($response, 'Card Updated') : $this->error($result);
     }
 
     /**
@@ -79,11 +91,21 @@ class SellerAccountController extends ApiController
 
     public function getSellerBankAccountDetails()
     {
-        return response()->json(
-            SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
-                ->where('type', 'bank')
-                ->first()
-        );
+        $userBankAccount = SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
+            ->where('type', 'bank')
+            ->first();
+
+        $bankAccount = (new PaymentProviderFactory())
+            ->getClass()
+            ->getBankAccount(auth('sanctum')->user()->id, $userBankAccount->payment_method_id);
+
+        $response = [
+            'account_name' => $bankAccount['account_holder_name'],
+            'account_number' => $bankAccount['last4'],
+            'sort_code' => $bankAccount['routing_number'],
+            'bank_name' => $bankAccount['bank_name'],
+        ];
+        return response()->json($response);
     }
 
     public function deleteBankAccount(int $id, DeleteBankAccount $deleteBankAccount)
