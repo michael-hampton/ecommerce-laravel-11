@@ -14,4 +14,5 @@ export type Seller = {
   city?: string
   username: string
   balance_activated: boolean
+  country_id: number
 }

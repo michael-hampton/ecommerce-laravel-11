@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\Seller;
 
 use App\Actions\Seller\SaveBillingInformation;
 use App\Http\Controllers\Api\ApiController;
+use App\Models\Profile;
 use App\Models\SellerBillingInformation;
 use Illuminate\Http\Request;
 

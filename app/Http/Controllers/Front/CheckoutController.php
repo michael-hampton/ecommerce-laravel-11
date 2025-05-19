@@ -11,6 +11,7 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Models\Country;
 use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
+use App\Services\PaymentProviders\PaymentProviderFactory;
 use App\Services\PaymentProviders\PayMongo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -37,6 +38,12 @@ class CheckoutController extends Controller
             \App\Services\Cart\Facade\Cart::instance('cart')->setShippingId($request->integer('shipping_id'));
         }
 
+        $cards = (new PaymentProviderFactory())
+            ->getClass()
+            ->getPaymentMethodsForCustomer(auth()->user()->id);
+
+        // $cards = SellerBankDetails::where('seller_id', Auth::user()->id) ->where('type', 'card')->get();
+
         $countries = Country::orderBy('name', 'asc')->get();
         $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
 
@@ -44,6 +51,7 @@ class CheckoutController extends Controller
             'addresses' => $addresses,
             'countries' => $countries,
             'currency' => config('shop.currency'),
+            'cards' => $cards
         ]);
     }
 
@@ -54,16 +62,17 @@ class CheckoutController extends Controller
         $addresses = $this->addressRepository->getAll(null, 'is_default', 'desc', ['customer_id' => auth()->user()->id]);
         $address = empty($addressId) ? $addresses->first() : $addresses->where('id', $addressId)->first();
 
-        $adrressData = $createOrderRequest->except(['_token']);
-        $adrressData['customer_id'] = $customerId;
+        $addressData = $createOrderRequest->except(['_token']);
+        $addressData['customer_id'] = $customerId;
 
         if ($createOrderRequest->has('address1')) {
-            $address = $createAddress->handle($adrressData);
+            $address = $createAddress->handle($addressData);
         }
 
-        $adrressData['address_id'] = $address->id;
+        $addressData['address_id'] = $address->id;
+        $addressData['existing_card'] = $createOrderRequest->get('existing_card', '');
 
-        $order = $createOrder->handle($adrressData);
+        $order = $createOrder->handle($addressData);
 
         Session::put('order_id', $order->id);
 
@@ -87,8 +96,9 @@ class CheckoutController extends Controller
         return response()->json(['id' => $intent]);
     }
 
-    public function checkoutPayMongo(Request $request) {
-         if (!Auth::check()) {
+    public function checkoutPayMongo(Request $request)
+    {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 

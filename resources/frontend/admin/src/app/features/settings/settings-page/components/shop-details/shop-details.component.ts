@@ -2,6 +2,7 @@ import {Component, inject} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Seller} from '../../../../../types/seller/seller';
 import { ShopStore } from './shop.store';
+import { LookupStore } from '../../../../../store/lookup.store';
 
 @Component({
   selector: 'app-shop-details',
@@ -14,11 +15,15 @@ export class ShopDetailsComponent {
 
   private _store = inject(ShopStore)
   vm$ = this._store.vm$
+  private _lookupStore = inject(LookupStore)
+  lookupVm$ = this._lookupStore.vm$
   form?: FormGroup;
   private fb = inject(FormBuilder)
 
   ngOnInit() {
     this.initForm();
+
+    this._lookupStore.getCountries()
 
     this._store.getData(1).subscribe((result: Seller) => {
       this.form?.patchValue({
@@ -29,6 +34,7 @@ export class ShopDetailsComponent {
         username: result.username,
         address1: result.address1,
         address2: result.address2,
+        country_id: result.country_id,
         city: result.city,
         state: result.state,
         zip: result.zip,
@@ -52,6 +58,7 @@ export class ShopDetailsComponent {
         state: this.form.value.state,
         zip: this.form.value.zip,
         biography: this.form.value.bio,
+        country_id: this.form.value.country_id,
         active: true,
         profile_picture: this.form.value.image,
         id: this.form.value.id
@@ -79,6 +86,7 @@ export class ShopDetailsComponent {
       zip: new FormControl(''),
       bio: new FormControl(''),
       image: new FormControl(''),
+      country_id: new FormControl('')
     })
   }
 }

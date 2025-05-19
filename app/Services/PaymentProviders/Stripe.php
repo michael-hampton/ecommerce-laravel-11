@@ -19,6 +19,7 @@ use Stripe\BankAccount;
 use Stripe\Card;
 use Stripe\Charge;
 use Stripe\Customer;
+use Stripe\PaymentIntent;
 use Stripe\PaymentMethod;
 use Stripe\StripeClient;
 
@@ -32,36 +33,48 @@ class Stripe extends BaseProvider
         $order = Order::whereId($orderData['orderId'])->first();
 
         try {
-            if (!isset($orderData['token'])) {
+            if (!isset($orderData['token']) && empty($orderData['existing_card'])) {
                 dd('no');
 
                 return false;
             }
 
-            // Create a new Stripe customer.
-            $customer = $stripeClient->customers->create([
-                'name' => $order->address->name,
-                'email' => $order->customer->email,
-                'phone' => $order->address->phone,
-                'address' => [
-                    'line1' => $order->address->address1,
-                    'postal_code' => $order->address->zip,
-                    'city' => $order->address->city,
-                    'state' => $order->address->state,
-                    'country' => $order->address->country,
-                ],
-                'shipping' => [
-                    'name' => $order->address->name,
-                    'address' => [
-                        'line1' => $order->address->address1,
-                        'postal_code' => $order->address->zip,
-                        'city' => $order->address->city,
-                        'state' => $order->address->state,
-                        'country' => $order->address->country,
-                    ],
-                ],
-                'source' => $orderData['token'],
-            ]);
+            if (empty($orderData['existing_card'])) {
+
+                if (Auth::check() && auth()->user()->external_customer_id) {
+                    $customerId = auth()->user()->external_customer_id;
+                } else {
+                    // Create a new Stripe customer.
+                    $customer = $stripeClient->customers->create([
+                        'name' => $order->address->name,
+                        'email' => $order->customer->email,
+                        'phone' => $order->address->phone,
+                        'address' => [
+                            'line1' => $order->address->address1,
+                            'postal_code' => $order->address->zip,
+                            'city' => $order->address->city,
+                            'state' => $order->address->state,
+                            'country' => $order->address->country,
+                        ],
+                        'shipping' => [
+                            'name' => $order->address->name,
+                            'address' => [
+                                'line1' => $order->address->address1,
+                                'postal_code' => $order->address->zip,
+                                'city' => $order->address->city,
+                                'state' => $order->address->state,
+                                'country' => $order->address->country,
+                            ],
+                        ],
+                        'source' => $orderData['token'],
+                    ]);
+
+                    $customerId = $customer['id'];
+                }
+
+            } else {
+                $customerId = auth()->user()->external_customer_id;
+            }
 
             foreach ($items as $sellerId => $item) {
 
@@ -76,29 +89,41 @@ class Stripe extends BaseProvider
                     $total -= $orderData['coupon']->value;
                 }
 
-                Log::info('subtotal: ' . $subtotal . ' shipping: ' . $shipping . ' comission: ' . $commission . ' total: ' . $total);
+                if (!empty($orderData['existing_card'])) {
 
-                $charge = $stripeClient->charges->create([
-                    'customer' => $customer['id'],
-                    'currency' => config('shop.currency_code', 'GBP'),
-                    'amount' => round(($total * 10 ** 2), 0),
-                    'description' => 'Payment for order no ' . $order->id,
-                    'capture' => false
-                ]);
+                    $paymentIntent = $stripeClient->paymentIntents->create([
+                        'amount' => 2000,
+                        'currency' => 'usd',
+                        'capture_method' => 'manual',
+                        'customer' => $customerId,
+                        'setup_future_usage' => 'off_session',
+                        'payment_method' => $orderData['existing_card'],
+                    ]);
+
+                    $paymentIntent = $stripeClient->paymentIntents->confirm(
+                        $paymentIntent['id'],
+                        [
+                            'payment_method' => $orderData['existing_card'],
+                            'return_url' => route('checkout.orderConfirmation'),
+                        ]
+                    );
 
 
+                } else {
+                    $paymentIntent = $stripeClient->paymentIntents->create([
+                        'amount' => 2000,
+                        'confirm' => true,
+                        'currency' => 'usd',
+                        'capture_method' => 'manual',
+                        'customer' => $customerId,
+                        'setup_future_usage' => 'off_session',
+                        'automatic_payment_methods' => [
+                            'enabled' => true,
+                            'allow_redirects' => 'never'
+                        ],
+                    ]);
+                }
 
-                /*$paymentIntent = $stripeClient->paymentIntents->create([
-                    'customer' => $customer['id'],
-                    'currency' => config('shop.currency_code', 'GBP'),
-                    'amount' => round(($total * 10 ** 2), 0),
-                    'description' => 'Payment for order no ' . $order->id,
-                    'payment_method_types' => ['card'],
-                    'capture_method' => 'manual',
-                    // 'token' => $orderData['token'],
-                ]);*/
-
-                echo $charge['id'];
 
                 $transactionData = [
                     'order_id' => $orderData['orderId'],
@@ -110,12 +135,12 @@ class Stripe extends BaseProvider
                     'commission' => $commission,
                     'shipping' => $shipping,
                     'discount' => empty($orderData['coupon']) ? 0 : $orderData['coupon']->value,
-                    'external_payment_id' => $charge['id']
+                    'external_payment_id' => $paymentIntent['id']
                 ];
 
                 Transaction::create($transactionData);
 
-                if ($charge['status'] == 'succeeded') {
+                if ($paymentIntent['status'] == 'succeeded' || $paymentIntent['status'] === 'requires_confirmation') {
                     $order->transaction()->update(['payment_status' => 'pending']);
                 }
             }
@@ -127,6 +152,15 @@ class Stripe extends BaseProvider
         }
 
         return false;
+    }
+
+    public function getPaymentMethod(string $paymentMethodId)
+    {
+        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
+        return $stripeClient->paymentMethods->retrieve(
+            $paymentMethodId,
+            []
+        );
     }
 
     public function createCustomer(array $data, int $sellerId): Customer
@@ -186,8 +220,14 @@ class Stripe extends BaseProvider
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
         $profile = Profile::where('user_id', $sellerId)->first();
+
+        if (empty($profile->user->external_customer_id)) {
+            $this->createCustomer($data, $sellerId);
+        }
+
+
         $country = Country::where('id', $data['country_id'])->first();
-        $account = $stripeClient->accounts->create([ //TODO Tos acceptance
+        $account = $stripeClient->accounts->create([
             'country' => $country->code,
             'business_type' => 'individual',
             'email' => $data['email'],
@@ -213,7 +253,7 @@ class Stripe extends BaseProvider
                 'name' => $data['name'],
                 'phone' => $data['phone'],
             ],
-             'business_profile' => [
+            'business_profile' => [
                 'url' => $profile->website,
             ],
             'tos_acceptance' => [
@@ -352,17 +392,16 @@ class Stripe extends BaseProvider
 
     public function deleteCard(int $sellerId, string $paymentMethodId): PaymentMethod
     {
-        $profile = Profile::where('user_id', $sellerId)->first();
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
         return $stripeClient->paymentMethods->detach($paymentMethodId, []);
 
     }
 
-    public function capturePayment(Transaction $transaction): Charge
+    public function capturePayment(Transaction $transaction): PaymentIntent
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
 
-        $charge = $stripeClient->charges->capture($transaction->external_payment_id);
+        $charge = $stripeClient->paymentIntents->capture($transaction->external_payment_id);
 
         return $charge;
     }

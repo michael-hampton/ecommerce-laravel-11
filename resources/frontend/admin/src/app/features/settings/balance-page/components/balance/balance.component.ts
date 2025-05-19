@@ -51,14 +51,14 @@ export class BalanceComponent {
   initActivateBalanceForm() {
     this.activateBalanceForm = this.fb.group({
       date_of_birth: new FormControl(''),
-      name: new FormControl(''),
-      email: new FormControl(''),
-      address1: new FormControl(''),
+      name: new FormControl('', Validators.required),
+      email: new FormControl('', Validators.required),
+      address1: new FormControl('', Validators.required),
       address2: new FormControl(''),
-      city: new FormControl(''),
-      state: new FormControl(''),
-      zip: new FormControl(''),
-      country_id: new FormControl(''),
+      city: new FormControl('', Validators.required),
+      state: new FormControl('', Validators.required),
+      zip: new FormControl('', Validators.required),
+      country_id: new FormControl('', Validators.required),
       phone: new FormControl('')
     })
   }

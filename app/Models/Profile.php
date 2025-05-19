@@ -34,4 +34,9 @@ class Profile extends Model
     ];
 
     protected $casts = ['active' => 'boolean'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

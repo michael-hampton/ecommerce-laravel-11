@@ -1,6 +1,11 @@
 @php use App\Services\Cart\Facade\Cart;use Illuminate\Support\Facades\Session;use Illuminate\Support\Str; @endphp
 @extends('layouts.app')
 @section('content')
+
+<style>
+    .cancel{text-decoration: none}.bg-pay{background-color: #eee;border-radius: 2px}.com-color{color: #8f37aa!important}.radio{cursor: pointer}label.radio input{position: absolute;top: 0;left: 0;visibility: hidden;pointer-events: none}label.radio div{padding: 7px 14px;border: 2px solid #8f37aa;display: inline-block;color: #8f37aa;border-radius: 3px;text-transform: uppercase;width: 100%;margin-bottom: 10px}label.radio input:checked+div{border-color: #8f37aa;background-color: #8f37aa;color: #fff}.fw-500{font-weight: 400}.lh-16{line-height: 16px}
+    </style>
+
     <main class="pt-90">
         <div class="mb-4 pb-4"></div>
         <section class="shop-checkout container">
@@ -108,6 +113,7 @@
                                     </div>
                                 @endif
 
+                                @if($cards->isEmpty())
                                 <div id="card-container" class="d-none">
                                      <label for="card-element">
                                     Credit or debit card
@@ -116,6 +122,19 @@
                                     <!-- A Stripe Element will be inserted here. -->
                                 </div>
                                 </div>
+                                @else
+                                    <div class="d-flex flex-column"> 
+                                        @foreach($cards as $card)
+                                            <label class="radio"> 
+                                                <input type="radio" name="existing_card" value="{{ $card['id'] }}" checked>
+                                                <div class="d-flex justify-content-between"> 
+                                                    <span>{{$card['card']['brand']}}</span> 
+                                                    <span>**** {{$card['card']['last4']}}</span> 
+                                                </div>
+                                            </label> 
+                                        @endforeach
+                                    </div>
+                                @endif
                                 
                             </div>
                             <div class="col-md-3 order-2">
@@ -266,8 +285,9 @@
         $(function () {
             const form = document.getElementById('btn-checkout');
         form.addEventListener('click', async (event) => {
+            const cardElement = document.getElementById('card-element')
                 event.preventDefault()
-                if(mode === 'card') {
+                if(mode === 'card' && cardElement) {
                      const {token, error} = await stripe.createToken(card);
 
             if (error) {
@@ -276,7 +296,6 @@
                 const errorElement = document.getElementById('card-errors');
                 errorElement.textContent = error.message;
             } else {
-                alert(token.id)
                 document.getElementById('token').value = token.id;
                 // Send the token to your server.
                 console.log(document.getElementById('checkout-form'))
@@ -289,7 +308,8 @@
             const modes = document.querySelectorAll('[name="mode"]')
             modes.forEach(el => {
                el.addEventListener('click', (event) => {
-                if(event.currentTarget.value === 'card') {
+                const cardElement = document.getElementById('card-element')
+                if(event.currentTarget.value === 'card' && cardElement) {
                    loadCard()
                 }
                })
