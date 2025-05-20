@@ -128,8 +128,8 @@
                                             <label class="radio"> 
                                                 <input type="radio" name="existing_card" value="{{ $card['id'] }}" checked>
                                                 <div class="d-flex justify-content-between"> 
-                                                    <span>{{$card['card']['brand']}}</span> 
-                                                    <span>**** {{$card['card']['last4']}}</span> 
+                                                    <span>{{$card['card_type']}}</span> 
+                                                    <span>**** {{$card['formatted_card_number']}}</span> 
                                                 </div>
                                             </label> 
                                         @endforeach

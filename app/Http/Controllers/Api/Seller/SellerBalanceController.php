@@ -60,10 +60,10 @@ class SellerBalanceController extends ApiController
             ->createAccount($request->all(), auth('sanctum')->user()->id);
 
         $result1 = $saveBillingInformation->handle($request);
-        $sellerBankDetails = $saveBankAccount->handle($request);
+        //$sellerBankDetails = $saveBankAccount->handle($request);
         $result3 = $updateSeller->handle(array_merge($request->all(), ['balance_activated' => true]), auth('sanctum')->user()->profile->id);
 
-        return $result1 && $sellerBankDetails && $result3 ? $this->success($result1, 'Balance Activated') : $this->error('Balance could not be activated');
+        return $result1 && $result3 ? $this->success($result1, 'Balance Activated') : $this->error('Balance could not be activated');
 
     }
 

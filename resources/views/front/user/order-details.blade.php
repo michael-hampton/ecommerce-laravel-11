@@ -186,7 +186,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Approve Items</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -219,7 +219,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="exampleModal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button class="btn btn-success" id="deleteSelected" disabled>Approve Selected Items</button>
                 </div>
             </div>
@@ -233,7 +233,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Report Item</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -284,6 +284,16 @@
 
     @push('scripts')
         <script>
+           /* const closeButton = document.getElementsByClassName('close')
+            Array.from(closeButton).forEach(element => {
+                element.addEventListener('click', () => {
+                    var myModal = new bootstrap.Modal(document.getElementById("exampleModal"), {});
+                    myModal.hide();
+
+                     var myModal2 = new bootstrap.Modal(document.getElementById("reviewModal"), {});
+                    myModal.hide();
+                })
+            });*/
             const reviewButton = document.getElementsByClassName('review-product')[0]
 
             if (reviewButton) {
@@ -438,7 +448,6 @@
             });
 
             function StarRating() {
-                alert('here')
                 let stars = Array.from(document.querySelectorAll('.fa-star'));
                 let user_selected_star = document.querySelector('#form-input-rating');
 

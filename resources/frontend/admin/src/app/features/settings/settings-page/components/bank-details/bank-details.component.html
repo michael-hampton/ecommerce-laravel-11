@@ -6,36 +6,102 @@
 
   <div class="card-body">
     <div class="d-flex justify-content-center overlay" *ngIf="vm.loading">
-      <div class="spinner-border" role="status" style="width: 6rem; height: 6rem">
+      <div
+        class="spinner-border"
+        role="status"
+        style="width: 6rem; height: 6rem"
+      >
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <form *ngIf="!vm.loading" admin-form [formGroup]="form">
+
+    <div *ngIf="hasBankAccount">
+      <div
+        class="d-flex align-items-center justify-content-between mb-3"
+        (click)="toggleBankDetailsForm()"
+      >
+        @if(!editingBankDetails) {
+        <span>{{ form.controls["accountHolderName"].value }}</span>
+        <span>{{ form.controls["accountNumber"].value }}</span>
+        } @else {
+        <span>Close </span>
+        <i class="fa-solid fa-close"></i>
+        }
+      </div>
+    </div>
+
+    <div>
+      <div class="list-group-item mb-3" *ngIf="!hasBankAccount">
+        <a
+          style="text-decoration: none"
+          (click)="toggleBankDetailsForm()"
+          class="d-flex align-items-center justify-content-between"
+        >
+          @if(!editingBankDetails) {
+          <span>Add Bank Account </span>
+          <i class="fa-solid fa-arrow-right"></i>
+          } @else {
+          <span>Close </span>
+          <i class="fa-solid fa-close"></i>
+          }
+        </a>
+      </div>
+    </div>
+
+    <form
+      *ngIf="!vm.loading && editingBankDetails"
+      admin-form
+      [formGroup]="form"
+    >
       <div class="mb-3">
-        <label for="accountHolderName" class="form-label">Account Holder Name</label>
-        <input type="text" class="form-control" id="accountHolderName" placeholder="Full Name"
-               formControlName="accountHolderName">
+        <label for="accountHolderName" class="form-label"
+          >Account Holder Name</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="accountHolderName"
+          placeholder="Full Name"
+          formControlName="accountHolderName"
+        />
       </div>
       <div class="mb-3">
         <label for="accountNumber" class="form-label">Account Number</label>
-        <input type="text" class="form-control" id="accountNumber" placeholder="Account Number"
-               formControlName="accountNumber">
+        <input
+          type="text"
+          class="form-control"
+          id="accountNumber"
+          placeholder="Account Number"
+          formControlName="accountNumber"
+        />
       </div>
       <div class="mb-3">
         <label for="routingNumber" class="form-label">Sort Code</label>
-        <input type="text" class="form-control" id="routingNumber" placeholder="Sort Code"
-               formControlName="routingNumber">
+        <input
+          type="text"
+          class="form-control"
+          id="routingNumber"
+          placeholder="Sort Code"
+          formControlName="routingNumber"
+        />
       </div>
       <div class="mb-3">
         <label for="bankName" class="form-label">Bank Name</label>
-        <input type="text" class="form-control" id="bankName" placeholder="Bank Name"
-               formControlName="bankName">
+        <input
+          type="text"
+          class="form-control"
+          id="bankName"
+          placeholder="Bank Name"
+          formControlName="bankName"
+        />
       </div>
 
       <button class="btn btn-primary" (click)="saveBankDetails()">Save</button>
-      <button class="btn btn-danger" (click)="deleteBankAccount()">Delete</button>
+      <button class="btn btn-danger" (click)="deleteBankAccount()">
+        Delete
+      </button>
     </form>
   </div>
-</div>
 
-<div #modal></div>
+  <div #modal></div>
+</div>

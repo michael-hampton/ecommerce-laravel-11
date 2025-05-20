@@ -21,27 +21,33 @@ export class BankDetailsComponent {
   private fb = inject(FormBuilder)
   form: FormGroup;
   private _modalService = inject(ModalService)
-  @ViewChild('modal', {read: ViewContainerRef})
+  @ViewChild('modal', { read: ViewContainerRef })
   entry!: ViewContainerRef;
+  editingBankDetails = false
+  hasBankAccount = false
 
   ngOnInit() {
     this.initBankDetailsForm();
 
     this._api.getSellerBankAccountDetails().subscribe((result: AccountDetails) => {
-      console.log('result',)
-      this.form.patchValue({
-        id: result.id,
-        accountHolderName: result.account_name,
-        accountNumber: result.account_number,
-        routingNumber: result.sort_code,
-        bankName: result.bank_name,
-      })
+      if (result) {
+        console.log('result', result)
+        this.form.patchValue({
+          id: result.id,
+          accountHolderName: result.account_name,
+          accountNumber: result.account_number,
+          routingNumber: result.sort_code,
+          bankName: result.bank_name,
+        })
+
+        this.hasBankAccount = true
+      }
     });
   }
 
   deleteBankAccount() {
     this._modalService
-      .openConfirmationModal( {
+      .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close',
         //size: 'modal-sm'
@@ -75,5 +81,9 @@ export class BankDetailsComponent {
       routingNumber: new FormControl('', [Validators.required]),
       bankName: new FormControl('', [Validators.required]),
     })
+  }
+
+  toggleBankDetailsForm() {
+    this.editingBankDetails = !this.editingBankDetails
   }
 }

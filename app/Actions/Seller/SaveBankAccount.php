@@ -12,14 +12,16 @@ class SaveBankAccount
 {
     public function handle(Request $request): SellerBankDetails
     {
-        $currentAccount = SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)->first();
+        $currentAccount = SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
+            ->where('type', 'bank')
+            ->first();
 
         if (!empty($currentAccount)) {
             (new PaymentProviderFactory())
                 ->getClass()
                 ->updateBankAccount(auth('sanctum')->user()->id, $currentAccount->payment_method_id, $request->all());
 
-                return $currentAccount;
+            return $currentAccount;
         }
 
         $externalAccount = (new PaymentProviderFactory())

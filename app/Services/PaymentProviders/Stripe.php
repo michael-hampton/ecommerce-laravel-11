@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Profile;
 use App\Models\SellerBankDetails;
 use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
@@ -89,41 +90,24 @@ class Stripe extends BaseProvider
                     $total -= $orderData['coupon']->value;
                 }
 
+                $paymentIntentData = [
+                    'amount' => 2000,
+                    'currency' => 'usd',
+                    'capture_method' => 'manual',
+                    'customer' => $customerId,
+                    'setup_future_usage' => 'off_session',
+                    'confirm' => true,
+                    'automatic_payment_methods' => [
+                        'enabled' => true,
+                        'allow_redirects' => 'never'
+                    ],
+                ];
+
                 if (!empty($orderData['existing_card'])) {
-
-                    $paymentIntent = $stripeClient->paymentIntents->create([
-                        'amount' => 2000,
-                        'currency' => 'usd',
-                        'capture_method' => 'manual',
-                        'customer' => $customerId,
-                        'setup_future_usage' => 'off_session',
-                        'payment_method' => $orderData['existing_card'],
-                    ]);
-
-                    $paymentIntent = $stripeClient->paymentIntents->confirm(
-                        $paymentIntent['id'],
-                        [
-                            'payment_method' => $orderData['existing_card'],
-                            'return_url' => route('checkout.orderConfirmation'),
-                        ]
-                    );
-
-
-                } else {
-                    $paymentIntent = $stripeClient->paymentIntents->create([
-                        'amount' => 2000,
-                        'confirm' => true,
-                        'currency' => 'usd',
-                        'capture_method' => 'manual',
-                        'customer' => $customerId,
-                        'setup_future_usage' => 'off_session',
-                        'automatic_payment_methods' => [
-                            'enabled' => true,
-                            'allow_redirects' => 'never'
-                        ],
-                    ]);
+                    $paymentIntentData['payment_method'] = $orderData['existing_card'];
                 }
 
+                $paymentIntent = $stripeClient->paymentIntents->create($paymentIntentData);
 
                 $transactionData = [
                     'order_id' => $orderData['orderId'],
@@ -194,7 +178,7 @@ class Stripe extends BaseProvider
             //'source' => $orderData['token'],
         ]);
 
-        Profile::where('user_id', $sellerId)->update(['external_customer_id' => $customer->id]);
+        User::where('id', $sellerId)->update(['external_customer_id' => $customer->id]);
 
         return $customer;
     }
@@ -340,23 +324,30 @@ class Stripe extends BaseProvider
         );
     }
 
-    public function getBankAccount(int $sellerId, string $bankAccountId)
+    public function getBankAccount(int $sellerId, string $bankAccountId): array
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
         $profile = Profile::where('user_id', $sellerId)->first();
 
-        return $stripeClient->accounts->retrieveExternalAccount(
+        $bankAccount = $stripeClient->accounts->retrieveExternalAccount(
             $profile->external_account_id,
             $bankAccountId,
             []
         );
+
+        return [
+            'account_name' => $bankAccount['account_holder_name'],
+            'account_number' => $bankAccount['last4'],
+            'sort_code' => $bankAccount['routing_number'],
+            'bank_name' => $bankAccount['bank_name'],
+        ];
     }
 
-    public function updateCard(string $paymentMethodId, array $data): PaymentMethod
+    public function updateCard(string $paymentMethodId, array $data): array
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
 
-        return $stripeClient->paymentMethods->update(
+        $card = $stripeClient->paymentMethods->update(
             $paymentMethodId,
             [
                 'card' => [
@@ -365,6 +356,14 @@ class Stripe extends BaseProvider
                 ]
             ]
         );
+
+        return [
+            'id' => $card['id'],
+            'card_type' => $card['card']['brand'],
+            'card_expiry_date' => $card['card']['exp_month'] . '/' . $card['card']['exp_year'],
+            'formatted_card_number' => $card['card']['last4'],
+            'card_number' => $card['card']['last4'],
+        ];
     }
 
     public function updateCustomer(int $sellerId, array $data): Customer
@@ -387,12 +386,22 @@ class Stripe extends BaseProvider
         ]);
     }
 
-    public function getPaymentMethodsForCustomer(int $sellerId)
+    public function getPaymentMethodsForCustomer(int $sellerId): Collection
     {
         $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        return $stripeClient->customers->allPaymentMethods(
+        $cards = $stripeClient->customers->allPaymentMethods(
             auth()->user()->external_customer_id
         );
+
+        return collect($cards['data'])->map(function ($item) {
+            return [
+                'id' => $item['id'],
+                'card_type' => $item['card']['brand'],
+                'card_expiry_date' => $item['card']['exp_month'] . '/' . $item['card']['exp_year'],
+                'formatted_card_number' => $item['card']['last4'],
+                'card_number' => $item['card']['last4'],
+            ];
+        });
     }
 
     public function deleteCard(int $sellerId, string $paymentMethodId): PaymentMethod

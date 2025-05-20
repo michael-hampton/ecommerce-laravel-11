@@ -29,18 +29,8 @@ class SellerAccountController extends ApiController
             ->getClass()
             ->getPaymentMethodsForCustomer(auth('sanctum')->user()->id);
 
-        $results = collect($cards['data'])->map(function ($item) {
-            return [
-                'id' => $item['id'],
-                'card_type' => $item['card']['brand'],
-                'card_expiry_date' => $item['card']['exp_month'] . '/' . $item['card']['exp_year'],
-                'formatted_card_number' => $item['card']['last4'],
-                'card_number' => $item['card']['last4'],
-            ];
-        });
 
-
-        return response()->json($results);
+        return response()->json($cards);
     }
 
     /**
@@ -68,15 +58,7 @@ class SellerAccountController extends ApiController
     {
         $result = $updateCard->handle($request, $id);
 
-        $response = [
-                'id' => $result['id'],
-                'card_type' => $result['card']['brand'],
-                'card_expiry_date' => $result['card']['exp_month'] . '/' . $result['card']['exp_year'],
-                'formatted_card_number' => $result['card']['last4'],
-                'card_number' => $result['card']['last4'],
-            ];
-
-        return $result ? $this->success($response, 'Card Updated') : $this->error($result);
+        return $result ? $this->success($result, 'Card Updated') : $this->error($result);
     }
 
     /**
@@ -95,17 +77,16 @@ class SellerAccountController extends ApiController
             ->where('type', 'bank')
             ->first();
 
+        if (empty($userBankAccount)) {
+            return response()->json([]);
+        }
+
         $bankAccount = (new PaymentProviderFactory())
             ->getClass()
             ->getBankAccount(auth('sanctum')->user()->id, $userBankAccount->payment_method_id);
 
-        $response = [
-            'account_name' => $bankAccount['account_holder_name'],
-            'account_number' => $bankAccount['last4'],
-            'sort_code' => $bankAccount['routing_number'],
-            'bank_name' => $bankAccount['bank_name'],
-        ];
-        return response()->json($response);
+      
+        return response()->json($bankAccount);
     }
 
     public function deleteBankAccount(int $id, DeleteBankAccount $deleteBankAccount)

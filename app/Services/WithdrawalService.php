@@ -28,14 +28,10 @@ class WithdrawalService implements IWithdrawalService
 
         $newBalance = (empty($previousBalance)) ? $this->amount : (($this->withdrawalEnum === WithdrawalEnum::Decrease) ? $previousBalance->balance - $this->amount : $previousBalance->balance + $this->amount);
 
-        if (empty($previousBalance) || $previousBalance->balance <= 0) {
-            throw new Exception('Insufficient balance');
-        }
-
         $data = [
             'seller_id' => auth()->id(),
             'balance' => $newBalance,
-            'previous_balance' => $previousBalance->balance,
+            'previous_balance' => !empty($previousBalance) ? $previousBalance->balance : 0,
             'type' => $this->withdrawalTypeEnum->value,
         ];
 

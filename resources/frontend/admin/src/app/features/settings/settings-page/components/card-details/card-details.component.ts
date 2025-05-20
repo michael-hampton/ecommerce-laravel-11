@@ -42,6 +42,7 @@ export class CardDetailsComponent {
   elements: any;
   cardElement: any;
   stripe: any;
+  addCardPressed = false;
 
 
   ngOnInit() {
@@ -158,5 +159,9 @@ export class CardDetailsComponent {
 
   removePaymentMethod(id: number) {
     this._store.deleteCard(id)
+  }
+
+  toggleAddCardForm() {
+    this.addCardPressed = !this.addCardPressed
   }
 }

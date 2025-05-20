@@ -1,6 +1,5 @@
 <div
   *ngIf="vm$ | async as vm"
-  class="row"
 >
   <div class="d-flex justify-content-center overlay" *ngIf="vm.loading">
     <div class="spinner-border" role="status" style="width: 6rem; height: 6rem">
@@ -8,40 +7,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="!vm.loading">
-    <div class="col" *ngFor="let card of vm.card_details">
-      <div class="card h-100 rounded-4">
-        <div class="card-body pb-3">
-          <div class="d-flex align-items-start justify-content-between mb-4">
-            <img
-              src="assets/img/payment-methods/mastercard.svg"
-              class="m-n3"
-              width="100"
-              alt="Mastercard"
-            />
-            <span class="badge text-bg-info rounded-pill">Primary</span>
-          </div>
-
-          <div class="h6 mb-1">{{card.formatted_card_number}}</div>
-          <div class="text-body fs-xs" appDatePassed [date]="card.card_expiry_date"></div>
-        </div>
-        <div class="card-footer d-flex gap-2 bg-transparent border-0 pt-0 pb-4">
-          <button (click)="editPaymentMethod(card.id)"
-            type="button"
-            class="btn btn-sm btn-outline-secondary rounded-pill me-1"
-          >
-            Edit
-          </button>
-          <button (click)="removePaymentMethod(card.id)"
-            type="button"
-            class="btn btn-sm btn-outline-secondary rounded-pill"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
+  
 
   <!-- <div class="col">
     <div class="card border-0 h-100">
@@ -128,11 +94,70 @@
   </form>
 </ng-template>
 
-<div class="mb-3 mt-3" *ngIf="useStripe">
-   <div id="card-element">
+<div class="card mb-3">
+  <div class="card-header"><h5 class="card-title">Cards</h5></div>
+  <div class="card-body">
+     <div class="list-group-item mb-3">
+      <a style="text-decoration: none;" (click)="toggleAddCardForm()" class=" d-flex align-items-center justify-content-between">
+        @if(!addCardPressed) {
+          <span>Add Card </span>
+          <i class="fa-solid fa-arrow-right"></i>
+        } @else {
+            <span>Close </span>
+          <i class="fa-solid fa-close"></i>
+        }
+       
+      </a>
+      </div>
+    
+     <div [class.d-none]="!addCardPressed">
+      <div id="card-element">
           <!--Stripe.js injects the Payment Element-->
         </div>
 
-      <button class="btn btn-primary" (click)="addCard()">Add Card</button>
+      <button class="btn btn-primary mt-3" (click)="addCard()">Add</button>
     </div>
+   <hr>
+  <ng-container *ngIf="!vm.loading">
+     <div class="col col-lg-3" *ngFor="let card of vm.card_details">
+      <div class="card h-100 rounded-4">
+        <div class="card-body pb-3">
+          <div class="d-flex align-items-start justify-content-between mb-4">
+            <img
+              src="assets/img/payment-methods/mastercard.svg"
+              class="m-n3"
+              width="100"
+              alt="Mastercard"
+            />
+            <span class="badge text-bg-info rounded-pill">Primary</span>
+          </div>
+
+          <div class="h6 mb-1">{{card.formatted_card_number}}</div>
+          <div class="text-body fs-xs" appDatePassed [date]="card.card_expiry_date"></div>
+        </div>
+        <div class="card-footer d-flex gap-2 bg-transparent border-0 pt-0 pb-4">
+          <button (click)="editPaymentMethod(card.id)"
+            type="button"
+            class="btn btn-sm btn-outline-secondary rounded-pill me-1"
+          >
+            Edit
+          </button>
+          <button (click)="removePaymentMethod(card.id)"
+            type="button"
+            class="btn btn-sm btn-outline-secondary rounded-pill"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+   
+  </div>
+</div>
+
+
+ 
+</div>
+  
 
