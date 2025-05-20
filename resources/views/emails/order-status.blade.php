@@ -56,7 +56,7 @@
             </tr>
             <tr>
                 <td colspan="3"></td>
-                <td style="font-size:15px;font-weight:bold;">Commission :
+                <td style="font-size:15px;font-weight:bold;">Insurance :
                     {{$mailData['currency']}}{{$mailData['order']->commission}}
                 </td>
             </tr>

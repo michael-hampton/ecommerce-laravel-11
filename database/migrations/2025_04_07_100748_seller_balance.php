@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products');
             $table->enum('type', ['order_received', 'order_spent', 'withdrawal'])->default('withdrawal');
+            $table->enum('status', ['complete','pending'])->default('complete');
             $table->unsignedBigInteger('seller_id');
             $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders');

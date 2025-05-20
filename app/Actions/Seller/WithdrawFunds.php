@@ -7,11 +7,16 @@ namespace App\Actions\Seller;
 use App\Models\SellerBalance;
 use App\Models\SellerWithdrawal;
 use App\Models\Transaction;
+use App\Services\PaymentProviders\PaymentProviderFactory;
 
 class WithdrawFunds
 {
     public function handle(array $data): ?SellerBalance
     {
+        $result = (new PaymentProviderFactory())
+            ->getClass()
+            ->transferFundsToAccount(floatVal($data['amount']), auth('sanctum')->user()->id);
+
         $sellerBalance = SellerBalance::where('seller_id', auth('sanctum')->id())->first();
 
         $affectedRows = SellerBalance::create([

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Order;
 
 use App\Models\OrderItem;
+use App\Models\SellerBalance;
 use App\Models\User;
 use App\Models\WithdrawalEnum;
 use App\Models\WithdrawalTypeEnum;
@@ -25,9 +26,19 @@ class ApproveOrder
             foreach ($groupedBySeller as $sellerId => $items) {
                 $transaction = $transactions->where('seller_id', $sellerId)->first();
 
-                (new PaymentProviderFactory())
-                    ->getClass()
-                    ->capturePayment($transaction);
+                if ($transaction->payment_method === 'seller_balance') {
+                    (new PaymentProviderFactory())
+                        ->getClass()
+                        ->withdrawFromAccount($sellerId, floatval($order->total), $order->id);
+
+                    SellerBalance::where('order_id', $order->id)
+                        ->where('type', WithdrawalTypeEnum::OrderSpent->value)
+                        ->update(['status' => 'complete']);
+                } else {
+                    (new PaymentProviderFactory())
+                        ->getClass()
+                        ->capturePayment($transaction);
+                }
 
                 $totals = $items->map(function (OrderItem $orderItem): int|float {
                     $total = $orderItem->price * $orderItem->quantity + $orderItem->shipping_price;

@@ -23,13 +23,20 @@ use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\PaymentMethod;
 use Stripe\StripeClient;
+use Stripe\Transfer;
 
-class Stripe extends BaseProvider
+class Stripe extends BaseProvider implements PaymentProverInterface
 {
+    private StripeClient $stripeClient;
+
+    public function __construct()
+    {
+        $this->stripeClient = new StripeClient(env('STRIPE_SECRET'));
+    }
+
     public function capture(Collection $orderLines, array $orderData): bool
     {
         $items = collect($this->formatLineItems($orderLines));
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
 
         $order = Order::whereId($orderData['orderId'])->first();
 
@@ -46,7 +53,7 @@ class Stripe extends BaseProvider
                     $customerId = auth()->user()->external_customer_id;
                 } else {
                     // Create a new Stripe customer.
-                    $customer = $stripeClient->customers->create([
+                    $customer = $this->stripeClient->customers->create([
                         'name' => $order->address->name,
                         'email' => $order->customer->email,
                         'phone' => $order->address->phone,
@@ -91,8 +98,8 @@ class Stripe extends BaseProvider
                 }
 
                 $paymentIntentData = [
-                    'amount' => 2000,
-                    'currency' => 'usd',
+                    'amount' => round(($total * 10 ** 2), 0),
+                    'currency' => config('shop.currency_code'),
                     'capture_method' => 'manual',
                     'customer' => $customerId,
                     'setup_future_usage' => 'off_session',
@@ -107,12 +114,12 @@ class Stripe extends BaseProvider
                     $paymentIntentData['payment_method'] = $orderData['existing_card'];
                 }
 
-                $paymentIntent = $stripeClient->paymentIntents->create($paymentIntentData);
+                $paymentIntent = $this->stripeClient->paymentIntents->create($paymentIntentData);
 
                 $transactionData = [
                     'order_id' => $orderData['orderId'],
                     'seller_id' => $sellerId,
-                    'status' => 'in-progress',
+                    'status' => $paymentIntent['status'] === 'succeeded' || $paymentIntent['status'] === 'requires_confirmation' ? 'pending' : 'declined',
                     'payment_method' => 'card',
                     'customer_id' => Auth::id(),
                     'total' => $total - $commission,
@@ -123,10 +130,6 @@ class Stripe extends BaseProvider
                 ];
 
                 Transaction::create($transactionData);
-
-                if ($paymentIntent['status'] == 'succeeded' || $paymentIntent['status'] === 'requires_confirmation') {
-                    $order->transaction()->update(['payment_status' => 'pending']);
-                }
             }
 
         } catch (Exception $exception) {
@@ -140,8 +143,7 @@ class Stripe extends BaseProvider
 
     public function getPaymentMethod(string $paymentMethodId)
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        return $stripeClient->paymentMethods->retrieve(
+        return $this->stripeClient->paymentMethods->retrieve(
             $paymentMethodId,
             []
         );
@@ -149,12 +151,10 @@ class Stripe extends BaseProvider
 
     public function createCustomer(array $data, int $sellerId): Customer
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-
         $country = Country::where('id', $data['country_id'])->first();
 
         // Create a new Stripe customer.
-        $customer = $stripeClient->customers->create([
+        $customer = $this->stripeClient->customers->create([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
@@ -185,16 +185,14 @@ class Stripe extends BaseProvider
 
     public function createSetupIntent()
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $setupIntent = $stripeClient->setupIntents->create(['payment_method_types' => ['card']]);
+        $setupIntent = $this->stripeClient->setupIntents->create(['payment_method_types' => ['card']]);
 
         return $setupIntent['client_secret'];
     }
 
     public function attachPaymentMethodToCustomer(string $paymentMethodId, int $sellerId): PaymentMethod
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        return $stripeClient->paymentMethods->attach(
+        return $this->stripeClient->paymentMethods->attach(
             $paymentMethodId,
             ['customer' => auth()->user()->external_customer_id]
         );
@@ -202,8 +200,7 @@ class Stripe extends BaseProvider
 
     public function createAccount(array $data, int $sellerId): Account
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $profile = Profile::where('user_id', $sellerId)->first();
+        $profile = $this->profile($sellerId);
 
         if (empty($profile->user->external_customer_id)) {
             $this->createCustomer($data, $sellerId);
@@ -211,7 +208,7 @@ class Stripe extends BaseProvider
 
 
         $country = Country::where('id', $data['country_id'])->first();
-        $account = $stripeClient->accounts->create([
+        $account = $this->stripeClient->accounts->create([
             'country' => $country->code,
             'business_type' => 'individual',
             'email' => $data['email'],
@@ -238,22 +235,55 @@ class Stripe extends BaseProvider
                 'phone' => $data['phone'],
             ],
             'business_profile' => [
-                'url' => $profile->website,
+                'url' => $data['website'],
+                'mcc' => 5311
             ],
             'tos_acceptance' => [
                 'date' => Carbon::now()->timestamp,
                 'ip' => \Request::getClientIp()
-            ]
+            ],
+            'individual' => $$this->formatPersonData($sellerId, $data),
         ]);
 
         $profile->update(['external_account_id' => $account['id'], 'balance_activated' => true]);
         return $account;
     }
 
+    private function formatPersonData(int $sellerId, array $data)
+    {
+        $profile = $this->profile($sellerId);
+        $country = Country::where('id', $profile->country_id)->first();
+
+        $user = $profile->user;
+        [$firstName, $lastName] = explode(' ', $data['name']);
+        [$year, $month, $day] = explode('-', $data['date_of_birth']);
+
+        return [
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'dob' => [
+                'day' => $day,
+                'month' => $month,
+                'year' => $year
+            ],
+            'email' => $user->email,
+            'phone' => '+44' . str_replace('0', '', (string) $data['phone']),
+            'address' => [
+                'city' => $data['city'],
+                'country' => $country->code,
+                'line1' => $data['address1'],
+                'line2' => $data['address2'],
+                'postal_code' => $data['zip'],
+                'state' => $data['state']
+            ]
+        ];
+    }
+
     public function updateAccount(array $data, int $sellerId): Account
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $profile = Profile::where('user_id', $sellerId)->first();
+        $profile = $this->profile($sellerId);
+
+        $personData = $this->formatPersonData($sellerId, $data);
 
         if (empty($profile->user->external_customer_id)) {
             $this->createCustomer($data, $sellerId);
@@ -261,7 +291,14 @@ class Stripe extends BaseProvider
 
         $country = Country::where('id', $profile->country_id)->first();
 
-        $account = $stripeClient->accounts->update($profile->external_account_id, [ //TODO Tos acceptance
+        $fp = fopen(public_path('images/proof/proof.png'), 'r');
+
+        $test = $this->stripeClient->files->create([
+            'file' => $fp,
+            'purpose' => 'account_requirement'
+        ]);
+
+        $account = $this->stripeClient->accounts->update($profile->external_account_id, [ //TODO Tos acceptance
             'email' => $profile->email,
             'company' => [
                 'address' => [
@@ -278,6 +315,14 @@ class Stripe extends BaseProvider
             ],
             'business_profile' => [
                 'url' => $profile->website,
+                //'industry' => 'Retail',
+                'mcc' => 5311
+            ],
+            'individual' => $personData,
+            'documents' => [
+                'proof_of_registration' => [
+                    'files' => [$test['id']]
+                ]
             ]
         ]);
 
@@ -286,12 +331,11 @@ class Stripe extends BaseProvider
 
     public function createBankAccount(array $data, int $sellerId): BankAccount
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $profile = Profile::where('user_id', $sellerId)->first();
+        $profile = $this->profile($sellerId);
         $country = Country::where('id', $profile->country_id)->first();
 
         // 1. Generate a Btok
-        $token = $stripeClient->tokens->create([
+        $token = $this->stripeClient->tokens->create([
             'bank_account' => [
                 'country' => $country->code, // Replace with the country
                 'currency' => config('shop.currency_code'), // Replace with the currency
@@ -302,7 +346,7 @@ class Stripe extends BaseProvider
             ]
         ]);
 
-        $externalAccount = $stripeClient->accounts->createExternalAccount(
+        $externalAccount = $this->stripeClient->accounts->createExternalAccount(
             $profile->external_account_id,
             ['external_account' => $token['id']]
         );
@@ -314,11 +358,9 @@ class Stripe extends BaseProvider
 
     public function updateBankAccount(int $sellerId, string $bankAccountId, array $data): BankAccount
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $profile = Profile::where('user_id', $sellerId)->first();
 
-        return $stripeClient->accounts->updateExternalAccount(
-            $profile->external_account_id,
+        return $this->stripeClient->accounts->updateExternalAccount(
+            $this->profile($sellerId)->external_account_id,
             $bankAccountId,
             ['account_holder_name' => $data['account_name']]
         );
@@ -326,11 +368,9 @@ class Stripe extends BaseProvider
 
     public function getBankAccount(int $sellerId, string $bankAccountId): array
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $profile = Profile::where('user_id', $sellerId)->first();
 
-        $bankAccount = $stripeClient->accounts->retrieveExternalAccount(
-            $profile->external_account_id,
+        $bankAccount = $this->stripeClient->accounts->retrieveExternalAccount(
+            $this->profile($sellerId)->external_account_id,
             $bankAccountId,
             []
         );
@@ -345,9 +385,8 @@ class Stripe extends BaseProvider
 
     public function updateCard(string $paymentMethodId, array $data): array
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
 
-        $card = $stripeClient->paymentMethods->update(
+        $card = $this->stripeClient->paymentMethods->update(
             $paymentMethodId,
             [
                 'card' => [
@@ -368,10 +407,8 @@ class Stripe extends BaseProvider
 
     public function updateCustomer(int $sellerId, array $data): Customer
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
         $country = Country::where('id', $data['country_id'])->first();
-        $profile = Profile::where('user_id', $sellerId)->first();
-        return $stripeClient->customers->update($profile->external_customer_id, [
+        return $this->stripeClient->customers->update($this->profile($sellerId)->external_customer_id, [
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
@@ -388,8 +425,7 @@ class Stripe extends BaseProvider
 
     public function getPaymentMethodsForCustomer(int $sellerId): Collection
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        $cards = $stripeClient->customers->allPaymentMethods(
+        $cards = $this->stripeClient->customers->allPaymentMethods(
             auth()->user()->external_customer_id
         );
 
@@ -406,17 +442,64 @@ class Stripe extends BaseProvider
 
     public function deleteCard(int $sellerId, string $paymentMethodId): PaymentMethod
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-        return $stripeClient->paymentMethods->detach($paymentMethodId, []);
+        return $this->stripeClient->paymentMethods->detach($paymentMethodId, []);
 
     }
 
     public function capturePayment(Transaction $transaction): PaymentIntent
     {
-        $stripeClient = new StripeClient(env('STRIPE_SECRET'));
-
-        $charge = $stripeClient->paymentIntents->capture($transaction->external_payment_id);
+        $charge = $this->stripeClient->paymentIntents->capture($transaction->external_payment_id);
 
         return $charge;
+    }
+
+    public function getTransactions(int $sellerId)
+    {
+        return $this->stripeClient->balanceTransactions->all([], [
+            'stripe_account' => $this->profile($sellerId)->external_account_id,
+        ]);
+    }
+
+    public function transferFundsToAccount(float $amount, int $sellerId): Transfer
+    {
+        $bankAccount = SellerBankDetails::where('seller_id', $sellerId)
+            ->where('type', 'bank')
+            ->first();
+
+        if (empty($bankAccount)) {
+            throw new Exception('No bank account');
+        }
+
+        return $this->stripeClient->transfers->create([
+            'amount' => round(($amount * 10 ** 2), 0),
+            'currency' => config('shop.currency_code'),
+            'destination' => $this->profile($sellerId)->external_account_id,
+            'transfer_group' => date('Ymd ' . $sellerId),
+        ]);
+    }
+
+    public function withdrawFromAccount(int $sellerId, float $amount, int $orderId): Charge
+    {
+        $charge = $this->stripeClient->charges->create([
+            'amount' => round(($amount * 10 ** 2), 0),
+            'currency' => config('shop.currency_code'),
+            'source' => $this->profile($sellerId)->external_account_id,
+        ]);
+
+        Transaction::where('order_id', $orderId)
+            ->where('seller_id', $sellerId)
+            ->update(['external_payment_id' => $charge['id'], 'payment_status' => 'approved']);
+
+        return $charge;
+
+    }
+
+    public function getBalance(int $sellerId)
+    {
+        $balance = $this->stripeClient->balance->retrieve([], ['stripe_account' => $this->profile($sellerId)->external_account_id]);
+
+        return [
+            $balance['availiable'][0]['amount'] / 100,
+        ];
     }
 }

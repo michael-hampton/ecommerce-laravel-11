@@ -21,5 +21,6 @@ class SellerBalance extends Model
         'order_id',
         'type',
         'product_id',
+        'status'
     ];
 }

@@ -15,6 +15,9 @@
         </div>
       </div>
       <ng-container *ngIf="!vm.loading">
+        <small>
+          Pending: {{ getPending(vm.balance) | currency }}
+        </small>
         <h3>{{ vm.balance?.current?.balance | currency }}</h3>
 
         <form [formGroup]="form">
@@ -103,6 +106,19 @@
           id="email"
           name="email"
           formControlName="email"
+        />
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="form-group col-lg-4">
+        <label for="city">Website</label>
+        <input
+          type="text"
+          class="form-control"
+          id="website"
+          name="website"
+          formControlName="website"
         />
       </div>
     </div>

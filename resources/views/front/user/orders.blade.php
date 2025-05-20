@@ -29,9 +29,9 @@
                                     <td class="text-center">{{$order->id}}</td>
                                     <td class="text-center">{{$order->customer->name}}</td>
                                     <td class="text-center">{{$order->address->phone}}</td>
-                                    <td class="text-center">{{$order->subtotal}}</td>
-                                    <td class="text-center">{{$order->tax}}</td>
-                                    <td class="text-center">{{$order->total}}</td>
+                                    <td class="text-center">{{round($order->subtotal, 2)}}</td>
+                                    <td class="text-center">{{round($order->tax, 2)}}</td>
+                                    <td class="text-center">{{round($order->total, 2)}}</td>
                                     <td class="text-center">{{$order->created_at}}</td>
                                     <td class="text-center">{{$order->orderItems->count()}}</td>
                                     <td>{{$order->delivered_date}}</td>

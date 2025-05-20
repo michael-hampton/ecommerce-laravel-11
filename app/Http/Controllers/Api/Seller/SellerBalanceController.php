@@ -15,6 +15,7 @@ use App\Http\Resources\SellerBalanceResource;
 use App\Http\Resources\SellerWithdrawalResource;
 use App\Models\SellerBalance;
 use App\Models\SellerWithdrawal;
+use App\Models\WithdrawalTypeEnum;
 use App\Services\PaymentProviders\PaymentProviderFactory;
 use App\Services\PaymentProviders\Stripe;
 use Illuminate\Http\JsonResponse;
@@ -32,6 +33,12 @@ class SellerBalanceController extends ApiController
 
         return response()->json([
             'balances' => SellerBalanceResource::collection($sellerBalance),
+            'pending_owed' => $sellerBalance->where('status', 'pending')->where('type', WithdrawalTypeEnum::OrderReceived->value)->sum(function ($item) {
+                return round($item->previous_balance - $item->balance, 2);
+            }),
+            'pending_owing' => $sellerBalance->where('status', 'pending')->where('type', WithdrawalTypeEnum::OrderSpent->value)->sum(function ($item) {
+                return round($item->previous_balance - $item->balance, 2);
+            }),
             'current' => SellerBalanceResource::make($sellerBalance->sortByDesc('created_at')->first()),
         ]);
     }

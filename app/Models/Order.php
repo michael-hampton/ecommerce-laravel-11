@@ -32,6 +32,15 @@ class Order extends Model
         'courier_id',
     ];
 
+    private $statuses = [
+        'cancelled' => 'bg-danger',
+        'complete' => 'bg-success',
+        'pending' => 'bg-warning',
+        'ordered' => 'bg-primary',
+        'delivered' => 'bg-success'
+
+    ];
+
     public function customer()
     {
         return $this->belongsTo(User::class, 'customer_id');
@@ -99,5 +108,15 @@ class Order extends Model
     public function courier()
     {
         return $this->belongsTo(Courier::class, 'courier_id');
+    }
+
+    public function statusBadge()
+    {
+        return $this->statuses[$this->status];
+    }
+
+    public function statusText()
+    {
+        return ucfirst($this->status);
     }
 }

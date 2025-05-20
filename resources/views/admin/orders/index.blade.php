@@ -20,7 +20,7 @@
                             <th class="text-center">Cust Phone</th>
                             <th class="text-center">Subtotal</th>
                             <th class="text-center">Shipping</th>
-                            <th class="text-center">Commission</th>
+                            <th class="text-center">Insurance</th>
                             <th class="text-center">Tax</th>
                             <th class="text-center">Total</th>
 

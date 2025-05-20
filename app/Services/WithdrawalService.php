@@ -9,6 +9,7 @@ use App\Models\SellerWithdrawal;
 use App\Models\WithdrawalEnum;
 use App\Models\WithdrawalTypeEnum;
 use App\Services\Interfaces\IWithdrawalService;
+use App\Services\PaymentProviders\PaymentProviderFactory;
 use Exception;
 
 class WithdrawalService implements IWithdrawalService
@@ -18,7 +19,8 @@ class WithdrawalService implements IWithdrawalService
         private readonly float $amount,
         private readonly WithdrawalTypeEnum $withdrawalTypeEnum,
         private readonly WithdrawalEnum $withdrawalEnum,
-        private readonly ?int $id
+        private readonly ?int $id,
+        private readonly string $status = 'complete'
     ) {
     }
 
@@ -33,6 +35,7 @@ class WithdrawalService implements IWithdrawalService
             'balance' => $newBalance,
             'previous_balance' => !empty($previousBalance) ? $previousBalance->balance : 0,
             'type' => $this->withdrawalTypeEnum->value,
+            'status' => $this->status
         ];
 
         if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderReceived) {
@@ -70,6 +73,13 @@ class WithdrawalService implements IWithdrawalService
         if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::OrderSpent) {
             $withdrawalData['order_id'] = $this->id;
         }
+
+        if ($this->withdrawalTypeEnum === WithdrawalTypeEnum::BumpProduct) {
+            (new PaymentProviderFactory())
+                ->getClass()
+                ->withdrawFromAccount(auth('sanctum')->user()->id, $this->amount, $this->id);
+        }
+
 
         SellerWithdrawal::create($withdrawalData);
 

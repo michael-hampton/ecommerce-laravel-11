@@ -39,7 +39,7 @@
                                 <tr>
                                     <th>Order Status</th>
                                     <td colspan="5">
-                                        <span class="badge bg-danger">Canceled</span>
+                                        <span class="badge {{ $order->statusBadge() }}">{{$order->statusText()}}</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -64,8 +64,9 @@
                                     <th class="text-center">Quantity</th>
                                     <th class="text-center">SKU</th>
                                     <th class="text-center">Category</th>
-                                    <th class="text-center">Brand</th>
-                                    <th class="text-center">Options</th>
+                                    <th class="text-center">Insurance</th>
+                                    <th class="text-center">Shipping</th>
+                                    <th class="text-center">Total</th>
                                     <th class="text-center">Return Status</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -76,20 +77,21 @@
 
                                         <td class="pname">
                                             <div class="image">
-                                                <img src="{{asset('storage/images/products')}}/{{$item->product->image}}"
+                                                <img style="width: 50px" src="{{asset('images/products')}}/{{$item->product->image}}"
                                                     alt="{{$item->product->name}}" class="image">
                                             </div>
                                             <div class="name">
                                                 <a href="{{route('shop.product.details', ['slug' => $item->product->slug])}}"
-                                                    target="_blank" class="body-title-2">Product1</a>
+                                                    target="_blank" class="body-title-2">{{$item->product->name}}</a>
                                             </div>
                                         </td>
                                         <td class="text-center">{{$item->price}}</td>
                                         <td class="text-center">{{$item->quantity}}</td>
                                         <td class="text-center">{{$item->SKU}}</td>
                                         <td class="text-center">{{$item->product->category->name}}</td>
-                                        <td class="text-center">{{$item->product->brand->name}}</td>
-                                        <td class="text-center"></td>
+                                        <td class="text-center">{{round($item->commission, 2)}}</td>
+                                        <td class="text-center">{{round($item->shipping_price, 2)}}</td>
+                                         <td class="text-center">{{round($item->total(), 2)}}</td>
                                         <td class="text-center">{{$item->status == 0 ? 'No' : 'Yes'}}</td>
                                         <td class="text-center">
                                             @if(empty($item->approved_date) && $order->status !== 'complete')
@@ -148,7 +150,7 @@
                                 </tr>
                                 <tr>
                                     <th>Total</th>
-                                    <td>{{$order->total}}</td>
+                                    <td>{{round($order->total, 2)}}</td>
                                     <th>Payment Mode</th>
                                     <td>{{$order->transaction->count() > 0 ? $order->transaction->first()->payment_method : 'Seller Balance'}}
                                     </td>
@@ -284,16 +286,16 @@
 
     @push('scripts')
         <script>
-           /* const closeButton = document.getElementsByClassName('close')
-            Array.from(closeButton).forEach(element => {
-                element.addEventListener('click', () => {
-                    var myModal = new bootstrap.Modal(document.getElementById("exampleModal"), {});
-                    myModal.hide();
+            /* const closeButton = document.getElementsByClassName('close')
+             Array.from(closeButton).forEach(element => {
+                 element.addEventListener('click', () => {
+                     var myModal = new bootstrap.Modal(document.getElementById("exampleModal"), {});
+                     myModal.hide();
 
-                     var myModal2 = new bootstrap.Modal(document.getElementById("reviewModal"), {});
-                    myModal.hide();
-                })
-            });*/
+                      var myModal2 = new bootstrap.Modal(document.getElementById("reviewModal"), {});
+                     myModal.hide();
+                 })
+             });*/
             const reviewButton = document.getElementsByClassName('review-product')[0]
 
             if (reviewButton) {

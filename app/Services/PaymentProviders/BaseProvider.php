@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace App\Services\PaymentProviders;
 
+use App\Models\Profile;
+
 class BaseProvider
 {
+    private Profile $profile;
+
     /**
      * @return \non-empty-list<array{name: mixed, description: mixed, sku: mixed, quantity: mixed, shipping: mixed, price: (float | int), unit_amount: array{currency_code: mixed, value: mixed}}>[]
      */
     public function formatLineItems($orderLines): array
     {
-    
+
         $items = [];
         foreach ($orderLines as $orderLine) {
-           
+
             $lineTotal = $orderLine->price * $orderLine->qty;
 
             $items[$orderLine->model->seller_id][] = [
@@ -50,5 +54,15 @@ class BaseProvider
 
         // Run the math, re-applying the negative value to ensure returns correctly negative / positive
         return floor($number * $precision) / $precision * $negative;
+    }
+
+    protected function profile(int $sellerId)
+    {
+        if (empty($this->profile)) {
+            $this->profile = Profile::where('user_id', $sellerId)->first();
+        }
+
+        return $this->profile;
+
     }
 }

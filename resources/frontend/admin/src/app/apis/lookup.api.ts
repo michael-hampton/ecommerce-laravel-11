@@ -20,7 +20,6 @@ export class LookupApi {
   }
 
    getCountries() {
-    alert('mike')
     return this.baseHttpClient.getAll(`lookup/countries`);
   }
 

@@ -170,8 +170,9 @@ class CreateOrder
                     (float)Session::get('checkout.total'),
                     WithdrawalTypeEnum::OrderSpent,
                     WithdrawalEnum::Decrease,
-                    $order->id
-                ))->updateBalance()->withdraw();
+                    $order->id,
+                    'pending'
+                ))->updateBalance();
             }
 
             Cart::deleteStoredCart('cart');

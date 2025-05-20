@@ -69,4 +69,8 @@ class OrderItem extends Model
     {
         return $this->hasMany(Post::class, 'order_item_id');
     }
+
+    public function total() {
+        return $this->price * $this->quantity + $this->commission + $this->shipping_price;
+    }
 }

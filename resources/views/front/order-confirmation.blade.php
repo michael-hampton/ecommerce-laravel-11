@@ -1,112 +1,274 @@
 @extends('layouts.app')
 @section('content')
-    <main class="pt-90">
-        <div class="mb-4 pb-4"></div>
-        <section class="shop-checkout container">
-            <h2 class="page-title">Order Received</h2>
-            <div class="checkout-steps">
-                <a href="javascript:void(0)" class="checkout-steps__item active">
-                    <span class="checkout-steps__item-number">01</span>
-                    <span class="checkout-steps__item-title">
-            <span>Shopping Bag</span>
-            <em>Manage Your Items List</em>
-          </span>
-                </a>
-                <a href="javascript:void(0)" class="checkout-steps__item active">
-                    <span class="checkout-steps__item-number">02</span>
-                    <span class="checkout-steps__item-title">
-            <span>Shipping and Checkout</span>
-            <em>Checkout Your Items List</em>
-          </span>
-                </a>
-                <a href="order-confirmation.html" class="checkout-steps__item active">
-                    <span class="checkout-steps__item-number">03</span>
-                    <span class="checkout-steps__item-title">
-            <span>Confirmation</span>
-            <em>Review And Submit Your Order</em>
-          </span>
-                </a>
-            </div>
-            <div class="order-complete">
-                <div class="order-complete__message">
-                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="40" cy="40" r="40" fill="#B9A16B"/>
-                        <path
-                            d="M52.9743 35.7612C52.9743 35.3426 52.8069 34.9241 52.5056 34.6228L50.2288 32.346C49.9275 32.0446 49.5089 31.8772 49.0904 31.8772C48.6719 31.8772 48.2533 32.0446 47.952 32.346L36.9699 43.3449L32.048 38.4062C31.7467 38.1049 31.3281 37.9375 30.9096 37.9375C30.4911 37.9375 30.0725 38.1049 29.7712 38.4062L27.4944 40.683C27.1931 40.9844 27.0257 41.4029 27.0257 41.8214C27.0257 42.24 27.1931 42.6585 27.4944 42.9598L33.5547 49.0201L35.8315 51.2969C36.1328 51.5982 36.5513 51.7656 36.9699 51.7656C37.3884 51.7656 37.8069 51.5982 38.1083 51.2969L40.385 49.0201L52.5056 36.8996C52.8069 36.5982 52.9743 36.1797 52.9743 35.7612Z"
-                            fill="white"/>
-                    </svg>
-                    <h3>Your order is completed!</h3>
-                    <p>Thank you. Your order has been received.</p>
-                </div>
-                <div class="order-info">
-                    <div class="order-info__item">
-                        <label>Order Number</label>
-                        <span>{{$order->id}}</span>
+    <div class="row row-cols-1 row-cols-lg-2 g-0 mx-auto" style="max-width: 1920px">
+
+        <!-- Tank you content column -->
+        <div class="col d-flex flex-column justify-content-center py-5 px-xl-4 px-xxl-5">
+            <div class="w-100 pt-sm-2 pt-md-3 pt-lg-4 pb-lg-4 pb-xl-5 px-3 px-sm-4 pe-lg-0 ps-lg-5 mx-auto ms-lg-auto me-lg-4"
+                style="max-width: 740px">
+                <div class="d-flex align-items-sm-center border-bottom pb-4 pb-md-5">
+                    <div class="d-flex align-items-center justify-content-center bg-success text-white rounded-circle flex-shrink-0"
+                        style="width: 3rem; height: 3rem; margin-top: -.125rem">
+                        <i class="fa fa-check fs-4"></i>
                     </div>
-                    <div class="order-info__item">
-                        <label>Date</label>
-                        <span>{{$order->created_at}}</span>
-                    </div>
-                    <div class="order-info__item">
-                        <label>Total</label>
-                        <span>{{$order->total}}</span>
-                    </div>
-                    <div class="order-info__item">
-                        <label>Payment Method</label>
-                        <span>
-                            @if($order->transaction->count() > 0)
-                                {{$order->transaction->first()->payment_method}}</span>
-                        @else
-                            Seller Balance
-                        @endif
+                    <div class="w-100 ps-3">
+                        <div class="fs-sm mb-1">Order #234000</div>
+                        <div class="d-sm-flex align-items-center">
+                            <h1 class="h4 mb-0 me-3">Thank you for your order!</h1>
+                            <div class="nav mt-2 mt-sm-0 ms-auto">
+                                <a class="nav-link text-decoration-underline p-0" href="#!">Track order</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="d-flex flex-column gap-4 pt-3 pb-5 mt-3">
+                    <div>
+                        <h3 class="h6 mb-2">Delivery</h3>
+                        <p class="fs-sm mb-0">
+                            {{$order->address->address1}},{{$order->address->address2}},{{$order->address->city}},{{$order->address->state}},{{$order->address->zip}}
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="h6 mb-2">Time</h3>
+                        <p class="fs-sm mb-0">{{ $order->created_at->format('l, F d, H:i') }}</p>
+                    </div>
+                    <div>
+                        <h3 class="h6 mb-2">Payment</h3>
+                        <p class="fs-sm mb-0">Visa: **** **** **** 8395</p>
+                    </div>
+                </div>
+
                 <div class="checkout__totals-wrapper">
                     <div class="checkout__totals">
                         <h3>Order Details</h3>
                         <table class="checkout-cart-items">
                             <thead>
-                            <tr>
-                                <th>PRODUCT</th>
-                                <th>SUBTOTAL</th>
-                            </tr>
+                                <tr>
+                                    <th>PRODUCT</th>
+                                    <th>SUBTOTAL</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            @foreach($order->orderItems as $item)
-                                <tr>
-                                    <td>
-                                        {{$item->product->name}} x {{$item->quantity}}
-                                    </td>
-                                    <td>
-                                        {{$item->price}}
-                                    </td>
-                                </tr>
-                            @endforeach
+                                @foreach($order->orderItems as $item)
+                                    <tr>
+                                        <td>
+                                            {{$item->product->name}} x {{$item->quantity}}
+                                        </td>
+                                        <td>
+                                            {{$item->price}}
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                         <table class="checkout-totals">
                             <tbody>
-                            <tr>
-                                <th>SUBTOTAL</th>
-                                <td>$62.40</td>
-                            </tr>
-                            <tr>
-                                <th>SHIPPING</th>
-                                <td>{{$order->shipping}}</td>
-                            </tr>
-                            <tr>
-                                <th>VAT</th>
-                                <td>{{$order->tax}}</td>
-                            </tr>
-                            <tr>
-                                <th>TOTAL</th>
-                                <td>{{$order->total}}</td>
-                            </tr>
+                                <tr>
+                                    <th>SUBTOTAL</th>
+                                    <td>$62.40</td>
+                                </tr>
+                                <tr>
+                                    <th>SHIPPING</th>
+                                    <td>{{$order->shipping}}</td>
+                                </tr>
+                                <tr>
+                                    <th>VAT</th>
+                                    <td>{{$order->tax}}</td>
+                                </tr>
+                                <tr>
+                                    <th>TOTAL</th>
+                                    <td>{{$order->total}}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+            {{-- <div class="bg-success rounded px-4 py-4" style="--cz-bg-opacity: .2">
+                <div class="py-3">
+                    <h2 class="h4 text-center pb-2 mb-1">🎉 Congratulations! 30% off your new purchase!</h2>
+                    <p class="fs-sm text-center mb-4">Use the coupon now or look for it in your personal account.</p>
+                    <div class="d-flex gap-2 mx-auto" style="max-width: 500px">
+                        <input type="text" class="form-control border-white border-opacity-10 w-100" id="couponCode"
+                            value="30%SALEOFF" readonly="">
+                        <button type="button" class="btn btn-dark" data-copy-text-from="#couponCode">Copy
+                            coupon</button>
+                    </div>
+                </div>
+            </div>
+            <p class="fs-sm pt-4 pt-md-5 mt-2 mt-sm-3 mt-md-0 mb-0">Need help?<a class="fw-medium ms-2" href="#!">Contact
+                    us</a></p> --}}
+        </div>
+
+
+        <!-- Related products -->
+        <div class="col pt-sm-3 p-md-5 ps-lg-5 py-lg-4 pe-lg-4 p-xxl-5">
+            <div class="position-relative d-flex align-items-center h-100 py-5 px-3 px-sm-4 px-xl-5">
+                <span
+                    class="position-absolute top-0 start-0 w-100 h-100 bg-body-tertiary rounded-5 d-none d-md-block"></span>
+                <span class="position-absolute top-0 start-0 w-100 h-100 bg-body-tertiary d-md-none"></span>
+                <div class="position-relative w-100 z-2 mx-auto pb-2 pb-sm-3 pb-md-0" style="max-width: 636px">
+                    <h2 class="h4 text-center pb-3">You may also like</h2>
+                    <div class="row row-cols-2 g-3 g-sm-4 mb-4">
+
+                        <!-- Item -->
+                        <div class="col">
+                            <div class="product-card animate-underline hover-effect-opacity bg-body rounded shadow-none">
+                                <div class="position-relative">
+                                    <div class="position-absolute top-0 end-0 z-2 hover-effect-target opacity-0 mt-3 me-3">
+                                        <div class="d-flex flex-column gap-2">
+                                            <button type="button"
+                                                class="btn btn-icon btn-secondary animate-pulse d-none d-lg-inline-flex"
+                                                aria-label="Add to Wishlist">
+                                                <i class="fa fa-heart fs-base animate-target"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-icon btn-secondary animate-rotate d-none d-lg-inline-flex"
+                                                aria-label="Compare">
+                                                <i class="fa fa-refresh-cw fs-base animate-target"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown d-lg-none position-absolute top-0 end-0 z-2 mt-2 me-2">
+                                        <button type="button" class="btn btn-icon btn-sm btn-secondary bg-body"
+                                            data-bs-toggle="dropdown" aria-expanded="false" aria-label="More actions">
+                                            <i class="fa fa-more-vertical fs-lg"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end fs-xs p-2" style="min-width: auto">
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <i class="fa fa-heart fs-sm ms-n1 me-2"></i>
+                                                    Add to Wishlist
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <i class="fa fa-refresh-cw fs-sm ms-n1 me-2"></i>
+                                                    Compare
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <a class="d-block rounded-top overflow-hidden p-3 p-sm-4"
+                                        href="shop-product-general-electronics.html">
+                                        <span
+                                            class="badge bg-danger position-absolute top-0 start-0 mt-2 ms-2 mt-lg-3 ms-lg-3">-21%</span>
+                                        <div class="ratio" style="--cz-aspect-ratio: calc(240 / 258 * 100%)">
+                                            <img src="assets/img/shop/electronics/01.png" alt="VR Glasses">
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="w-100 min-w-0 px-2 pb-2 px-sm-3 pb-sm-3">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex gap-1 fs-xs">
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star text-body-tertiary opacity-75"></i>
+                                        </div>
+                                        <span class="text-body-tertiary fs-xs">(123)</span>
+                                    </div>
+                                    <h3 class="pb-1 mb-2">
+                                        <a class="d-block fs-sm fw-medium text-truncate"
+                                            href="shop-product-general-electronics.html">
+                                            <span class="animate-target">VRB01 Virtual Reality Glasses</span>
+                                        </a>
+                                    </h3>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="h5 lh-1 mb-0">$340.99 <del
+                                                class="text-body-tertiary fs-sm fw-normal">$430.00</del></div>
+                                        <button type="button"
+                                            class="product-card-button btn btn-icon btn-secondary animate-slide-end ms-2"
+                                            aria-label="Add to Cart">
+                                            <i class="fa fa-shopping-cart fs-base animate-target"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item -->
+                        <div class="col">
+                            <div class="product-card animate-underline hover-effect-opacity bg-body rounded shadow-none">
+                                <div class="position-relative">
+                                    <div class="position-absolute top-0 end-0 z-2 hover-effect-target opacity-0 mt-3 me-3">
+                                        <div class="d-flex flex-column gap-2">
+                                            <button type="button"
+                                                class="btn btn-icon btn-secondary animate-pulse d-none d-lg-inline-flex"
+                                                aria-label="Add to Wishlist">
+                                                <i class="fa fa-heart fs-base animate-target"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-icon btn-secondary animate-rotate d-none d-lg-inline-flex"
+                                                aria-label="Compare">
+                                                <i class="fa fa-refresh-cw fs-base animate-target"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown d-lg-none position-absolute top-0 end-0 z-2 mt-2 me-2">
+                                        <button type="button" class="btn btn-icon btn-sm btn-secondary bg-body"
+                                            data-bs-toggle="dropdown" aria-expanded="false" aria-label="More actions">
+                                            <i class="fa fa-more-vertical fs-lg"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end fs-xs p-2" style="min-width: auto">
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <i class="fa fa-heart fs-sm ms-n1 me-2"></i>
+                                                    Add to Wishlist
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <i class="fa fa-refresh-cw fs-sm ms-n1 me-2"></i>
+                                                    Compare
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <a class="d-block rounded-top overflow-hidden p-3 p-sm-4"
+                                        href="shop-product-general-electronics.html">
+                                        <div class="ratio" style="--cz-aspect-ratio: calc(240 / 258 * 100%)">
+                                            <img src="assets/img/shop/electronics/14.png" alt="iPhone 14">
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="w-100 min-w-0 px-2 pb-2 px-sm-3 pb-sm-3">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex gap-1 fs-xs">
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star-filled text-warning"></i>
+                                            <i class="fa fa-star-half text-warning"></i>
+                                        </div>
+                                        <span class="text-body-tertiary fs-xs">(142)</span>
+                                    </div>
+                                    <h3 class="pb-1 mb-2">
+                                        <a class="d-block fs-sm fw-medium text-truncate"
+                                            href="shop-product-general-electronics.html">
+                                            <span class="animate-target">Apple iPhone 14 128GB Blue</span>
+                                        </a>
+                                    </h3>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="h5 lh-1 mb-0">$899.00</div>
+                                        <button type="button"
+                                            class="product-card-button btn btn-icon btn-secondary animate-slide-end ms-2"
+                                            aria-label="Add to Cart">
+                                            <i class="fa fa-shopping-cart fs-base animate-target"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="btn btn-lg btn-primary w-100" href="{{ route('shop.index') }}">
+                        Continue shopping
+                        <i class="fa fa-chevron-right fs-lg ms-1 me-n1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
