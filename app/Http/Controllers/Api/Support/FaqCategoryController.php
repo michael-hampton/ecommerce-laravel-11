@@ -2,8 +2,9 @@
 
 
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Support;
 
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\MassDestroyFaqCategoryRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreFaqCategoryRequest;
@@ -14,25 +15,32 @@ use App\Repositories\Interfaces\Support\ICategoryRepository;
 
 class FaqCategoryController extends ApiController
 {
-    public function __construct(private readonly ICategoryRepository $categoryRepository) {}
-
-    public function index(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
+    public function __construct(private readonly ICategoryRepository $categoryRepository)
     {
-       $values = $this->categoryRepository->getPaginatedWithFilters(
+    }
+
+    public function search(SearchRequest $searchRequest): \Illuminate\Http\JsonResponse
+    {
+        $values = $this->categoryRepository->getPaginatedWithFilters(
             $searchRequest->integer('limit'),
             $searchRequest->string('sortBy'),
             $searchRequest->string('sortDir'),
             $searchRequest->array('searchFilters')
-         );
+        );
 
         return $this->sendPaginatedResponse($values, CategoryResource::collection($values));
+    }
+
+    public function index()
+    {
+        return $this->success(CategoryResource::collection($this->categoryRepository->getAll(null, 'name', 'asc')), 'Results');
     }
 
     public function store(StoreFaqCategoryRequest $storeFaqCategoryRequest)
     {
         $faqCategory = FaqCategory::create($storeFaqCategoryRequest->all());
 
-        if (! $faqCategory) {
+        if (!$faqCategory) {
             return $this->error('Unable to create Category');
         }
 
@@ -43,7 +51,7 @@ class FaqCategoryController extends ApiController
     {
         $faqCategory->update($updateFaqCategoryRequest->all());
 
-        if (! $faqCategory) {
+        if (!$faqCategory) {
             return $this->error('Unable to update Category');
         }
 
@@ -54,7 +62,7 @@ class FaqCategoryController extends ApiController
     {
         $result = $faqCategory->delete();
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to delete Category');
         }
 

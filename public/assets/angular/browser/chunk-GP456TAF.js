@@ -1,0 +1,1 @@
+import{Xb as r}from"./chunk-QYSCFILT.js";var i=e=>{let s={code:"Unknown",message:e,status:0};if(e instanceof r){s.message=e.message||"",s.status=e.status||0,console.log("error",e);let t=e.error.errors;Object.keys(t).length&&(Object.keys(t).forEach((o,n)=>{s.message+=" "+t[o].join(". ")}),alert(s.message))}return s};export{i as a};

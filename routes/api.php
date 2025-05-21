@@ -11,10 +11,10 @@ use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CourierController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DeliveryMethodController;
-use App\Http\Controllers\Api\FaqArticleController;
-use App\Http\Controllers\Api\FaqCategoryController;
-use App\Http\Controllers\Api\FaqQuestionController;
-use App\Http\Controllers\Api\FaqTagController;
+use App\Http\Controllers\Api\Support\FaqArticleController;
+use App\Http\Controllers\Api\Support\FaqCategoryController;
+use App\Http\Controllers\Api\Support\FaqQuestionController;
+use App\Http\Controllers\Api\Support\FaqTagController;
 use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\NotificationController;
@@ -168,7 +168,7 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
 
     // Faq Categories
     Route::apiResource('faq-categories', FaqCategoryController::class);
-    Route::post('faq-categories/search', [FaqCategoryController::class, 'index'])->name('');
+    Route::post('faq-categories/search', [FaqCategoryController::class, 'search'])->name('');
 
 
     // Faq Questions

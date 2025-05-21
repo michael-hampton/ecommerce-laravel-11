@@ -4,6 +4,7 @@ import {Seller} from '../../../../../types/seller/seller';
 import {Billing} from '../../../../../types/seller/billing';
 import { BillingStore } from './billing.store';
 import { SellerApi } from '../../../../../apis/seller.api';
+import { LookupStore } from '../../../../../store/lookup.store';
 
 @Component({
   selector: 'app-billing',
@@ -16,12 +17,15 @@ export class BillingComponent {
 
   private _store = inject(BillingStore)
   vm$ = this._store.vm$
+  private _lookupStore = inject(LookupStore)
+  lookupVm$ = this._lookupStore.vm$
   private _api = inject(SellerApi)
   private fb = inject(FormBuilder)
   form: FormGroup;
 
   ngOnInit() {
     this.initBillingForm();
+    this._lookupStore.getCountries()
 
     this._api.getBilling().subscribe((result: Billing) => {
       this.form.patchValue({
@@ -43,13 +47,12 @@ export class BillingComponent {
         city: this.form.value.city,
         state: this.form.value.state,
         zip: this.form.value.zip,
+        country_id: this.form.value.country_id
       } as Seller;
 
       console.log('model', model)
 
-      this._store.saveBilling(model).subscribe(result => {
-        alert('good');
-      })
+      this._store.saveBilling(model).subscribe()
     }
   }
 

@@ -2,8 +2,9 @@
 
 
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Support;
 
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\MassDestroyFaqQuestionRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreFaqQuestionRequest;

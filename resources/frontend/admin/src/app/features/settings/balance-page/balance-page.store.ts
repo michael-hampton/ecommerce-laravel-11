@@ -34,7 +34,6 @@ export class BalancePageStore extends ComponentStore<BalancePageState> {
     data: state.data,
     transactions: state.transactions,
     balance: state.balance,
-    // withdrawals: state.withdrawals,
     loading: state.loading,
   }))
 
@@ -54,6 +53,7 @@ export class BalancePageStore extends ComponentStore<BalancePageState> {
 
     readonly getTransactions = this.effect<void>(
         (trigger$) => trigger$.pipe(
+            tap(() => this.patchState({ loading: true })),
             switchMap(() =>
                 this._api.getTransactions().pipe(
                     tap(() => this.patchState({ loading: true })),

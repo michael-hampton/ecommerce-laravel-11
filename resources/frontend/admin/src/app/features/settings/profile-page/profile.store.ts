@@ -7,6 +7,7 @@ import { Seller } from "../../../types/seller/seller";
 import { SellerApi } from "../../../apis/seller.api";
 import { GlobalStore } from "../../../store/global.store";
 import { UiError } from "../../../core/error.model";
+import { AuthService } from "../../../core/auth/auth.service";
 
 export interface ProfileState {
     data: Seller
@@ -24,7 +25,7 @@ const defaultState: ProfileState = {
 
 @Injectable()
 export class ProfileStore extends ComponentStore<ProfileState> {
-    constructor(private _api: SellerApi, private _globalStore: GlobalStore) {
+    constructor(private _api: SellerApi, private _globalStore: GlobalStore, private _authService: AuthService) {
         super(defaultState);
     }
 
@@ -56,7 +57,10 @@ export class ProfileStore extends ComponentStore<ProfileState> {
         return request$.pipe(
             tap(() => this._globalStore.setLoading(true)),
             tapResponse({
-                next: (users) => this._globalStore.setSuccess('Saved successfully'),
+                next: (response: any) => {
+                    this.updateProfileImage(response.data.profile_picture)
+                    this._globalStore.setSuccess('Saved successfully')
+                },
                 error: (error: HttpErrorResponse) => {
                     this._globalStore.setLoading(false)
                     this._globalStore.setError(UiError(error))
@@ -86,5 +90,11 @@ export class ProfileStore extends ComponentStore<ProfileState> {
                 reader.readAsDataURL(file);
             }
         }
+    }
+
+    updateProfileImage(image: string) {
+        const user = this._authService.GetUser()
+        user.payload.image = image
+        this._authService.SetLocalSession(user)
     }
 }

@@ -156,4 +156,4 @@ Route::post('/checkout/paymongo/create-intent', [CheckoutController::class,'crea
 Route::get('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
 Route::post('/change-password', [HomeController::class, 'updatePassword'])->name('update-password');
 
-Route::any('/angular/{any}', [AngularController::class, 'index']);
+Route::get('/angular/index', [AngularController::class, 'index']);

@@ -1,7 +1,7 @@
 <?php if(empty($current)) $current = 'account'; ?>
 
 <div class="col-lg-3 my-lg-0 my-md-1">
-    <div id="sidebar" class="bg-purple">
+    <div id="sidebar" class="bg-secondary">
         <div class="h4 text-white">Account</div>
         <ul>
             <li @if($current === 'account') class="active"@endif>
@@ -42,7 +42,7 @@
             </li>
             <li @if($current === 'reviews') class="active"@endif>
                 <a href="{{route('user.reviews')}}" class="text-decoration-none d-flex align-items-start">
-                    <div class="fa fa-user pt-2 me-3"></div>
+                    <div class="fa fa-star pt-2 me-3"></div>
                     <div class="d-flex flex-column">
                         <div class="link">Reviews</div>
                         <div class="link-desc">View your reviews</div>
@@ -51,7 +51,7 @@
             </li>
             <li @if($current === 'wishlist') class="active"@endif>
                 <a href="{{route('user.wishlist')}}" class="text-decoration-none d-flex align-items-start">
-                    <div class="fa fa-user pt-2 me-3"></div>
+                    <div class="fa fa-heart pt-2 me-3"></div>
                     <div class="d-flex flex-column">
                         <div class="link">Wishlist</div>
                         <div class="link-desc">View your wishlist</div>
@@ -60,7 +60,7 @@
             </li>
             <li @if($current === 'messages') class="active"@endif>
                 <a href="{{route('user.askQuestion')}}" class="text-decoration-none d-flex align-items-start">
-                    <div class="fa fa-user pt-2 me-3"></div>
+                    <div class="fa fa-envelope pt-2 me-3"></div>
                     <div class="d-flex flex-column">
                         <div class="link">Messages</div>
                         <div class="link-desc">Messages you have sent to sellers</div>
@@ -69,7 +69,7 @@
             </li>
             <li @if($current === 'help') class="active"@endif>
                 <a href="#" class="text-decoration-none d-flex align-items-start">
-                    <div class="fa fa-headset pt-2 me-3"></div>
+                    <div class="fa fa-info pt-2 me-3"></div>
                     <div class="d-flex flex-column">
                         <div class="link">Help & Support</div>
                         <div class="link-desc">Contact Us for help and support</div>

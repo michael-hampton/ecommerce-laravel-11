@@ -10,12 +10,14 @@ import { Injectable } from "@angular/core";
 
 export interface BankDetailsState {
     loading: boolean,
-    bank_account_details: AccountDetails
+    bank_account_details: AccountDetails,
+    editingBankDetails: boolean
 }
 
 const defaultState: BankDetailsState = {
     loading: false,
     bank_account_details: {} as AccountDetails,
+    editingBankDetails: false
 };
 
 @Injectable()
@@ -28,11 +30,12 @@ export class BankDetailsStore extends ComponentStore<BankDetailsState> {
     readonly bank_account$ = this.select(({ bank_account_details }) => bank_account_details);
     vm$ = this.select(state => ({
         loading: state.loading,
+        editingBankDetails: state.editingBankDetails
     }))
 
     deleteBankAccount(id: number) {
         return this._api.deleteBankAccount(id).pipe(
-            tap(() => this.patchState({loading: true})),
+            tap(() => this.patchState({ loading: true })),
             tapResponse({
                 next: (users) => {
                     this.patchState({ bank_account_details: {} as AccountDetails })
@@ -40,7 +43,7 @@ export class BankDetailsStore extends ComponentStore<BankDetailsState> {
                     //this.patchState({loading: false, saveSuccess: true})
                 },
                 error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),
-                finalize: () => this.patchState({loading: false}),
+                finalize: () => this.patchState({ loading: false }),
             })
         )
     }
@@ -58,4 +61,11 @@ export class BankDetailsStore extends ComponentStore<BankDetailsState> {
             })
         )
     }
+
+    readonly toggleForm = this.updater((state: BankDetailsState) => {
+        return {
+            ...state,
+            editingBankDetails: !state.editingBankDetails
+        };
+    });
 }

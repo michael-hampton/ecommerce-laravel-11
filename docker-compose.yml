@@ -56,6 +56,18 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+    # Database Test
+    database_test:
+        image: mysql:8.0.25
+        volumes:
+            - ./docker/volumes/mysql_test:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+        ports:
+            - "3307:3306"
 networks:
     sail:
         driver: bridge

@@ -12,13 +12,15 @@ import { StripeApi } from "../../../../../apis/stripe.api";
 export interface CardDetailsState {
     card_details: AccountDetails[],
     loading: boolean,
-    id: string
+    id: string,
+    addCardPressed: boolean
 }
 
 const defaultState: CardDetailsState = {
     card_details: [],
     loading: false,
-    id: ''
+    id: '',
+    addCardPressed: false
 };
 
 @Injectable()
@@ -33,6 +35,7 @@ export class CardDetailsStore extends ComponentStore<CardDetailsState> {
     vm$ = this.select(state => ({
         loading: state.loading,
         card_details: state.card_details,
+        addCardPressed: state.addCardPressed
     }))
 
     readonly getSellerCardDetails = this.effect<void>(
@@ -123,4 +126,11 @@ export class CardDetailsStore extends ComponentStore<CardDetailsState> {
             )
         )
     );
+
+    readonly toggleForm = this.updater((state: CardDetailsState) => {
+        return {
+            ...state,
+            addCardPressed: !state.addCardPressed
+        };
+    });
 }

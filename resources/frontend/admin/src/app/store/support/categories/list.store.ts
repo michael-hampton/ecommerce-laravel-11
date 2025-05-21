@@ -54,7 +54,7 @@ export class SupportCategoryStore extends FilterStore<Category> {
   loadData = this.effect((filter$: Observable<FilterModel>) =>
     filter$.pipe(
       tap(() => this._globalStore.setLoading(true)),
-      switchMap((filter: FilterModel) => this._api.getData(filter).pipe(
+      switchMap((filter: FilterModel) => this._api.search(filter).pipe(
           tapResponse({
             next: (data) => this.patchState({data: data as PagedData<Category>}),
             error: (error: HttpErrorResponse) => this._globalStore.setError(UiError(error)),

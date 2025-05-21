@@ -1,0 +1,1 @@
+import{Ob as n,W as e,za as i}from"./chunk-QYSCFILT.js";var p=(()=>{class t{static{this.\u0275fac=function(s){return new(s||t)}}static{this.\u0275mod=i({type:t})}static{this.\u0275inj=e({imports:[n]})}}return t})();export{p as a};

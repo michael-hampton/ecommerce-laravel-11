@@ -54,16 +54,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "20MB",
+                  "maximumError": "20MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "20MB",
+                  "maximumError": "20MB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "outputPath": "../../../public/assets/angular",
+              "deployUrl": "/assets/angular/browser/"
             },
             "development": {
               "optimization": false,
@@ -74,7 +76,9 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.development.ts"
                 }
-              ]
+              ],
+              "outputPath": "dist/assets/angular",
+              "baseHref": "/assets/angular/",
             }
           },
           "defaultConfiguration": "production"

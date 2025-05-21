@@ -1,124 +1,145 @@
-<form class="needs-validation" novalidate="" [formGroup]="form">
-  <div class="row row-cols-1 row-cols-sm-2 g-4 mb-4">
-    <div class="col">
-      <label for="current-password" class="form-label fs-base"
-        >Current password</label
-      >
-      <div class="password-toggle">
-        <input
-          type="password"
-          class="form-control form-control-lg rounded-pill"
-          id="current-password"
-          required=""
-          formControlName="password"
-        />
-        <div class="invalid-tooltip bg-transparent p-0">
-          Incorrect password. Please try again.
-        </div>
-        <label class="password-toggle-button" aria-label="Show/hide password">
-          <input type="checkbox" class="btn-check" />
-          <span class="password-toggle-button-icon d-flex">
-            <svg
-              width="1em"
-              height="1em"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M23.8 11.6c-.1-.1-.1-.3-.2-.4-.8-1.4-1.7-2.7-2.8-3.8-1.9-2.1-4.9-4.3-8.8-4.3S5.2 5.3 3.2 7.4c-1.1 1.2-2 2.4-2.8 3.8-.1.1-.1.2-.2.4s-.1.5 0 .8v.1c.2.4.5.8.7 1.2.7 1 1.4 2 2.2 2.9 1.9 2.1 4.9 4.3 8.8 4.3 3.9 0 6.8-2.2 8.8-4.3 1.1-1.2 2-2.4 2.8-3.8.1-.1.1-.2.2-.4.2-.3.2-.6.1-.8zm-4.3 3.8c-1.8 1.9-4.3 3.7-7.5 3.7s-5.7-1.8-7.5-3.7c-1-1-1.8-2.2-2.5-3.4.7-1.2 1.5-2.4 2.5-3.4C6.3 6.7 8.8 4.9 12 4.9s5.7 1.8 7.5 3.7c1 1 1.8 2.2 2.5 3.4-.7 1.2-1.5 2.4-2.5 3.4z"
-              ></path>
-              <path
-                d="M12 8.1c-2.2 0-3.9 1.8-3.9 3.9s1.7 3.9 3.9 3.9 3.9-1.7 3.9-3.9-1.7-3.9-3.9-3.9zm0 6c-1.1 0-2.1-1-2.1-2.1s.9-2.1 2.1-2.1 2.1 1 2.1 2.1-1 2.1-2.1 2.1z"
-              ></path>
-            </svg> </span
-        ></label>
-      </div>
-    </div>
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title">Change Password</h5>
   </div>
-  <div class="row row-cols-1 row-cols-sm-2 g-4 mb-4">
-    <div class="col">
-      <label for="new-password" class="form-label fs-base"
-        >New password
-        <span class="fs-sm fw-normal text-body-secondary"
-          >(Min 8 chars)</span
-        ></label
-      >
-      <div class="password-toggle">
-        <input
-          type="password"
-          class="form-control form-control-lg rounded-pill"
-          minlength="8"
-          id="new-password"
-          formControlName="newPassword"
-          required=""
-        />
-        <div class="invalid-tooltip bg-transparent p-0">
-          Please ensure password is at least 8 characters long.
-        </div>
-        <label class="password-toggle-button" aria-label="Show/hide password">
-          <input type="checkbox" class="btn-check" />
-          <span class="password-toggle-button-icon d-flex">
-            <svg
-              width="1em"
-              height="1em"
-              viewBox="0 0 24 24"
-              fill="currentColor"
+
+  <div class="card-body">
+    <form class="needs-validation" novalidate="" [formGroup]="form">
+      <div class="row row-cols-1 row-cols-sm-2 g-4 mb-4">
+        <div class="col">
+          <label for="current-password" class="form-label fs-base"
+            >Current password</label
+          >
+          <div class="password-toggle">
+            <input
+              type="password"
+              class="form-control form-control-lg rounded-pill"
+              id="current-password"
+              required=""
+              formControlName="password"
+            />
+            <div class="invalid-tooltip bg-transparent p-0">
+              Incorrect password. Please try again.
+            </div>
+            <label
+              class="password-toggle-button"
+              aria-label="Show/hide password"
             >
-              <path
-                d="M23.8 11.6c-.1-.1-.1-.3-.2-.4-.8-1.4-1.7-2.7-2.8-3.8-1.9-2.1-4.9-4.3-8.8-4.3S5.2 5.3 3.2 7.4c-1.1 1.2-2 2.4-2.8 3.8-.1.1-.1.2-.2.4s-.1.5 0 .8v.1c.2.4.5.8.7 1.2.7 1 1.4 2 2.2 2.9 1.9 2.1 4.9 4.3 8.8 4.3 3.9 0 6.8-2.2 8.8-4.3 1.1-1.2 2-2.4 2.8-3.8.1-.1.1-.2.2-.4.2-.3.2-.6.1-.8zm-4.3 3.8c-1.8 1.9-4.3 3.7-7.5 3.7s-5.7-1.8-7.5-3.7c-1-1-1.8-2.2-2.5-3.4.7-1.2 1.5-2.4 2.5-3.4C6.3 6.7 8.8 4.9 12 4.9s5.7 1.8 7.5 3.7c1 1 1.8 2.2 2.5 3.4-.7 1.2-1.5 2.4-2.5 3.4z"
-              ></path>
-              <path
-                d="M12 8.1c-2.2 0-3.9 1.8-3.9 3.9s1.7 3.9 3.9 3.9 3.9-1.7 3.9-3.9-1.7-3.9-3.9-3.9zm0 6c-1.1 0-2.1-1-2.1-2.1s.9-2.1 2.1-2.1 2.1 1 2.1 2.1-1 2.1-2.1 2.1z"
-              ></path>
-            </svg> </span
-        ></label>
-      </div>
-    </div>
-    <div class="col">
-      <label for="confirm-new-password" class="form-label fs-base"
-        >Confirm new password</label
-      >
-      <div class="password-toggle">
-        <input
-          type="password"
-          class="form-control form-control-lg rounded-pill"
-          minlength="8"
-          id="confirm-new-password"
-          formControlName="confirmPassword"
-          required=""
-        />
-        <div class="invalid-tooltip bg-transparent p-0">
-          Passwords do not match.
+              <input type="checkbox" class="btn-check" />
+              <span class="password-toggle-button-icon d-flex">
+                <svg
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M23.8 11.6c-.1-.1-.1-.3-.2-.4-.8-1.4-1.7-2.7-2.8-3.8-1.9-2.1-4.9-4.3-8.8-4.3S5.2 5.3 3.2 7.4c-1.1 1.2-2 2.4-2.8 3.8-.1.1-.1.2-.2.4s-.1.5 0 .8v.1c.2.4.5.8.7 1.2.7 1 1.4 2 2.2 2.9 1.9 2.1 4.9 4.3 8.8 4.3 3.9 0 6.8-2.2 8.8-4.3 1.1-1.2 2-2.4 2.8-3.8.1-.1.1-.2.2-.4.2-.3.2-.6.1-.8zm-4.3 3.8c-1.8 1.9-4.3 3.7-7.5 3.7s-5.7-1.8-7.5-3.7c-1-1-1.8-2.2-2.5-3.4.7-1.2 1.5-2.4 2.5-3.4C6.3 6.7 8.8 4.9 12 4.9s5.7 1.8 7.5 3.7c1 1 1.8 2.2 2.5 3.4-.7 1.2-1.5 2.4-2.5 3.4z"
+                  ></path>
+                  <path
+                    d="M12 8.1c-2.2 0-3.9 1.8-3.9 3.9s1.7 3.9 3.9 3.9 3.9-1.7 3.9-3.9-1.7-3.9-3.9-3.9zm0 6c-1.1 0-2.1-1-2.1-2.1s.9-2.1 2.1-2.1 2.1 1 2.1 2.1-1 2.1-2.1 2.1z"
+                  ></path>
+                </svg> </span
+            ></label>
+          </div>
         </div>
-        <label class="password-toggle-button" aria-label="Show/hide password">
-          <input type="checkbox" class="btn-check" />
-          <span class="password-toggle-button-icon d-flex">
-            <svg
-              width="1em"
-              height="1em"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M23.8 11.6c-.1-.1-.1-.3-.2-.4-.8-1.4-1.7-2.7-2.8-3.8-1.9-2.1-4.9-4.3-8.8-4.3S5.2 5.3 3.2 7.4c-1.1 1.2-2 2.4-2.8 3.8-.1.1-.1.2-.2.4s-.1.5 0 .8v.1c.2.4.5.8.7 1.2.7 1 1.4 2 2.2 2.9 1.9 2.1 4.9 4.3 8.8 4.3 3.9 0 6.8-2.2 8.8-4.3 1.1-1.2 2-2.4 2.8-3.8.1-.1.1-.2.2-.4.2-.3.2-.6.1-.8zm-4.3 3.8c-1.8 1.9-4.3 3.7-7.5 3.7s-5.7-1.8-7.5-3.7c-1-1-1.8-2.2-2.5-3.4.7-1.2 1.5-2.4 2.5-3.4C6.3 6.7 8.8 4.9 12 4.9s5.7 1.8 7.5 3.7c1 1 1.8 2.2 2.5 3.4-.7 1.2-1.5 2.4-2.5 3.4z"
-              ></path>
-              <path
-                d="M12 8.1c-2.2 0-3.9 1.8-3.9 3.9s1.7 3.9 3.9 3.9 3.9-1.7 3.9-3.9-1.7-3.9-3.9-3.9zm0 6c-1.1 0-2.1-1-2.1-2.1s.9-2.1 2.1-2.1 2.1 1 2.1 2.1-1 2.1-2.1 2.1z"
-              ></path>
-            </svg> </span
-        ></label>
       </div>
-    </div>
+      <div class="row row-cols-1 row-cols-sm-2 g-4 mb-4">
+        <div class="col">
+          <label for="new-password" class="form-label fs-base"
+            >New password
+            <span class="fs-sm fw-normal text-body-secondary"
+              >(Min 8 chars)</span
+            ></label
+          >
+          <div class="password-toggle">
+            <input
+              type="password"
+              class="form-control form-control-lg rounded-pill"
+              minlength="8"
+              id="new-password"
+              formControlName="newPassword"
+              required=""
+            />
+            <div class="invalid-tooltip bg-transparent p-0">
+              Please ensure password is at least 8 characters long.
+            </div>
+            <label
+              class="password-toggle-button"
+              aria-label="Show/hide password"
+            >
+              <input type="checkbox" class="btn-check" />
+              <span class="password-toggle-button-icon d-flex">
+                <svg
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M23.8 11.6c-.1-.1-.1-.3-.2-.4-.8-1.4-1.7-2.7-2.8-3.8-1.9-2.1-4.9-4.3-8.8-4.3S5.2 5.3 3.2 7.4c-1.1 1.2-2 2.4-2.8 3.8-.1.1-.1.2-.2.4s-.1.5 0 .8v.1c.2.4.5.8.7 1.2.7 1 1.4 2 2.2 2.9 1.9 2.1 4.9 4.3 8.8 4.3 3.9 0 6.8-2.2 8.8-4.3 1.1-1.2 2-2.4 2.8-3.8.1-.1.1-.2.2-.4.2-.3.2-.6.1-.8zm-4.3 3.8c-1.8 1.9-4.3 3.7-7.5 3.7s-5.7-1.8-7.5-3.7c-1-1-1.8-2.2-2.5-3.4.7-1.2 1.5-2.4 2.5-3.4C6.3 6.7 8.8 4.9 12 4.9s5.7 1.8 7.5 3.7c1 1 1.8 2.2 2.5 3.4-.7 1.2-1.5 2.4-2.5 3.4z"
+                  ></path>
+                  <path
+                    d="M12 8.1c-2.2 0-3.9 1.8-3.9 3.9s1.7 3.9 3.9 3.9 3.9-1.7 3.9-3.9-1.7-3.9-3.9-3.9zm0 6c-1.1 0-2.1-1-2.1-2.1s.9-2.1 2.1-2.1 2.1 1 2.1 2.1-1 2.1-2.1 2.1z"
+                  ></path>
+                </svg> </span
+            ></label>
+          </div>
+        </div>
+        <div class="col">
+          <label for="confirm-new-password" class="form-label fs-base"
+            >Confirm new password</label
+          >
+          <div class="password-toggle">
+            <input
+              type="password"
+              class="form-control form-control-lg rounded-pill"
+              minlength="8"
+              id="confirm-new-password"
+              formControlName="confirmPassword"
+              required=""
+            />
+            <div class="invalid-tooltip bg-transparent p-0">
+              Passwords do not match.
+            </div>
+            <label
+              class="password-toggle-button"
+              aria-label="Show/hide password"
+            >
+              <input type="checkbox" class="btn-check" />
+              <span class="password-toggle-button-icon d-flex">
+                <svg
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M23.8 11.6c-.1-.1-.1-.3-.2-.4-.8-1.4-1.7-2.7-2.8-3.8-1.9-2.1-4.9-4.3-8.8-4.3S5.2 5.3 3.2 7.4c-1.1 1.2-2 2.4-2.8 3.8-.1.1-.1.2-.2.4s-.1.5 0 .8v.1c.2.4.5.8.7 1.2.7 1 1.4 2 2.2 2.9 1.9 2.1 4.9 4.3 8.8 4.3 3.9 0 6.8-2.2 8.8-4.3 1.1-1.2 2-2.4 2.8-3.8.1-.1.1-.2.2-.4.2-.3.2-.6.1-.8zm-4.3 3.8c-1.8 1.9-4.3 3.7-7.5 3.7s-5.7-1.8-7.5-3.7c-1-1-1.8-2.2-2.5-3.4.7-1.2 1.5-2.4 2.5-3.4C6.3 6.7 8.8 4.9 12 4.9s5.7 1.8 7.5 3.7c1 1 1.8 2.2 2.5 3.4-.7 1.2-1.5 2.4-2.5 3.4z"
+                  ></path>
+                  <path
+                    d="M12 8.1c-2.2 0-3.9 1.8-3.9 3.9s1.7 3.9 3.9 3.9 3.9-1.7 3.9-3.9-1.7-3.9-3.9-3.9zm0 6c-1.1 0-2.1-1-2.1-2.1s.9-2.1 2.1-2.1 2.1 1 2.1 2.1-1 2.1-2.1 2.1z"
+                  ></path>
+                </svg> </span
+            ></label>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex gap-3">
+        <button
+          type="submit"
+          class="btn btn-lg btn-primary rounded-pill"
+          (click)="updatePassword()"
+        >
+          Update password
+        </button>
+        <button type="reset" class="btn btn-lg btn-secondary rounded-pill">
+          Cancel
+        </button>
+      </div>
+    </form>
   </div>
-  <div class="d-flex gap-3">
-    <button type="submit" class="btn btn-lg btn-primary rounded-pill" (click)="updatePassword()">
-      Update password
-    </button>
-    <button type="reset" class="btn btn-lg btn-secondary rounded-pill">
-      Cancel
-    </button>
-  </div>
-</form>
+</div>
 
 <h2 class="h6 pt-5 mt-xl-2 pb-1 mb-2">Delete account</h2>
 <p class="fs-sm">

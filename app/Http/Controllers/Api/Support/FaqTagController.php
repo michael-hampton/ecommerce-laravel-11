@@ -2,12 +2,12 @@
 
 
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Support;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Models\FaqTag;
 
-class FaqTagController extends Controller
+class FaqTagController extends ApiController
 {
     public function index()
     {

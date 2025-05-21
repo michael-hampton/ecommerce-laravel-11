@@ -24,7 +24,7 @@ export class SupportQuestionApi {
   }
 
   getCategories() {
-    return this.httpClient.get(`${environment.apiUrl}/faq-categories?sortBy=name&sortDir=asc`);
+    return this.httpClient.get(`${environment.apiUrl}/faq-categories`);
   }
 
   delete(id: number){

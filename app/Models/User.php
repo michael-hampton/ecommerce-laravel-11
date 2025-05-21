@@ -64,6 +64,10 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         return $this->morphMany(Review::class, 'commentable');
     }
 
+    public function postedReviews(): HasMany {
+        return $this->hasMany(Review::class,'user_id');
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'seller_id');

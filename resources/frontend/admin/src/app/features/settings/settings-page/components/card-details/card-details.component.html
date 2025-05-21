@@ -1,70 +1,81 @@
-<div
-  *ngIf="vm$ | async as vm"
->
+<div *ngIf="vm$ | async as vm">
   <div class="d-flex justify-content-center overlay" *ngIf="vm.loading">
     <div class="spinner-border" role="status" style="width: 6rem; height: 6rem">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
 
-  
+  <div class="modal" tabindex="-1" #addCardModal id="testModal">...</div>
 
-  <!-- <div class="col">
-    <div class="card border-0 h-100">
-      <span
-        class="position-absolute top-0 start-0 w-100 h-100 border border-dashed border-secondary border-opacity-25 rounded-4 d-none-dark"
-      ></span>
-      <span
-        class="position-absolute top-0 start-0 w-100 h-100 border border-dashed border-light border-opacity-25 rounded-4 d-none d-block-dark"
-      ></span>
-      <div
-        class="card-body position-relative z-2 nav align-items-center justify-content-center py-5"
-      >
-        <a
-          class="nav-link animate-underline stretched-link min-w-0 fs-base px-0" href="javascript:void(0)"
-          (click)="addPaymentMethod()"
-        >
-          <i class="ci-plus fs-lg ms-n2 me-2"></i>
-          <span class="animate-target text-truncate">Add payment method</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</div> -->
+  <ng-template #cardForm>
+    <form class="needs-validation" novalidate="" [formGroup]="form">
+      <ng-container *ngIf="!useStripe">
+        <div class="mb-3">
+          <label for="card-number" class="form-label">Card number</label>
+          <div
+            class="position-relative"
+            data-input-format='{"creditCard": true}'
+          >
+            <input
+              type="text"
+              class="form-control form-icon-end rounded-pill"
+              id="card-number"
+              style="background-image: none"
+              placeholder="XXXX XXXX XXXX XXXX"
+              required=""
+              formControlName="cardNumber"
+            />
+            <span
+              class="position-absolute d-flex top-50 end-0 translate-middle-y fs-5 text-body-tertiary me-3"
+              data-card-icon=""
+            ></span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="card-name" class="form-label">Name on card</label>
+          <input
+            type="text"
+            class="form-control rounded-pill"
+            id="card-name"
+            placeholder="Full name"
+            required=""
+            formControlName="nameOnCard"
+          />
+        </div>
+        <div class="row mb-4">
+          <div class="col-7">
+            <label for="card-expiration" class="form-label"
+              >Expiration date</label
+            >
+            <input
+              type="text"
+              class="form-control rounded-pill"
+              id="card-expiration"
+              data-input-format='{"date": true, "datePattern": ["m", "y"]}'
+              placeholder="MM/YY"
+              required=""
+              formControlName="expiry"
+            />
+          </div>
+          <div class="col-5">
+            <label for="card-cvc" class="form-label">CVC</label>
+            <input
+              type="text"
+              class="form-control rounded-pill"
+              id="card-cvc"
+              data-input-format='{"numericOnly": true, "blocks": [3]}'
+              placeholder="XXX"
+              required=""
+              formControlName="cvvCode"
+            />
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </ng-template>
 
-<div class="modal" tabindex="-1" #addCardModal id="testModal"> ...</div>
-
-<ng-template #cardForm>
-  <form class="needs-validation" novalidate="" [formGroup]="form">
-    <ng-container *ngIf="!useStripe">
-      <div class="mb-3">
-      <label for="card-number" class="form-label">Card number</label>
-      <div class="position-relative" data-input-format="{&quot;creditCard&quot;: true}">
-        <input type="text" class="form-control form-icon-end rounded-pill" id="card-number" style="background-image: none" placeholder="XXXX XXXX XXXX XXXX" required="" formControlName="cardNumber">
-        <span class="position-absolute d-flex top-50 end-0 translate-middle-y fs-5 text-body-tertiary me-3" data-card-icon=""><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3C1.3 3 0 4.3 0 6v12c0 1.7 1.3 3 3 3h18c1.7 0 3-1.3 3-3V6c0-1.7-1.3-3-3-3zm1.2 15c0 .7-.6 1.2-1.2 1.2H3c-.7 0-1.2-.6-1.2-1.2V6c0-.7.6-1.2 1.2-1.2h18c.7 0 1.2.6 1.2 1.2v12z"></path><path d="M7 16.1H4c-.5 0-.9.4-.9.9s.4.9.9.9h3c.5 0 .9-.4.9-.9s-.4-.9-.9-.9zm13-9H4c-.5 0-.9.4-.9.9s.4.9.9.9h16c.5 0 .9-.4.9-.9s-.4-.9-.9-.9z"></path></svg></span>
-      </div>
-    </div>
-    <div class="mb-3">
-      <label for="card-name" class="form-label">Name on card</label>
-      <input type="text" class="form-control rounded-pill" id="card-name" placeholder="Full name" required="" formControlName="nameOnCard">
-    </div>
-    <div class="row mb-4">
-      <div class="col-7">
-        <label for="card-expiration" class="form-label">Expiration date</label>
-        <input type="text" class="form-control rounded-pill" id="card-expiration" data-input-format="{&quot;date&quot;: true, &quot;datePattern&quot;: [&quot;m&quot;, &quot;y&quot;]}" placeholder="MM/YY" required="" formControlName="expiry">
-      </div>
-      <div class="col-5">
-        <label for="card-cvc" class="form-label">CVC</label>
-        <input type="text" class="form-control rounded-pill" id="card-cvc" data-input-format="{&quot;numericOnly&quot;: true, &quot;blocks&quot;: [3]}" placeholder="XXX" required="" formControlName="cvvCode">
-      </div>
-    </div>
-    </ng-container>
-  
-  </form>
-</ng-template>
-
-<ng-template #updateCardForm>
-  <form class="needs-validation" novalidate="" [formGroup]="form">
+  <ng-template #updateCardForm>
+    <form class="needs-validation" novalidate="" [formGroup]="form">
       <!-- <div class="mb-3">
       <label for="card-number" class="form-label">Card number</label>
       <div class="position-relative" data-input-format="{&quot;creditCard&quot;: true}">
@@ -72,92 +83,123 @@
         <span class="position-absolute d-flex top-50 end-0 translate-middle-y fs-5 text-body-tertiary me-3" data-card-icon=""><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3C1.3 3 0 4.3 0 6v12c0 1.7 1.3 3 3 3h18c1.7 0 3-1.3 3-3V6c0-1.7-1.3-3-3-3zm1.2 15c0 .7-.6 1.2-1.2 1.2H3c-.7 0-1.2-.6-1.2-1.2V6c0-.7.6-1.2 1.2-1.2h18c.7 0 1.2.6 1.2 1.2v12z"></path><path d="M7 16.1H4c-.5 0-.9.4-.9.9s.4.9.9.9h3c.5 0 .9-.4.9-.9s-.4-.9-.9-.9zm13-9H4c-.5 0-.9.4-.9.9s.4.9.9.9h16c.5 0 .9-.4.9-.9s-.4-.9-.9-.9z"></path></svg></span>
       </div>
     </div>-->
-    <div class="mb-3">
-      <label for="card-name" class="form-label">Name on card</label>
-      <input type="text" class="form-control rounded-pill" id="card-name" placeholder="Full name" required="" formControlName="nameOnCard">
-    </div> 
-    <div class="row mb-4">
-      <div class="col-4">
-        <label for="card-expiration" class="form-label">Expiration month</label>
-        <input type="text" class="form-control rounded-pill" id="card-expiration" placeholder="MM" required="" formControlName="expiry_month">
+      <div class="mb-3">
+        <label for="card-name" class="form-label">Name on card</label>
+        <input
+          type="text"
+          class="form-control rounded-pill"
+          id="card-name"
+          placeholder="Full name"
+          required=""
+          formControlName="nameOnCard"
+        />
       </div>
-       <div class="col-4">
-        <label for="card-expiration" class="form-label">Expiration year</label>
-        <input type="text" class="form-control rounded-pill" id="card-expiration" placeholder="YY" required="" formControlName="expiry_year">
-      </div>
-      <!-- <div class="col-5">
+      <div class="row mb-4">
+        <div class="col-4">
+          <label for="card-expiration" class="form-label"
+            >Expiration month</label
+          >
+          <input
+            type="text"
+            class="form-control rounded-pill"
+            id="card-expiration"
+            placeholder="MM"
+            required=""
+            formControlName="expiry_month"
+          />
+        </div>
+        <div class="col-4">
+          <label for="card-expiration" class="form-label"
+            >Expiration year</label
+          >
+          <input
+            type="text"
+            class="form-control rounded-pill"
+            id="card-expiration"
+            placeholder="YY"
+            required=""
+            formControlName="expiry_year"
+          />
+        </div>
+        <!-- <div class="col-5">
         <label for="card-cvc" class="form-label">CVC</label>
         <input type="text" class="form-control rounded-pill" id="card-cvc" data-input-format="{&quot;numericOnly&quot;: true, &quot;blocks&quot;: [3]}" placeholder="XXX" required="" formControlName="cvvCode">
       </div> -->
-    </div>
-  
-  </form>
-</ng-template>
+      </div>
+    </form>
+  </ng-template>
 
-<div class="card mb-3">
-  <div class="card-header"><h5 class="card-title">Cards</h5></div>
-  <div class="card-body">
-     <div class="list-group-item mb-3">
-      <a style="text-decoration: none;" (click)="toggleAddCardForm()" class=" d-flex align-items-center justify-content-between">
-        @if(!addCardPressed) {
+  <div class="card mb-3">
+    <div class="card-header"><h5 class="card-title">Cards</h5></div>
+    <div class="card-body">
+      <div class="list-group-item mb-3">
+        <a
+          style="text-decoration: none"
+          (click)="toggleAddCardForm()"
+          class="d-flex align-items-center justify-content-between"
+        >
+          @if(!vm.addCardPressed) {
           <span>Add Card </span>
           <i class="fa-solid fa-arrow-right"></i>
-        } @else {
-            <span>Close </span>
+          } @else {
+          <span>Close </span>
           <i class="fa-solid fa-close"></i>
-        }
-       
-      </a>
+          }
+        </a>
       </div>
-    
-     <div [class.d-none]="!addCardPressed">
-      <div id="card-element">
+
+      <div [class.d-none]="!vm.addCardPressed">
+        <div id="card-element">
           <!--Stripe.js injects the Payment Element-->
         </div>
 
-      <button class="btn btn-primary mt-3" (click)="addCard()">Add</button>
-    </div>
-   <hr>
-  <ng-container *ngIf="!vm.loading">
-     <div class="col col-lg-3" *ngFor="let card of vm.card_details">
-      <div class="card h-100 rounded-4">
-        <div class="card-body pb-3">
-          <div class="d-flex align-items-start justify-content-between mb-4">
-            <img
-              src="assets/img/payment-methods/mastercard.svg"
-              class="m-n3"
-              width="100"
-              alt="Mastercard"
-            />
-            <span class="badge text-bg-info rounded-pill">Primary</span>
-          </div>
+        <button class="btn btn-primary mt-3" (click)="addCard()">Add</button>
+      </div>
+      <hr />
+      <div class="row" *ngIf="!vm.loading">
+        <div class="col col-lg-3" *ngFor="let card of vm.card_details">
+          <div class="card h-100 rounded-4">
+            <div class="card-body pb-3">
+              <div
+                class="d-flex align-items-start justify-content-between mb-4"
+              >
+                <img
+                  src="assets/img/payment-methods/mastercard.svg"
+                  class="m-n3"
+                  width="100"
+                  alt="Mastercard"
+                />
+                <span class="badge text-bg-info rounded-pill">Primary</span>
+              </div>
 
-          <div class="h6 mb-1">{{card.formatted_card_number}}</div>
-          <div class="text-body fs-xs" appDatePassed [date]="card.card_expiry_date"></div>
-        </div>
-        <div class="card-footer d-flex gap-2 bg-transparent border-0 pt-0 pb-4">
-          <button (click)="editPaymentMethod(card.id)"
-            type="button"
-            class="btn btn-sm btn-outline-secondary rounded-pill me-1"
-          >
-            Edit
-          </button>
-          <button (click)="removePaymentMethod(card.id)"
-            type="button"
-            class="btn btn-sm btn-outline-secondary rounded-pill"
-          >
-            Remove
-          </button>
+              <div class="h6 mb-1">{{ card.formatted_card_number }}</div>
+              <div
+                class="text-body fs-xs"
+                appDatePassed
+                [date]="card.card_expiry_date"
+              ></div>
+            </div>
+            <div
+              class="card-footer d-flex gap-2 bg-transparent border-0 pt-0 pb-4"
+            >
+              <button
+                (click)="editPaymentMethod(card.id)"
+                type="button"
+                class="btn btn-sm btn-outline-secondary rounded-pill me-1"
+              >
+                Edit
+              </button>
+              <button
+                (click)="removePaymentMethod(card.id)"
+                type="button"
+                class="btn btn-sm btn-outline-secondary rounded-pill"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </ng-container>
-   
   </div>
 </div>
-
-
- 
-</div>
-  
-

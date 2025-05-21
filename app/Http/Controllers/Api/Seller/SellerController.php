@@ -24,7 +24,8 @@ class SellerController extends ApiController
     public function __construct(
         private readonly ISellerRepository $sellerRepository,
         private readonly IUserRepository $userRepository,
-    ) {}
+    ) {
+    }
 
     /**
      * Display a listing of the resource.
@@ -48,7 +49,7 @@ class SellerController extends ApiController
     {
         $profile = $createSeller->handle(array_merge($request->all(), ['user_id' => auth('sanctum')->user()->id]));
 
-        if (! $profile) {
+        if (!$profile) {
             return $this->error('Unable to create Seller');
         }
 
@@ -72,18 +73,18 @@ class SellerController extends ApiController
     {
         $result = $updateSeller->handle($request->all(), $id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to update Seller');
         }
 
-        return $this->success($result, 'Seller updated');
+        return $this->success(SellerResource::make($result), 'Seller updated');
     }
 
     public function toggleActive(UpdateSellerActive $updateSellerActive): JsonResponse
     {
         $result = Profile::whereId($updateSellerActive->integer('sellerId'))->update(['active' => $updateSellerActive->boolean('active')]);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to create Seller');
         }
 
@@ -97,7 +98,7 @@ class SellerController extends ApiController
     {
         $result = $deleteSeller->handle($id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to create Seller');
         }
 

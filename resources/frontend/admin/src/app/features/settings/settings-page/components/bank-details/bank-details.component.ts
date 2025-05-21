@@ -1,7 +1,6 @@
-import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AccountDetails } from '../../../../../types/seller/account-details';
-import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { ModalService } from '../../../../../services/modal.service';
 import { BankDetailsStore } from './bank-details.store';
 import { SellerApi } from '../../../../../apis/seller.api';
@@ -21,9 +20,7 @@ export class BankDetailsComponent {
   private fb = inject(FormBuilder)
   form: FormGroup;
   private _modalService = inject(ModalService)
-  @ViewChild('modal', { read: ViewContainerRef })
-  entry!: ViewContainerRef;
-  editingBankDetails = false
+  
   hasBankAccount = false
 
   ngOnInit() {
@@ -84,6 +81,6 @@ export class BankDetailsComponent {
   }
 
   toggleBankDetailsForm() {
-    this.editingBankDetails = !this.editingBankDetails
+    this._store.toggleForm()
   }
 }

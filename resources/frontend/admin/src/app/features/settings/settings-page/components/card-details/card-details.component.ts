@@ -42,7 +42,7 @@ export class CardDetailsComponent {
   elements: any;
   cardElement: any;
   stripe: any;
-  addCardPressed = false;
+
 
 
   ngOnInit() {
@@ -162,6 +162,6 @@ export class CardDetailsComponent {
   }
 
   toggleAddCardForm() {
-    this.addCardPressed = !this.addCardPressed
+    this._store.toggleForm()
   }
 }

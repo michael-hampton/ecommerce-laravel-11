@@ -10,7 +10,7 @@ use Log;
 
 class UpdateSeller
 {
-    public function handle(array $data, int $id): bool
+    public function handle(array $data, int $id): Profile
     {
         $profile = Profile::findOrFail($id);
         $profile->fill($data);
@@ -24,6 +24,8 @@ class UpdateSeller
             $profile->profile_picture = $filename;
         }
 
-        return $profile->save();
+        $profile->save();
+
+        return $profile->fresh();
     }
 }

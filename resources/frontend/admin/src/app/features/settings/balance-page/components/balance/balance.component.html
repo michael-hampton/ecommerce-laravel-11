@@ -1,5 +1,5 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <div class="card" *ngIf="vm.data.balance_activated">
+  <div class="card">
     <div class="card-header">
       <h5 class="card-title">Balance</h5>
     </div>
@@ -14,10 +14,8 @@
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      <ng-container *ngIf="!vm.loading">
-        <small>
-          Pending: {{ getPending(vm.balance) | currency }}
-        </small>
+      <ng-container *ngIf="!vm.loading && vm.data.balance_activated">
+        <small> Pending: {{ getPending(vm.balance) | currency }} </small>
         <h3>{{ vm.balance?.current?.balance | currency }}</h3>
 
         <form [formGroup]="form">
@@ -33,22 +31,18 @@
           </div>
         </form>
       </ng-container>
+
+      <button
+        *ngIf="!vm.loading && !vm.data.balance_activated"
+        class="btn btn-primary btn-block"
+        (click)="activateBalance()"
+      >
+        Activate Balance
+      </button>
     </div>
 
     <div class="card-footer text-end">
-      <button class="btn btn-primary" (click)="withdraw()">Withdraw</button>
-    </div>
-  </div>
-
-  <div class="card" *ngIf="!vm.data.balance_activated">
-    <div class="card-header">
-      <h5 class="card-title">Balance</h5>
-    </div>
-
-    <div class="card-body">
-      <button class="btn btn-primary btn-block" (click)="activateBalance()">
-        Activate Balance
-      </button>
+      <button *ngIf="!vm.loading" class="btn btn-primary" (click)="withdraw()">Withdraw</button>
     </div>
   </div>
 </ng-container>

@@ -152,8 +152,8 @@ class UserAccountController extends Controller
 
     public function reviews()
     {
-        $reviews = auth()->user()->reviews()->get();
-
+        $reviews = auth()->user()->postedReviews()->get();
+        
         return view('front.user.account-review', ['reviews' => $reviews]);
     }
 

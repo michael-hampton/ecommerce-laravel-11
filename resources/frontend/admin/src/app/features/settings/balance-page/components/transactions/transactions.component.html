@@ -16,7 +16,7 @@
       <th>Discount</th>
       <th>Insurance</th>
       <th>Date</th>
-      <th>Action</th>
+      <!-- <th>Action</th> -->
     </tr>
     </thead>
     <tbody>
@@ -30,10 +30,10 @@
       <td>{{ transaction.discount | currency }}</td>
       <td>{{ transaction.commission | currency }}</td>
       <td>{{ transaction.created_at | date }}</td>
-      <td>
+      <!-- <td>
         <i *ngIf="!transaction.withdrawn && transaction.payment_status === 'approved'" style="cursor: pointer"
            (click)="withdrawFromTransaction(transaction.total, transaction.id)" class="fa fa-sign-out"></i>
-      </td>
+      </td> -->
     </tr>
     </tbody>
   </table>

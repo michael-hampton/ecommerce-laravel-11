@@ -56,6 +56,9 @@ export class AuthService {
     // prepare the information to use in the cookie
     // basically the auth info and the cookie name
     const data = PrepSetSession(user);
+
+     localStorage.setItem('user', JSON.stringify(user));
+
     // notice the relative url, this is the path you need to setup in your server
     // look up an example in server.js
     return of(user)

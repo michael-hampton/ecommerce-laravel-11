@@ -27,7 +27,11 @@ export class SupportCategoryApi {
     return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
-  getData(filter: FilterModel): Observable<any>{
+  search(filter: FilterModel): Observable<any>{
     return this.httpClient.post(`${environment.apiUrl}/${MODULE}/search`, filter);
+  }
+
+  getAll() {
+    return this.httpClient.get(`${environment.apiUrl}/${MODULE}`)
   }
 }

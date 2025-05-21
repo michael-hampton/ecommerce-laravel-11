@@ -29,6 +29,8 @@ class SellerTest extends TestCase
     {
         parent::setUp();
 
+        die('here');
+
         $this->seller = User::factory()->create();
         Sanctum::actingAs($this->seller, ['*']);
 
@@ -65,17 +67,9 @@ class SellerTest extends TestCase
             ->assertStatus(200);
     }*/
 
-    public function test_setup_intent() {
-        $profile = Profile::factory()->create(['external_customer_id' => 'cus_SJyqzdInrrlYJn', 'user_id' => $this->seller->id, 'external_account_id' => 'acct_1RPlYaIuwquf029r']);
-        $country = Country::factory()->create(['name' => 'United Kingdom', 'code' => 'GB']);
-        $stripe = new \App\Services\PaymentProviders\Stripe();
-
-        $test = (new \App\Services\PaymentProviders\Stripe())->getBankAccount($profile->user_id, 'ba_1RPlfPIuwquf029rfdqShj0k' );
-    
-    }
-
     public function test_update_profile()
     {
+        die('here');
         $user = Profile::factory()->create();
 
         $payload = Profile::factory()->make()->toArray();

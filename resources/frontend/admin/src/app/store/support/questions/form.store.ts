@@ -58,8 +58,6 @@ export class SupportQuestionFormStore extends ComponentStore<SupportQuestionForm
   }
 
   readonly getCategories = this.effect<void>(
-    // The name of the source stream doesn't matter: `trigger$`, `source$` or `$` are good 
-    // names. We encourage to choose one of these and use them consistently in your codebase.
     (trigger$) => trigger$.pipe(
       switchMap(() =>
         this._api.getCategories().pipe(

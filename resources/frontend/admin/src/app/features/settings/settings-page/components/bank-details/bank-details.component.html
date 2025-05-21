@@ -20,7 +20,7 @@
         class="d-flex align-items-center justify-content-between mb-3"
         (click)="toggleBankDetailsForm()"
       >
-        @if(!editingBankDetails) {
+        @if(!vm.editingBankDetails) {
         <span>{{ form.controls["accountHolderName"].value }}</span>
         <span>{{ form.controls["accountNumber"].value }}</span>
         } @else {
@@ -37,7 +37,7 @@
           (click)="toggleBankDetailsForm()"
           class="d-flex align-items-center justify-content-between"
         >
-          @if(!editingBankDetails) {
+          @if(!vm.editingBankDetails) {
           <span>Add Bank Account </span>
           <i class="fa-solid fa-arrow-right"></i>
           } @else {
@@ -49,7 +49,7 @@
     </div>
 
     <form
-      *ngIf="!vm.loading && editingBankDetails"
+      *ngIf="!vm.loading && vm.editingBankDetails"
       admin-form
       [formGroup]="form"
     >
