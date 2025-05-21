@@ -8,6 +8,7 @@ use App\Actions\Address\CreateAddress;
 use App\Actions\Address\UpdateAddress;
 use App\Actions\Message\CreateMessage;
 use App\Actions\Order\ApproveOrder;
+use App\Actions\Order\ReportIssue;
 use App\Actions\Order\UpdateOrder;
 use App\Events\IssueReported;
 use App\Http\Controllers\Controller;
@@ -67,35 +68,16 @@ class UserAccountController extends Controller
         return response()->json($result);
     }
 
-    public function reportOrder(int $orderItemId, ReportIssueRequest $reportIssueRequest, CreateMessage $createMessage)
+    /**
+     * Summary of reportOrder
+     * @param int $orderItemId
+     * @param \App\Http\Requests\ReportIssueRequest $reportIssueRequest
+     * @param \App\Actions\Order\ReportIssue $reportIssue
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function reportOrder(int $orderItemId, ReportIssueRequest $reportIssueRequest, ReportIssue $reportIssue)
     {
-
-        $reason = trim($reportIssueRequest->string('reason'));
-        $orderItem = OrderItem::whereId($orderItemId);
-        $title = $reason === 'returnRefund' ? 'Refund Requested from buyer. Items should be returned' : 'Refund Requested from buyer. They do not wish to return the items';
-
-        if ($reason === 'returnRefund' || $reason === 'refundNoReturn') {
-            $orderItem->update(['status' => 'refund_requested']);
-        }
-
-        $orderItem = $orderItem->first();
-
-        $result = $createMessage->handle([
-            'title' => $title,
-            'images' => $reportIssueRequest->file('images'),
-            'comment' => $reportIssueRequest->string('message'),
-            'sellerId' => $orderItem->seller_id,
-            'order_item_id' => $orderItem->id,
-            'user_id' => auth()->user()->id,
-        ]);
-
-        event(new IssueReported(auth()->user()->email, [
-            'item' => $orderItem,
-            'currency' => config('shop.currency'),
-            'message' => $reportIssueRequest->string('message'),
-            'resolution' => $title,
-            'customer' => auth()->user()->name,
-        ]));
+       $result = $reportIssue->handle( $reportIssueRequest, $orderItemId);
 
         return response()->json($result);
     }

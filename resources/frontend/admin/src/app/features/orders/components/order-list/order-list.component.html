@@ -74,6 +74,10 @@
           item.status
         }}</span>
         }
+
+        @if(orderHasIssue(item)) {
+          <i class="text-danger fa-solid fa-flag ms-3" title="An issue has been reported with this order"></i>
+        }
       </ng-template>
     </data-table-column>
     <data-table-column

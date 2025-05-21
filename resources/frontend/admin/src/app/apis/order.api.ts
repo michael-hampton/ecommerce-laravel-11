@@ -38,6 +38,10 @@ export class OrderApi {
    return this.httpClient.put(`${environment.apiUrl}/orders/details/${orderItemId}`, payload)
   }
 
+  refundItem(orderItemId: number, payload: any) {
+   return this.httpClient.post(`${environment.apiUrl}/orders/refund/${orderItemId}`, payload)
+  }
+
   update(id: number, payload: any) {
    return this.httpClient.put(`${environment.apiUrl}/${MODULE}/${id}`, payload)
   }

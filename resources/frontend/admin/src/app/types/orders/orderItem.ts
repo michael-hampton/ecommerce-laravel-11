@@ -13,6 +13,7 @@ export type OrderItem = {
   orderLogs: OrderLog[],
   product: Product
   status: string
+  shipping: string
   messages: Message[]
 }
 

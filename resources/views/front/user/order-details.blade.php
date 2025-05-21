@@ -77,7 +77,8 @@
 
                                         <td class="pname">
                                             <div class="image">
-                                                <img style="width: 50px" src="{{asset('images/products')}}/{{$item->product->image}}"
+                                                <img style="width: 50px"
+                                                    src="{{asset('images/products')}}/{{$item->product->image}}"
                                                     alt="{{$item->product->name}}" class="image">
                                             </div>
                                             <div class="name">
@@ -91,10 +92,10 @@
                                         <td class="text-center">{{$item->product->category->name}}</td>
                                         <td class="text-center">{{round($item->commission, 2)}}</td>
                                         <td class="text-center">{{round($item->shipping_price, 2)}}</td>
-                                         <td class="text-center">{{round($item->total(), 2)}}</td>
+                                        <td class="text-center">{{round($item->total(), 2)}}</td>
                                         <td class="text-center">{{$item->status == 0 ? 'No' : 'Yes'}}</td>
                                         <td class="text-center">
-                                            @if(empty($item->approved_date) && $order->status !== 'complete')
+                                            @if(empty($item->approved_date) && !in_array($item->status, ['complete', 'refund_requested', 'issue_reported']))
                                                 <a data-id="{{ $item->id }}" id="reportOrder" class="btn btn-warning btn-lg">Report
                                                     an issue</a>
                                             @else
@@ -164,7 +165,7 @@
                     </div>
                 </div>
 
-                @if($order->status !== 'complete')
+                @if($order->status !== 'complete' && $order->orderItems->whereNotIn('status', ['complete', 'refund_requested', 'issue_reported'])->count() > 0)
                     <div class="wg-box mt-5 d-flex align-items-center justify-content-between">
                         <form action="{{route('orders.cancelOrder', ['orderId' => $order->id])}}" method="POST">
                             @csrf
@@ -209,7 +210,7 @@
 
                         </thead>
                         <tbody>
-                            @foreach($order->orderItems as $item)
+                            @foreach($order->orderItems->whereNotIn('status', ['complete', 'refund_requested', 'issue_reported']) as $item)
                                 <tr>
                                     <td><input class="form-check-input row-checkbox" type="checkbox"
                                             value="{{ $item->id }}"></td>
@@ -298,30 +299,26 @@
              });*/
             const reviewButton = document.getElementsByClassName('review-product')[0]
 
-            if (reviewButton) {
-                reviewButton.addEventListener('click', function (event) {
-                    $.ajax({
-                        url: "{{ route('createReview', ['orderItemId' => 'test']) }}".replace('test', event.currentTarget.getAttribute('data-id')),
-                        type: "GET",
-                    }).done(function (msg) {
-                        const reviewForm = document.getElementById('reviewForm')
-                        reviewForm.innerHTML = msg.view
-                        var myModal = new bootstrap.Modal(document.getElementById("reviewModal"), {});
-                        myModal.show();
+            reviewButton?.addEventListener('click', function (event) {
+                $.ajax({
+                    url: "{{ route('createReview', ['orderItemId' => 'test']) }}".replace('test', event.currentTarget.getAttribute('data-id')),
+                    type: "GET",
+                }).done(function (msg) {
+                    const reviewForm = document.getElementById('reviewForm')
+                    reviewForm.innerHTML = msg.view
+                    var myModal = new bootstrap.Modal(document.getElementById("reviewModal"), {});
+                    myModal.show();
 
-                        setTimeout(() => {
-                            StarRating()
-                            submitForm()
-                        }, 200);
-                    });
+                    setTimeout(() => {
+                        StarRating()
+                        submitForm()
+                    }, 200);
                 });
-            }
-
-
+            });
 
             const reportButton = document.getElementById('reportOrder')
 
-            reportButton.addEventListener('click', (e) => {
+            reportButton?.addEventListener('click', (e) => {
                 const itemId = e.currentTarget.getAttribute('data-id')
                 document.getElementById('itemId').value = itemId
                 e.preventDefault()

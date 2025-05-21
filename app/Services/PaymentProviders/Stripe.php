@@ -97,24 +97,7 @@ class Stripe extends BaseProvider implements PaymentProverInterface
                     $total -= $orderData['coupon']->value;
                 }
 
-                $paymentIntentData = [
-                    'amount' => round(($total * 10 ** 2), 0),
-                    'currency' => config('shop.currency_code'),
-                    'capture_method' => 'manual',
-                    'customer' => $customerId,
-                    'setup_future_usage' => 'off_session',
-                    'confirm' => true,
-                    'automatic_payment_methods' => [
-                        'enabled' => true,
-                        'allow_redirects' => 'never'
-                    ],
-                ];
-
-                if (!empty($orderData['existing_card'])) {
-                    $paymentIntentData['payment_method'] = $orderData['existing_card'];
-                }
-
-                $paymentIntent = $this->stripeClient->paymentIntents->create($paymentIntentData);
+                $paymentIntent = $this->authorizePayment($total, $customerId, $orderData['existing_card'] ?? null);
 
                 $transactionData = [
                     'order_id' => $orderData['orderId'],
@@ -501,5 +484,48 @@ class Stripe extends BaseProvider implements PaymentProverInterface
         return [
             $balance['availiable'][0]['amount'] / 100,
         ];
+    }
+
+    public function updatePaymentIntent(float $amount, string $paymentMethodId): PaymentIntent
+    {
+        return $this->stripeClient->paymentIntents->update(
+            $paymentMethodId,
+            ['amount' => round(($amount * 10 ** 2), 0)]
+        );
+    }
+
+    public function cancelPaymentIntent(string $paymentMethodId): PaymentIntent
+    {
+        return $this->stripeClient->paymentIntents->cancel($paymentMethodId, []);
+    }
+
+    public function authorizePayment(float $amount, string $customerId, string $paymentMethodId = null): PaymentIntent
+    {
+        $paymentIntentData = [
+            'amount' => round(($amount * 10 ** 2), 0),
+            'currency' => config('shop.currency_code'),
+            'capture_method' => 'manual',
+            'customer' => $customerId,
+            'setup_future_usage' => 'off_session',
+            'confirm' => true,
+            'automatic_payment_methods' => [
+                'enabled' => true,
+                'allow_redirects' => 'never'
+            ],
+        ];
+
+        if (!empty($paymentMethodId)) {
+            $paymentIntentData['payment_method'] = $paymentMethodId;
+        }
+
+        return $this->stripeClient->paymentIntents->create($paymentIntentData);
+    }
+
+    public function getPaymentIntent(string $paymentIntentId): PaymentIntent
+    {
+        return $this->stripeClient->paymentIntents->retrieve(
+            $paymentIntentId,
+            []
+        );
     }
 }

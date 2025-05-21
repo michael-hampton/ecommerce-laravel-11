@@ -4,6 +4,8 @@ import { OrderStore } from '../../../../store/orders/list.store';
 import { defaultPaging, FilterModel, SearchFilter } from '../../../../types/filter.model';
 import { CategoryStore } from '../../../../store/categories/list.store';
 import { OrderStatusEnum } from '../../../../types/orders/orderStatus.enum';
+import { Order } from '../../../../types/orders/order';
+import { OrderDetail } from '../../../../types/orders/order-detail';
 
 @Component({
   selector: 'app-order-list',
@@ -31,6 +33,10 @@ export class OrderListComponent implements OnInit {
 
   reload() {
     this._store.reset();
+  }
+
+  orderHasIssue(order: Order) {
+    return order?.orderItems?.some(x => ['refund_requested', 'issue_reported'].includes(x.status))
   }
 
   filterChanged(column: string, value: string) {

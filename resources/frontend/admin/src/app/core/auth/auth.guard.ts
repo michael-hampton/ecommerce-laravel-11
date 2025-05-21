@@ -49,7 +49,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     // tap into auth state to see if user exists
     return this.authState.stateItem$.pipe(
       map((user) => {
-        console.log('user', user)
         // if user exists let them in, else redirect to login
         if (!user) {
           this._router.navigateByUrl('/login');

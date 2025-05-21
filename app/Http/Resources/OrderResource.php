@@ -25,6 +25,7 @@ class OrderResource extends JsonResource
             'discount' => $this->discount,
             'tax' => $this->tax,
             'status' => Str::ucfirst($this->status),
+            'orderItems' => $this->orderItems->where('seller_id', auth('sanctum')->id())->map(fn($item) => OrderItemResource::make($item))->flatten(),
             'delivered_date' => $this->delivered_date,
             'cancelled_date' => $this->cancelled_date,
             'total' => $this->total,

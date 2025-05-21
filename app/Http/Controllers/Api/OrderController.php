@@ -5,8 +5,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Order\CreateOrder;
+use App\Actions\Order\RefundOrder;
 use App\Actions\Order\UpdateOrder;
 use App\Actions\Order\UpdateOrderLine;
+use App\Http\Requests\RefundOrderRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Http\Resources\OrderDetailResource;
@@ -19,7 +21,9 @@ use Illuminate\Http\Response;
 
 class OrderController extends ApiController
 {
-    public function __construct(private readonly IOrderRepository $orderRepository) {}
+    public function __construct(private readonly IOrderRepository $orderRepository)
+    {
+    }
 
     /**
      * @param  Request  $searchRequest
@@ -44,7 +48,7 @@ class OrderController extends ApiController
     {
         $createOrder->handle($request->all());
 
-        return response()->json(['success'=> true]);
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -66,7 +70,7 @@ class OrderController extends ApiController
     {
         $order = $updateOrder->handle($updateOrderStatusRequest->except(['_token', '_method']), $id);
 
-        if (! $order) {
+        if (!$order) {
             return $this->error('Unable to update Order');
         }
 
@@ -80,7 +84,7 @@ class OrderController extends ApiController
     {
         $result = $updateOrderLine->handle($updateOrderStatusRequest->except(['_token', '_method']), $id);
 
-        if (! $result) {
+        if (!$result) {
             return $this->error('Unable to update Order');
         }
 
@@ -96,7 +100,7 @@ class OrderController extends ApiController
 
         $orderLogs = $order->logs->sortByDesc('created_at');
 
-        $orderItemLogs = $order->orderItems->map(fn ($item) => $item->logs)->flatten()->sortByDesc('created_at');
+        $orderItemLogs = $order->orderItems->map(fn($item) => $item->logs)->flatten()->sortByDesc('created_at');
 
         return \response()->json($orderLogs->mergeRecursive($orderItemLogs), 200);
     }
@@ -109,5 +113,16 @@ class OrderController extends ApiController
     public function destroy($id): void
     {
         //
+    }
+
+    public function refund(int $orderItemId, RefundOrderRequest $refundOrderRequest, RefundOrder $refundOrder)
+    {
+        $result = $refundOrder->handle($orderItemId, $refundOrderRequest->float('amount'), $refundOrderRequest->string('action'));
+
+        if (!$result) {
+            return $this->error('Unable to update Order');
+        }
+
+        return $this->success($result, 'Order updated');
     }
 }

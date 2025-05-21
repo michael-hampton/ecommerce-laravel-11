@@ -10,6 +10,7 @@ import { LookupStore } from '../../../../store/lookup.store';
 import { Courier } from '../../../../types/couriers/courier';
 import { ModalService } from '../../../../services/modal.service';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { RefundModalComponent } from '../refund-modal/refund-modal.component';
 
 @Component({
   selector: 'app-order-details',
@@ -110,19 +111,10 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   showMessages(orderItemId: number) {
-    this._store.filterMessages(orderItemId)
     this.modalService
-      .openConfirmationModal({
-        modalTitle: 'Message',
-        template: this.input,
-        showFooter: false
-      })
-      .subscribe((v) => {
-        //this.form.controls['bump_days'].setValue(this.days);
-      });
-  }
-
-  getMessages(orderItemId: number) {
-    this.orderLines.filter(x => x.id === orderItemId).messages
+          .openModal(RefundModalComponent, {orderItemId: orderItemId}, { modalTitle: 'Issue With Order' })
+          .subscribe((v) => {
+            //this._store.reset();
+          });
   }
 }

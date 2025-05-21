@@ -104,6 +104,7 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
     Route::post('orders/search', [OrderController::class, 'index'])->name('');
     Route::put('orders/details/{orderItemId}', [OrderController::class, 'updateItemDetails'])->name('admin.orders.updateItemDetails');
     Route::get('orders/logs/{orderId}', [OrderController::class, 'logs'])->name('admin.orders.updateItemDetails');
+    Route::post('orders/refund/{orderItemId}', [OrderController::class, 'refund'])->name('');
 
     // attributes
     Route::apiResource('attributes', AttributeController::class);
@@ -158,7 +159,7 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
     Route::post('reviews/reply', [App\Http\Controllers\Api\Seller\ReviewController::class, 'createReply'])->name('sellers.reviews');
     Route::post('sellers/account/balance/activate', [SellerBalanceController::class, 'activate'])->name('sellers.getWithdrawals');
     Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('');
-    Route::get('stripe/create-payment-intent', [SellerBalanceController::class,'createPaymentIntent'])->name('createPaymentIntent');
+    Route::get('stripe/create-payment-intent', [SellerBalanceController::class, 'createPaymentIntent'])->name('createPaymentIntent');
 
 
     // Faq Articles

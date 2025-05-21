@@ -1,6 +1,7 @@
-import {User} from '../users/user';
-import {Address} from './address';
-import {Customer} from './customer';
+import { User } from '../users/user';
+import { Address } from './address';
+import { Customer } from './customer';
+import { OrderItem } from './orderItem';
 
 export type Order = {
   id: number,
@@ -25,4 +26,5 @@ export type Order = {
   number_of_items: number
   delivered_date: string
   address: Address
+  orderItems: OrderItem[]
 }
