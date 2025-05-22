@@ -83,7 +83,7 @@ class UpdateProduct extends SaveProduct
         }
 
         if (!empty($bumpDays)) {
-            $this->updateSellerBalance($bumpDays, $product);
+            (new BumpProduct)->handle($bumpDays, $product);
         }
 
         $this->productRepository->update($id, $data);

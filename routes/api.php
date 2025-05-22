@@ -66,6 +66,8 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function () {
     Route::post('products/subcategories', [ProductController::class, 'getSubcategories'])->name('admin.products.getSubcategories');
     Route::delete('/products/{id}/active', [ProductController::class, 'toggleActive'])->name('categories.active');
     Route::post('products/search', [ProductController::class, 'index'])->name('');
+    Route::post('products/{productId}/bump', [ProductController::class, 'bumpProduct'])->name('');
+
 
 
     // users

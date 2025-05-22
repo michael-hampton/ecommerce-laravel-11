@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OrderDetailsStore } from '../../../../store/orders/order-details.store';
 import { SaveOrder } from '../../../../types/orders/save-order';
 import { ActivatedRoute } from '@angular/router';
@@ -22,6 +22,7 @@ import { RefundModalComponent } from '../refund-modal/refund-modal.component';
 export class OrderDetailsComponent implements OnInit {
 
   orderStatusForm: FormGroup;
+  orderLinesForm: FormGroup;
   modalService: ModalService = inject(ModalService);
   @ViewChild('featureModal', { static: true, read: ViewContainerRef })
   featureModal!: ViewContainerRef;
@@ -34,7 +35,6 @@ export class OrderDetailsComponent implements OnInit {
   private fb = inject(FormBuilder)
   private orderId: number;
   private activatedRoute = inject(ActivatedRoute)
-  private orderLines: any;
   protected readonly OrderStatusEnum = OrderStatusEnum;
   couriers: Courier[] = []
 
@@ -48,17 +48,45 @@ export class OrderDetailsComponent implements OnInit {
       this.orderId = params['id'];
     })
 
+    this.orderLinesForm = this.fb.group({
+      lines: this.fb.array([]),
+    });
+
     this._store.getOrderDetails(this.orderId).subscribe((result: OrderDetail) => {
-      this.orderLines = result.orderItems.map((x: OrderItem) => {
-        return {
-          id: x.id,
-          courier_id: x.courier_id,
-          tracking_number: x.tracking_number,
-          status: !x.status || x.status === '0' ? OrderStatusEnum['Ordered'] : x.status
-        }
+      const methodFormArray = this.orderLinesForm.get('lines') as FormArray;
+
+      result.orderItems.forEach(item => {
+        const topicFormGroup = this.fb.group({
+          id: item.id,
+          courier_id: item.courier_id,
+          tracking_number: item.tracking_number,
+          status: item.status === '0' ? OrderStatusEnum['Ordered'] : item.status
+        });
+        methodFormArray.push(topicFormGroup);
       })
+
       this.patchForm(result)
     })
+  }
+
+  get formLines(): FormArray {
+    return this.orderLinesForm.get('lines') as FormArray
+  }
+
+  onStatusChange(event: Event, id: number) {
+    const input = event.target as HTMLInputElement
+
+    if (input.value === 'cancelled') {
+      this.modalService
+        .openConfirmationModal({ modalTitle: 'Are you sure?', modalBody: 'Are you sure you want to cancel this item', saveButtonLabel: 'Cancel' })
+        .subscribe((v) => {
+          //alert('here')
+        });
+    }
+  }
+
+  getMethodControls(orderItemId: number): FormGroup {
+    return (this.formLines.controls as FormGroup[]).find(x => x.value.id === orderItemId);
   }
 
   patchForm(data: any) {
@@ -90,18 +118,10 @@ export class OrderDetailsComponent implements OnInit {
     })
   }
 
-  handleOrderItemForm(event: Event, id: number) {
-    const input = event.target as HTMLInputElement
-
-    const el = this.orderLines.find(x => x.id === id)
-
-    el[input.name] = input.value
-  }
-
   handleSaveOrderLineForm(id: number) {
-    const el = this.orderLines.find(x => x.id === id)
+    const el = this.getMethodControls(id)
 
-    this._store.saveOrderLineStatus(el).subscribe(result => {
+    this._store.saveOrderLineStatus(el.value).subscribe(result => {
       this._store.getOrderLogs(this.orderId).subscribe();
     })
   }
@@ -112,9 +132,9 @@ export class OrderDetailsComponent implements OnInit {
 
   showMessages(orderItemId: number) {
     this.modalService
-          .openModal(RefundModalComponent, {orderItemId: orderItemId}, { modalTitle: 'Issue With Order' })
-          .subscribe((v) => {
-            //this._store.reset();
-          });
+      .openModal(RefundModalComponent, { orderItemId: orderItemId }, { modalTitle: 'Issue With Order' })
+      .subscribe((v) => {
+        this.modalService.closeModal();
+      });
   }
 }

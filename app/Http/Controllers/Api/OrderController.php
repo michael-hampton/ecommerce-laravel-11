@@ -117,7 +117,12 @@ class OrderController extends ApiController
 
     public function refund(int $orderItemId, RefundOrderRequest $refundOrderRequest, RefundOrder $refundOrder)
     {
-        $result = $refundOrder->handle($orderItemId, $refundOrderRequest->float('amount'), $refundOrderRequest->string('action'));
+        $result = $refundOrder->handle(
+            $orderItemId,
+            $refundOrderRequest->float('amount'),
+            $refundOrderRequest->string('action'),
+            $refundOrderRequest->boolean('buyer_pays_return_postage'),
+        );
 
         if (!$result) {
             return $this->error('Unable to update Order');

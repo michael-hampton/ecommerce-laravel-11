@@ -22,9 +22,12 @@ class OrderItemResource extends JsonResource
             'price' => $this->price,
             'quantity' => $this->quantity,
             'tracking_number' => $this->tracking_number,
+            'delivered_date' => $this->delivered_date,
+            'cancelled_date' => $this->cancelled_date,
+            'refunded_date' => $this->refunded_date,
             'shipping' => $this->shipping_price,
             'courier_id' => $this->courier_id,
-            'orderLogs' => $this->logs->map(fn ($item) => OrderLogResource::make($item)),
+            'orderLogs' => $this->logs->map(fn($item) => OrderLogResource::make($item)),
             'product' => ProductResource::make($this->product),
             'messages' => MessageResource::collection($this->messages),
         ];

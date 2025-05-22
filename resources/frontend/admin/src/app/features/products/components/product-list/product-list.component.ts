@@ -2,11 +2,12 @@ import { Component, inject, OnInit, Renderer2, ViewChild, ViewContainerRef } fro
 import { Subscription } from 'rxjs';
 import { ModalService } from '../../../../services/modal.service';
 import { ProductStore } from "../../../../store/products/list.store";
-import { ModalComponent } from "../../../../shared/components/modal/modal.component";
 import { ProductFormComponent } from '../../../../shared/components/product-form/product-form.component';
 import { defaultPaging, FilterModel } from '../../../../types/filter.model';
 import { GlobalStore } from '../../../../store/global.store';
 import { formatSearchText } from '../../../../core/common';
+import { BumpProductComponent } from '../bump-product/bump-product.component';
+import { Product } from '../../../../types/products/product';
 
 @Component({
   selector: 'app-product-list',
@@ -16,28 +17,21 @@ import { formatSearchText } from '../../../../core/common';
   providers: [ProductStore]
 })
 export class ProductListComponent implements OnInit {
-  @ViewChild('modal', { read: ViewContainerRef })
-  entry!: ViewContainerRef;
-  sub!: Subscription;
   activeTab = ''
 
   private _store: ProductStore = inject(ProductStore)
   vm$ = this._store.vm$
+  private _modalService = inject(ModalService)
 
   private _globalStore = inject(GlobalStore)
   globalvm$ = this._globalStore.vm$
-
-  constructor(
-    private modalService: ModalService,
-  ) {
-  }
 
   ngOnInit(): void {
     this._store.loadData(this._store.filter$);
   }
 
   edit(data: any) {
-    this.sub = this.modalService
+    this._modalService
       .openModal(ProductFormComponent, data, { modalTitle: 'Edit Product' })
       .subscribe((v) => {
         this._store.reset();
@@ -45,7 +39,7 @@ export class ProductListComponent implements OnInit {
   }
 
   delete = async (data: any) => {
-    this.sub = this.modalService
+   this._modalService
       .openConfirmationModal({
         modalTitle: 'Are you sure?',
         modalBody: 'click confirm or close',
@@ -59,7 +53,7 @@ export class ProductListComponent implements OnInit {
 
   add(event: Event) {
     event.preventDefault()
-    this.sub = this.modalService
+    this._modalService
       .openModal(ProductFormComponent, null, { modalTitle: 'Create Product' })
       .subscribe((v) => {
         this._store.reset();
@@ -86,7 +80,7 @@ export class ProductListComponent implements OnInit {
   makeActive(data: any) {
     const message = data.active ? 'This will hide the product from everywhere in the website' : 'This will show the product in all relevant places'
     const saveButtonText = data.active ? 'Hide' : 'Publish'
-    this.sub = this.modalService
+   this._modalService
       .openConfirmationModal({ modalTitle: 'Are you sure?', modalBody: message, saveButtonLabel: saveButtonText })
       .subscribe((v) => {
         this._store.makeActive(data).subscribe()
@@ -104,5 +98,13 @@ export class ProductListComponent implements OnInit {
     const obj: FilterModel = { ...defaultPaging, ...{ searchFilters: searchFilters } }
 
     this._store.updateFilter(obj)
+  }
+
+  bumpProduct(product: Product) {
+    this._modalService
+      .openModal(BumpProductComponent, product, { modalTitle: 'Bump Product', size: 'modal-md' })
+      .subscribe((v) => {
+        this._modalService.closeModal();
+      });
   }
 }

@@ -16,7 +16,7 @@ export class ModalService {
 
   openModal(type: Type<ModalComponent>, formData: any, config: ModalConfig) {
 
-    const { modal, modalBody } = this.buildModal(config)
+    const { modal, modalBody } = this.buildModal(config, config.size || 'modal-xl')
 
     this.componentRef = createComponent(type, {
       environmentInjector: this.app.injector,
@@ -25,6 +25,7 @@ export class ModalService {
 
     this.app.attachView(this.componentRef.hostView)
 
+    this.componentRef.instance.callback = config.callback;
     this.componentRef.instance.formData = formData;
     this.componentRef.instance.saveButtonText = 'Save';
     this.componentRef.instance.saveButtonClass = 'btn-primary';

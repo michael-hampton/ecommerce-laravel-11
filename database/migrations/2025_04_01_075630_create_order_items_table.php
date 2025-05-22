@@ -30,6 +30,7 @@ return new class extends Migration
             $table->boolean('review_status')->default(false);
             $table->date('delivered_date')->nullable();
             $table->date('cancelled_date')->nullable();
+            $table->date('refunded_date')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('courier_id')->nullable();
             $table->foreign('courier_id')->references('id')->on('couriers');

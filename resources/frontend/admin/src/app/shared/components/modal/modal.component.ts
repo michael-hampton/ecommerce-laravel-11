@@ -27,6 +27,7 @@ export class ModalComponent {
   @Input() formData: any;
   @Input() showFooter: boolean = false;
   @Input() template: TemplateRef<any>;
+  @Input() callback?: (data: any) => void;
   //_modalService = inject(ModalService)
 
 

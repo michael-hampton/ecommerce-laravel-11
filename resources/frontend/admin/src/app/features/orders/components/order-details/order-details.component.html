@@ -6,8 +6,8 @@
   </div>
   <div class="p-4" *ngIf="!vm.loading">
     <div class="d-flex align-items-center justify-content-between mb-3">
-      <div class="card col-lg-6 me-3">
-        <div class="card-header">Order Totals</div>
+      <div class="card col-md-6 me-3 col-12">
+        <div class="card-header">Order</div>
         <div class="card-body">
           <ul class="list-unstyled">
             <li>
@@ -38,7 +38,7 @@
         </div>
       </div>
 
-      <div class="card col-lg-6 me-3">
+      <div class="card col-md-6 me-3 col-12">
         <div class="card-header">Customer Details</div>
         <div class="card-body">
           <ul class="list-unstyled">
@@ -54,7 +54,7 @@
     </div>
 
     <div class="d-flex align-items-center justify-content-between">
-      <div class="card col-lg-6 me-3">
+      <div class="card col-md-6 col-12 me-3">
         <div class="card-header">Shipping Address</div>
         <div class="card-body">
           <ul class="list-unstyled">
@@ -72,7 +72,7 @@
           </ul>
         </div>
       </div>
-      <div class="card col-lg-6">
+      <div class="card col-md-6 col-12">
         <div class="card-header">History</div>
         <div class="card-body">
           <form [formGroup]="orderStatusForm">
@@ -158,139 +158,171 @@
       </div>
     </div>
 
-    <div class="wg-box">
-      <div class="flex items-center justify-between gap10 flex-wrap">
-        <div class="wg-filter flex-grow">
-          <h5>Ordered Items</h5>
-        </div>
-        <a class="tf-button style-1 w208" routerLink="/">Back</a>
+    <div class="card mt-3">
+      <div class="card-header">
+        <h5 class="card-title">Ordered Items</h5>
       </div>
 
-      <div class="table-responsive">
-        <table class="table table-striped table-bvm.ordered">
-          <thead>
-            <tr>
-              <th style="width: 35%">Name</th>
-              <th style="width: 10%" class="text-center">Price</th>
-              <th style="width: 10%" class="text-center">Quantity</th>
-              <th class="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let orderItem of vm.order.orderItems">
-              <td class="">
-                <div class="d-flex align-items-center justify-content-between">
-                  <img
-                    style="width: 100px"
-                    src="{{ orderItem.product.image }}"
-                    alt=""
-                    class="image"
-                  />
-                  <div>
-                    <div class="fw-bold">
-                      <a href="#" target="_blank" class="body-title-2">{{
-                        orderItem.product.name
-                      }}</a>
-                    </div>
-                    <ul class="list-unstyled">
-                      <li>Category: {{ orderItem.product.category.name }}</li>
-                      <li>Brand: {{ orderItem.product.brand.name }}</li>
-                      <li>SKU: {{ orderItem.product.SKU }}</li>
-                    </ul>
-                  </div>
-                </div>
-              </td>
-              <td class="text-center">{{ orderItem.price | currency }}</td>
-              <td class="text-center">{{ orderItem.quantity }}</td>
-              <td>
-                <div
-                  *ngIf="vm.orderLineUpdated"
-                  class="alert alert-success alert-dismissible"
-                >
-                  Order line was updated successfully
-                </div>
-                <div class="row">
-                  <div class="col-md-3">
-                    <label class="form-label">Status</label>
-                    <select
-                      name="status"
-                      class="form-control"
-                      (change)="handleOrderItemForm($event, orderItem.id)"
-                    >
-                      <option
-                        *ngFor="let status_item of OrderStatusEnum | keyvalue"
-                        [value]="status_item.value"
-                        [selected]="orderItem.status === status_item.value"
-                      >
-                        {{ status_item.key }}
-                      </option>
-                    </select>
-                  </div>
-
-                  <div class="col-sm-4" id="tracking-number-container">
-                    <label class="form-label">Tracking No</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="tracking_number"
-                      name="tracking_number"
-                      (keyup)="handleOrderItemForm($event, orderItem.id)"
-                      value="{{ orderItem.tracking_number }}"
-                    />
-                  </div>
-
-                  <div class="col-sm-4" id="courier-name-container">
-                    <label class="form-label">Courier</label>
-                    <select
-                      class="form-control"
-                      name="courier_id"
-                      (change)="handleOrderItemForm($event, orderItem.id)"
-                    >
-                      <option value="">Select Courier</option>
-                      <option
-                        *ngFor="let courier_item of couriers"
-                        value="{{ courier_item.id }}"
-                        [selected]="orderItem.courier_id === courier_item.id"
-                      >
-                        {{ courier_item.name }}
-                      </option>
-                    </select>
-                  </div>
-
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-bvm.ordered">
+            <thead>
+              <tr>
+                <th style="width: 25%">Name</th>
+                <th style="width: 10%" class="text-center">Price</th>
+                <th style="width: 10%" class="text-center">Quantity</th>
+                <th style="width: 15%">Info</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let orderItem of vm.order.orderItems">
+                <td class="">
                   <div
-                    *ngIf="orderItem.status === 'refund_requested'"
-                    class="d-block text-danger"
+                    class="d-flex align-items-center justify-content-between"
                   >
-                    A refund was requested from the buyer
-                    <a
-                      href="javacript:void(0)"
-                      (click)="showMessages(orderItem.id)"
-                      >Show Message</a
-                    >
+                    <img
+                      style="width: 100px"
+                      src="{{ orderItem.product.image }}"
+                      alt=""
+                      class="image"
+                    />
+                    <div class="ms-3">
+                      <div class="fw-bold">
+                        <a href="#" target="_blank" class="body-title-2">{{
+                          orderItem.product.name
+                        }}</a>
+                      </div>
+                      <ul class="list-unstyled">
+                        <li>Category: {{ orderItem.product.category.name }}</li>
+                        <li>Brand: {{ orderItem.product.brand.name }}</li>
+                        <li>SKU: {{ orderItem.product.SKU }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">{{ orderItem.price | currency }}</td>
+                <td class="text-center">{{ orderItem.quantity }}</td>
+                <td>
+                  <div *ngIf="orderItem.cancelled_date">
+                    <span class="fw-bold w-100 d-block">Date Cancelled</span>
+                    {{ orderItem.cancelled_date | date }}
                   </div>
 
-                  <div class="col-md-2 mt-3">
-                    <button
-                      type="button"
-                      class="btn btn-success"
-                      (click)="handleSaveOrderLineForm(orderItem.id)"
-                    >
-                      Update
-                    </button>
+                  <div *ngIf="orderItem.delivered_date" class="w-100">
+                    <span class="fw-bold w-100 d-block">Date Delivered</span>
+                    {{ orderItem.delivered_date | date }}
                   </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
+                  <div *ngIf="orderItem.refunded_date">
+                    <span class="fw-bold w-100 d-block">Date Refunded</span>
+                    {{ orderItem.refunded_date | date }}
+                  </div>
+                </td>
+                <td>
+                  <div
+                    *ngIf="vm.orderLineUpdated"
+                    class="alert alert-success alert-dismissible"
+                  >
+                    Order line was updated successfully
+                  </div>
+                  <div class="row">
+                    <form
+                      [formGroup]="getMethodControls(orderItem.id)"
+                      class="topic border-bottom border-secondary pb-3 pt-3"
+                    >
+                      <div
+                        class="d-flex justify-content-between align-items-center"
+                      >
+                        <div class="col-md-3">
+                          <label class="form-label">Status</label>
+                          <select
+                            formControlName="status"
+                            (change)="onStatusChange($event, orderItem.id)"
+                            name="status"
+                            class="form-control"
+                          >
+                            <option value="">Select Status</option>
+                            <option
+                              *ngFor="
+                                let status_item of OrderStatusEnum | keyvalue
+                              "
+                              [value]="status_item.value"
+                            >
+                              {{ status_item.key }}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div class="col-sm-4" id="tracking-number-container">
+                          <label class="form-label">Tracking No</label>
+                          <input
+                            formControlName="tracking_number"
+                            type="text"
+                            class="form-control"
+                            id="tracking_number"
+                            name="tracking_number"
+                          />
+                        </div>
+
+                        <div class="col-sm-4" id="courier-name-container">
+                          <label class="form-label">Courier</label>
+                          <select
+                            formControlName="courier_id"
+                            class="form-control"
+                            name="courier_id"
+                          >
+                            <option value="">Select Courier</option>
+                            <option
+                              *ngFor="let courier_item of couriers"
+                              value="{{ courier_item.id }}"
+                            >
+                              {{ courier_item.name }}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div
+                          *ngIf="orderItem.status === 'refund_requested'"
+                          class="d-block text-danger"
+                        >
+                          A refund was requested from the buyer
+                          <a
+                            href="javacript:void(0)"
+                            (click)="showMessages(orderItem.id)"
+                            >Show Message</a
+                          >
+                        </div>
+                      </div>
+                    </form>
+
+                    <div
+                      class="col-md-2 mt-3"
+                      *ngIf="
+                        orderItem.status !== 'cancelled' &&
+                        orderItem.status !== 'refunded'
+                      "
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        (click)="handleSaveOrderLineForm(orderItem.id)"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </ng-container>
 
 <!-- Feature Modal -->
-<ng-template #username *ngIf="messages$ | async as messages">
-
-</ng-template>
+<ng-template #username *ngIf="messages$ | async as messages"> </ng-template>
 
 <div class="modal" tabindex="-1" #featureModal id="testModal">...</div>

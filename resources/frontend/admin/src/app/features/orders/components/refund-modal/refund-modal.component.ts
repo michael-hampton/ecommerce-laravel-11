@@ -25,51 +25,46 @@ export class RefundModalComponent extends ModalComponent implements OnInit {
       this.line = orderLines.find(x => x.id === this.formData.orderItemId)
 
       if (this.line) {
-        this.form?.patchValue({ amount: this.calculateAmount(this.line) })
+        this.form?.patchValue({ amount: this.calculatedAmount })
       }
     })
 
     this.form.controls['action'].valueChanges.subscribe(value => {
-      if (value === 'no_shipping') {
-        this.form?.patchValue({ amount: this.calculateAmount(this.line, false) })
-        this.form.controls['amount'].enable();
-      }
-
-       if (value === 'partial_amount') {
-        this.form?.patchValue({ amount: this.calculateAmount(this.line, false) })
+      if (value === 'partial_amount') {
+        this.form?.patchValue({ amount: this.calculatedAmount })
         this.form.controls['amount'].enable();
       }
 
       if (value === 'full_amount') {
-        this.form?.patchValue({ amount: this.calculateAmount(this.line, true) })
+        this.form?.patchValue({ amount: this.calculatedAmount })
         this.form.controls['amount'].disable();
 
       }
     });
   }
 
-  private calculateAmount(orderItem: OrderItem, includeShipping: boolean = true) {
-    let total = parseFloat(orderItem.price) * orderItem.quantity
-
-    if (includeShipping) {
-      total += parseFloat(orderItem.shipping)
-    }
+  get calculatedAmount() {
+    let total = parseFloat(this.line?.price) * this.line?.quantity + parseFloat(this.line?.shipping)
 
     return (Math.round(total * 100) / 100).toFixed(2);
+  }
 
+  get shippingCost() {
+    return parseFloat(this.line?.shipping);
   }
 
   initForm() {
     this.form = this.fb.group({
       id: new FormControl(null),
       amount: new FormControl('', [Validators.required]),
-      action: new FormControl('full_amount', Validators.required)
+      action: new FormControl('full_amount', Validators.required),
+      buyer_pays_return_postage: new FormControl(true, Validators.required)
     });
 
     this.form.controls['amount'].disable();
   }
 
   save() {
-    this._store.refundLine(this.form.getRawValue(), this.formData.orderItemId).subscribe() 
+    this._store.refundLine(this.form.getRawValue(), this.formData.orderItemId).subscribe()
   }
 }

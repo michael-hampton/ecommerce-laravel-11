@@ -1,6 +1,6 @@
-import {OrderLog} from './orderLog';
-import {Category} from '../categories/category';
-import {Brand} from '../brands/brand';
+import { OrderLog } from './orderLog';
+import { Category } from '../categories/category';
+import { Brand } from '../brands/brand';
 import { Message } from '../messages/message';
 
 export type OrderItem = {
@@ -15,6 +15,9 @@ export type OrderItem = {
   status: string
   shipping: string
   messages: Message[]
+  delivered_date: string,
+  cancelled_date: string,
+  refunded_date: string,
 }
 
 export type Product = {

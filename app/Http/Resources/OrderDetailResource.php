@@ -31,6 +31,7 @@ class OrderDetailResource extends JsonResource
             'status' => $this->status,
             'delivered_date' => $this->delivered_date,
             'cancelled_date' => $this->cancelled_date,
+            'refunded_date' => $this->refunded_date,
             'total' => $this->total,
             'commission' => $this->commission,
             'tracking_number' => $this->tracking_number,

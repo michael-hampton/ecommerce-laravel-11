@@ -9,34 +9,23 @@ use App\Services\PaymentProviders\PaymentProviderFactory;
 
 class RefundOrder
 {
-    public function handle(int $orderItemId, float $amount, string $action)
+    public function handle(int $orderItemId, float $amount, string $action, bool $buyerPaysForReturnPostage)
     {
         $orderItem = OrderItem::findOrFail($orderItemId);
-        $status = '';
+        $status = $action === 'full_amount' ? 'refunded' : 'partial_refund';
 
-        $transaction = Transaction::where('order_id', $orderItem->order_id)
-            ->where('seller_id', $orderItem->seller_id)
-            ->firstOrFail();
+        $paymentIntentId = (new CancelOrder())->handle($orderItem);
 
-        $paymentIntentId = $transaction->external_payment_id;
+        $amountToRefund = $buyerPaysForReturnPostage === true ? $orderItem->shipping_price : 0;
 
-        $result = (new PaymentProviderFactory())
-            ->getClass()
-            ->cancelPaymentIntent($paymentIntentId);
-
-        if ($action === 'full_amount') {
-            $amountToRefund = ($orderItem->price * $orderItem->quantity) + $orderItem->shipping_price + $orderItem->commission;
-
-            $status = 'refunded';
-        }
-
-        if ($action === 'partial_amount' || $action === 'no_shipping') {
-            $status = 'partial_refund';
-            $amountToRefund = $action === 'partial_amount' ? $amount : ($orderItem->price * $orderItem->quantity);
+        if ($action === 'partial_amount') {
             $subtotal = $orderItem->price * $orderItem->quantity;
             $commissionAmount = Helper::calculateCommission($subtotal);
-            $amountToRefund += $commissionAmount;
+            $amountToRefund += $amount + $commissionAmount;
 
+        }
+
+        if ($action === '' || $buyerPaysForReturnPostage === true) {
             $customer = $orderItem->order->customer;
             $customerId = $customer->external_customer_id;
 
@@ -46,15 +35,19 @@ class RefundOrder
 
             $paymentMethodId = $paymentIntent['payment_method'];
 
-            $result = (new PaymentProviderFactory())
+            $payment = (new PaymentProviderFactory())
                 ->getClass()
                 ->authorizePayment($amountToRefund, $customerId, $paymentMethodId);
+
+            Transaction::where('order_id', $orderItem->order_id)
+                ->where('seller_id', $orderItem->seller_id)
+                ->update(['external_payment_id' => $payment['id']]);
         }
 
         if (!empty($status)) {
-            OrderItem::where('id', $orderItemId)->update(['status' => $status]);
+            OrderItem::where('id', $orderItemId)->update(['status' => $status, 'refunded_date' => now()]);
         }
 
-       return $result;
+        return $payment;
     }
 }

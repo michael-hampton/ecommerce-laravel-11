@@ -32,25 +32,4 @@ class SaveProduct
             $attributeValue->save();
         }
     }
-
-    protected function updateSellerBalance(int $bumpDays, Product $product): bool
-    {
-        if ($bumpDays === 0) {
-            return false;
-        }
-
-        $costs = config('shop.bump');
-
-        $price = $costs[$bumpDays];
-
-        (new WithdrawalService(
-            auth()->id(),
-            $price,
-            WithdrawalTypeEnum::BumpProduct,
-            WithdrawalEnum::Decrease,
-            $product->id
-        ))->updateBalance()->withdraw();
-
-        return true;
-    }
 }

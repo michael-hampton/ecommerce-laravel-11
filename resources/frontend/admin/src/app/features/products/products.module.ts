@@ -8,11 +8,13 @@ import {DataTablesModule} from 'angular-datatables';
 import {SharedModule} from '../../shared/shared.module';
 import {ModalComponent} from '../../shared/components/modal/modal.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import { BumpProductComponent } from './components/bump-product/bump-product.component';
 
 
 @NgModule({
   declarations: [
-    ProductListComponent
+    ProductListComponent,
+    BumpProductComponent
   ],
   imports: [
     CommonModule,

@@ -12,6 +12,7 @@ class UpdateOrderLine
 {
     public function handle(array $data, int $id)
     {
+        $orderItem = OrderItem::with('order')->whereId($id)->first();
         $orderData = ['status' => $data['status']];
 
         if ($data['status'] === 'delivered') {
@@ -19,10 +20,11 @@ class UpdateOrderLine
         }
 
         if ($data['status'] === 'cancelled') {
+            (new CancelOrder())->handle($orderItem);
             $orderData['cancelled_date'] = now();
         }
 
-        if (! empty($data['tracking_number'])) {
+        if (!empty($data['tracking_number'])) {
             $orderData['tracking_number'] = $data['tracking_number'];
         }
 
@@ -30,7 +32,6 @@ class UpdateOrderLine
             $orderData['courier_id'] = $data['courier_id'];
         }
 
-        $orderItem = OrderItem::with('order')->whereId($id)->first();
         $order = $orderItem->order;
 
         $orderItem->update($orderData);

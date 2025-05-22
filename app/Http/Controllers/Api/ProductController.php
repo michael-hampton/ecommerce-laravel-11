@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Product\ActivateProduct;
+use App\Actions\Product\BumpProduct;
 use App\Actions\Product\CreateProduct;
 use App\Actions\Product\DeleteProduct;
 use App\Actions\Product\UpdateProduct;
+use App\Http\Requests\BumpProductRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -40,6 +42,14 @@ class ProductController extends ApiController
 
         return $this->sendPaginatedResponse($products, ProductResource::collection($products));
 
+    }
+
+    public function bumpProduct(int $productId, BumpProductRequest $bumpProductRequest, BumpProduct $bumpProduct): JsonResponse
+    {
+        $product = $this->productRepository->getById($productId);
+        $result = $bumpProduct->handle($bumpProductRequest->integer('days'), $product);
+
+        return $result ? $this->success($result, 'Product Bumped successfully') : $this->error('Product could not be bumped');
     }
 
     /**

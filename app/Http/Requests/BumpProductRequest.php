@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RefundOrderRequest extends FormRequest
+class BumpProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,7 @@ class RefundOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required',
-            'action' => 'required',
-            'buyer_pays_return_postage' => 'required:boolean'
+            'days' => 'required|integer|min:1|max:3',
         ];
     }
 }

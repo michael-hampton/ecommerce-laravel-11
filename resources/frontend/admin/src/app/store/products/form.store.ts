@@ -64,6 +64,24 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
     )
   }
 
+  bumpProduct = (payload: any, productId: number) => {
+    this._globalStore.setLoading(true)
+
+    return this._api.bumpProduct(payload, productId).pipe(
+      tapResponse({
+        next: (users) => {
+          this._globalStore.setSuccess('Saved successfully');
+          //this.patchState({loading: false, saveSuccess: true})
+        },
+        error: (error: HttpErrorResponse) => {
+          this._globalStore.setLoading(false)
+          this._globalStore.setError(UiError(error))
+        },
+        finalize: () => this._globalStore.setLoading(false),
+      })
+    )
+  }
+
   readonly getSubcategories = this.effect<number>((categoryId) => {
     return categoryId.pipe(
       switchMap(categoryId =>

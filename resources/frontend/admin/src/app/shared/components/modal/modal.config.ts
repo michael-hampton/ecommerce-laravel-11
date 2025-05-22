@@ -7,6 +7,7 @@ export interface ModalConfig {
   saveButtonLabel?: string
   showFooter?: boolean
   closeButtonLabel?: string
+  callback?: (data: any) => void;
   size?: string;
   shouldClose?(): Promise<boolean> | boolean
   shouldSave?(): Promise<boolean> | boolean

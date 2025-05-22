@@ -64,7 +64,7 @@ class CreateProduct extends SaveProduct
         $product = $this->productRepository->create($data);
 
         if (! empty($bumpDays) && $product->featured === false) {
-            $this->updateSellerBalance($bumpDays, $product);
+            (new BumpProduct)->handle($bumpDays, $product);
         }
 
         if (! empty($data['attribute_values'])) {

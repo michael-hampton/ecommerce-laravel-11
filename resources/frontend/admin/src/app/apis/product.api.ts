@@ -20,6 +20,10 @@ export class ProductApi {
     return this.httpClient.delete(`${environment.apiUrl}/${MODULE}/${id}`)
   }
 
+  bumpProduct(data: any, id: number) {
+    return this.httpClient.post(`${environment.apiUrl}/${MODULE}/${id}/bump`, data)
+  }
+
   create(payload: Partial<Product>) {
     const formData = new FormData();
     payload.attributes.filter(x => x.selected === true)

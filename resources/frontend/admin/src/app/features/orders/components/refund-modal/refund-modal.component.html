@@ -29,84 +29,89 @@
   </div>
 
   <form *ngIf="!vm.loading" [formGroup]="form" class="mt-3">
-    <label for="exampleFormControlInput1" class="form-label"
-      >Amount to refund</label
-    >
-    <div class="input-group mb-3">
-      <span class="input-group-text">$</span>
-      <input
-        formControlName="amount"
-        type="text"
-        class="form-control"
-        aria-label="Amount (to the nearest dollar)"
-      />
+    <div class="border-1 border-secondary w-100 p-2">
+      <p>
+        The buyer has reported an issue with the item. Please choose an option
+        from below
+      </p>
+      <div class="form-check">
+        <input
+          formControlName="action"
+          value="full_amount"
+          class="form-check-input"
+          type="radio"
+          checked
+        />
+        <label class="form-check-label" for="flexRadioDefault2">
+          Full Amount including shipping
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input
+          formControlName="action"
+          value="partial_amount"
+          class="form-check-input"
+          type="radio"
+          checked
+        />
+        <label class="form-check-label" for="flexRadioDefault2">
+          Partial amount only - including shipping ({{shippingCost | currency}})
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input
+          formControlName="action"
+          value="return"
+          class="form-check-input"
+          type="radio"
+          checked
+        />
+        <label class="form-check-label" for="flexRadioDefault2">
+          User must return items first
+        </label>
+      </div>
     </div>
 
-    <div class="form-check">
-      <input
-        formControlName="action"
-        value="no_shipping"
-        class="form-check-input"
-        type="radio"
-      />
-      <label class="form-check-label" for="flexRadioDefault1">
-        Do not refund Shipping
-      </label>
-    </div>
-    <div class="form-check">
-      <input
-        formControlName="action"
-        value="full_amount"
-        class="form-check-input"
-        type="radio"
-        checked
-      />
-      <label class="form-check-label" for="flexRadioDefault2">
-        Full Amount including shipping
-      </label>
+    <div class="mt-3">
+      <label for="exampleFormControlInput1" class="form-label"
+        >Amount to refund</label
+      >
+      <div class="input-group mb-3">
+        <span class="input-group-text">$</span>
+        <input
+          formControlName="amount"
+          type="text"
+          class="form-control"
+          aria-label="Amount (to the nearest dollar)"
+        />
+      </div>
     </div>
 
-    <div class="form-check">
+    <div class="mb-3 form-check mt-3">
       <input
-        formControlName="action"
-        value="partial_amount"
+        type="checkbox"
         class="form-check-input"
-        type="radio"
-        checked
+        id="exampleCheck1"
+        formControlName="buyer_pays_return_postage"
       />
-      <label class="form-check-label" for="flexRadioDefault2">
-        Partial amount only
-      </label>
-    </div>
-
-    <div class="form-check">
-      <input
-        formControlName="action"
-        value="return"
-        class="form-check-input"
-        type="radio"
-        checked
-      />
-      <label class="form-check-label" for="flexRadioDefault2">
-        User must return items
-      </label>
+      <label class="form-check-label" for="exampleCheck1"
+        >Buyer should pay the cost to return the item(s)</label
+      >
     </div>
   </form>
 
   <div class="modal-footer">
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-          (click)="closeMe()"
-        >
-          Close
-        </button>
-        <button
-          type="submit"
-          class="btn btn-danger"
-          (click)="save()"
-        >
-          Refund
-        </button>
-      </div>
+    <button
+      class="btn btn-secondary"
+      data-bs-dismiss="modal"
+      (click)="closeMe()"
+    >
+      Close
+    </button>
+    <button type="submit" class="btn btn-danger" (click)="save()">
+      Refund
+    </button>
+  </div>
 </div>

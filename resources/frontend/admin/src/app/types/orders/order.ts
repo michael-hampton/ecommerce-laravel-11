@@ -15,6 +15,7 @@ export type Order = {
   note: string,
   delivery_date: string,
   cancelled_date: string,
+  refunded_date: string,
   address_id: number,
   review_status: string,
   total: number,

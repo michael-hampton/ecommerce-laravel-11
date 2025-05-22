@@ -361,6 +361,8 @@
                     successMessage.classList.remove('d-none')
                     var myModalEl = document.getElementById('reportModal');
                     var modal = bootstrap.Modal.getInstance(myModalEl)
+                    reportButton.remove();
+                    approveButton.remove()
                     modal.hide();
                 });
             });
@@ -382,6 +384,8 @@
                     console.log(msg);
                     var myModalEl = document.getElementById('reportModal');
                     var modal = bootstrap.Modal.getInstance(myModalEl)
+                    reportButton.remove();
+                    approveButton.remove()
                     modal.hide();
                 });
 

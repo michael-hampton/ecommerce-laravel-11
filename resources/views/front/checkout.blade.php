@@ -11,7 +11,7 @@
         <section class="shop-checkout container">
             <h2 class="page-title">Shipping and Checkout</h2>
 
-            @include('front.partials.cart-steps')
+            {{-- @include('front.partials.cart-steps') --}}
 
             <form method="post" name="checkout-form" id="checkout-form" action="{{route('checkout.placeOrder')}}">
                 @csrf
@@ -182,6 +182,11 @@
                                                         class="text-end">{{$currency}}{{Session::get('discounts')['shipping']}}</span>
                                                 </li>
                                                 <li class="d-flex align-items-center justify-content-between">
+                                                    <span>Buyer Protection Insurance</span>
+                                                    <span
+                                                        class="text-end">{{$currency}}{{Session::get('discounts')['commission']}}</span>
+                                                </li>
+                                                <li class="d-flex align-items-center justify-content-between">
                                                     <span>VAT</span>
                                                     <span
                                                         class="text-end">{{$currency}}{{Session::get('discounts')['tax']}}</span>
@@ -201,6 +206,10 @@
                                                 <li class="d-flex align-items-center justify-content-between">
                                                     <span>SHIPPING</span>
                                                     <span class="text-end">{{Cart::instance('cart')->shipping()}}</span>
+                                                </li>
+                                                 <li class="d-flex align-items-center justify-content-between">
+                                                    <span>Buyer Protection Insurance</span>
+                                                    <span class="text-end">{{Cart::instance('cart')->commission()}}</span>
                                                 </li>
                                                 <li class="d-flex align-items-center justify-content-between">
                                                     <span>VAT</span>

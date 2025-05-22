@@ -11,6 +11,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AttributeValue } from '../../../types/attribute-values/attribute-value';
 import { PackageSizeEnum } from '../../../types/products/package-size.enum';
 import { ModalService } from '../../../services/modal.service';
+import { BumpProductComponent } from '../../../features/products/components/bump-product/bump-product.component';
 
 
 @Component({
@@ -25,7 +26,6 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
   @ViewChild('username') input: TemplateRef<any>
 
   form?: FormGroup;
-  days: number
 
   private _lookupStore = inject(LookupStore);
   lookupVm$ = this._lookupStore.vm$;
@@ -81,24 +81,17 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
         this._lookupStore.getAttributesForCategory(value)
       }
     });
-  }
 
-  ngAfterViewInit() {
     this.form?.controls['featured'].valueChanges.subscribe(value => {
       if (value === 'yes') {
         this._modalService
-          .openConfirmationModal({
-            modalTitle: 'Make this product featured?',
-            template: this.input,
-            showFooter: false
-          })
+          .openModal(BumpProductComponent, this.formData, { modalTitle: 'Bump Product', size: 'modal-md', callback: (data) => this.bumpProduct(data) })
           .subscribe((v) => {
-            this.form.controls['bump_days'].setValue(this.days);
+            this._modalService.closeModal();
           });
       }
     });
   }
-
   async confirm() {
     const file = await firstValueFrom(this._formStore.file$)
 
@@ -205,12 +198,8 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
     })
   }
 
-  public changeBumpDays = ($event: Event) => {
-    const input = $event.target as HTMLInputElement
-
-    if (input.checked) {
-      this.days = Number(input.value)
-    }
+  bumpProduct(data: any) {
+    this.form.patchValue({ bump_days: data.days })
   }
 
   stringToSlug(text: string) {
