@@ -20,7 +20,7 @@ class CartController extends Controller
     public function index(GetAvailiableDeliveryMethods $getAvailiableDeliveryMethods)
     {
         $items = Cart::instance('cart')->content();
-        $products = Product::whereIn("id", $items->pluck("id"))->with(['category', 'brand', 'productAttributes'])->get()->keyBy('id');
+        $products = Product::whereIn("id", $items->pluck("id"))->with(['category', 'brand', 'productAttributes', 'seller'])->get()->keyBy('id');
         $shippingMethods = $getAvailiableDeliveryMethods->handle($items);
         $currency = config('shop.currency');
         $productAttributes = ProductAttributeValue::all();

@@ -7,6 +7,7 @@ namespace App\Actions\Order;
 use App\Events\OrderCreated;
 use App\Models\Coupon;
 use App\Models\DeliveryMethod;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Transaction;
 use App\Models\User;
@@ -28,7 +29,7 @@ class CreateOrder
 {
     public function __construct(private readonly IOrderRepository $orderRepository, private readonly IAddressRepository $addressRepository) {}
 
-    public function handle(array $data)
+    public function handle(array $data): Order
     {
         Cart::instance('cart')->setAddressId($data['address_id']);
         $this->setAmountForCheckout();
@@ -53,7 +54,7 @@ class CreateOrder
             $cartItems = Cart::instance('cart')->content();
 
             $address = $this->addressRepository->getById($data['address_id']);
-            $shipping = DeliveryMethod::where('country_id', $address->country_id)->get();
+            //$shipping = DeliveryMethod::where('country_id', $address->country_id)->get();
 
             $bulkPrice = config('shop.bulk_price');
 

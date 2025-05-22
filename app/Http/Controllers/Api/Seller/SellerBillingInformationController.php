@@ -25,7 +25,7 @@ class SellerBillingInformationController extends ApiController
      */
     public function store(Request $request, SaveBillingInformation $saveBillingInformation)
     {
-        $result = $saveBillingInformation->handle($request);
+        $result = $saveBillingInformation->handle($request->all());
 
         if (! $result) {
             return $this->error('Unable to update billing details');

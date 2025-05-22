@@ -6,23 +6,22 @@ namespace App\Actions\Seller;
 
 use App\Models\SellerBillingInformation;
 use App\Services\PaymentProviders\PaymentProviderFactory;
-use Illuminate\Http\Request;
 
 class SaveBillingInformation
 {
-    public function handle(Request $request): SellerBillingInformation
+    public function handle(array $data): SellerBillingInformation
     {
         $currentData = SellerBillingInformation::where("id", auth('sanctum')->user()->id)->first();
 
         if (!empty($currentData)) {
             (new PaymentProviderFactory())
                 ->getClass()
-                ->updateAccount($request->all(), auth('sanctum')->id());
+                ->updateAccount($data, auth('sanctum')->id());
         }
 
         return SellerBillingInformation::updateOrCreate(
             ['seller_id' => auth('sanctum')->user()->id],
-            array_merge($request->all(), ['seller_id' => auth('sanctum')->id()])
+            array_merge($data, ['seller_id' => auth('sanctum')->id()])
         );
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class SaveBankAccount
 {
-    public function handle(Request $request): SellerBankDetails
+    public function handle(array $data): SellerBankDetails
     {
         $currentAccount = SellerBankDetails::where('seller_id', auth('sanctum')->user()->id)
             ->where('type', 'bank')
@@ -19,14 +19,14 @@ class SaveBankAccount
         if (!empty($currentAccount)) {
             (new PaymentProviderFactory())
                 ->getClass()
-                ->updateBankAccount(auth('sanctum')->user()->id, $currentAccount->payment_method_id, $request->all());
+                ->updateBankAccount(auth('sanctum')->user()->id, $currentAccount->payment_method_id, $data);
 
             return $currentAccount;
         }
 
         $externalAccount = (new PaymentProviderFactory())
             ->getClass()
-            ->createBankAccount($request->all(), auth('sanctum')->user()->id);
+            ->createBankAccount($data, auth('sanctum')->user()->id);
 
         return SellerBankDetails::create(['external_account_id' => $externalAccount['id'], 'seller_id' => auth('sanctum')->user()->id, 'type' => 'bank']);
 

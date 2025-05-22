@@ -46,5 +46,6 @@
             <span class="h6 mb-0">{{$total}}</span>
         </div>
     @endif
-    <a class="btn btn-lg btn-dark w-100 rounded-pill" href="{{route('cart.index')}}">Go to cart</a>
+    <a class="btn btn-lg btn-primary w-100 rounded-pill" href="{{route('cart.index')}}">Go to cart</a>
+    <a class="btn btn-lg btn-primary w-100 rounded-pill mt-2" href="{{route('checkout.index')}}">Go to checkout</a>
 </div>

@@ -10,11 +10,11 @@ use Illuminate\Http\Request;
 
 class UpdateCard
 {
-    public function handle(Request $request, string $id)
+    public function handle(array $data, string $id)
     {
           return (new PaymentProviderFactory())
             ->getClass()
-            ->updateCard($id, $request->all());
+            ->updateCard($id, $data);
 
         /*$card = SellerBankDetails::findOrFail($id);
         $card->update([

@@ -6,21 +6,21 @@ namespace App\Actions\Seller;
 
 use App\Models\SellerBankDetails;
 use App\Services\PaymentProviders\PaymentProviderFactory;
-use App\Services\PaymentProviders\Stripe;
-use Illuminate\Http\Request;
 
 class CreateCard
 {
-    public function handle(Request $request)
+    public function handle(array $data): SellerBankDetails
     {
-        SellerBankDetails::create([
+        (new PaymentProviderFactory())
+            ->getClass()
+            ->attachPaymentMethodToCustomer($data['payment_method_id'], auth('sanctum')->user()->id);
+
+        return SellerBankDetails::create([
             'seller_id' => auth('sanctum')->user()->id,
-            'payment_method_id' => $request->string('payment_method_id'),
+            'payment_method_id' => $data['payment_method_id'],
             'type' => 'card',
         ]);
 
-        return  (new PaymentProviderFactory())
-            ->getClass()
-            ->attachPaymentMethodToCustomer($request->get('payment_method_id'), auth('sanctum')->user()->id);
+
     }
 }

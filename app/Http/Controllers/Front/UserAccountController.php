@@ -77,7 +77,7 @@ class UserAccountController extends Controller
      */
     public function reportOrder(int $orderItemId, ReportIssueRequest $reportIssueRequest, ReportIssue $reportIssue)
     {
-       $result = $reportIssue->handle( $reportIssueRequest, $orderItemId);
+       $result = $reportIssue->handle( $reportIssueRequest->all(), $orderItemId);
 
         return response()->json($result);
     }

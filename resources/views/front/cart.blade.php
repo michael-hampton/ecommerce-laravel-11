@@ -22,7 +22,7 @@
 
         <div class="mb-4 pb-4"></div>
 
-        @include('front.partials.cart-steps')
+        {{-- @include('front.partials.cart-steps') --}}
 
         <div class="row">
             <div class="col-lg-8">
@@ -38,14 +38,17 @@
                                     </div>
                                     <div class="col-md-4">
                                         <h5 class="card-title">{{$item->name}}</h5>
-                                        <p class="text-muted">Category: {{$products->get($item->id)->category->name}}</p>
-                                        <p class="text-muted">Brand: {{$products->get($item->id)->brand->name}}</p>
-                                        <ul class="shopping-cart__product-item__options">
+                                        <p class="fs-sm pc__category">Seller: <a
+                                                href="{{route('seller.details', ['id' => $products->get($item->id)->seller_id])}}">{{$products->get($item->id)->seller->name}}</a>
+                                        </p> {{-- <p class="text-muted">Category: {{$products->get($item->id)->category->name}}</p>
+                                        --}}
+                                        {{-- <p class="text-muted">Brand: {{$products->get($item->id)->brand->name}}</p> --}}
+                                        {{-- <ul class="shopping-cart__product-item__options">
                                             @foreach($products->get($item->id)->productAttributes as $productAttribute)
-                                                <li>{{$productAttribute->productAttribute->name}}
-                                                    : {{$productAttribute->productAttributeValue->name}}</li>
+                                            <li>{{$productAttribute->productAttribute->name}}
+                                                : {{$productAttribute->productAttributeValue->name}}</li>
                                             @endforeach
-                                        </ul>
+                                        </ul> --}}
                                     </div>
                                     <div class="col-md-3">
                                         <div class="input-group">

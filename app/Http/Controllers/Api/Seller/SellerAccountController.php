@@ -38,7 +38,7 @@ class SellerAccountController extends ApiController
      */
     public function store(UpdateSellerCardDetails $updateSellerCardDetails, CreateCard $createCard)
     {
-        $result = $createCard->handle($updateSellerCardDetails);
+        $result = $createCard->handle($updateSellerCardDetails->all());
 
         return $result ? $this->success($result, 'Card Created') : $this->error($result);
     }
@@ -56,7 +56,7 @@ class SellerAccountController extends ApiController
      */
     public function update(Request $request, string $id, UpdateCard $updateCard)
     {
-        $result = $updateCard->handle($request, $id);
+        $result = $updateCard->handle($request->all(), $id);
 
         return $result ? $this->success($result, 'Card Updated') : $this->error($result);
     }
@@ -98,7 +98,7 @@ class SellerAccountController extends ApiController
 
     public function saveBankDetails(UpdateSellerBankDetails $updateSellerBankDetails, SaveBankAccount $saveBankAccount)
     {
-        $sellerBankDetails = $saveBankAccount->handle($updateSellerBankDetails);
+        $sellerBankDetails = $saveBankAccount->handle($updateSellerBankDetails->all());
 
         if (!$sellerBankDetails) {
             return $this->error('Unable to save bank details');

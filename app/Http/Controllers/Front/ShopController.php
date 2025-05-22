@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\View;
 
 class ShopController extends Controller
 {
-    private array $showOptions = [12, 24, 48, 102];
+    private array $showOptions = [16, 24, 48, 102];
 
     private array $sortOptions = [
         ['id' => 1, 'name' => 'Featured', 'column' => 'featured', 'direction' => 'desc'],
@@ -52,7 +52,7 @@ class ShopController extends Controller
         $categoryIds = $request->get('categoryId') ?? '';
         $category = $showCategory ? $categories->where('id', (int) $categoryIds)->first() : null;
 
-        $size = (int) $request->get('size', 12) ?? 12;
+        $size = (int) $request->get('size', 16) ?? 16;
         $orderBy = $request->get('orderBy') ?? -1;
         $orderByColumn = 'created_at';
         $orderDir = 'desc';

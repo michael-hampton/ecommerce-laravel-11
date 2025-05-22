@@ -4,53 +4,62 @@
         font-size: 10px !important;
     }
 </style>
-<div class="products-grid row row-cols-md-3" id="products-grid">
+<div class="row row-cols-2 row-cols-md-4 g-4 pb-3 mb-3">
     @forelse($products as $product)
-        <div class="col-md-4 mb-3 mb-md-4 mb-xxl-5">
-            <div class="card">
-                <a class="card-img-container" href="{{route('shop.product.details', ['slug' => $product->slug])}}">
-                    <img style="max-height: 150px"
-                         src="{{asset('images/products/thumbnails')}}/{{$product->image}}"
-                         class="card-img-top" alt="{{$product->name}}">
-                </a>
+        <div class="col">
+            <div class="card animate-underline hover-effect-opacity bg-body rounded" style="min-height: 450px;">
+                <div class="position-relative">
+                    <a class="d-block rounded-top overflow-hidden" href="shop-product-general-electronics.html">
+                        {{-- <span
+                            class="badge bg-danger position-absolute top-0 start-0 mt-2 ms-2 mt-lg-3 ms-lg-3">-21%</span>
+                        --}}
+                        <div class="ratio" style="--cz-aspect-ratio: calc(240 / 258 * 100%)">
+                            <img class="product-image" src="{{asset('images/products/thumbnails')}}/{{$product->image}}"
+                                alt="VR Glasses">
+                        </div>
+                    </a>
+                </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{{route('shop.product.details', ['slug' => $product->slug])}}">{{$product->name}}</a>
-                    </h5>
-                    <div class="mb-4">
-                        <p class="card-text">{{$product->short_description}}</p>
-                        {{-- <p class="pc__category">Category: <a href="{{route('shop.index', ['categoryId' => $product->category_id])}}">{{$product->category->name}}</a></p>
-                        <p class="pc__category">Brand: <a href="{{route('shop.index', ['brandId' => $product->brand_id])}}">{{$product->brand->name}}</a> </p> --}}
-                        <p class="pc__category">Seller: <a
-                                href="{{route('seller.details', ['id' => $product->seller_id])}}">{{$product->seller->name}}</a>
-                        </p>
-                    </div>
+                    @if($product->reviews->count() > 0)
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="d-flex gap-1 fs-xs">
+                                @for ($x = 0; $x < $product->reviews->avg('rating'); $x++)
+                                    <i class="fa fa-star text-warning"></i>
+                                @endfor
+                            </div>
+                            <span class="text-body-tertiary fs-xs">({{$product->reviews->count()}})</span>
+                        </div>
+                    @endif
+
+                    <h3 class="pb-1 mb-2">
+                        <a class="d-block fs-sm fw-medium text-truncate"
+                            href="{{route('shop.product.details', ['slug' => $product->slug])}}">
+                            <span class="animate-target">{{$product->name}}</span>
+                        </a>
+                    </h3>
+
+                    <p class="fs-sm pc__category">Seller: <a
+                            href="{{route('seller.details', ['id' => $product->seller_id])}}">{{$product->seller->name}}</a>
+                    </p>
 
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="mb-0">
                             <span class="h5 mb-0">
-                             @if($product->sale_price)
-                                    <s>{{$currency}}{{$product->regular_price}}</s> {{$currency}}{{$product->sale_price}}
+                                @if($product->sale_price)
+                                    <s>{{$currency}}{{$product->regular_price}}</s>
+                                    {{$currency}}{{$product->sale_price}}
                                 @else
                                     {{$currency}}{{$product->regular_price}}
                                 @endif
-                        </span>
+                            </span>
 
                             @if(config('shop.show_commission'))
-                                <br class="small commission-text">{{ Helper::calculateCommission(!empty($product->sale_price) ? $product->sale_price : $product->regular_price, true)}}
+                                <br
+                                    class="small commission-text">{{ Helper::calculateCommission(!empty($product->sale_price) ? $product->sale_price : $product->regular_price, true)}}
                                 inc
                             @endif
                         </div>
-
-                        @if($product->reviews->count() > 0)
-                            <div>
-                                @for ($x = 0; $x < $product->reviews->avg('rating'); $x++)
-                                    <i class="fa fa-star text-warning"></i>
-                                @endfor
-                                <small class="text-muted">({{$product->reviews->count()}})</small>
-                            </div>
-                        @endif
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-between bg-light">
@@ -61,7 +70,7 @@
                             <input type="hidden" name="name" value="{{$product->name}}">
                             <input type="hidden" name="quantity" value="1">
                             <input type="hidden" name="price"
-                                   value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
+                                value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
 
                             <button class="btn btn-primary btn-sm add-to-cart">Add to Cart</button>
                         </form>
@@ -73,14 +82,13 @@
                             <input type="hidden" name="id" value="{{$product->id}}">
                             <input type="hidden" name="name" value="{{$product->name}}">
                             <input type="hidden" name="price"
-                                   value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
+                                value="{{!empty($product->sale_price) ? $product->sale_price : $product->regular_price}}">
                             <input type="hidden" name="quantity" value="1">
 
                             <button class="btn btn-outline-secondary btn-sm js-add-wishlist">
                                 <i class="fa fa-heart"></i>
                                 @if(Session::has('wishlist_products') && array_key_exists($product->id, Session::get('wishlist_products')))
-                                    <span
-                                        class="wishlist-amount">{{Session::get('wishlist_products')[$product->id]}}</span>
+                                    <span class="wishlist-amount">{{Session::get('wishlist_products')[$product->id]}}</span>
                                 @endif
                             </button>
                         </form>

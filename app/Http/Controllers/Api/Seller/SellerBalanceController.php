@@ -66,7 +66,7 @@ class SellerBalanceController extends ApiController
             ->getClass()
             ->createAccount($request->all(), auth('sanctum')->user()->id);
 
-        $result1 = $saveBillingInformation->handle($request);
+        $result1 = $saveBillingInformation->handle($request->all());
         //$sellerBankDetails = $saveBankAccount->handle($request);
         $result3 = $updateSeller->handle(array_merge($request->all(), ['balance_activated' => true]), auth('sanctum')->user()->profile->id);
 
