@@ -24,7 +24,6 @@ import { UiSideMenuComponent } from './components/ui-side-menu/ui-side-menu.comp
 import { AccordionComponent } from './components/accordion/accordion.component';
 import { AccordionItemComponent } from './components/accordion-item/accordion-item.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
-import { PromoteProductComponent } from './components/promote-product/promote-product.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +43,7 @@ import { PromoteProductComponent } from './components/promote-product/promote-pr
     UiTabsComponent, 
     UiTabItemComponent, 
     UiSideMenuComponent, 
-    AccordionComponent, AccordionItemComponent, DeleteModalComponent, PromoteProductComponent
+    AccordionComponent, AccordionItemComponent, DeleteModalComponent
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,4 @@
+import { Seller } from '../../types/seller/seller';
 import {IUser} from './user.model';
 
 export type Login = {
@@ -7,6 +8,7 @@ export type Login = {
 
 // auth model
 export interface IAuthInfo {
+  profile?: Seller;
   payload?: IUser;
   accessToken?: string;
   refreshToken?: string;
@@ -14,13 +16,15 @@ export interface IAuthInfo {
 }
 
 export const NewAuthInfo = (data: any): IAuthInfo => {
+  console.log('profile', data.profile)
   const obj = {
     payload: {
       email: data.user.email,
       name: data.user.name,
       id: data.user.id,
       role: data.user.utype,
-      image: data.user.image
+      image: data.profile.profile_picture ? data.profile.profile_picture : data.user.image,
+      profile: data.profile
     },
     accessToken: data.token,
     //refreshToken: data.refreshToken,

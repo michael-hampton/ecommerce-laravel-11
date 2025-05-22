@@ -19,7 +19,7 @@ export class TopbarComponent {
   vm$ = this._store.vm$
 
   ngOnInit() {
-    this.user = this._authService.GetUser().payload
+    this.user = this._authService.GetUser()?.payload
   }
 
   openNotifications() {

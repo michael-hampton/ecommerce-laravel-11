@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Actions\User\RegisterUser;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SellerResource;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,7 @@ class AuthController extends ApiController
 {
     public function register(Request $request, RegisterUser $registerUser)
     {
-       $user = $registerUser->handle($request->all());
+        $user = $registerUser->handle($request->all());
 
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
@@ -22,7 +24,8 @@ class AuthController extends ApiController
             'success' => true,
             'message' => 'User registered successfully.',
             'token' => $token,
-            'user' => $user,
+            'user' => UserResource::make($user),
+            'profile' => SellerResource::make($user->profile)
         ]);
     }
 
@@ -40,7 +43,8 @@ class AuthController extends ApiController
             'success' => true,
             'message' => 'Login successful.',
             'token' => $token,
-            'user' => $user,
+            'user' => UserResource::make($user),
+            'profile' => SellerResource::make($user->profile)
         ]);
     }
 

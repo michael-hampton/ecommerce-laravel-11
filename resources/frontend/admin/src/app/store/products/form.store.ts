@@ -51,10 +51,7 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
 
     return request$.pipe(
       tapResponse({
-        next: (users) => {
-          this._globalStore.setSuccess('Saved successfully');
-          //this.patchState({loading: false, saveSuccess: true})
-        },
+        next: (users) => this._globalStore.setSuccess('Saved successfully'),
         error: (error: HttpErrorResponse) => {
           this._globalStore.setLoading(false)
           this._globalStore.setError(UiError(error))

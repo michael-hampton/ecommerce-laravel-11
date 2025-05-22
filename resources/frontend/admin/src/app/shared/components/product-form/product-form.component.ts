@@ -92,7 +92,7 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
       }
     });
   }
-  async confirm() {
+  async save() {
     const file = await firstValueFrom(this._formStore.file$)
 
     const user = this._authService.GetUser()
