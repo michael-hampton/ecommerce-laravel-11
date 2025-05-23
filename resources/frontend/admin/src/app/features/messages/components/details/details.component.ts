@@ -2,6 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MessageStore} from '../../../../store/messages/list.store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -24,28 +25,22 @@ export class DetailsComponent implements OnInit {
       this._store.getMessageDetails(this.messageId).subscribe()
     })
 
-    this._store.files$.subscribe(result => {
-      this.myForm.patchValue({
-        imagesSource: result
-      });
-    });
-
     this.initializeForm()
   }
 
   initializeForm() {
     this.myForm = this.fb.group({
       message: ['', Validators.required],
-      imagesSource: new FormControl('')
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.myForm.valid) {
+      const files = await firstValueFrom(this._store.files$)
       this._store.createReply({
         postId: this.messageId,
         message: this.myForm.value.message,
-        images: this.myForm.value.imagesSource
+        images: files
       }).subscribe(result => {
         this.myForm.reset();
         this._store.getMessageDetails(this.messageId).subscribe()

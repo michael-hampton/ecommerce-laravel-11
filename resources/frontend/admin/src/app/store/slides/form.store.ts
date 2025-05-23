@@ -1,20 +1,18 @@
-import {Injectable} from '@angular/core';
-import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
-import {tapResponse} from '@ngrx/operators'
-import {SlideApi} from '../../apis/slide.api';
-import {GlobalStore} from "../global.store";
-import {Slide} from "../../types/slides/slide";
-import {UiError} from '../../core/services/exception.service';
+import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ComponentStore } from '@ngrx/component-store';
+import { tapResponse } from '@ngrx/operators'
+import { SlideApi } from '../../apis/slide.api';
+import { GlobalStore } from "../global.store";
+import { Slide } from "../../types/slides/slide";
+import { UiError } from '../../core/services/exception.service';
 
 
 export interface SlideFormState {
-  imagePreview: string;
   currentFile?: File;
 }
 
 const defaultState: SlideFormState = {
-  imagePreview: '',
   currentFile: undefined
 };
 
@@ -25,14 +23,9 @@ export class SlideFormStore extends ComponentStore<SlideFormState> {
   }
 
   readonly file$ = this.select(state => state.currentFile);
-  readonly image$ = this.select(({imagePreview}) => imagePreview);
-
-  vm$ = this.select(state => ({
-    imagePreview: state.imagePreview,
-  }))
 
   saveData = (payload: Partial<Slide>) => {
-    const {id, ...dataCreate} = payload
+    const { id, ...dataCreate } = payload
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
     this._globalStore.setLoading(true)
 
@@ -52,29 +45,13 @@ export class SlideFormStore extends ComponentStore<SlideFormState> {
     )
   }
 
-  selectFile(event: any): void {
-    this.patchState({imagePreview: ''})
-    const selectedFiles = event.target.files;
+  readonly addImage = this.updater((state, currentFile: File) => ({
+    ...state,
+    currentFile: currentFile
+  }));
 
-    if (selectedFiles) {
-      const file: File | null = selectedFiles.item(0);
-
-      if (file) {
-        this.patchState({imagePreview: '', currentFile: file})
-
-        const reader = new FileReader();
-
-        reader.onload = (e: any) => {
-          this.patchState({imagePreview: e.target.result})
-
-        };
-
-        reader.readAsDataURL(file);
-      }
-    }
-  }
-
-  readonly addImage = this.updater((state, imagePreview: string) => ({
-    imagePreview: imagePreview,
+  readonly addImages = this.updater((state, selectedFiles: FileList) => ({
+    ...state,
+    selectedFiles: selectedFiles
   }));
 }

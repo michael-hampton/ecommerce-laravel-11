@@ -94,6 +94,7 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
   }
   async save() {
     const file = await firstValueFrom(this._formStore.file$)
+    const files = await firstValueFrom(this._formStore.files$)
 
     const user = this._authService.GetUser()
 
@@ -118,8 +119,8 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
         active: this.form.value.active === true ? 0 : 1,
       } as Product;
 
-      if (this.form.value.imagesSource) {
-        model.images = this.form.value.imagesSource
+      if (files) {
+        model.images = files
       }
 
       if (file) {
@@ -169,8 +170,8 @@ export class ProductFormComponent extends ModalComponent implements OnInit {
       this._formStore.getSubcategories(this.formData.category_id)
     }
 
-    this._formStore.updateImagePreview(this.formData.image)
-    this._formStore.updateImageGallery(this.formData.images)
+    // this._formStore.updateImagePreview(this.formData.image)
+    // this._formStore.updateImageGallery(this.formData.images)
   }
 
   initializeForm() {

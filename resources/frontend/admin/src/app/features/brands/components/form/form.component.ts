@@ -17,9 +17,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;
   form?: FormGroup;
 
-  private _lookupStore = inject(LookupStore)
-  _formStore = inject(BrandFormStore)
-  formVm$ = this._formStore.vm$;
+  _store = inject(BrandFormStore)
 
   public constructor(private fb: FormBuilder) {
     super();
@@ -39,7 +37,7 @@ export class FormComponent extends ModalComponent implements OnInit {
   }
 
   async save() {
-    const file = await firstValueFrom(this._formStore.file$)
+    const file = await firstValueFrom(this._store.file$)
     if (file || this.formData?.image.length) {
       this.form.controls['image'].setErrors(null);
 
@@ -64,7 +62,7 @@ export class FormComponent extends ModalComponent implements OnInit {
         model.id = this.form.value.id
       }
 
-      this._formStore.saveData(model).subscribe(result => {
+      this._store.saveData(model).subscribe(result => {
         this.confirm();
       })
     }
@@ -82,7 +80,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       active: this.formData.active
     })
 
-    this._formStore.addImage(this.formData.image)
+    this._store.addImage(this.formData.image)
   }
 
   initializeForm() {
@@ -105,10 +103,5 @@ export class FormComponent extends ModalComponent implements OnInit {
       .replace(/ +/g, "-");
 
     this.form?.patchValue({ slug: value })
-  }
-
-  async getImageUrl() {
-    const imagePreview = await firstValueFrom(this._formStore.image$)
-    return !imagePreview || !imagePreview.length ? this.form.controls['image'].value : imagePreview
   }
 }

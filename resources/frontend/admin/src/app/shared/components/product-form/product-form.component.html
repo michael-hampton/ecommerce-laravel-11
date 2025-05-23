@@ -59,7 +59,15 @@
 
               <div class="col-12">
                 <label for="inputAddress" class="form-label">Brand</label>
-                <select
+                <ng-select
+                  [items]="vm.brands"
+                  bindLabel="name"
+                  bindValue="id"
+                  [searchable]="true"
+                  [clearable]="false"
+                  formControlName="brand_id"
+                ></ng-select>
+                <!-- <select
                   class="form-control"
                   name="brand_id"
                   formControlName="brand_id"
@@ -68,7 +76,7 @@
                   <option *ngFor="let brand of vm.brands" [value]="brand.id">
                     {{ brand.name }}
                   </option>
-                </select>
+                </select> -->
               </div>
 
               <div class="col-12">
@@ -144,80 +152,14 @@
         <div class="card p-3 ms-3 col-lg-6">
           <div class="card-body">
             <div class="row g-3">
-              <div>
-                <div class="body-title">
-                  Upload images <span class="tf-color-1">*</span>
-                </div>
-                <div class="upload-image flex-grow">
-                  <div
-                    *ngIf="_formStore.image$ | async as image"
-                    class="item"
-                    id="imgpreview"
-                  >
-                    <img
-                      style="width: 220px"
-                      [src]="image"
-                      class="effect8"
-                      alt=""
-                    />
-                  </div>
-                  <div id="upload-file" class="item up-load">
-                    <label class="uploadfile" for="myFile">
-                      <span class="icon">
-                        <i class="fa fa-upload"></i>
-                      </span>
-                      <span class="body-text"
-                        >Drop your images here or select
-                        <span class="tf-color">click to browse</span></span
-                      >
-                      <input
-                        type="file"
-                        id="myFile"
-                        name="image"
-                        accept="image/*"
-                        formControlName="image"
-                        (change)="_formStore.selectFile($event)"
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="body-title">Upload Gallery Images</div>
-                <div class="upload-image mb-16">
-                  <div id="galUpload" class="item up-load">
-                    <label class="uploadfile" for="gFile">
-                      <span class="icon">
-                        <i class="fa fa-upload"></i>
-                      </span>
-                      <span class="text-tiny"
-                        >Drop your images here or select
-                        <span class="tf-color">click to browse</span></span
-                      >
-                      <input
-                        formControlName="images"
-                        type="file"
-                        id="gFile"
-                        name="images[]"
-                        accept="image/*"
-                        multiple
-                        (change)="_formStore.bulkUpload($event)"
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <div
-                  *ngIf="_formStore.galleryImages$ | async as galleryImages"
-                  class="d-flex align-items-center justify-content-between"
-                >
-                  <img
-                    style="width: 100px"
-                    [src]="image"
-                    *ngFor="let image of galleryImages"
-                  />
-                </div>
-              </div>
+              <app-single-upload
+                (fileUploadHandler)="_formStore.addImage($event)"
+                [file]="formData?.image"
+              ></app-single-upload>
+              <app-multiple-upload
+                (fileUploadHandler)="_formStore.addImages($event)"
+                [files]="formData?.images"
+              ></app-multiple-upload>
 
               <div class="col-md-6">
                 <label for="inputEmail4" class="form-label"

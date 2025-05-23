@@ -1,17 +1,16 @@
-import {Injectable} from '@angular/core';
-import {HttpErrorResponse} from '@angular/common/http';
-import {ComponentStore} from '@ngrx/component-store';
-import {tapResponse} from '@ngrx/operators'
-import {ProductApi} from '../../apis/product.api';
-import {GlobalStore} from '../global.store';
-import {Product} from "../../types/products/product";
-import {UiError} from '../../core/services/exception.service';
-import {switchMap, tap} from 'rxjs';
-import {Category} from '../../types/categories/category';
-import {LookupApi} from '../../apis/lookup.api';
+import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ComponentStore } from '@ngrx/component-store';
+import { tapResponse } from '@ngrx/operators'
+import { ProductApi } from '../../apis/product.api';
+import { GlobalStore } from '../global.store';
+import { Product } from "../../types/products/product";
+import { UiError } from '../../core/services/exception.service';
+import { switchMap, tap } from 'rxjs';
+import { Category } from '../../types/categories/category';
+import { LookupApi } from '../../apis/lookup.api';
 
 export interface ProductFormState {
-  imagePreview: string;
   currentFile?: File;
   subcategories: Category[],
   grandchildren: Category[],
@@ -20,7 +19,6 @@ export interface ProductFormState {
 }
 
 const defaultState: ProductFormState = {
-  imagePreview: '',
   currentFile: undefined,
   subcategories: [],
   grandchildren: [],
@@ -36,16 +34,14 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
 
   readonly file$ = this.select(state => state.currentFile);
   readonly files$ = this.select(state => state.selectedFiles);
-  readonly image$ = this.select(({imagePreview}) => imagePreview);
-  readonly galleryImages$ = this.select(({previews}) => previews);
+  readonly galleryImages$ = this.select(({ previews }) => previews);
 
   vm$ = this.select(state => ({
-    imagePreview: state.imagePreview,
     selectedFiles: state.selectedFiles
   }))
 
   saveData = (payload: Partial<Product>) => {
-    const {id, ...dataCreate} = payload
+    const { id, ...dataCreate } = payload
     const request$ = id ? this._api.update(id, payload) : this._api.create(dataCreate)
     this._globalStore.setLoading(true)
 
@@ -94,55 +90,13 @@ export class ProductFormStore extends ComponentStore<ProductFormState> {
     );
   });
 
-  selectFile(event: any): void {
-    this.patchState({imagePreview: ''})
-    const selectedFiles = event.target.files;
+  readonly addImage = this.updater((state, currentFile: File) => ({
+    ...state,
+    currentFile: currentFile
+  }));
 
-    if (selectedFiles) {
-      const file: File | null = selectedFiles.item(0);
-
-      if (file) {
-        this.patchState({imagePreview: '', currentFile: file})
-
-        const reader = new FileReader();
-
-        reader.onload = (e: any) => {
-          this.patchState({imagePreview: e.target.result})
-
-        };
-
-        reader.readAsDataURL(file);
-      }
-    }
-  }
-
-  bulkUpload(event: any): void {
-    const selectedFiles = event.target.files
-    this.patchState({selectedFiles: selectedFiles})
-
-    let previews = [];
-    if (selectedFiles && selectedFiles[0]) {
-      const numberOfFiles = selectedFiles.length;
-      for (let i = 0; i < numberOfFiles; i++) {
-        const reader = new FileReader();
-
-        reader.onload = (e: any) => {
-          console.log(e.target.result);
-          previews.push(e.target.result);
-        };
-
-        reader.readAsDataURL(selectedFiles[i]);
-      }
-
-      this.patchState({previews: previews})
-    }
-  }
-
-  updateImagePreview(imagePreview: string) {
-    this.patchState({imagePreview: imagePreview})
-  }
-
-  updateImageGallery(images: string[]) {
-    this.patchState({previews: images})
-  }
+  readonly addImages = this.updater((state, selectedFiles: FileList) => ({
+    ...state,
+    selectedFiles: selectedFiles
+  }));
 }

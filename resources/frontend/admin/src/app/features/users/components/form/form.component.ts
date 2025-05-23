@@ -18,8 +18,7 @@ import {firstValueFrom} from 'rxjs';
 export class FormComponent extends ModalComponent implements OnInit {
   @ViewChild('modal') content!: ElementRef;
   form?: FormGroup;
-  _formStore = inject(UserFormStore)
-  formVm$ = this._formStore.vm$;
+  _store = inject(UserFormStore)
 
   public constructor(private fb: FormBuilder) {
     super();
@@ -35,7 +34,7 @@ export class FormComponent extends ModalComponent implements OnInit {
 
   async save() {
     if (this.form?.valid) {
-      const file = await firstValueFrom(this._formStore.file$)
+      const file = await firstValueFrom(this._store.file$)
       const model: User = {
         name: this.form.value.name,
         email: this.form.value.email,
@@ -53,7 +52,7 @@ export class FormComponent extends ModalComponent implements OnInit {
         model.id = this.form.value.id
       }
 
-      this._formStore.saveData(model).subscribe(result => {
+      this._store.saveData(model).subscribe(result => {
         this.confirm()
       })
     }
@@ -71,7 +70,7 @@ export class FormComponent extends ModalComponent implements OnInit {
       //image: this.formData.image,
     })
 
-    this._formStore.addImage(this.formData.image)
+    this._store.addImage(this.formData.image)
   }
 
   initializeForm() {

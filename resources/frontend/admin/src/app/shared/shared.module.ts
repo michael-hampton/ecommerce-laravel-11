@@ -24,10 +24,15 @@ import { UiSideMenuComponent } from './components/ui-side-menu/ui-side-menu.comp
 import { AccordionComponent } from './components/accordion/accordion.component';
 import { AccordionItemComponent } from './components/accordion-item/accordion-item.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { SingleUploadComponent } from './file-upload/single-upload/single-upload.component';
+import { MultipleUploadComponent } from './file-upload/multiple-upload/multiple-upload.component';
+import { DndDirective } from './directives/dnd.directive';
 
 @NgModule({
   declarations: [
     FieldValidationFlagDirective, 
+    DndDirective,
     FormSubmitDirective, 
     DataTableComponent, 
     DataTableHeaderComponent, 
@@ -43,7 +48,7 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     UiTabsComponent, 
     UiTabItemComponent, 
     UiSideMenuComponent, 
-    AccordionComponent, AccordionItemComponent, DeleteModalComponent
+    AccordionComponent, AccordionItemComponent, DeleteModalComponent, SingleUploadComponent, MultipleUploadComponent
   ],
   imports: [
     CommonModule,
@@ -52,11 +57,13 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     FormsModule,
     PixelConverter,
     ReactiveFormsModule,
-    ModalComponent
+    ModalComponent,
+    NgSelectComponent
   ],
   exports: [
     FormSubmitDirective,
     FieldValidationFlagDirective,
+    DndDirective,
     DataTableComponent,
     ColumnComponent,
     ToastComponent,
@@ -68,7 +75,9 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     UiTabItemComponent, 
     UiSideMenuComponent,
     AccordionComponent,
-    AccordionItemComponent
+    AccordionItemComponent,
+    MultipleUploadComponent,
+    SingleUploadComponent
   ]
 })
 export class SharedModule { }
