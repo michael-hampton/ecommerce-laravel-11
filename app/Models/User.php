@@ -14,10 +14,13 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Notification;
+use Spatie\PersonalDataExport\ExportsPersonalData;
+use Spatie\PersonalDataExport\PersonalDataSelection;
 
-class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
+class User extends Authenticatable implements CanResetPassword, MustVerifyEmail, ExportsPersonalData
 {
     use HasApiTokens;
     use HasFactory;
@@ -64,8 +67,9 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         return $this->morphMany(Review::class, 'commentable');
     }
 
-    public function postedReviews(): HasMany {
-        return $this->hasMany(Review::class,'user_id');
+    public function postedReviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'user_id');
     }
 
     public function products(): HasMany
@@ -78,11 +82,45 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         return $this->hasOne(Address::class, 'customer_id', 'id')->first();
     }
 
-    public function profile(): HasOne {
+    public function profile(): HasOne
+    {
         return $this->hasOne(Profile::class, 'user_id');
     }
 
-    public function notificationTypes(): HasMany {
-        return $this->hasMany(UserNotification::class,'user_id');
+    public function notificationTypes(): HasMany
+    {
+        return $this->hasMany(UserNotification::class, 'user_id');
+    }
+
+    public function selectPersonalData(PersonalDataSelection $personalDataSelection): void
+    {
+        $personalDataSelection
+            ->add('user.json', [
+                'name' => $this->name,
+                'email' => $this->email,
+                'utype' => $this->utype,
+                'mobile' => $this->mobile,
+                'city' => $this->profile->city,
+                'state' => $this->profile->state,
+                'zip' => $this->profile->zip,
+                'address1' => $this->profile->address1,
+                'address2' => $this->profile->address2,
+                'phone' => $this->profile->phone,
+                'website' => $this->profile->website,
+                'shop_name' => $this->profile->name,
+                'shop_email' => $this->profile->email,
+                'date_of_birth' => $this->profile->date_of_birth,
+                'biography' => $this->profile->biography
+            ]);
+            //->addFile(asset("images/users/{$this->image}"))
+            //->addFile(asset("images/sellers/{$this->profile->profile_picture}"));
+        ;
+    }
+
+    public function personalDataExportName(): string
+    {
+        $userName = Str::slug($this->name);
+
+        return "{$this->id}_personal-data-{$userName}.zip";
     }
 }

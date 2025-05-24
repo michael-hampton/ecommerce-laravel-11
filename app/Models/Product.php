@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Product extends Model
+class Product extends Model implements Auditable
 {
     use HasFactory;
     use SoftDeletes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'name',
@@ -35,6 +37,17 @@ class Product extends Model
         'seller_id',
         'package_size',
         'active',
+    ];
+
+    /**
+     * Auditable events.
+     *
+     * @var array
+     */
+    protected $auditEvents = [
+        'deleted',
+        'restored',
+        'updated'
     ];
 
     protected $casts = ['active' => 'bool', 'featured' => 'bool'];

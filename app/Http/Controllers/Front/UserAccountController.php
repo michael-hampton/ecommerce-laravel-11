@@ -25,7 +25,9 @@ use App\Repositories\Interfaces\IAddressRepository;
 use App\Repositories\Interfaces\IOrderRepository;
 use App\Services\Cart\Facade\Cart;
 
+use Auth;
 use Illuminate\Support\Facades\View;
+use Spatie\PersonalDataExport\Jobs\CreatePersonalDataExportJob;
 use function auth;
 
 class UserAccountController extends Controller
@@ -169,5 +171,17 @@ class UserAccountController extends Controller
         ]);
 
         return back()->with('success', 'Post reply successfully');
+    }
+
+    public function triggerDownload() {
+       if(!Auth::check()) return redirect('shop');
+
+       dispatch(new CreatePersonalDataExportJob(auth()->user()));
+
+    }
+
+    public function download(string $filename) {
+        echo $filename;
+        die('here');
     }
 }

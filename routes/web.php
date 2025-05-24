@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\UserAccountController;
 use App\Http\Controllers\PaymentProviders\PaypalController;
 use App\Http\Middleware\AuthAdmin;
 use App\Models\User;
@@ -63,8 +64,8 @@ Auth::routes();
 Route::get('paypal/payment/success/{orderId}', [PaypalController::class, 'paymentSuccess'])->name('paypal.payment.success');
 Route::get('paypal/payment/cancel', [PaypalController::class, 'paymentCancel'])->name('paypal.payment/cancel');
 
-Route::get('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->name(name: 'login.authenticate');
+Route::get('/login', [LoginController::class, 'loginView'])->name('login');
+Route::post('/login/authenticate', [LoginController::class, 'login'])->name(name: 'login.authenticate');
 Route::post('register', [RegisterController::class, 'create'])->name(name: 'register');
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
@@ -157,3 +158,9 @@ Route::get('/change-password', [HomeController::class, 'changePassword'])->name(
 Route::post('/change-password', [HomeController::class, 'updatePassword'])->name('update-password');
 
 Route::get('/angular/index', [AngularController::class, 'index']);
+
+Route::personalDataExports('personal-data-exports');
+Route::get('download', [UserAccountController::class,'triggerDownload'])->name('');
+//Route::get('personal-data-exports/{filename}', [UserAccountController::class,'download'])->name('');
+
+

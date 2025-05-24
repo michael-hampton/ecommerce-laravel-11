@@ -51,10 +51,10 @@ export class OrderDetailsStore extends ComponentStore<OrderDetailsState> {
   }))
 
   saveOrderStatus = (payload: Partial<SaveOrder>) => {
-    this.patchState({ loading: true })
+    //this.patchState({ loading: true })
 
     return this._api.update(payload.orderId, payload).pipe(
-      tap(() => this.patchState({ loading: true })),
+      //tap(() => this.patchState({ loading: true })),
       tapResponse({
         next: () => this.showOrderSuccess(),
         error: (error: HttpErrorResponse) => {

@@ -40,8 +40,8 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => public_path().'/images',
-            'url' => env('APP_URL').'/public',
+            'root' => public_path() . '/images',
+            'url' => env('APP_URL') . '/public',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -59,7 +59,10 @@ return [
             'throw' => false,
             'report' => false,
         ],
-
+        'personal-data-exports' => [
+            'driver' => 'local',
+            'root' => storage_path('app/personal-data-exports'),
+        ],
     ],
 
     /*

@@ -34,7 +34,11 @@ class LoginController extends ApiController
      *
      * @var string
      */
-    protected $redirectTo = 'shop';
+    protected $redirectTo = 'account-dashboard';
+
+    protected $maxAttempts = 3;
+    protected $decayMinutes = 2; // Default is 1
+
 
     /**
      * Create a new controller instance.
@@ -47,7 +51,7 @@ class LoginController extends ApiController
         $this->middleware('auth')->only('logout');
     }
 
-    public function login(Request $request)
+    public function loginView(Request $request)
     {
         return view('auth.login');
     }
@@ -68,32 +72,42 @@ class LoginController extends ApiController
     /**
      * Handle an authentication attempt.
      */
-    public function authenticate(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+    // public function authenticate(Request $request)
+    // {
+    //     $credentials = $request->validate([
+    //         'email' => ['required', 'email'],
+    //         'password' => ['required'],
+    //     ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+    //     if (
+    //         method_exists($this, 'hasTooManyLoginAttempts') &&
+    //         $this->hasTooManyLoginAttempts($request)
+    //     ) {
+    //         die('yes');
 
-            if (auth()->user()->active === false) {
-                Auth::logout();
+    //         $this->fireLockoutEvent($request);
 
-                return Redirect::back()->withErrors(['msg' => 'Your account appears to be inactive. Please contact support']);
-            }
+    //         return $this->sendLockoutResponse($request);
+    //     }
 
-            if (\auth()->user()->utype === 'ADM') {
-                return redirect()->intended('admin');
-            }
+    //     if (Auth::attempt($credentials)) {
+    //         $request->session()->regenerate();
 
-            return redirect()->intended('account-dashboard');
+    //         if (auth()->user()->active === false) {
+    //             Auth::logout();
 
-        }
+    //             return Redirect::back()->withErrors(['msg' => 'Your account appears to be inactive. Please contact support']);
+    //         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
-    }
+    //         return $this->sendLoginResponse($request);
+
+    //     }
+
+    //      // If the login attempt was unsuccessful we will increment the number of attempts
+    //     // to login and redirect the user back to the login form. Of course, when this
+    //     // user surpasses their maximum number of attempts they will get locked out.
+    //     $this->incrementLoginAttempts($request);
+
+    //     return $this->sendFailedLoginResponse($request);
+    // }
 }

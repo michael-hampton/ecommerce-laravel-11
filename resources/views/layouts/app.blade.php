@@ -65,6 +65,9 @@
         /*}*/
     </style>
 
+    @include('cookie-consent::index')
+
+
     <?php 
     $items = \App\Services\Cart\Facade\Cart::instance('wishlist')->content(); 
     $products = App\Models\Product::whereIn("id", $items->pluck("id"))->get()->keyBy('id');

@@ -88,8 +88,8 @@ class BaseRepository implements IBaseRepository
 
         return $query->with($this->requiredRelationships)
             ->orderBy($orderBy, $sort)
-           // ->toRawSql();
-        ->paginate($paged);
+            // ->toRawSql();
+            ->paginate($paged);
     }
 
     /**
@@ -238,7 +238,10 @@ class BaseRepository implements IBaseRepository
      */
     public function update($id, array $data)
     {
-        return $this->model->where($this->model->getKeyName(), $id)->update($data);
+        $entity = $this->model->find($id);
+        $entity->update($data);
+
+        //return $this->model->where($this->model->getKeyName(), $id)->update($data);
     }
 
     /**
